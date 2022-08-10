@@ -8,7 +8,6 @@ import { AuthProvider } from './hooks/useAuth';
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  
   return (
     <NavigationContainer>
       <AuthProvider>

@@ -48,7 +48,8 @@ const styles = StyleSheet.create({
     screenNameStyle: {
       color: COLORS.white,
       fontFamily: 'sans-serif',
-      fontSize: SIZES.extraLarge - 3
+      fontSize: SIZES.extraLarge - 3,
+      // fontWeight: '600'
     },
     textLogoContainerStyle: {
       width: '50%',

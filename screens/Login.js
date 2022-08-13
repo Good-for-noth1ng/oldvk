@@ -1,10 +1,20 @@
 import { View, Text, SafeAreaView, StatusBar, StyleSheet } from 'react-native'
+import * as WebBrowser from 'expo-web-browser'
 import Header from '../components/Header'
 import { LoginButton } from '../components/Buttons'
 import { SIZES } from '../constants/theme'
+import { APP_ID } from '@env'
 
 const Login = () => {
   const iconSrc = '../assets/icons/vk_logo_eng_blue.png'
+  const openAuthSession = async () => {
+    try {
+      const url = ''
+      let result = await WebBrowser.openAuthSessionAsync()
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <View>
       <SafeAreaView>
@@ -17,7 +27,7 @@ const Login = () => {
               oldvk - мобильное приложение для соцсети вконтакте
             </Text>
           </View>
-          <LoginButton buttonText={'Авторизоваться через vk.com'}/>
+          <LoginButton buttonText={'Авторизоваться через vk.com'} />
         </View>
       </SafeAreaView>
     </View>

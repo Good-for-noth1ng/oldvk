@@ -1,3 +1,4 @@
+import React from 'react'
 import { Text, View, TouchableOpacity } from 'react-native'
 import { SIZES, COLORS } from '../constants/theme'
 
@@ -10,7 +11,7 @@ export const LoginButton = ({buttonText, handlePress}) => {
       borderRadius: 5,
       padding: 5,
       alignContent: 'center'
-    }}>
+    }} onPress={() => handlePress()}>
       <Text style={{
         fontFamily: 'sans-serif',
         fontSize: SIZES.small + 2,

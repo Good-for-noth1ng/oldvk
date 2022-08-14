@@ -2,7 +2,8 @@ export const COLORS = {
     primary: 'rgba(81, 129, 184, 1)',
     white: 'rgb(255,255,255)',
     secondary: 'hsl(213, 11%, 55%)',
-    black: 'rgb(0, 0, 0)'
+    black: 'rgb(0, 0, 0)',
+    smoke: '#aeb7c2'
 }
 
 export const SIZES = {

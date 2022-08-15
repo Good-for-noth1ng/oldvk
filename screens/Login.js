@@ -1,28 +1,53 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text, SafeAreaView, StatusBar, StyleSheet } from 'react-native'
-import { authorize } from 'react-native-app-auth'
+// import { authorize } from 'react-native-app-auth'
+import * as WebBrowser from 'expo-web-browser'
+import { makeRedirectUri, useAuthRequest, ResponseType } from 'expo-auth-session'
 import Header from '../components/Header'
 import { LoginButton } from '../components/Buttons'
 import { SIZES } from '../constants/theme'
 import { APP_ID, PERMISION_CODE } from '@env'
 
+WebBrowser.maybeCompleteAuthSession();
+
+const discovery ={
+  authorizationEndpoint: 'https://oauth.vk.com/authorize',
+};
+
 const Login = () => {
   
-  const config = {
-    issuer: 'https://oauth.vk.com/authorize',
-    client_id: APP_ID,
-    redirect_uri: 'https://oauth.vk.com/blank.html',
-    display: 'mobile',
-    scope: 2,
-    state: '12398',
-    response_type: 'token',
-    revoke: '1'
-  }
+  // const config = {
+  //   issuer: 'https://oauth.vk.com/authorize',
+  //   client_id: APP_ID,
+  //   redirect_uri: 'https://oauth.vk.com/blank.html',
+  //   display: 'mobile',
+  //   scope: PERMISION_CODE,
+  //   state: '12398',
+  //   response_type: 'token',
+  //   revoke: '1'
+  // }
 
-  const openAuthSession = async () => {
-    const result = await authorize(config)
-    console.log(result.accessToken)
-  }
+  const [request, response, promptAsync] = useAuthRequest(
+    {
+      client_id: APP_ID,
+      redirect_uri: makeRedirectUri({
+        scheme: 'oldvk'
+      }),
+      display: 'mobile',
+      scope: PERMISION_CODE,
+      state: '12398',
+      response_type: 'token',
+      revoke: '1'
+    }, 
+    discovery
+  );
+  useEffect(() => {
+    console.log(response.params)
+  }, [response])
+  // const openAuthSession = async () => {
+  //   const result = await authorize(config)
+  //   console.log(result.accessToken)
+  // }
 
   // const openAuthSession = async () => {
   //   try {
@@ -45,7 +70,7 @@ const Login = () => {
               oldvk - мобильное приложение для соцсети вконтакте
             </Text>
           </View>
-          <LoginButton buttonText={'Авторизоваться через vk.com'} handlePress={openAuthSession} />
+          <LoginButton buttonText={'Авторизоваться через vk.com'} handlePress={promptAsync} />
         </View>
       </SafeAreaView>
     </View>

@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { WebView } from 'react-native-webview'
-import queryString from 'query-string'
 import { APP_ID, PERMISION_CODE, REDIRECT_URI } from '@env'
 
 const WebViewLogin = () => {
@@ -9,9 +8,12 @@ const WebViewLogin = () => {
     const regex = /^https:\/\/oauth\.vk\.com\/blank\.html.*$/g
     const url = navigationState.url
     if (regex.test(url)) {
-      const accessTokenRegex = /access_token=[a-zA-Z0-9-.]*/g
-      const expiresInregex = /expires_in=\d*/g
-      const userId = /user_id=.*/g
+      const accessTokenRegex = /access_token=[a-zA-Z0-9-._]*/g
+      const expiresInRegex = /expires_in=\d*/g
+      const userIdRegex = /user_id=.*/g
+      const accessToken = url.match(accessTokenRegex)[0].split('access_token=')[1]
+      const expiresIn = url.match(expiresInRegex)[0].split('expires_in=')[1]
+      const userId = url.match(userIdRegex)[0].split('user_id=')[1]
     }
   }
 

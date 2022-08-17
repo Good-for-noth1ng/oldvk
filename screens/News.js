@@ -7,7 +7,7 @@ const News = () => {
   return (
     <View>
       <SafeAreaView>
-        <StatusBar animated={true}/>
+        <StatusBar />
         <Text>news</Text>
       </SafeAreaView>
     </View>

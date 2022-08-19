@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import React from 'react'
 import { WebView } from 'react-native-webview'
 import { APP_ID, PERMISION_CODE, REDIRECT_URI } from '@env'

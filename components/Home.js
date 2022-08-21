@@ -5,6 +5,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import News from '../screens/News';
 
 const Drawer = createDrawerNavigator()
+
 const Home = () => {
   return (
     <Drawer.Navigator>

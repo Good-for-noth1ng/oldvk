@@ -6,11 +6,11 @@ import { View, Text, SafeAreaView, StatusBar, StyleSheet } from 'react-native'
 // import { makeRedirectUri, useAuthRequest, ResponseType } from 'expo-auth-session'
 import Header from '../components/Header'
 import { LoginButton } from '../components/Buttons'
-import { SIZES } from '../constants/theme'
+import { SIZES, COLORS } from '../constants/theme'
 
 const Login = ({navigation}) => { 
   return (
-    <View>
+    <View style={{backgroundColor: COLORS.white}}>
       <SafeAreaView>
         <StatusBar />
         <Header screenName={'Авторизация'} />

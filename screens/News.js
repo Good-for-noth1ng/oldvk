@@ -1,9 +1,15 @@
 import { View, Text, SafeAreaView, StatusBar } from 'react-native'
-import React from 'react'
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchInitNews } from '../redux/postSlice';
 
 const News = () => {
-  const message = useSelector(state => state.user.isLoggedIn)
+  const dispatch = useDispatch()
+
+  
+    dispatch(fetchInitNews())
+  
+
   return (
     <View>
       <SafeAreaView>

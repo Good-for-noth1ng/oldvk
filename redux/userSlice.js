@@ -1,6 +1,8 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
 
+
+
 export const userSlice = createSlice({
     name: 'user',
     initialState: {
@@ -10,7 +12,7 @@ export const userSlice = createSlice({
         userId: ''
     },
     reducers: {
-        setLogin: (state, action) => {
+        setLogin: (state) => {
             state.isLoggedIn = !state.isLoggedIn
         },
         setAccessToken: (state, action) => {

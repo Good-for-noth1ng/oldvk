@@ -1,9 +1,9 @@
 import { StyleSheet, View } from 'react-native'
-import React, { useCallback } from 'react'
+import React from 'react'
 import { WebView } from 'react-native-webview'
 import { APP_ID, PERMISION_CODE, REDIRECT_URI } from '@env'
 import { useDispatch } from 'react-redux'
-import { setAccessToken, setExpiresIn, setLogin, setUserId } from '../redux/slices'
+import { setAccessToken, setExpiresIn, setLogin, setUserId } from '../redux/userSlice'
 
 const WebViewLogin = () => {
   const dispatch = useDispatch();

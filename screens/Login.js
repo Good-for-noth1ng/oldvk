@@ -10,7 +10,7 @@ import { SIZES, COLORS } from '../constants/theme'
 
 const Login = ({navigation}) => { 
   return (
-    <View style={{backgroundColor: COLORS.white}}>
+    <View style={{flex: 1, backgroundColor: COLORS.white}}>
       <SafeAreaView>
         <StatusBar />
         <Header screenName={'Авторизация'} />

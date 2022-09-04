@@ -12,7 +12,7 @@ const Login = ({navigation}) => {
   return (
     <View style={{flex: 1, backgroundColor: COLORS.white}}>
       <SafeAreaView>
-        <StatusBar />
+        <StatusBar backgroundColor={COLORS.primary} />
         <Header screenName={'Авторизация'} />
         <View style={styles.heroButtonContainer}>
           <View style={styles.textContainer}>

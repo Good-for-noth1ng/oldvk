@@ -6,16 +6,18 @@ export const fetchInitNews = createAsyncThunk(
     'post/fetchInitNews',
     async () => {
         const accessToken = useSelector(state => state.user.accessToken)
-        // const request = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&v=5.131`
-        const url = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131`
-        let response = fetch(url)
-        let json = await response.json()
-        console.log(json)
+        const url = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&v=5.131`
+        return fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data.response.items[0].text);
+            })
+            .catch(error => console.log(error))
     }
 )
 
 export const postSlice = createSlice({
-    name: 'news',
+    name: 'post',
     initialState: {
         items: [],
         profiles: [],
@@ -33,6 +35,7 @@ export const postSlice = createSlice({
         })
         builder.addCase(fetchInitNews.fulfilled, (state) => {
             state.loading = false
+            
         })
         builder.addCase(fetchInitNews.rejected, (state, action) => {
             state.loading = false

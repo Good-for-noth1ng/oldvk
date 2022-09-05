@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
 
 export const fetchInitNews = createAsyncThunk(
-    'post/fetchInitNews',
+    'news/fetchInitNews',
     async () => {
         const accessToken = useSelector(state => state.user.accessToken)
         const url = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&v=5.131`
@@ -16,10 +16,18 @@ export const fetchInitNews = createAsyncThunk(
     }
 )
 
-export const postSlice = createSlice({
-    name: 'post',
+export const newsSlice = createSlice({
+    name: 'news',
     initialState: {
-        items: [],
+        items: [
+            {
+                type: '',
+                sourceId: 0,
+                date: 0,
+                postId: 0,
+                postType: ''
+            }
+        ],
         profiles: [],
         groups: [],
         nextFrom: '',
@@ -44,4 +52,4 @@ export const postSlice = createSlice({
     }
 })
 
-export default postSlice.reducer
+export default newsSlice.reducer

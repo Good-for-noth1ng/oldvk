@@ -25,10 +25,47 @@ export const newsSlice = createSlice({
                 sourceId: 0,
                 date: 0,
                 postId: 0,
-                postType: ''
+                postType: '',
+                finalPost: false,
+                copy_owner_id: 0,
+                copy_post_id: 0,
+                copy_history: [],
+                copy_post_date: 0,
+                text: '',
+                can_edit: 0,
+                can_delete: 0,
+                comments: {
+                    count: 0,
+                    can_post: 0,
+                },
+                likes: {
+                    count: 0,
+                    user_likes: 0,
+                    can_like: 0,
+                },
+                reposts: {
+                    count: 0,
+                    user_reposted: 0 
+                },
+                attachments: [],
+                geo: {
+                    place_id: '',
+                    title: '',
+                    type: '',
+                    countri_id: 0,
+                    city_id: 0,
+                    address: '',
+                    showmap: '',
+                },
+            },
+        ],
+        profiles: [
+            {
+                photo_50: '',
+                photo_100: '',
+                screen_name: ''
             }
         ],
-        profiles: [],
         groups: [],
         nextFrom: '',
         loading: false,

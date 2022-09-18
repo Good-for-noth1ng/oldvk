@@ -72,7 +72,6 @@ export const newsSlice = createSlice({
         error: '',
     },
     reducers: {
-
     },
     extraReducers: (builder) => {
         builder.addCase(fetchInitNews.pending, (state) => {

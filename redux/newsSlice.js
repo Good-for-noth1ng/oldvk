@@ -73,6 +73,7 @@ export const newsSlice = createSlice({
     },
     reducers: {
     },
+    
     extraReducers: (builder) => {
         builder.addCase(fetchInitNews.pending, (state) => {
             state.loading = true

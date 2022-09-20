@@ -71,6 +71,7 @@ export const newsSlice = createSlice({
         loading: false,
         error: '',
     },
+    
     reducers: {
     },
     

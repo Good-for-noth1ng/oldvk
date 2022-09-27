@@ -1,16 +1,20 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+
+
 
 export const fetchInitNews = createAsyncThunk(
     'news/fetchInitNews',
-    async () => {
+    async (dispatch) => {
         const accessToken = useSelector(state => state.user.accessToken)
         const url = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&v=5.131`
         return fetch(url)
             .then((response) => response.json())
             .then((data) => {
-                console.log(data.response.items[0].text);
+                
+                // console.log(data.response.items[0].text);
+                // console.log(accessToken)
             })
             .catch(error => console.log(error))
     }
@@ -22,11 +26,15 @@ export const newsSlice = createSlice({
         items: [
             {
                 type: '',
-                sourceId: 0,
+                source_id: 0,
+                can_set_category: false,
+                can_doubt_category: false,
+                is_favorite: false,
+                marked_as_adds: 0,
                 date: 0,
-                postId: 0,
-                postType: '',
-                finalPost: false,
+                post_id: 0,
+                post_type: '',
+                final_post: false,
                 copy_owner_id: 0,
                 copy_post_id: 0,
                 copy_history: [],
@@ -37,16 +45,29 @@ export const newsSlice = createSlice({
                 comments: {
                     count: 0,
                     can_post: 0,
+                    groups_can_post: true
                 },
                 likes: {
                     count: 0,
                     user_likes: 0,
                     can_like: 0,
+                    can_publish: 0
                 },
                 reposts: {
                     count: 0,
                     user_reposted: 0 
                 },
+                views: {
+                    count: 0
+                },
+                donut: {
+                    is_donut: false
+                },
+                post_source: {
+                    type: ''
+                },
+                short_text_rate: 0,
+                carousel_offset: 0, 
                 attachments: [],
                 geo: {
                     place_id: '',
@@ -57,6 +78,10 @@ export const newsSlice = createSlice({
                     address: '',
                     showmap: '',
                 },
+                photos: {
+                    count: 0,
+                    items: []
+                }
             },
         ],
         profiles: [
@@ -77,7 +102,7 @@ export const newsSlice = createSlice({
         builder.addCase(fetchInitNews.pending, (state) => {
             state.loading = true
         })
-        builder.addCase(fetchInitNews.fulfilled, (state) => {
+        builder.addCase(fetchInitNews.fulfilled, (state, action) => {
             state.loading = false
             
         })

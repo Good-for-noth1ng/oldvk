@@ -1,12 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 
 
 export const fetchInitNews = createAsyncThunk(
     'news/fetchInitNews',
-    async (dispatch) => {
+    async () => {
         const accessToken = useSelector(state => state.user.accessToken)
         const url = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&v=5.131`
         const response = await fetch(url)

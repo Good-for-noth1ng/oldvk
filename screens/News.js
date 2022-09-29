@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   newsBackground: {
-    backgroundColor: '#dbdcdd'
+    backgroundColor: COLORS.light_smoke
   }
 })
 export default News

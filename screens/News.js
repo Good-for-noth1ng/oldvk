@@ -5,27 +5,30 @@ import { fetchInitNews } from '../redux/newsSlice';
 import { COLORS } from '../constants/theme';
 import Post from '../components/Post'
 import { useEffect, useState } from 'react';
+import {setNews } from '../redux/newsSlice';
 
 const News = () => {
   const loading = useSelector(state => state.news.loading);
   const accessToken = useSelector(state => state.user.accessToken)
+  const dispatch = useDispatch()
   const [items, setItems] = useState(undefined)
-  // const dispatch = useDispatch();
-  // dispatch(fetchInitNews());
+  
   useEffect(()=> {
     const fetchNews = async () => {
       const url = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&v=5.131`
-      fetch(url).then((response) => response.json()).then((data) => setItems(data.response.items))
-      // const response = await fetch(url)
-      // const data = response.json()
-      // return data 
+      fetch(url)
+        .then((response) => response.json())
+        .then((data) => {
+          setItems(data.response.items);
+          dispatch(setNews(items))
+        })
     }
     fetchNews();
     console.log(items)
   }, [])
 
   return(
-    <View>
+    <View style={styles.newsBackground}>
       <SafeAreaView>
         <StatusBar backgroundColor={COLORS.primary} />
           {items === undefined ?
@@ -45,20 +48,15 @@ const News = () => {
       </SafeAreaView>
     </View>
   )
-    // return (
-    //   <View>
-    //     <SafeAreaView>
-    //       <StatusBar />
-    //       
-    //     </SafeAreaView>
-    //   </View>
-    // )
 }
 const styles = StyleSheet.create({
   spinnerContainer: {
     width: '100%',
     height: '100%',
     justifyContent: 'center'
+  },
+  newsBackground: {
+    backgroundColor: '#dbdcdd'
   }
 })
 export default News

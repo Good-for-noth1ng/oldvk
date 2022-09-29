@@ -100,6 +100,7 @@ export const newsSlice = createSlice({
         builder.addCase(fetchInitNews.fulfilled, (state, action) => {
             // state.loading = false
             state = { ...action.payload.response, loading: false}
+            // console.log(state.items[0].text)
         })
         builder.addCase(fetchInitNews.rejected, (state, action) => {
             // state.loading = false

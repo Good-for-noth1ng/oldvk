@@ -1,15 +1,16 @@
-import { View, Text, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet, FlatList } from 'react-native'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchInitNews } from '../redux/newsSlice';
 import { COLORS } from '../constants/theme';
-import { Bubbles } from 'react-native-loader';
 
 const News = () => {
-  const [loading, setLoading] = useState(true)
+  const loading = useSelector(state => state.news.loading)
   const dispatch = useDispatch();
   dispatch(fetchInitNews());
-    
+  if (!loading) {
+    const items = useSelector(state => state.news.items)
+  }
   return (
     <View>
       <SafeAreaView>
@@ -19,9 +20,10 @@ const News = () => {
             <ActivityIndicator color={COLORS.primary} size={50}/>
           </View> : 
           <View>
-            <Text>
-              done
-            </Text>
+            <FlatList 
+              data={items}
+              
+            />
           </View>
         }
       </SafeAreaView>

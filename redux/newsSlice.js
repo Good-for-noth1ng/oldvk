@@ -3,22 +3,14 @@ import { createSlice } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
 
 
-
 export const fetchInitNews = createAsyncThunk(
     'news/fetchInitNews',
     async () => {
         const accessToken = useSelector(state => state.user.accessToken)
         const url = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&v=5.131`
+        // console.log(accessToken)
         const response = await fetch(url)
         return response.json()
-        // return fetch(url)
-        //     .then((response) => response.json())
-        //     .then((data) => {
-                
-        //         // console.log(data.response.items[0].text);
-        //         // console.log(accessToken)
-        //     })
-        //     .catch(error => console.log(error))
     }
 )
 
@@ -97,6 +89,7 @@ export const newsSlice = createSlice({
         // nextFrom: '',
         // loading: false,
         // error: '',
+        loading: false
     },
     reducers: {
     },
@@ -106,7 +99,7 @@ export const newsSlice = createSlice({
         })
         builder.addCase(fetchInitNews.fulfilled, (state, action) => {
             // state.loading = false
-            state = action.payload.response
+            state = { ...action.payload.response, loading: false}
         })
         builder.addCase(fetchInitNews.rejected, (state, action) => {
             // state.loading = false

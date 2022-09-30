@@ -11,13 +11,14 @@ import Groups from '../screens/Groups';
 import Answers from '../screens/Answers';
 import Favorites from '../screens/Favorites';
 import Options from '../screens/Options';
+import CustomDrawer from './CustomDrawer';
 import { COLORS } from '../constants/theme';
 
 const Drawer = createDrawerNavigator()
 
 const Home = () => {
   return (
-    <Drawer.Navigator initialRouteName='News'>
+    <Drawer.Navigator initialRouteName='News' drawerContent={props => <CustomDrawer {...props}/>}>
         <Drawer.Screen name='Friends' component={Friends} options={styles.headerStyle}/>
         <Drawer.Screen name='Photos' component={Photos} options={styles.headerStyle}/>
         <Drawer.Screen name='Videos' component={Videos} options={styles.headerStyle}/>

@@ -9,7 +9,8 @@ export const userSlice = createSlice({
         isLoggedIn: false,
         accessToken: '',
         expiresIn: '',
-        userId: ''
+        userId: '',
+        userProfileDrawerPhotoUrl: ''
     },
     reducers: {
         setLogin: (state) => {
@@ -23,10 +24,13 @@ export const userSlice = createSlice({
         },
         setUserId: (state, action) => {
             state.userId = action.payload
+        },
+        setUserDrawerImageUrl: (state, action) => {
+            state.userProfileDrawerPhotoUrl = action.payload
         }
     }
 })
 
-export const { setLogin, setAccessToken, setExpiresIn, setUserId } = userSlice.actions
+export const { setLogin, setAccessToken, setExpiresIn, setUserId, setUserDrawerImageUrl } = userSlice.actions
 
 export default userSlice.reducer

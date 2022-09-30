@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: 40,
+    width: 45,
     height: 30,
     // backgroundColor: COLORS.smoke
   },

@@ -23,7 +23,7 @@ const WebViewLogin = () => {
       dispatch(setUserId(userId));
       dispatch(setLogin());
       const imageRequestUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&user_ids=${userId}&fields=photo_100&v=5.131`
-      const getUserImage = async (imageRequestUrl) => {
+      const getUserImage = (imageRequestUrl) => {
         fetch(imageRequestUrl)
           .then((response) => response.json())
           .then((data) => data.response[0].photo_100)
@@ -33,7 +33,6 @@ const WebViewLogin = () => {
     }
   }
   
-
   return (
     <View style={{flex: 1}}>
       <WebView 

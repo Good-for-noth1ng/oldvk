@@ -1,18 +1,17 @@
-import { View, Text, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet, FlatList } from 'react-native'
-import React from 'react'
+import { View, Text, RefreshControl, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet, FlatList } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import uuid from 'react-native-uuid';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchInitNews } from '../redux/newsSlice';
 import { COLORS } from '../constants/theme';
 import Post from '../components/Post'
-import { useEffect, useState } from 'react';
 import {setNews } from '../redux/newsSlice';
 
 const News = () => {
-  const loading = useSelector(state => state.news.loading);
   const accessToken = useSelector(state => state.user.accessToken)
   const dispatch = useDispatch()
   const [items, setItems] = useState(undefined)
-  
+  const [isLoading, setIsLoading] = useState(true)
+
   useEffect(()=> {
     const fetchNews = async () => {
       const url = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&v=5.131`
@@ -20,18 +19,18 @@ const News = () => {
         .then((response) => response.json())
         .then((data) => {
           setItems(data.response.items);
+          setIsLoading(!isLoading)
           dispatch(setNews(items))
         })
     }
     fetchNews();
-    console.log(items)
   }, [])
 
   return(
     <View style={styles.newsBackground}>
       <SafeAreaView>
         <StatusBar backgroundColor={COLORS.primary} />
-          {items === undefined ?
+          {isLoading ?
             <View style={styles.spinnerContainer}>
               <ActivityIndicator color={COLORS.primary} size={50}/>
             </View> :
@@ -39,8 +38,12 @@ const News = () => {
            <FlatList 
               data={items}
               renderItem={({item}) => <Post data={item}/>}
-              keyExtractor={(item) => item.source_id}
+              keyExtractor={() => uuid.v4()}
               showsVerticalScrollIndicator={false}
+              initialNumToRender={15}
+              refreshControl={
+                <RefreshControl refreshing={isLoading} />
+              }
             />
           </View>
         }

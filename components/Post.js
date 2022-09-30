@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
@@ -9,9 +9,26 @@ import Feather from 'react-native-vector-icons/Feather'
 
 const Post = ({data}) => {
   const [isPressed, setIsPressed] = useState(false)
+  let comments = 0
+  if (data.comments !== undefined) {
+    comments = data.comments.count
+  }
+  const [commentsCount, setCommentsCount] = useState(comments) 
+  let likes = 0
+  if (data.likes !== undefined) {
+    likes = data.likes.count
+  }
+  const [likeCount, setLikeCount] = useState(likes)
+  let reposts = 0
+  if (data.reposts !== undefined) {
+    reposts = data.reposts.count
+  }
+  const [repostsCount, setRepostsCount] = useState(reposts)
   const hadnleLikePress = () => {
     setIsPressed(!isPressed)
+    isPressed ? setLikeCount(likeCount-1) :  setLikeCount(likeCount+1)
   }
+
   return (
     <View style={styles.postContainer}>
       <View style={styles.postHeaderContainer}>
@@ -28,11 +45,20 @@ const Post = ({data}) => {
       <View style={styles.attachmentsContainer}></View>
       <View style={styles.postBottomContainer}>
         <View>
-          <MaterialCommunityIcons name='comment' color={COLORS.secondary} size={20}/>
+          <TouchableOpacity style={styles.buttonContainer} activeOpacity={1}>
+            <MaterialCommunityIcons name='comment' color={COLORS.secondary} size={20}/>
+            <Text style={styles.buttonText}>{commentsCount}</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.bottomRightContainer}>
-          <FontAwesome name='share' color={COLORS.secondary} size={20}/>
-          <AntDesign name='like1' color={!isPressed ? COLORS.secondary : COLORS.primary} size={20} onPress={hadnleLikePress}/>
+          <TouchableOpacity style={styles.buttonContainer}>
+            <FontAwesome name='share' color={COLORS.secondary} size={20}/>
+            <Text style={styles.buttonText}>{repostsCount}</Text>  
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.buttonContainer} activeOpacity={1} onPress={hadnleLikePress}>
+            <AntDesign name='like1' color={!isPressed ? COLORS.secondary : COLORS.primary} size={20} />
+            <Text style={styles.buttonText}>{likeCount}</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -67,5 +93,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between'
+  },
+  buttonContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: 40,
+    height: 30,
+    // backgroundColor: COLORS.smoke
+  },
+  buttonText: {
+    color: COLORS.secondary
   }
 })

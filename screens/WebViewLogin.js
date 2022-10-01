@@ -3,7 +3,15 @@ import React from 'react'
 import { WebView } from 'react-native-webview'
 import { APP_ID, PERMISION_CODE, REDIRECT_URI } from '@env'
 import { useDispatch } from 'react-redux'
-import { setAccessToken, setExpiresIn, setLogin, setUserId, setUserDrawerImageUrl } from '../redux/userSlice'
+import { 
+  setAccessToken, 
+  setExpiresIn, 
+  setLogin, 
+  setUserId, 
+  setUserDrawerImageUrl,
+  setFirstName,
+  setLastName 
+} from '../redux/userSlice'
 
 const WebViewLogin = () => {
   const dispatch = useDispatch();
@@ -26,8 +34,11 @@ const WebViewLogin = () => {
       const getUserImage = (imageRequestUrl) => {
         fetch(imageRequestUrl)
           .then((response) => response.json())
-          .then((data) => data.response[0].photo_100)
-          .then((photoUrl) => dispatch(setUserDrawerImageUrl(photoUrl)))
+          .then((data) => {
+            dispatch(setUserDrawerImageUrl(data.response[0].photo_100));
+            dispatch(setFirstName(data.response[0].first_name));
+            dispatch(setLastName(data.response[0].last_name));
+          })
       }
       getUserImage(imageRequestUrl);
     }

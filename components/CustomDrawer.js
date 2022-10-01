@@ -5,17 +5,22 @@ import { useSelector } from 'react-redux'
 import {COLORS} from '../constants/theme'
 
 const CustomDrawer = (props) => {
-    const urlDrawerPhoto = useSelector(state => state.user.userProfileDrawerPhotoUrl)
+    const [urlDrawerPhoto, setUrlDrawerPhoto] = useState(useSelector(state => state.user.userProfileDrawerPhotoUrl))
+    const [firstName, setFirstName] = useState(useSelector(state => state.user.firstName))
+    const [lastName, setLastName] = useState(useSelector(state => state.user.lastName))
     return (
-    <View style={{flex: 1, backgroundColor: '#1d202d'}}>
-        <DrawerContentScrollView >
-            <View>
-                <Image source={{uri: urlDrawerPhoto}} style={{width: 80, height: 80}}/>
-            </View>
-            <DrawerItemList {...props}/>
-        </DrawerContentScrollView>
-    </View>
-  )
+        <View style={{flex: 1}}>
+            <DrawerContentScrollView >
+                <View>
+                    <Image source={{uri: urlDrawerPhoto}} style={{width: 80, height: 80, borderRadius: 3}}/>
+                    <View>
+                        <Text>{firstName} {lastName}</Text>
+                    </View>
+                </View>
+                <DrawerItemList {...props}/>
+            </DrawerContentScrollView>
+        </View>
+    )
 }
 
 export default CustomDrawer

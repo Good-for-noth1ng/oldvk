@@ -9,8 +9,10 @@ const CustomDrawer = (props) => {
     const firstName = useSelector(state => state.user.firstName)
     const lastName = useSelector(state => state.user.lastName)
     return (
-        <View style={{flex: 1}}>
-            <DrawerContentScrollView >
+        <View style={{flex: 1, backgroundColor: COLORS.very_dark_gray}}>
+            <DrawerContentScrollView 
+                // contentContainerStyle={styles.drawerContainer}
+            >
                 <TouchableOpacity style={styles.profileDrawerContainer} activeOpacity={1}>
                     <Image source={{uri: urlDrawerPhoto}} style={styles.profileImageStyle}/>
                     <View>
@@ -41,6 +43,10 @@ const styles = StyleSheet.create({
         borderRadius: 5
     },
     profileName: {
-        marginLeft: 15
+        marginLeft: 15,
+        color: COLORS.white
+    },
+    drawerContainer: {
+        backgroundColor: COLORS.very_dark_gray,
     }
 })

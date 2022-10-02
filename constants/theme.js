@@ -5,7 +5,7 @@ export const COLORS = {
     black: 'rgb(0, 0, 0)',
     smoke: '#aeb7c2',
     light_smoke: '#dbdcdd',
-    very_dark_gray: '#1d202d'
+    very_dark_gray: '#303342'
 }
 
 export const SIZES = {

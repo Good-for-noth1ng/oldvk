@@ -31,7 +31,9 @@ const Home = () => {
         headerStyle: {
           backgroundColor: COLORS.primary
         },
-        headerTintColor: COLORS.white
+        headerTintColor: COLORS.white,
+        drawerInactiveTintColor: COLORS.white,
+        drawerActiveTintColor: COLORS.white
       }}
       
     >

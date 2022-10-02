@@ -30,7 +30,7 @@ const Post = ({data}) => {
   }
   let postText = ''
   if (data.text !== undefined) {
-    postText = data.text.split(' ').slice(0, 100).join(' ')
+    postText = data.text.split(' ').slice(0, 20).join(' ')
   }
   const [text, setText] = useState(postText)
   const [readMore, setReadMore] = useState(false)
@@ -58,7 +58,7 @@ const Post = ({data}) => {
                 setReadMore(true)
               } else {
                 if (data.text !== undefined) {
-                  setText(data.text.split(' ').slice(0, 100).join(' '));
+                  setText(data.text.split(' ').slice(0, 20).join(' '));
                   setReadMore(false)
                 }
               }

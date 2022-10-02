@@ -16,25 +16,51 @@ export const userSlice = createSlice({
     },
     reducers: {
         setLogin: (state) => {
-            state.isLoggedIn = !state.isLoggedIn
+            // state.isLoggedIn = !state.isLoggedIn
+            return {
+                ...state,
+                isLoggedIn: !state.isLoggedIn
+            }
         },
         setAccessToken: (state, action) => {
-            state.accessToken = action.payload
+            // state.accessToken = action.payload
+            return {
+                ...state,
+                accessToken: action.payload
+            }
         },
         setExpiresIn: (state, action) => {
-            state.expiresIn = action.payload
+            // state.expiresIn = action.payload
+            return {
+                ...state,
+                expiresIn: action.payload
+            }
         },
         setUserId: (state, action) => {
-            state.userId = action.payload
+            // state.userId = action.payload
+            return {
+                ...state,
+                userId: action.payload
+            }
         },
         setUserDrawerImageUrl: (state, action) => {
-            state.userProfileDrawerPhotoUrl = action.payload
+            // state.userProfileDrawerPhotoUrl = action.payload
+            return {
+                ...state,
+                userProfileDrawerPhotoUrl: action.payload
+            }
         },
         setFirstName: (state, action) => {
-            state.firstName = action.payload
+            return {
+                ...state,
+                firstName: action.payload
+            }
         },
         setLastName: (state, action) => {
-            state.lastName = action.payload
+            return {
+                ...state,
+                lastName: action.payload
+            }
         }
     }
 })

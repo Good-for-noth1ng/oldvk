@@ -10,9 +10,7 @@ const CustomDrawer = (props) => {
     const lastName = useSelector(state => state.user.lastName)
     return (
         <View style={{flex: 1, backgroundColor: COLORS.very_dark_gray}}>
-            <DrawerContentScrollView 
-                // contentContainerStyle={styles.drawerContainer}
-            >
+            <DrawerContentScrollView>
                 <TouchableOpacity style={styles.profileDrawerContainer} activeOpacity={1}>
                     <Image source={{uri: urlDrawerPhoto}} style={styles.profileImageStyle}/>
                     <View>

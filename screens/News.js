@@ -4,7 +4,7 @@ import uuid from 'react-native-uuid';
 import { useSelector, useDispatch } from 'react-redux';
 import { COLORS } from '../constants/theme';
 import Post from '../components/Post'
-import {setNews } from '../redux/newsSlice';
+import { setItems, setGroups, setProfiles } from '../redux/newsSlice';
 
 const News = () => {
   const accessToken = useSelector(state => state.user.accessToken)
@@ -19,8 +19,10 @@ const News = () => {
         .then((response) => response.json())
         .then((data) => {
           setItems(data.response.items);
+          setGroups(data.response.groups);
+          setProfiles(data.response.profiles);
           setIsLoading(!isLoading)
-          dispatch(setNews(items))
+          // dispatch(setNews(items))
         })
     }
     fetchNews();

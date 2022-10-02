@@ -49,7 +49,6 @@ const Post = ({data}) => {
       <View style={styles.postTextContainer}>
         <Text>
           {text}
-          {!readMore ? '...' : ' '}
           <Text
             style={styles.showMoreText}
             onPress={() => {

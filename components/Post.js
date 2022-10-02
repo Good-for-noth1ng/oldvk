@@ -4,7 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import React from 'react'
 import { COLORS } from '../constants/theme'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Feather from 'react-native-vector-icons/Feather'
 
 const Post = ({data}) => {
@@ -28,7 +28,16 @@ const Post = ({data}) => {
     setIsPressed(!isPressed)
     isPressed ? setLikeCount(likeCount-1) :  setLikeCount(likeCount+1)
   }
+  let postText = ''
+  if (data.text !== undefined) {
+    postText = data.text.split(' ').slice(0, 100).join(' ')
+  }
+  const [text, setText] = useState(postText)
+  const [readMore, setReadMore] = useState(false)
+  // useEffect(() => {
 
+  // }, [])
+  
   return (
     <View style={styles.postContainer}>
       <View style={styles.postHeaderContainer}>
@@ -39,7 +48,24 @@ const Post = ({data}) => {
       </View>
       <View style={styles.postTextContainer}>
         <Text>
-          {data.text}
+          {text}
+          {!readMore ? '...' : ' '}
+          <Text
+            style={styles.showMoreText}
+            onPress={() => {
+              if (!readMore) {
+                setText(data.text)
+                setReadMore(true)
+              } else {
+                if (data.text !== undefined) {
+                  setText(data.text.split(' ').slice(0, 100).join(' '));
+                  setReadMore(false)
+                }
+              }
+            }}
+          >
+            {readMore ? ' Show less' : ' Read more'}
+          </Text>
         </Text>
       </View>
       <View style={styles.attachmentsContainer}></View>
@@ -105,5 +131,8 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: COLORS.secondary
+  },
+  showMoreText: {
+    color: COLORS.primary
   }
 })

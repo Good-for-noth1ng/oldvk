@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
-
+import uuid from 'react-native-uuid'
 
 export const newsSlice = createSlice({
     name: 'news',
@@ -16,7 +16,6 @@ export const newsSlice = createSlice({
                 ...state,
                 items: action.payload
             }
-            // state.items = action.payload
         },
         setGroups: (state, action) => {
             return {
@@ -30,9 +29,6 @@ export const newsSlice = createSlice({
                 profiles: action.payload
             }
         },
-        // getGroupPost: (state, action) => {
-            
-        // }
     },
 })
 export const { setItems, setGroups, setProfiles } = newsSlice.actions

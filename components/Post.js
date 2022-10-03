@@ -50,6 +50,7 @@ const Post = ({data}) => {
   const [readMore, setReadMore] = useState(false)
   const date = new Date(data.date * 1000).toLocaleDateString('en-US')
   const [time, setTime] = useState(null)
+
   return (
     <View style={styles.postContainer}>
       <View style={styles.postHeaderContainer}>
@@ -81,7 +82,7 @@ const Post = ({data}) => {
               }
             }}
           >
-            {readMore ? ' Show less' : ' Read more'}
+            {!readMore && ' Read more'}
           </Text>
         </Text>
       </View>
@@ -99,7 +100,7 @@ const Post = ({data}) => {
             <Text style={styles.buttonText}>{repostsCount}</Text>  
           </TouchableOpacity>
           <TouchableOpacity style={styles.buttonContainer} activeOpacity={1} onPress={hadnleLikePress}>
-            <AntDesign style={styles.iconButton} name='like1' color={!isPressed ? COLORS.secondary : COLORS.primary} size={20} />
+            <AntDesign style={styles.iconButton} name='like1' color={isPressed ?  COLORS.primary : COLORS.secondary} size={20} />
             <Text style={styles.buttonText}>{likeCount}</Text>
           </TouchableOpacity>
         </View>

@@ -6,9 +6,9 @@ import { useSelector } from "react-redux";
 export const newsSlice = createSlice({
     name: 'news',
     initialState: { 
-        items: undefined,
-        groups: undefined,
-        profiles: undefined,
+        items: [],
+        groups: [],
+        profiles: [],
     },
     reducers: {
         setItems: (state, action) => {
@@ -30,9 +30,9 @@ export const newsSlice = createSlice({
                 profiles: action.payload
             }
         },
-        getGroupPost: (state, action) => {
+        // getGroupPost: (state, action) => {
             
-        }
+        // }
     },
 })
 export const { setItems, setGroups, setProfiles } = newsSlice.actions

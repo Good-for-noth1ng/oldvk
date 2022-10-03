@@ -9,7 +9,7 @@ import { setItems, setGroups, setProfiles } from '../redux/newsSlice';
 const News = () => {
   const accessToken = useSelector(state => state.user.accessToken)
   const dispatch = useDispatch()
-  const [items, setItems] = useState(undefined)
+  const [postContent, setPostContent] = useState(undefined)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(()=> {
@@ -18,11 +18,11 @@ const News = () => {
       fetch(url)
         .then((response) => response.json())
         .then((data) => {
-          setItems(data.response.items);
-          setGroups(data.response.groups);
-          setProfiles(data.response.profiles);
-          setIsLoading(!isLoading)
-          // dispatch(setNews(items))
+          setPostContent(data.response.items)
+          dispatch(setItems(data.response.items));
+          dispatch(setGroups(data.response.groups));
+          dispatch(setProfiles(data.response.profiles));
+          setIsLoading(!isLoading);
         })
     }
     fetchNews();
@@ -38,7 +38,7 @@ const News = () => {
             </View> :
           <View>
            <FlatList 
-              data={items}
+              data={postContent}
               renderItem={({item}) => <Post data={item}/>}
               keyExtractor={() => uuid.v4()}
               showsVerticalScrollIndicator={false}

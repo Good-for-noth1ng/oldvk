@@ -29,8 +29,8 @@ const Post = ({data}) => {
     likes = data.likes.count
     if (likes >= 1000) {
       likes = Math.floor(likes / 1000)
+      likes = String(likes).concat('k')
     }
-    // String(likes).concat('k')
   }
   const [likeCount, setLikeCount] = useState(likes)
   let reposts = 0
@@ -50,14 +50,28 @@ const Post = ({data}) => {
   const [readMore, setReadMore] = useState(false)
   const date = new Date(data.date * 1000).toLocaleDateString('en-US')
   const [time, setTime] = useState(null)
-
+  let postPhotos = []
+  if (data.attachments !== undefined) {
+    const attachments = data.attachments
+    for (let i = 0; i < attachments.length; i++) {
+      if (attachments[i].type === 'photo') {
+        postPhotos.push(attachments[i].photo)
+      } 
+    }
+  }
+  const [photos, setPhotos] = useState(postPhotos)
+  const renderPhotos = photos.map(photo => (
+    <Image source={{uri: photo.sizes[0].url}} key={photo.access_key} style={{width: photo.sizes[0].width, height: photo.sizes[0].height}}/>
+  ))
   return (
     <View style={styles.postContainer}>
       <View style={styles.postHeaderContainer}>
         <View style={styles.postHeaderLeftsideContainer}>
           <Image style={styles.postImageSource} source={{uri: group ? group.photo_100 : profile.photo_100}}/>
           <View style={styles.sourceNameContainer}>
-            <Text>{group ? group.name : profile.last_name + ' ' + profile.first_name}</Text>
+            <View style={styles.postNameContainer}>
+              <Text style={styles.postNameText}>{group ? group.name : profile.last_name + ' ' + profile.first_name}</Text>
+            </View>
             <Text>{date}</Text>
           </View>
         </View>
@@ -86,7 +100,11 @@ const Post = ({data}) => {
           </Text>
         </Text>
       </View>
-      <View style={styles.attachmentsContainer}></View>
+      <View style={styles.attachmentsContainer}>
+        {
+          renderPhotos && renderPhotos
+        }
+      </View>
       <View style={styles.postBottomContainer}>
         <View>
           <TouchableOpacity style={styles.buttonContainer} activeOpacity={1}>
@@ -100,7 +118,7 @@ const Post = ({data}) => {
             <Text style={styles.buttonText}>{repostsCount}</Text>  
           </TouchableOpacity>
           <TouchableOpacity style={styles.buttonContainer} activeOpacity={1} onPress={hadnleLikePress}>
-            <AntDesign style={styles.iconButton} name='like1' color={isPressed ?  COLORS.primary : COLORS.secondary} size={20} />
+            <AntDesign style={{marginRight: 3}} color={isPressed ? COLORS.primary : COLORS.secondary} name='like1' size={20} />
             <Text style={styles.buttonText}>{likeCount}</Text>
           </TouchableOpacity>
         </View>
@@ -126,7 +144,15 @@ const styles = StyleSheet.create({
   },
   postHeaderLeftsideContainer: {
     display: 'flex',
+    width: '90%',
+    // padding: 1,
     flexDirection: 'row',
+    alignItems: 'flex-start',
+    // backgroundColor: COLORS.smoke
+  },
+  postNameContainer: {
+    width: 230,
+    // backgroundColor: COLORS.secondary
   },
   postImageSource: {
     width: 50,
@@ -135,10 +161,19 @@ const styles = StyleSheet.create({
   },
   sourceNameContainer: {
     marginLeft: 10,
+    // display: 'flex',
+    // alignItems: 'flex-end',
+    // backgroundColor: COLORS.secondary
   },
-  postHeaderRightsideContainer: {},
+  postHeaderRightsideContainer: {
+    // marginLeft: 10, 
+    // backgroundColor: COLORS.secondary
+  },
   postTextContainer: {},
-  attachmentsContainer: {},
+  attachmentsContainer: {
+    // width: 100,
+    // height: 100,
+  },
   postBottomContainer: {
     display: 'flex',
     paddingLeft: 5,
@@ -174,5 +209,9 @@ const styles = StyleSheet.create({
   showMoreText: {
     color: COLORS.primary,
     fontWeight: '700'
+  },
+  postNameText: {
+    fontSize: 16,
+    fontWeight: '600'
   }
 })

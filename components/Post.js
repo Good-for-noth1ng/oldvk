@@ -6,50 +6,86 @@ import React from 'react'
 import { COLORS } from '../constants/theme'
 import { useState, useEffect } from 'react'
 import Feather from 'react-native-vector-icons/Feather'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { initPost, setIsPressed } from '../redux/postSlice'
 
 const Post = ({data}) => {
-  let groupData = {}
-  let profileData = {}
-  if (data.source_id < 0) {
-    groupData = useSelector(state => state.news.groups.find(group => group.id === 0 - data.source_id)) 
-  } else {
-    profileData = useSelector(state => state.news.profiles.finde(profile => profile.id === data.source_id))
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(initPost(data))
+  }, [])
+  // let groupData = {}
+  // let profileData = {}
+  // if (data.source_id < 0) {
+  //   groupData = useSelector(state => state.news.groups.find(group => group.id === 0 - data.source_id)) 
+  // } else {
+  //   profileData = useSelector(state => state.news.profiles.finde(profile => profile.id === data.source_id))
+  // }
+  // const [group, setGroup] = useState(groupData)
+  // const [profile, setProfile] = useState(profileData)
+  
+  let isPressed = useSelector(state => state.post.data.find(post => post.key === data.key).isPressed)
+  let likesCount = useSelector(state => state.post.data.find(post => post.key === data.key).likesCount)
+  let repostsCount = useSelector(state => state.post.data.find(post => post.key === data.key).repostsCount)
+  let group = useSelector(state => state.post.data.find(post => post.key === data.key).group)
+  let profile = useSelector(state => state.post.data.find(post => post.key === data.key).profile)
+  const date = useSelector(state => state.post.data.find(post => post.key === data.key).date)
+  let text = useSelector(state => state.post.data.find(post => post.key === data.key).text)
+  let readMore = useSelector(state => state.post.data.find(post => post.key === data.key).readMore)
+  
+  // const [isPressed, setIsPressed] = useState(false)
+  // let comments = 0
+  // if (data.comments !== undefined) {
+  //   comments = data.comments.count
+  // }
+  // const [commentsCount, setCommentsCount] = useState(comments) 
+  // let likes = 0
+  // if (data.likes !== undefined) {
+  //   likes = data.likes.count
+  //   if (likes >= 1000) {
+  //     likes = Math.floor(likes / 1000)
+  //     likes = String(likes).concat('k')
+  //   }
+  // }
+  // const [likeCount, setLikeCount] = useState(likes)
+  // let reposts = 0
+  // if (data.reposts !== undefined) {
+  //   reposts = data.reposts.count
+  // }
+  // const [repostsCount, setRepostsCount] = useState(reposts)
+  const hadnleLikePress = () => {
+    !isPressed ? likesCount += 1 : likesCount -= 1   
+    let newLikeState = {
+      isPressed: !isPressed,
+      likesCount: likesCount,
+      key: data.key
+    }
+    dispatch(setIsPressed(newLikeState))
   }
-  const [group, setGroup] = useState(groupData)
-  const [profile, setProfile] = useState(profileData)
-  const [isPressed, setIsPressed] = useState(false)
-  let comments = 0
-  if (data.comments !== undefined) {
-    comments = data.comments.count
-  }
-  const [commentsCount, setCommentsCount] = useState(comments) 
-  let likes = 0
-  if (data.likes !== undefined) {
-    likes = data.likes.count
-    if (likes >= 1000) {
-      likes = Math.floor(likes / 1000)
-      likes = String(likes).concat('k')
+  const handleShowMore = () => {
+    if (!readMore) {
+      setText(data.text)
+      setReadMore(true)
+    } else {
+      if (data.text !== undefined) {
+        setText(data.text.split(' ').slice(0, 20).join(' '));
+        setReadMore(false)
+      }
     }
   }
-  const [likeCount, setLikeCount] = useState(likes)
-  let reposts = 0
-  if (data.reposts !== undefined) {
-    reposts = data.reposts.count
-  }
-  const [repostsCount, setRepostsCount] = useState(reposts)
-  const hadnleLikePress = () => {
-    setIsPressed(!isPressed)
-    isPressed ? setLikeCount(likeCount-1) :  setLikeCount(likeCount+1)
-  }
-  let postText = ''
-  if (data.text !== undefined) {
-    postText = data.text.split('\n').slice(0, 5).join('\n')
-  }
-  const [text, setText] = useState(postText)
-  const [readMore, setReadMore] = useState(false)
-  const date = new Date(data.date * 1000).toLocaleDateString('en-US')
-  const [time, setTime] = useState(null)
+
+  // let postText = ''
+  // if (data.text !== undefined) {
+  //   if (data.text.split(' ').length > 51) {
+  //     postText = data.text.split(' ').slice(0, 50).join(' ')
+  //   } else {
+  //     postText = data.text
+  //   }
+  // }
+  // const [text, setText] = useState(postText)
+  // const [readMore, setReadMore] = useState(false)
+  // const date = new Date(data.date * 1000).toLocaleDateString('en-US')
+  
   let postPhotos = []
   if (data.attachments !== undefined) {
     const attachments = data.attachments
@@ -59,10 +95,12 @@ const Post = ({data}) => {
       } 
     }
   }
+
   const [photos, setPhotos] = useState(postPhotos)
   const renderPhotos = photos.map(photo => (
     <Image source={{uri: photo.sizes[0].url}} key={photo.access_key} style={{width: photo.sizes[0].width, height: photo.sizes[0].height}}/>
   ))
+
   return (
     <View style={styles.postContainer}>
       <View style={styles.postHeaderContainer}>
@@ -96,7 +134,7 @@ const Post = ({data}) => {
               }
             }}
           >
-            {!readMore && ' Read more'}
+            {!readMore && postText !== data.text ? ' Read more' : ''}
           </Text>
         </Text>
       </View>

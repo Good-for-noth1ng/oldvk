@@ -17,14 +17,8 @@ const News = () => {
       fetch(url)
         .then((response) => response.json())
         .then((data) => {
-          const items = data.response.items.map(item => { 
-            const newItem = {
-              ...item, 
-              key: uuid.v4()
-            } 
-            // dispatch(addPost(newItem));
-            return newItem;
-            // return {...item, key: uuid.v4()}
+          const items = data.response.items.map(item => {  
+            return {...item, key: uuid.v4()}
           })
           dispatch(setItems(items));
           dispatch(setGroups(data.response.groups));

@@ -6,6 +6,10 @@ import BottomPost from './BottomPost'
 import PostHeader from './PostHeader'
 import PostText from './PostText'
 import PostPhotos from './PostPhotos'
+import PostPhotos from './PostPhotos'
+import PostFiles from './PostFiles'
+import PostLinks from './PostLinks'
+import PostVideos from './PostVideos'
 
 const Post = ({data}) => {
   return (

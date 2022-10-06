@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const PostLinks = () => {
+const PostLinks = ({postLinks}) => {
+
   return (
     <View>
       <Text>PostLinks</Text>

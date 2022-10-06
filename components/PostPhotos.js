@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-
+import { StyleSheet, Text, View, Image } from 'react-native'
+import React, {useState} from 'react'
+import uuid from 'react-native-uuid';
 const PostPhotos = ({postPhotos}) => {
   const [photos, setPhotos] = useState(postPhotos)
   const renderPhotos = photos.map(photo => (
-    <Image source={{uri: photo.sizes[0].url}} key={photo.access_key} style={{width: photo.sizes[0].width, height: photo.sizes[0].height}}/>
+    <Image source={{uri: photo?.sizes[2].url}} key={uuid.v4()} style={{width: photo?.sizes[2].width, height: photo?.sizes[2].height}}/>
   ))
 
   return (

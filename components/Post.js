@@ -15,7 +15,12 @@ const Post = ({data}) => {
   let postDocs = []
   let postLinks = []
   let postVideos = []
-  if (data.attachments !== undefined) {
+  if (data.type === 'wall_photo') {
+    for (let i = 0; i < data.photos.count; i++) {
+      postPhotos.push(data.photos.items[i])
+    }
+  }
+  if (data.attachments !== undefined && data.type === 'post') {
     const attachments = data.attachments
     for (let i = 0; i < attachments.length; i++) {
       if (attachments[i].type === 'photo') {

@@ -29,11 +29,13 @@ const Home = () => {
             marginLeft: -10,
         },
         headerStyle: {
-          backgroundColor: COLORS.primary
+          backgroundColor: COLORS.primary,
+          
         },
         headerTintColor: COLORS.white,
         drawerInactiveTintColor: COLORS.white,
-        drawerActiveTintColor: COLORS.white
+        drawerActiveTintColor: COLORS.white,
+        drawerType: 'back'
       }}
       
     >

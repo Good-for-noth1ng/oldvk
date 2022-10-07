@@ -41,7 +41,7 @@ const Post = ({data}) => {
       <PostPhotos postPhotos={postPhotos}/>
       {/* <PostVideos postVideos={postVideos}/> */}
       <PostFiles postDocs={postDocs}/>
-      {/* <PostLinks postLinks={postLinks}/> */}
+      <PostLinks postLinks={postLinks}/>
       <BottomPost data={data}/>
     </View>
   )

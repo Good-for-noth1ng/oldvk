@@ -39,9 +39,9 @@ const Post = ({data}) => {
       <PostHeader data={data}/>
       <PostText data={data}/>
       <PostPhotos postPhotos={postPhotos}/>
-      {/* <PostVideos postVideos={postVideos}/>
+      {/* <PostVideos postVideos={postVideos}/> */}
       <PostFiles postDocs={postDocs}/>
-      <PostLinks postLinks={postLinks}/> */}
+      {/* <PostLinks postLinks={postLinks}/> */}
       <BottomPost data={data}/>
     </View>
   )

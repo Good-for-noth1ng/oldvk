@@ -7,7 +7,6 @@ const PostPhotos = ({postPhotos}) => {
   const rowNum = Math.ceil(imgNum / 3)
   let grid = []
   let index = 0
-  
   for (let i = 0; i < rowNum; i++) {
     let row = []
     for (let j = 0; j < 3; j++) {

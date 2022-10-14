@@ -24,7 +24,7 @@ const PostLinks = ({postLinks}) => {
        <View style={styles.linkInfoContainer}>
          <Text style={styles.nameStyle}>{title}</Text>
          <View style={styles.linkAddressContainer}>
-           <Text style={{marginRight: 4}}>{url}</Text>
+           <Text style={{marginRight: 4}}>{address}</Text>
          </View>
        </View>
      </TouchableOpacity>

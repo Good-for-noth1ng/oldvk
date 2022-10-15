@@ -74,7 +74,7 @@ export default BottomPost
 const styles = StyleSheet.create({
     postBottomContainer: {
         display: 'flex',
-        paddingLeft: 5,
+        paddingLeft: 0,
         paddingRight: 5,
         flexDirection: 'row',
         alignItems: 'center',

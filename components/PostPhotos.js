@@ -36,7 +36,7 @@ const PostPhotos = ({postPhotos}) => {
   ))
 
   return (
-    <View>
+    <View style={styles.photosContainer}>
         {
           renderPhotos && renderPhotos
         }
@@ -46,4 +46,8 @@ const PostPhotos = ({postPhotos}) => {
 
 export default PostPhotos
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  photosContainer: {
+    marginBottom: 10
+  }
+})

@@ -5,8 +5,26 @@ import { useSelector } from 'react-redux'
 import Feather from 'react-native-vector-icons/Feather'
 import { COLORS } from '../constants/theme'
 const PostHeader = ({data}) => {
-    const date = new Date(data.date * 1000).toLocaleDateString()
-        
+    // const date = new Date(data.date * 1000).toLocaleDateString()    
+    const months = [
+      'January', 'February', 'March', 'April', 
+      'May', 'June', 'Jule', 'August', 'September', 
+      'October', 'November', 'December'
+    ]
+    const nowDate = new Date()
+    const nowYear = nowDate.getFullYear()
+    const date = new Date(data.date * 1000)
+    let minutes = date.getMinutes()
+    if (minutes < 10) {
+      minutes = '0' + minutes
+    }
+    let month = date.getMonth()
+    for (let i = 0; i < 12; i++) {
+      if (month == i + 1) {
+        month = months[i + 1]
+      }
+    }
+    let year = date.getFullYear()
     let groupData = {}
     let profileData = {}
     if (data.source_id < 0) {
@@ -16,15 +34,21 @@ const PostHeader = ({data}) => {
     }
     const [group, setGroup] = useState(groupData)
     const [profile, setProfile] = useState(profileData)
+    
     return (
         <View style={styles.postHeaderContainer}>
             <View style={styles.postHeaderLeftsideContainer}>
                 <Image style={styles.postImageSource} source={{uri: group ? group.photo_100 : profile.photo_100}}/>
                 <View style={styles.sourceNameContainer}>
                     <View style={styles.postNameContainer}>
-                        <Text style={styles.postNameText}>{group ? group.name : profile.last_name + ' ' + profile.first_name}</Text>
+                        <Text style={styles.postNameText}>
+                          {group ? group.name : profile.last_name + ' ' + profile.first_name}
+                        </Text>
                     </View>
-                    <Text>{date}</Text>
+                    <Text>
+                      {/* {date} */}
+                      {date.getDate()} {month} {date.getHours()}:{minutes} {nowYear !== year ? year : ''}
+                    </Text>
                 </View>
             </View>
             <View style={styles.postHeaderRightsideContainer}>

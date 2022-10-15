@@ -25,7 +25,7 @@ const PostText = ({data}) => {
         setReadMore(false)
     } 
     return (
-        <View>
+        <View style={styles.textContainer}>
             <Text>
                 {text}
                 <Text
@@ -46,4 +46,7 @@ const styles = StyleSheet.create({
         color: COLORS.primary,
         fontWeight: '700'
     },
+    textContainer: {
+        marginBottom: 10
+    }
 })

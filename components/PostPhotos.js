@@ -48,6 +48,7 @@ export default PostPhotos
 
 const styles = StyleSheet.create({
   photosContainer: {
-    marginBottom: 10
+    marginBottom: 10,
+    marginTop: 10,
   }
 })

@@ -15,12 +15,13 @@ const Post = ({data}) => {
   let postDocs = []
   let postLinks = []
   let postVideos = []
-  if (data.type === 'wall_photo') {
+  const type = data.type
+  if (type === 'wall_photo') {
     for (let i = 0; i < data.photos.count; i++) {
       postPhotos.push(data.photos.items[i])
     }
   }
-  if (data.attachments !== undefined && data.type === 'post') {
+  if (data.attachments !== undefined && type === 'post') {
     const attachments = data.attachments
     for (let i = 0; i < attachments.length; i++) {
       if (attachments[i].type === 'photo') {
@@ -33,6 +34,15 @@ const Post = ({data}) => {
         postVideos.push(attachments[i].video)
       }
     }
+  }
+  if (type === 'wall_photo') {
+    return (
+      <View style={styles.postContainer}>
+        <PostHeader data={data}/>
+        <PostPhotos postPhotos={postPhotos}/>
+        <BottomPost data={data}/>
+    </View>  
+    )
   }
   return (
     <View style={styles.postContainer}>

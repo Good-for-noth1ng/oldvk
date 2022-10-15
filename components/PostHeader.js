@@ -14,6 +14,8 @@ const PostHeader = ({data}) => {
     const nowDate = new Date()
     const nowYear = nowDate.getFullYear()
     const date = new Date(data.date * 1000)
+    let monthDate = date.getDate()
+    let hours = date.getHours()
     let minutes = date.getMinutes()
     if (minutes < 10) {
       minutes = '0' + minutes
@@ -47,7 +49,7 @@ const PostHeader = ({data}) => {
                     </View>
                     <Text>
                       {/* {date} */}
-                      {date.getDate()} {month} {date.getHours()}:{minutes} {nowYear !== year ? year : ''}
+                      {monthDate} {month} {hours}:{minutes} {nowYear !== year ? year : ''}
                     </Text>
                 </View>
             </View>

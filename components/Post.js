@@ -44,6 +44,31 @@ const Post = ({data}) => {
     </View>  
     )
   }
+  // if (data.copy_history !== undefined) {
+  //   const attachments = data.copy_history[0].attachments
+  //   for (let i = 0; i < attachments.length; i++) {
+  //     if (attachments[i].type === 'photo') {
+  //       postPhotos.push(attachments[i].photo)
+  //     } else if (attachments[i].type === 'doc') {
+  //       postDocs.push(attachments[i].doc)
+  //     } else if(attachments[i].type === 'link') {
+  //       postLinks.push(attachments[i].link)
+  //     } else if (attachments[i].type === 'video') {
+  //       postVideos.push(attachments[i].video)
+  //     }
+  //   }
+  //   return (
+  //     <View style={styles.postContainer}>
+  //       <PostHeader data={data.copy_history[0]}/>
+  //       <PostText data={data.copy_history[0]}/>
+  //       <PostPhotos postPhotos={postPhotos}/>
+  //       {/* <PostVideos postVideos={postVideos}/> */}
+  //       <PostFiles postDocs={postDocs}/>
+  //       <PostLinks postLinks={postLinks}/>
+  //       <BottomPost data={data.copy_history[0]}/>
+  //     </View>  
+  //   )
+  // }
   return (
     <View style={styles.postContainer}>
       <PostHeader data={data}/>

@@ -25,6 +25,7 @@ const PostPhotos = ({postPhotos}) => {
       index += 1
       row.push(image)
     }
+    
     let rowContainer = <View style={{width: '100%', display: 'flex', flexDirection: 'row'}} key={uuid.v4()}>{row}</View>
     grid.push(rowContainer)
   }

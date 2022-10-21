@@ -6,7 +6,6 @@ import { COLORS } from '../constants/theme';
 const PostPhotos = ({postPhotos}) => {
   const imgNum = postPhotos.length
   const rowNum = Math.ceil(imgNum / 3)
-  // console.log(imgNum, rowNum)
   let grid = []
   let index = 0
   for (let i = 0; i < rowNum; i++) {
@@ -19,12 +18,8 @@ const PostPhotos = ({postPhotos}) => {
       if (rowNum == 1) {
         imgPerRow = imgNum
       }
-      // let imgPerRow = imgNum - Math.floor(imgNum / 3) * (i + 1)
       let width = 100 / imgPerRow + '%'
-      // let height = 100 / rowNum + '%'
       let lastIndexUrl = postPhotos[index]?.sizes.length - 1
-      // console.log(width)
-      // console.log(postPhotos[index]?.sizes[lastIndexUrl].url)
       let image = <Image 
         source={{uri: postPhotos[index]?.sizes[lastIndexUrl].url}}
         key={uuid.v4()}
@@ -54,7 +49,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     display: 'flex',
     flexDirection: 'column',
-    // height: 
   },
   rowContainer: {
     width: '100%', 

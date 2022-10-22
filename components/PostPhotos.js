@@ -6,6 +6,7 @@ import { COLORS } from '../constants/theme';
 const PostPhotos = ({postPhotos}) => {
   const imgNum = postPhotos.length
   const rowNum = Math.ceil(imgNum / 3)
+  
   let grid = []
   let index = 0
   for (let i = 0; i < rowNum; i++) {

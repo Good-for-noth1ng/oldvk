@@ -19,12 +19,16 @@ const PostPhotos = ({postPhotos}) => {
       if (rowNum == 1) {
         imgPerRow = imgNum
       }
-      let width = 100 / imgPerRow + '%'
+      let width = 100 / imgPerRow
+      let height = 600
+      height = height * (width / 100)
+      width += '%'
+      height += '%'
       let lastIndexUrl = postPhotos[index]?.sizes.length - 1
       let image = <Image 
         source={{uri: postPhotos[index]?.sizes[lastIndexUrl].url}}
         key={uuid.v4()}
-        style={{width: width, height: 200}}
+        style={{width: width, height: height}}
       />
       index += 1
       row.push(image)

@@ -25,6 +25,7 @@ const PostPhotos = ({postPhotos}) => {
       width += '%'
       height += '%'
       let lastIndexUrl = postPhotos[index]?.sizes.length - 1
+      
       let image = <Image 
         source={{uri: postPhotos[index]?.sizes[lastIndexUrl].url}}
         key={uuid.v4()}

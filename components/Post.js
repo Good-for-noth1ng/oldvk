@@ -16,11 +16,7 @@ const Post = ({data}) => {
   let postLinks = []
   let postVideos = []
   const type = data.type
-  if (type === 'wall_photo') {
-    for (let i = 0; i < data.photos.count; i++) {
-      postPhotos.push(data.photos.items[i])
-    }
-  }
+  
   if (data.attachments !== undefined && type === 'post') {
     let attachments
     if (data.copy_history !== undefined) {

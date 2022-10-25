@@ -32,7 +32,7 @@ const PostText = ({data}) => {
                     style={styles.showMoreText}
                     onPress={handleReadMore}
                 >
-                    {readMore ? '\nRead more' : ''}
+                    {readMore ? '\nRead more...' : ''}
                 </Text>
             </Text>
         </View>

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, ImageBackground } from 'react-native'
 import React, {useState} from 'react'
 import uuid from 'react-native-uuid';
 import { COLORS } from '../constants/theme';
@@ -20,16 +20,15 @@ const PostPhotos = ({postPhotos}) => {
         imgPerRow = imgNum
       }
       let width = 100 / imgPerRow
-      let height = 600
-      height = height * (width / 100)
       width += '%'
-      height += '%'
+      let height = 400
       let lastIndexUrl = postPhotos[index]?.sizes.length - 1
-      
+      let originHeight = postPhotos[index]?.sizes[lastIndexUrl-1].height 
       let image = <Image 
         source={{uri: postPhotos[index]?.sizes[lastIndexUrl].url}}
         key={uuid.v4()}
-        style={{width: width, height: height}}
+        style={{width: width, height: originHeight}}
+        resizeMode='stretch'
       />
       index += 1
       row.push(image)

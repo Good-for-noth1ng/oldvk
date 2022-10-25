@@ -2,17 +2,17 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { useState } from 'react'
 import { COLORS } from '../constants/theme'
-
-const PostText = ({data}) => {
+//dataText
+const PostText = ({dataText}) => {
     let postText = ''
     let readMoreText
-    if (data.text !== undefined) {
-        if (data.text.split(' ').length > 50) {
-            postText = data.text.split(' ').slice(0, 50).join(' ')
+    if (dataText !== undefined) {
+        if (dataText.split(' ').length > 50) {
+            postText = dataText.split(' ').slice(0, 50).join(' ')
             readMoreText = true
         } else {
             readMoreText = false
-            postText = data.text
+            postText = dataText
         }
     } else {
         postText = ''
@@ -21,7 +21,7 @@ const PostText = ({data}) => {
     const [text, setText] = useState(postText)
     const [readMore, setReadMore] = useState(readMoreText)
     const handleReadMore = () => {
-        setText(data.text)
+        setText(dataText)
         setReadMore(false)
     } 
     return (

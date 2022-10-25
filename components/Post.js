@@ -22,7 +22,12 @@ const Post = ({data}) => {
     }
   }
   if (data.attachments !== undefined && type === 'post') {
-    const attachments = data.attachments
+    let attachments
+    if (data.copy_history !== undefined) {
+      attachments = data.copy_history[0].attachments
+    } else {
+      attachments = data.attachments
+    }
     for (let i = 0; i < attachments.length; i++) {
       if (attachments[i].type === 'photo') {
         postPhotos.push(attachments[i].photo)
@@ -36,48 +41,38 @@ const Post = ({data}) => {
     }
   }
   if (type === 'wall_photo') {
+    return null
+  }
+
+  if (data.copy_history !== undefined) {
     return (
       <View style={styles.postContainer}>
-        <PostHeader data={data}/>
+        <PostHeader sourceId={data.source_id} dataDate={data.date}/>
+        <PostText dataText={data.text}/>
+        <PostHeader sourceId={data.copy_history[0].owner_id} dataDate={data.copy_history[0].date}/>
+        <PostText dataText={data.copy_history[0].text}/>
         <PostPhotos postPhotos={postPhotos}/>
-        <BottomPost data={data}/>
-    </View>  
+        {/* <PostVideos postVideos={postVideos}/> */}
+        <PostFiles postDocs={postDocs}/>
+        <PostLinks postLinks={postLinks}/>
+        <BottomPost 
+          dataComments={data.copy_history[0].comments} 
+          dataLikes={data.copy_history[0].likes} 
+          dataReposts={data.copy_history[0].reposts}
+        />
+      </View>  
     )
   }
-  // if (data.copy_history !== undefined) {
-  //   const attachments = data.copy_history[0].attachments
-  //   for (let i = 0; i < attachments.length; i++) {
-  //     if (attachments[i].type === 'photo') {
-  //       postPhotos.push(attachments[i].photo)
-  //     } else if (attachments[i].type === 'doc') {
-  //       postDocs.push(attachments[i].doc)
-  //     } else if(attachments[i].type === 'link') {
-  //       postLinks.push(attachments[i].link)
-  //     } else if (attachments[i].type === 'video') {
-  //       postVideos.push(attachments[i].video)
-  //     }
-  //   }
-  //   return (
-  //     <View style={styles.postContainer}>
-  //       <PostHeader data={data.copy_history[0]}/>
-  //       <PostText data={data.copy_history[0]}/>
-  //       <PostPhotos postPhotos={postPhotos}/>
-  //       {/* <PostVideos postVideos={postVideos}/> */}
-  //       <PostFiles postDocs={postDocs}/>
-  //       <PostLinks postLinks={postLinks}/>
-  //       <BottomPost data={data.copy_history[0]}/>
-  //     </View>  
-  //   )
-  // }
+  
   return (
     <View style={styles.postContainer}>
-      <PostHeader data={data}/>
-      <PostText data={data}/>
+      <PostHeader sourceId={data.source_id} dataDate={data.date}/>
+      <PostText dataText={data.text}/>
       <PostPhotos postPhotos={postPhotos}/>
       {/* <PostVideos postVideos={postVideos}/> */}
       <PostFiles postDocs={postDocs}/>
       <PostLinks postLinks={postLinks}/>
-      <BottomPost data={data}/>
+      <BottomPost dataComments={data.comments} dataLikes={data.likes} dataReposts={data.reposts}/>
     </View>
   )
 }

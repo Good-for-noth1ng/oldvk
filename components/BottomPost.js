@@ -5,10 +5,10 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { COLORS } from '../constants/theme'
 
-const BottomPost = ({data}) => {
+const BottomPost = ({dataComments, dataLikes, dataReposts}) => {
     let commentsCount = 0
-    if (data.comments !== undefined) {
-        commentsCount = data?.comments?.count
+    if (dataComments !== undefined) {
+        commentsCount = dataComments?.count
         if (commentsCount >= 1000) {
             commentsCount = Math.floor(commentsCount / 1000)
             commentsCount = String(commentsCount).concat('k')
@@ -17,8 +17,8 @@ const BottomPost = ({data}) => {
     const [comments, setComments] = useState(commentsCount)
     
     let likesCount = 0
-    if (data.likes !== undefined) {
-        likesCount = data?.likes?.count
+    if (dataLikes !== undefined) {
+        likesCount = dataLikes?.count
         if (likesCount >= 1000) {
             likesCount = Math.floor(likes / 1000)
             likesCount = String(likes).concat('k')
@@ -27,8 +27,8 @@ const BottomPost = ({data}) => {
     const [likes, setLikes] = useState(likesCount)
 
     let repostsCount = 0
-    if (data.reposts !== undefined) {
-        repostsCount = data?.reposts?.count
+    if (dataReposts !== undefined) {
+        repostsCount = dataReposts?.count
         if (repostsCount >= 1000) {
             repostsCount = Math.floor(repostsCount / 1000)
             repostsCount= String(repostsCount).concat('k')

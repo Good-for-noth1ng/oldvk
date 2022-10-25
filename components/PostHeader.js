@@ -4,8 +4,8 @@ import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import Feather from 'react-native-vector-icons/Feather'
 import { COLORS } from '../constants/theme'
-const PostHeader = ({data}) => {
-    // const date = new Date(data.date * 1000).toLocaleDateString()    
+
+const PostHeader = ({sourceId, dataDate}) => {       
     const months = [
       'January', 'February', 'March', 'April', 
       'May', 'June', 'Jule', 'August', 'September', 
@@ -13,7 +13,7 @@ const PostHeader = ({data}) => {
     ]
     const nowDate = new Date()
     const nowYear = nowDate.getFullYear()
-    const date = new Date(data.date * 1000)
+    const date = new Date(dataDate * 1000)
     let monthDate = date.getDate()
     let hours = date.getHours()
     let minutes = date.getMinutes()
@@ -27,16 +27,17 @@ const PostHeader = ({data}) => {
       }
     }
     let year = date.getFullYear()
+
     let groupData = {}
     let profileData = {}
-    if (data.source_id < 0) {
-        groupData = useSelector(state => state.news.groups.find(group => group.id === 0 - data.source_id))
+    if (sourceId < 0) {
+        groupData = useSelector(state => state.news.groups.find(group => group.id === 0 - sourceId))
     } else {
-        profileData = useSelector(state => state.news.profiles.finde(profile => profile.id === data.source_id))
+        profileData = useSelector(state => state.news.profiles.find(profile => profile.id === sourceId))
     }
     const [group, setGroup] = useState(groupData)
     const [profile, setProfile] = useState(profileData)
-    
+
     return (
         <View style={styles.postHeaderContainer}>
             <View style={styles.postHeaderLeftsideContainer}>
@@ -48,7 +49,6 @@ const PostHeader = ({data}) => {
                         </Text>
                     </View>
                     <Text>
-                      {/* {date} */}
                       {monthDate} {month} {hours}:{minutes} {nowYear !== year ? year : ''}
                     </Text>
                 </View>

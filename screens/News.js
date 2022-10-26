@@ -50,8 +50,7 @@ const News = () => {
                 }
               />
             </View>
-        }
-          
+        } 
       </SafeAreaView>
     </View>
   )

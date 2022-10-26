@@ -77,7 +77,7 @@ export default Post
 
 const styles = StyleSheet.create({
   postContainer: {
-    margin: 4,
+    margin: 5,
     padding: 10,
     borderRadius: 3,
     backgroundColor: 'white',

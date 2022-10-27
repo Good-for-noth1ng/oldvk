@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View, Image, ImageBackground } from 'react-native'
-import React, {useState} from 'react'
+import React, {useState, useRef, useLayoutEffect} from 'react'
 import uuid from 'react-native-uuid';
 import { COLORS } from '../constants/theme';
+import { postWidth } from '../constants/theme';
 
 const PostPhotos = ({postPhotos}) => {
   const imgNum = postPhotos.length
   const rowNum = Math.ceil(imgNum / 3)
-  
   let grid = []
   let index = 0
   for (let i = 0; i < rowNum; i++) {
@@ -19,16 +19,23 @@ const PostPhotos = ({postPhotos}) => {
       if (rowNum == 1) {
         imgPerRow = imgNum
       }
-      let width = 100 / imgPerRow
-      width += '%'
-      let height = 400
+      
+      let widthPercent = 100 / imgPerRow
+      let width = postWidth * (widthPercent / 100)
       let lastIndexUrl = postPhotos[index]?.sizes.length - 1
-      let originHeight = postPhotos[index]?.sizes[lastIndexUrl-1].height 
+      let originHeight = postPhotos[index]?.sizes[lastIndexUrl].height
+      let originWidth = postPhotos[index]?.sizes[lastIndexUrl].width
+      let resolution = originHeight / originWidth
+      let height
+      if (originWidth !== undefined) {
+        height = resolution * width
+      } else {
+        height = 350
+      }
       let image = <Image 
         source={{uri: postPhotos[index]?.sizes[lastIndexUrl].url}}
         key={uuid.v4()}
-        style={{width: width, height: originHeight}}
-        resizeMode='stretch'
+        style={{width: width, height: height}}
       />
       index += 1
       row.push(image)
@@ -38,7 +45,12 @@ const PostPhotos = ({postPhotos}) => {
   }
 
   return (
-    <View style={styles.photosContainer}>
+    <View style={{
+      marginBottom: 10,
+      marginTop: 10,
+      display: 'flex',
+      flexDirection: 'column',
+    }}>
       {
         grid && grid
       }
@@ -49,15 +61,10 @@ const PostPhotos = ({postPhotos}) => {
 export default PostPhotos
 
 const styles = StyleSheet.create({
-  photosContainer: {
-    marginBottom: 10,
-    marginTop: 10,
-    display: 'flex',
-    flexDirection: 'column',
-  },
   rowContainer: {
     width: '100%', 
     display: 'flex', 
     flexDirection: 'row',
+    backgroundColor: COLORS.light_smoke
   }
 })

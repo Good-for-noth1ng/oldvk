@@ -47,6 +47,6 @@ const styles = StyleSheet.create({
         fontWeight: '700'
     },
     textContainer: {
-        marginBottom: 0
+        marginBottom: 7
     }
 })

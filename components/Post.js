@@ -43,9 +43,9 @@ const Post = ({data}) => {
   if (data.copy_history !== undefined) {
     return (
       <View style={styles.postContainer}>
-        <PostHeader sourceId={data.source_id} dataDate={data.date}/>
+        <PostHeader sourceId={data.source_id} dataDate={data.date} isRepost={false}/>
         <PostText dataText={data.text}/>
-        <PostHeader sourceId={data.copy_history[0].owner_id} dataDate={data.copy_history[0].date}/>
+        <PostHeader sourceId={data.copy_history[0].owner_id} dataDate={data.copy_history[0].date} isRepost={true}/>
         <PostText dataText={data.copy_history[0].text}/>
         <PostPhotos postPhotos={postPhotos}/>
         {/* <PostVideos postVideos={postVideos}/> */}

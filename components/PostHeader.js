@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux'
 import Feather from 'react-native-vector-icons/Feather'
 import { COLORS } from '../constants/theme'
 
-const PostHeader = ({sourceId, dataDate}) => {       
+const PostHeader = ({sourceId, dataDate, isRepost}) => {       
     const months = [
       'January', 'February', 'March', 'April', 
       'May', 'June', 'Jule', 'August', 'September', 
@@ -40,22 +40,29 @@ const PostHeader = ({sourceId, dataDate}) => {
 
     return (
         <View style={styles.postHeaderContainer}>
-            <View style={styles.postHeaderLeftsideContainer}>
-                <Image style={styles.postImageSource} source={{uri: group ? group.photo_100 : profile.photo_100}}/>
+            <View style={isRepost ? styles.postHeaderLeftsideContainerRepost : styles.postHeaderLeftsideContainer}>
+                <Image 
+                  style={isRepost ? styles.postImageSourceRepost : styles.postImageSource} 
+                  source={{uri: group ? group.photo_100 : profile.photo_100}}
+                />
                 <View style={styles.sourceNameContainer}>
-                    <View style={styles.postNameContainer}>
-                        <Text style={styles.postNameText}>
+                    <View style={isRepost ? styles.postNameContainerRepost : styles.postNameContainer}>
+                        <Text style={isRepost ? styles.postNameTextRepost : styles.postNameText }>
                           {group ? group.name : profile.last_name + ' ' + profile.first_name}
                         </Text>
                     </View>
-                    <Text>
+                    <Text style={isRepost ? styles.postTimeTextRepost : styles.postTimeText}>
                       {monthDate} {month} {hours}:{minutes} {nowYear !== year ? year : ''}
                     </Text>
                 </View>
             </View>
-            <View style={styles.postHeaderRightsideContainer}>
+            {
+              !isRepost &&
+              <View style={styles.postHeaderRightsideContainer}>
                 <Feather name='more-vertical' size={20} color={COLORS.secondary}/>
-            </View>
+              </View>
+            }
+            
         </View>
     )
 }
@@ -67,15 +74,20 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 12
+        marginBottom: 12,
       },
       postHeaderLeftsideContainer: {
         display: 'flex',
         width: '90%',
         // padding: 1,
         flexDirection: 'row',
-        alignItems: 'flex-start',
-        // backgroundColor: COLORS.smoke
+        alignItems: 'center',
+      },
+      postHeaderLeftsideContainerRepost: {
+        display: 'flex',
+        width: '100%',
+        flexDirection: 'row',
+        alignItems: 'center',
       },
       postHeaderRightsideContainer: {
         // marginLeft: 10, 
@@ -83,11 +95,22 @@ const styles = StyleSheet.create({
       },
       postNameContainer: {
         width: 230,
+        // width: '150%',
+        // backgroundColor: COLORS.secondary
+      },
+      postNameContainerRepost: {
+        // width: 230,
+        width: 255,
         // backgroundColor: COLORS.secondary
       },
       postImageSource: {
         width: 50,
         height: 50,
+        borderRadius: 4
+      },
+      postImageSourceRepost: {
+        width: 40,
+        height: 40,
         borderRadius: 4
       },
       sourceNameContainer: {
@@ -98,6 +121,18 @@ const styles = StyleSheet.create({
       },
       postNameText: {
         fontSize: 16,
+        fontWeight: '600'
+      },
+      postNameTextRepost: {
+        fontSize: 14,
+        fontWeight: '600'
+      },
+      postTimeText: {
+        fontSize: 14,
+        fontWeight: '600'
+      },
+      postTimeTextRepost: {
+        fontSize: 12,
         fontWeight: '600'
       }
 })

@@ -39,24 +39,23 @@ const PostPhotos = ({postPhotos}) => {
       let imageUrl = postPhotos[index]?.sizes[lastIndexUrl].url
       imagesForSlides.push({url: imageUrl})
       let image = 
-      <TouchableOpacity 
-        style={{width: width, height: height}} 
-        key={uuid.v4()} 
+      <TouchableOpacity  
+      style={{width: width, height: height, display: 'flex', backgroundColor: COLORS.secondary}}  
+      key={uuid.v4()} 
         onPress={() => {setModalVisible(!modalVisible)}}
         activeOpacity={1}
       >
         <Image 
           source={{uri: imageUrl}}
-          key={uuid.v4()}
           style={{width: '100%', height: '100%'}}
+          resizeMode='contain'
         />
       </TouchableOpacity>
       index += 1
       row.push(image)
     }
     let rowContainer = <View 
-      style={{
-        width: '100%', 
+      style={{ 
         display: 'flex', 
         flexDirection: 'row',
         // height: height,
@@ -72,7 +71,7 @@ const PostPhotos = ({postPhotos}) => {
   return (
     <>
       <Modal
-        animationType='slide'
+        animationType='fade'
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => {setModalVisible(!modalVisible);}}
@@ -85,9 +84,10 @@ const PostPhotos = ({postPhotos}) => {
       <View style={{
         marginBottom: 10,
         marginTop: 10,
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: COLORS.secondary
+        // display: 'flex',
+        // flexDirection: 'column',
+        // height: height
+        backgroundColor: COLORS.smoke,
       }}>
         {
           grid && grid

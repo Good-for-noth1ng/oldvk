@@ -8,7 +8,9 @@ export const COLORS = {
     light_smoke: '#dbdcdd',
     very_dark_gray: '#303342'
 }
+
 export const postWidth = Dimensions.get('window').width - 30
+
 export const SIZES = {
     base: 8,
     small: 12,

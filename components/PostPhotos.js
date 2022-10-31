@@ -36,6 +36,7 @@ const PostPhotos = ({postPhotos}) => {
       } else {
         height = 350
       }
+      
       let imageUrl = postPhotos[index]?.sizes[lastIndexUrl].url
       imagesForSlides.push({url: imageUrl})
       let image = 

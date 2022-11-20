@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { useState } from 'react'
 import { COLORS } from '../constants/theme'
@@ -28,13 +28,22 @@ const PostText = ({dataText}) => {
         <View style={styles.textContainer}>
             <Text>
                 {text}
-                <Text
-                    style={styles.showMoreText}
-                    onPress={handleReadMore}
-                >
-                    {readMore ? '\nRead more...' : ''}
-                </Text>
+                {readMore ? '...' : ''}
             </Text>
+            {readMore ? 
+                    <TouchableOpacity 
+                        onPress={handleReadMore} 
+                        style={{width: '100%', height: 28}} 
+                        activeOpacity={0.6}
+                    >
+                        <Text
+                            style={styles.showMoreText}
+                        >
+                            {'Read more...'}
+                        </Text>
+                    </TouchableOpacity>
+                    : <></> 
+            }
         </View>
   )
 }
@@ -47,6 +56,6 @@ const styles = StyleSheet.create({
         fontWeight: '700'
     },
     textContainer: {
-        marginBottom: 7
+        marginBottom: 7,
     }
 })

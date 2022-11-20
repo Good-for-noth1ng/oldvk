@@ -41,10 +41,10 @@ const PostPhotos = ({postPhotos}) => {
       imagesForSlides.push({url: imageUrl})
       let image = 
       <TouchableOpacity  
-      style={{width: width, height: height, display: 'flex', backgroundColor: COLORS.secondary}}  
+      style={{width: width, height: height, display: 'flex'}}  
       key={uuid.v4()} 
         onPress={() => {setModalVisible(!modalVisible)}}
-        activeOpacity={1}
+        activeOpacity={0.5}
       >
         <Image 
           source={{uri: imageUrl}}
@@ -60,7 +60,7 @@ const PostPhotos = ({postPhotos}) => {
         display: 'flex', 
         flexDirection: 'row',
         // height: height,
-        // backgroundColor: COLORS.light_smoke
+        backgroundColor: COLORS.light_smoke
       }} 
       key={uuid.v4()}>
         {row}
@@ -82,18 +82,20 @@ const PostPhotos = ({postPhotos}) => {
           enableImageZoom={true}
         />
       </Modal>
-      <View style={{
-        marginBottom: 10,
-        marginTop: 10,
+      {/* <View style={{
+        // marginBottom: 10,
+        // marginTop: 10,
         // display: 'flex',
         // flexDirection: 'column',
         // height: height
+        padding: 0,
+        margin: 0,
         backgroundColor: COLORS.smoke,
-      }}>
+      }}> */}
         {
           grid && grid
         }
-      </View>
+      {/* </View> */}
     </>
   )
 }

@@ -44,7 +44,7 @@ const Home = () => {
             <FontAwesome name='user' color={color} size={20}/>
           ),
         }}/>
-        <Drawer.Screen name='Photos' component={Photos} options={{
+        {/* <Drawer.Screen name='Photos' component={Photos} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='camera' size={20} color={color}/>
           )
@@ -58,7 +58,7 @@ const Home = () => {
           drawerIcon: ({color}) => (
             <FontAwesome name='music' size={20} color={color}/>
           )
-        }}/>
+        }}/> */}
         <Drawer.Screen name='Messages' component={Messages} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='envelope' size={20} color={color}/>
@@ -78,7 +78,7 @@ const Home = () => {
           //   return 
           // }
         }}/>
-        <Drawer.Screen name='Answers' component={Answers} options={{
+        {/* <Drawer.Screen name='Answers' component={Answers} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='comments' size={20} color={color}/>
           )
@@ -92,7 +92,7 @@ const Home = () => {
           drawerIcon: ({color}) => (
             <FontAwesome name='gear' size={20} color={color}/>
           )
-        }}/>
+        }}/> */}
     </Drawer.Navigator>
   )
 }

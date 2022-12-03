@@ -15,8 +15,10 @@ const PostPhotos = ({postPhotos}) => {
   let height
   let resolution
   let totalHeight = 0
+  let calcWidth
   for (let i = 0; i < rowNum; i++) {
     let row = []
+    let calcImageHeights = []
     for (let j = 0; j < 3; j++) {
       let imgPerRow = 3
       if (i == rowNum - 1) {
@@ -35,14 +37,14 @@ const PostPhotos = ({postPhotos}) => {
         height = resolution * width
       } else {
         height = 350
-        
       }
+      calcImageHeights.push(height)
       let imageUrl = postPhotos[index]?.sizes[lastIndexUrl].url
       imagesForSlides.push({url: imageUrl})
       let image = 
       <TouchableOpacity  
-      style={{width: width, height: height, display: 'flex'}}  
-      key={uuid.v4()} 
+        style={{width: width, height: '100%', display: 'flex'}}  
+        key={uuid.v4()} 
         onPress={() => {setModalVisible(!modalVisible)}}
         activeOpacity={0.5}
       >
@@ -59,7 +61,8 @@ const PostPhotos = ({postPhotos}) => {
       style={{ 
         display: 'flex', 
         flexDirection: 'row',
-        // height: height,
+        height: Math.min(...calcImageHeights),
+        padding: 0,
         backgroundColor: COLORS.light_smoke
       }} 
       key={uuid.v4()}>

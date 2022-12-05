@@ -6,9 +6,26 @@ import { postWidth } from '../constants/theme';
 import ImageViewer from 'react-native-image-zoom-viewer'
 
 const PostPhotos = ({postPhotos}) => {
+  const initPhoto = (width, imageUrl) => {
+    
+    return (<TouchableOpacity  
+        style={{width: width, height: '100%', display: 'flex'}}  
+        key={uuid.v4()} 
+        onPress={() => {setModalVisible(!modalVisible)}}
+        activeOpacity={0.5}
+      >
+        <Image 
+          source={{uri: imageUrl}}
+          style={{width: '100%', height: '100%'}}
+          resizeMode='contain'
+        />
+      </TouchableOpacity>)
+  }
+
   const [modalVisible, setModalVisible] = useState(false)
   const imgNum = postPhotos.length
   const rowNum = Math.ceil(imgNum / 3)
+  const columnNum = 3
   let grid = []
   let imagesForSlides = []
   let index = 0
@@ -19,7 +36,7 @@ const PostPhotos = ({postPhotos}) => {
   for (let i = 0; i < rowNum; i++) {
     let row = []
     let calcImageHeights = []
-    for (let j = 0; j < 3; j++) {
+    for (let j = 0; j < columnNum; j++) {
       let imgPerRow = 3
       if (i == rowNum - 1) {
         imgPerRow = Math.floor(imgNum / 3)
@@ -38,22 +55,10 @@ const PostPhotos = ({postPhotos}) => {
       } else {
         height = 350
       }
-      calcImageHeights.push(height)
       let imageUrl = postPhotos[index]?.sizes[lastIndexUrl].url
+      calcImageHeights.push(height)
       imagesForSlides.push({url: imageUrl})
-      let image = 
-      <TouchableOpacity  
-        style={{width: width, height: '100%', display: 'flex'}}  
-        key={uuid.v4()} 
-        onPress={() => {setModalVisible(!modalVisible)}}
-        activeOpacity={0.5}
-      >
-        <Image 
-          source={{uri: imageUrl}}
-          style={{width: '100%', height: '100%'}}
-          resizeMode='contain'
-        />
-      </TouchableOpacity>
+      let image = initPhoto(width=width, imageUrl=imageUrl)
       index += 1
       row.push(image)
     }

@@ -9,7 +9,7 @@ const PostPhotos = ({postPhotos}) => {
   const initPhoto = (width, imageUrl) => {
     
     return (<TouchableOpacity  
-        style={{width: width, height: '100%', display: 'flex'}}  
+        style={{width: width, height: '100%', display: 'flex', borderWidth: 0.5, borderColor: COLORS.white}}  
         key={uuid.v4()} 
         onPress={() => {setModalVisible(!modalVisible)}}
         activeOpacity={0.5}
@@ -17,7 +17,7 @@ const PostPhotos = ({postPhotos}) => {
         <Image 
           source={{uri: imageUrl}}
           style={{width: '100%', height: '100%'}}
-          resizeMode='contain'
+          resizeMode='stretch'
         />
       </TouchableOpacity>)
   }
@@ -33,19 +33,23 @@ const PostPhotos = ({postPhotos}) => {
   let resolution
   let totalHeight = 0
   let calcWidth
+  
   for (let i = 0; i < rowNum; i++) {
     let row = []
     let calcImageHeights = []
+    let widthOfImages = []
+    let imgPerRow = 3
+    let imageUrls = []
     for (let j = 0; j < columnNum; j++) {
-      let imgPerRow = 3
       if (i == rowNum - 1) {
-        imgPerRow = Math.floor(imgNum / 3)
+        imgPerRow = imgNum - (rowNum - 1) * 3 
       }
       if (rowNum == 1) {
         imgPerRow = imgNum
       }
       let widthPercent = 100 / imgPerRow
       let width = postWidth * (widthPercent / 100)
+      widthOfImages.push(width)
       let lastIndexUrl = postPhotos[index]?.sizes.length - 1
       let originHeight = postPhotos[index]?.sizes[lastIndexUrl].height
       let originWidth = postPhotos[index]?.sizes[lastIndexUrl].width
@@ -56,19 +60,27 @@ const PostPhotos = ({postPhotos}) => {
         height = 350
       }
       let imageUrl = postPhotos[index]?.sizes[lastIndexUrl].url
+      imageUrls.push(imageUrl)
       calcImageHeights.push(height)
       imagesForSlides.push({url: imageUrl})
-      let image = initPhoto(width=width, imageUrl=imageUrl)
+      // let image = initPhoto(width=width, imageUrl=imageUrl)
       index += 1
+      // row.push(image)
+    }
+    for (let k = 0; k < imgPerRow; k++) {
+      let image = initPhoto(Math.max(...widthOfImages), imageUrls[k])
       row.push(image)
+    }
+    let rowHeight = Math.min(...calcImageHeights)
+    if (rowHeight < 40) {
+      rowHeight += 40 
     }
     let rowContainer = <View 
       style={{ 
         display: 'flex', 
         flexDirection: 'row',
-        height: Math.min(...calcImageHeights),
+        height: rowHeight,
         padding: 0,
-        backgroundColor: COLORS.light_smoke
       }} 
       key={uuid.v4()}>
         {row}
@@ -90,20 +102,11 @@ const PostPhotos = ({postPhotos}) => {
           enableImageZoom={true}
         />
       </Modal>
-      {/* <View style={{
-        // marginBottom: 10,
-        // marginTop: 10,
-        // display: 'flex',
-        // flexDirection: 'column',
-        // height: height
-        padding: 0,
-        margin: 0,
-        backgroundColor: COLORS.smoke,
-      }}> */}
+      <View style={{marginBottom: 10}}>
         {
           grid && grid
         }
-      {/* </View> */}
+      </View>
     </>
   )
 }

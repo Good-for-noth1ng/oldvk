@@ -29,6 +29,12 @@ export const newsSlice = createSlice({
                 profiles: action.payload
             }
         },
+        setComments: (state, action) => {
+            return {
+                ...state,
+                comments: action.payload
+            }
+        }
     },
 })
 export const { setItems, setGroups, setProfiles } = newsSlice.actions

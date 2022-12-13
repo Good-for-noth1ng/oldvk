@@ -14,6 +14,7 @@ import Groups from '../screens/Groups';
 import Answers from '../screens/Answers';
 import Favorites from '../screens/Favorites';
 import Options from '../screens/Options';
+import NewsTitleSwitcher from './NewsTitleSwitcher';
 import CustomDrawer from './CustomDrawer';
 import { COLORS } from '../constants/theme';
 
@@ -73,6 +74,7 @@ const Home = () => {
           drawerIcon: ({color}) => (
             <FontAwesome name='list-alt' size={20} color={color}/>
           ),
+          headerTitle: (props) => <NewsTitleSwitcher {...props} />
           // headerBackground: ({navigation, route, options}) => {
           //   const title = getHeaderTitle(options, route.name)
           //   return 

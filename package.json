@@ -25,6 +25,7 @@
     "react-native": "0.68.2",
     "react-native-app-auth": "^6.4.3",
     "react-native-dotenv": "^3.3.1",
+    "react-native-element-dropdown": "^2.5.0",
     "react-native-gesture-handler": "~2.2.1",
     "react-native-image-zoom-viewer": "^3.0.1",
     "react-native-reanimated": "~2.8.0",

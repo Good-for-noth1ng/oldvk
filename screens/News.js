@@ -13,8 +13,9 @@ const News = () => {
   const postContent = useSelector(state => state.news.items)
   useEffect(()=> {
     const fetchNews = async () => {
-      const url = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&v=5.131`
-      fetch(url)
+      const newsUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&v=5.131`
+      const commentsUrl = `https://api.vk.com/method/newsfeed.getComments?access_token=${accessToken}&v=5.131`
+      fetch(newsUrl)
         .then((response) => response.json())
         .then((data) => {
           const items = data.response.items.map(item => {  
@@ -25,6 +26,14 @@ const News = () => {
           dispatch(setProfiles(data.response.profiles));
           setIsLoading(!isLoading);
         })
+      // fetch(commentsUrl)
+      //   .then((response) => response.json())
+      //   .then((data) => {
+      //     console.log(data.response.items[0])
+      //     const items = data.response.items.map(item => {
+      //       return {...item, key: uuid.v4()}
+      //     })
+      //   })
     }
     fetchNews();
   }, [])

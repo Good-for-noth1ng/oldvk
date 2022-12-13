@@ -14,7 +14,9 @@ const News = () => {
   useEffect(()=> {
     const fetchNews = async () => {
       const newsUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&v=5.131`
+      const recommendedUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&v=5.131`
       const commentsUrl = `https://api.vk.com/method/newsfeed.getComments?access_token=${accessToken}&v=5.131`
+      const currentPage = useSelector(state => state.news.currentPage)
       fetch(newsUrl)
         .then((response) => response.json())
         .then((data) => {

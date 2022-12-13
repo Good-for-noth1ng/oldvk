@@ -9,6 +9,7 @@ export const newsSlice = createSlice({
         items: [],
         groups: [],
         profiles: [],
+        currentPage: 'News'
     },
     reducers: {
         setItems: (state, action) => {
@@ -34,8 +35,14 @@ export const newsSlice = createSlice({
                 ...state,
                 comments: action.payload
             }
+        },
+        setCurrentPage: (state, action) => {
+            return {
+                ...state,
+                currentPage: action.payload
+            }
         }
     },
 })
-export const { setItems, setGroups, setProfiles } = newsSlice.actions
+export const { setItems, setGroups, setProfiles, setCurrentPage } = newsSlice.actions
 export default newsSlice.reducer

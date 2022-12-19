@@ -15,8 +15,8 @@ const NewsTitleSwitcher = () => {
     return (
     <Dropdown 
       value={currentPage}
-      style={styles.dropdown}
-      placeholderStyle={styles.placeholderStyle}
+      style={currentPage === 'News' ? styles.dropdownNews : styles.dropdownRecommended}
+      containerStyle={styles.list}
       selectedTextStyle={styles.selectedTextStyle}
       iconColor={COLORS.white}
       activeColor={COLORS.light_smoke}
@@ -35,22 +35,23 @@ const NewsTitleSwitcher = () => {
 export default NewsTitleSwitcher
 
 const styles = StyleSheet.create({
-  dropdown: {
+  dropdownNews: {
+    margin: 16,
+    height: 50,
+    width: 80,
+    color: COLORS.white
+  },
+  dropdownRecommended: {
     margin: 16,
     height: 50,
     width: 150,
     color: COLORS.white
   },
+  list: {
+    width: 150
+  },
   icon: {
     marginRight: 5,
-
-  },
-  placeholderStyle: {
-    display: 'flex',
-    flexDirection: 'row',
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.white,
   },
   selectedTextStyle: {
     display: 'flex',

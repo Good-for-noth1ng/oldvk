@@ -1,4 +1,4 @@
-import { View, Text, RefreshControl, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet, FlatList, Animated } from 'react-native'
+import { View, Text, RefreshControl, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import uuid from 'react-native-uuid';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,12 +11,18 @@ const News = () => {
   const dispatch = useDispatch()
   const [isLoading, setIsLoading] = useState(true)
   const postContent = useSelector(state => state.news.items)
+  const currentNewsPage = useSelector(state => state.news.currentPage)
+  let newsUrl
+  if (currentNewsPage === 'News') {
+    newsUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&v=5.131`
+  } else {
+    newsUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&v=5.131`
+  }
+  const commentsUrl = `https://api.vk.com/method/newsfeed.getComments?access_token=${accessToken}&v=5.131`
+  
   useEffect(()=> {
     const fetchNews = async () => {
-      const newsUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&v=5.131`
-      const recommendedUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&v=5.131`
-      const commentsUrl = `https://api.vk.com/method/newsfeed.getComments?access_token=${accessToken}&v=5.131`
-      const currentPage = useSelector(state => state.news.currentPage)
+      setIsLoading(true)    
       fetch(newsUrl)
         .then((response) => response.json())
         .then((data) => {
@@ -26,19 +32,12 @@ const News = () => {
           dispatch(setItems(items));
           dispatch(setGroups(data.response.groups));
           dispatch(setProfiles(data.response.profiles));
-          setIsLoading(!isLoading);
+          setIsLoading(false);
         })
-      // fetch(commentsUrl)
-      //   .then((response) => response.json())
-      //   .then((data) => {
-      //     console.log(data.response.items[0])
-      //     const items = data.response.items.map(item => {
-      //       return {...item, key: uuid.v4()}
-      //     })
-      //   })
     }
     fetchNews();
-  }, [])
+  }, [currentNewsPage])
+  
   const renderItem = ({item}) => (
     <Post data={item}/>
   )

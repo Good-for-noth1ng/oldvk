@@ -11,6 +11,6 @@ export const store = configureStore({
         immutableCheck: {
             ignoredPaths: ['user', 'news']
         },
-        serializableCheck: { ignoredPaths: ['user', 'news',] }
+        serializableCheck: { ignoredPaths: ['user', 'news'] }
       })
 })

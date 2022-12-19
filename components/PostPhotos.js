@@ -7,8 +7,8 @@ import ImageViewer from 'react-native-image-zoom-viewer'
 
 const PostPhotos = ({postPhotos}) => {
   const initPhoto = (width, imageUrl) => {
-    
-    return (<TouchableOpacity  
+    return (
+    <TouchableOpacity  
         style={{width: width, height: '100%', display: 'flex', borderWidth: 0.5, borderColor: COLORS.white}}  
         key={uuid.v4()} 
         onPress={() => {setModalVisible(!modalVisible)}}

@@ -11,7 +11,7 @@ const BottomPost = ({dataComments, dataLikes, dataReposts}) => {
         commentsCount = dataComments?.count
         if (commentsCount >= 1000) {
             commentsCount = Math.floor(commentsCount / 1000)
-            commentsCount = String(commentsCount).concat('k')
+            commentsCount = commentsCount.toString().concat('k')
         }
     }
     const [comments, setComments] = useState(commentsCount)
@@ -20,8 +20,8 @@ const BottomPost = ({dataComments, dataLikes, dataReposts}) => {
     if (dataLikes !== undefined) {
         likesCount = dataLikes?.count
         if (likesCount >= 1000) {
-            likesCount = Math.floor(likes / 1000)
-            likesCount = String(likes).concat('k')
+            likesCount = Math.floor(likesCount / 1000) 
+            likesCount = likesCount.toString().concat('k')
         }
     }
     const [likes, setLikes] = useState(likesCount)
@@ -31,7 +31,7 @@ const BottomPost = ({dataComments, dataLikes, dataReposts}) => {
         repostsCount = dataReposts?.count
         if (repostsCount >= 1000) {
             repostsCount = Math.floor(repostsCount / 1000)
-            repostsCount= String(repostsCount).concat('k')
+            repostsCount= repostsCount.toString().concat('k')
         }
     }
     const [reposts, setReposts] = useState(repostsCount)

@@ -9,7 +9,8 @@ export const newsSlice = createSlice({
         items: [],
         groups: [],
         profiles: [],
-        currentPage: 'News'
+        currentPage: 'News',
+        nextFrom: ''
     },
     reducers: {
         setItems: (state, action) => {
@@ -18,16 +19,34 @@ export const newsSlice = createSlice({
                 items: action.payload
             }
         },
+        pushItems: (state, action) => {
+            return {
+                ...state,
+                items: state.items.concat(action.payload)
+            }
+        },
         setGroups: (state, action) => {
             return {
                 ...state,
                 groups: action.payload
             }
         },
+        pushGroups: (state, action) => {
+            return {
+                ...state,
+                groups: state.groups.concat(action.payload)
+            }
+        },
         setProfiles: (state, action) => {
             return {
                 ...state,
                 profiles: action.payload
+            }
+        },
+        pushProfiles: (state, action) => {
+            return {
+                ...state, 
+                profiles: state.profiles.concat(action.payload)
             }
         },
         setComments: (state, action) => {
@@ -41,8 +60,14 @@ export const newsSlice = createSlice({
                 ...state,
                 currentPage: action.payload
             }
+        },
+        setNextFrom: (state, action) => {
+            return {
+                ...state,
+                nextFrom: action.payload
+            }
         }
     },
 })
-export const { setItems, setGroups, setProfiles, setCurrentPage } = newsSlice.actions
+export const { setItems, setGroups, setProfiles, setCurrentPage, setNextFrom, pushGroups, pushItems, pushProfiles } = newsSlice.actions
 export default newsSlice.reducer

@@ -6,7 +6,7 @@ import { postWidth } from '../constants/theme';
 import ImageViewer from 'react-native-image-zoom-viewer'
 
 const PostPhotos = ({postPhotos}) => {
-  const initPhoto = (width, imageUrl) => {
+  const initPhoto = (width, imageUrl, resizeMode) => {
     return (
     <TouchableOpacity  
         style={{width: width, height: '100%', display: 'flex', borderWidth: 0.5, borderColor: COLORS.white}}  
@@ -17,7 +17,7 @@ const PostPhotos = ({postPhotos}) => {
         <Image 
           source={{uri: imageUrl}}
           style={{width: '100%', height: '100%'}}
-          resizeMode='stretch'
+          resizeMode={resizeMode}
         />
       </TouchableOpacity>)
   }
@@ -40,12 +40,15 @@ const PostPhotos = ({postPhotos}) => {
     let widthOfImages = []
     let imgPerRow = 3
     let imageUrls = []
+    let resizeMode
     for (let j = 0; j < columnNum; j++) {
       if (i == rowNum - 1) {
-        imgPerRow = imgNum - (rowNum - 1) * 3 
+        imgPerRow = imgNum - (rowNum - 1) * 3;
+        resizeMode = 'stretch' 
       }
       if (rowNum == 1) {
         imgPerRow = imgNum
+        resizeMode = 'contain'
       }
       let widthPercent = 100 / imgPerRow
       let width = postWidth * (widthPercent / 100)
@@ -68,7 +71,7 @@ const PostPhotos = ({postPhotos}) => {
       // row.push(image)
     }
     for (let k = 0; k < imgPerRow; k++) {
-      let image = initPhoto(Math.max(...widthOfImages), imageUrls[k])
+      let image = initPhoto(Math.max(...widthOfImages), imageUrls[k], resizeMode)
       row.push(image)
     }
     let rowHeight = Math.min(...calcImageHeights)

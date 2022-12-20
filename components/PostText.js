@@ -25,7 +25,10 @@ const PostText = ({dataText}) => {
         setReadMore(false)
     } 
     return (
-        <View style={styles.textContainer}>
+        <TouchableOpacity 
+            style={styles.textContainer}
+            activeOpacity={1}
+        >
             <Text>
                 {text}
                 {readMore ? '...' : ''}
@@ -42,9 +45,9 @@ const PostText = ({dataText}) => {
                             {'Read more...'}
                         </Text>
                     </TouchableOpacity>
-                    : <></> 
+                    : null 
             }
-        </View>
+        </TouchableOpacity>
   )
 }
 
@@ -54,8 +57,5 @@ const styles = StyleSheet.create({
     showMoreText: {
         color: COLORS.primary,
         fontWeight: '700'
-    },
-    textContainer: {
-        // marginBottom: 7,
     }
 })

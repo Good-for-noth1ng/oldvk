@@ -102,7 +102,7 @@ const PostPhotos = ({postPhotos}) => {
           enableImageZoom={true}
         />
       </Modal>
-      <View style={{marginBottom: 10}}>
+      <View style={styles.gridStyle}>
         {
           grid && grid
         }
@@ -114,5 +114,7 @@ const PostPhotos = ({postPhotos}) => {
 export default PostPhotos
 
 const styles = StyleSheet.create({
-  
+  gridStyle: {
+    // marginBottom: 10
+  }
 })

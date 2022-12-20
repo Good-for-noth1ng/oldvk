@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 12,
+        // marginBottom: 12,
       },
       postHeaderLeftsideContainer: {
         display: 'flex',

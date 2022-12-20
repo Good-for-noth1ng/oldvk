@@ -6,6 +6,7 @@ import { COLORS } from '../constants/theme';
 import Post from '../components/Post'
 import { setItems, setGroups, setProfiles, pushItems, pushGroups, pushProfiles, setNextFrom } from '../redux/newsSlice';
 
+//TODO make news upload from redux directly
 const News = () => {
   const accessToken = useSelector(state => state.user.accessToken)
   const dispatch = useDispatch()
@@ -19,9 +20,9 @@ const News = () => {
 
   let newsUrl
   if (currentNewsPage === 'News') {
-    newsUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&v=5.131`
+    newsUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&count=25&v=5.131`
   } else {
-    newsUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&v=5.131`
+    newsUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=25&v=5.131`
   }
   const commentsUrl = `https://api.vk.com/method/newsfeed.getComments?access_token=${accessToken}&v=5.131`
   
@@ -71,9 +72,9 @@ const News = () => {
   const fetchMoreData = () => {
     let fetchMoreDataUrl
     if (currentNewsPage === 'News') {
-      fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&start_from=${nextFrom}&v=5.131`
+      fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&count=25&start_from=${nextFrom}&v=5.131`
     } else {
-      fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&start_from=${nextFrom}&v=5.131`
+      fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=25&start_from=${nextFrom}&v=5.131`
     }
     fetch(fetchMoreDataUrl)
         .then((response) => response.json())
@@ -89,6 +90,7 @@ const News = () => {
           setPostContent(newPostContent);
       });
   }
+
   const renderItem = ({item}) => (
     <Post data={item}/>
   )
@@ -116,6 +118,11 @@ const News = () => {
                     tintColor={COLORS.primary}
                   />
                 }
+                ListFooterComponent={
+                  <View style={styles.bottomSpinnerContainer}>
+                    <ActivityIndicator color={COLORS.primary} size={50}/>
+                  </View>
+                }
                 maxToRenderPerBatch={5}
                 removeClippedSubviews={true}
               />
@@ -133,6 +140,9 @@ const styles = StyleSheet.create({
   },
   newsBackground: {
     backgroundColor: COLORS.light_smoke
+  },
+  bottomSpinnerContainer: {
+    justifyContentL: 'center',
   }
 })
 export default News

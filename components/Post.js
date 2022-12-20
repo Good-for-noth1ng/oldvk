@@ -9,6 +9,7 @@ import PostPhotos from './PostPhotos'
 import PostFiles from './PostFiles'
 import PostLinks from './PostLinks'
 import PostVideos from './PostVideos'
+import PostDivider from './PostDivider'
 
 const Post = ({data}) => {
   let postPhotos = []
@@ -16,7 +17,7 @@ const Post = ({data}) => {
   let postLinks = []
   let postVideos = []
   const type = data.type
-  
+
   if (data.attachments !== undefined && type === 'post') {
     let attachments
     if (data.copy_history !== undefined) {
@@ -39,35 +40,107 @@ const Post = ({data}) => {
   if (type === 'wall_photo') {
     return null
   }
-
+  const hasText = data.text ? true : false
+  const hasPhotos = postPhotos ? true : false
+  const hasFiles = postDocs ? true : false
+  const hasLinks = postLinks ? true : false
+  
   if (data.copy_history !== undefined) {
+    const hasRepostText = data.copy_history[0].text ? true : false
+
     return (
       <View style={styles.postContainer}>
         <PostHeader sourceId={data.source_id} dataDate={data.date} isRepost={false}/>
-        <PostText dataText={data.text}/>
+        <PostDivider dividerHeight={12} />
+        {
+          hasText ? (
+            <>
+              <PostText dataText={data.text}/>
+              <PostDivider dividerHeight={6}/>
+            </>
+            ) : null 
+        }
         <PostHeader sourceId={data.copy_history[0].owner_id} dataDate={data.copy_history[0].date} isRepost={true}/>
-        <PostText dataText={data.copy_history[0].text}/>
-        <PostPhotos postPhotos={postPhotos}/>
-        {/* <PostVideos postVideos={postVideos}/> */}
-        <PostFiles postDocs={postDocs}/>
-        <PostLinks postLinks={postLinks}/>
+        <PostDivider dividerHeight={12} />
+        {
+          hasRepostText ? (
+            <>
+              <PostText dataText={data.copy_history[0].text}/>
+              <PostDivider dividerHeight={6}/>
+            </>
+          ) : null
+        }
+        {
+        hasPhotos ? (
+          <>
+            <PostPhotos postPhotos={postPhotos}/>
+            {/* <PostVideos postVideos={postVideos}/> */}
+            <PostDivider dividerHeight={5}/>  
+          </>
+          ) : null
+        }
+        {
+          hasFiles ? (
+          <>
+            <PostFiles postDocs={postDocs}/>  
+          </>
+          ) : <PostDivider dividerHeight={5}/>
+        }
+        { 
+          hasLinks ? 
+          ( 
+            <>
+              <PostLinks postLinks={postLinks}/>
+              <PostDivider dividerHeight={6} />
+            </>
+          ) 
+          : null
+        }
         <BottomPost 
-          dataComments={data.copy_history[0].comments} 
-          dataLikes={data.copy_history[0].likes} 
-          dataReposts={data.copy_history[0].reposts}
+          dataComments={data.comments} 
+          dataLikes={data.likes} 
+          dataReposts={data.reposts}
         />
       </View>  
     )
   }
-  
+
   return (
     <View style={styles.postContainer}>
       <PostHeader sourceId={data.source_id} dataDate={data.date}/>
-      <PostText dataText={data.text}/>
-      <PostPhotos postPhotos={postPhotos}/>
-      {/* <PostVideos postVideos={postVideos}/> */}
-      <PostFiles postDocs={postDocs}/>
-      <PostLinks postLinks={postLinks}/>
+      <PostDivider dividerHeight={12}/>
+      {
+        hasText ? (
+          <>
+            <PostText dataText={data.text}/>
+            <PostDivider dividerHeight={6}/>
+          </>
+        ) : null
+      }
+      { 
+        hasPhotos ? (
+          <>
+            <PostPhotos postPhotos={postPhotos}/>
+            {/* <PostVideos postVideos={postVideos}/> */}
+            <PostDivider dividerHeight={5}/>  
+          </>
+        ) : null
+      }
+      {
+        hasFiles ? (
+          <>
+            <PostFiles postDocs={postDocs}/>  
+          </>
+          ) : <PostDivider dividerHeight={5}/>
+      }
+      {
+        hasLinks ? ( 
+          <>
+            <PostLinks postLinks={postLinks}/>
+            <PostDivider dividerHeight={6} />
+          </>
+        ) : null
+      }
       <BottomPost dataComments={data.comments} dataLikes={data.likes} dataReposts={data.reposts}/>
     </View>
   )

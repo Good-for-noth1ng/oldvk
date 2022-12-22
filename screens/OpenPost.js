@@ -1,11 +1,21 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, FlatList } from 'react-native'
+import React, {useEffect} from 'react'
+import Post from '../components/Post'
+import { useSelector } from 'react-redux'
+import { COLORS } from '../constants/theme'
 
-const OpenPost = () => {
+const OpenPost = ({navigation}) => {
+  const data = useSelector(state => state.news.openedPost) 
+  const renderItem = ({item}) => (
+    <Post data={item} navigation={navigation} toOpen={false}/>
+  )
   return (
-    <View>
-      <Text>OpenPost</Text>
-    </View>
+    <FlatList 
+      data={data}
+      renderItem={renderItem}
+      showsVerticalScrollIndicator={false}
+      initialNumToRender={1}
+    />
   )
 }
 

@@ -3,11 +3,11 @@ import React from 'react'
 import { useState } from 'react'
 import { COLORS } from '../constants/theme'
 //dataText
-const PostText = ({dataText}) => {
+const PostText = ({dataText, toOpen}) => {
     let postText = ''
     let readMoreText
     if (dataText !== undefined) {
-        if (dataText.split(' ').length > 50) {
+        if (dataText.split(' ').length > 50 && toOpen) {
             postText = dataText.split(' ').slice(0, 50).join(' ')
             readMoreText = true
         } else {
@@ -25,9 +25,8 @@ const PostText = ({dataText}) => {
         setReadMore(false)
     } 
     return (
-        <TouchableOpacity 
+        <View
             style={styles.textContainer}
-            activeOpacity={1}
         >
             <Text>
                 {text}
@@ -47,7 +46,7 @@ const PostText = ({dataText}) => {
                     </TouchableOpacity>
                     : null 
             }
-        </TouchableOpacity>
+        </View>
   )
 }
 

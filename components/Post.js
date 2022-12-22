@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { COLORS } from '../constants/theme'
 import { useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import BottomPost from './BottomPost'
 import PostHeader from './PostHeader'
 import PostText from './PostText'
@@ -10,13 +11,22 @@ import PostFiles from './PostFiles'
 import PostLinks from './PostLinks'
 import PostVideos from './PostVideos'
 import PostDivider from './PostDivider'
+import { setOpenedPost } from '../redux/newsSlice'
 
-const Post = ({data}) => {
+const Post = ({data, navigation, toOpen}) => {
+  const dispatch = useDispatch()
   let postPhotos = []
   let postDocs = []
   let postLinks = []
   let postVideos = []
   const type = data.type
+
+  const openPost = () => {
+    if (toOpen) {
+      dispatch(setOpenedPost(data))
+      navigation.navigate('OpenPost')
+    }
+  }
 
   if (data.attachments !== undefined && type === 'post') {
     let attachments
@@ -51,25 +61,29 @@ const Post = ({data}) => {
     return (
       <View style={styles.postContainer}>
         <PostHeader sourceId={data.source_id} dataDate={data.date} isRepost={false}/>
-        <PostDivider dividerHeight={12} />
-        {
-          hasText ? (
-            <>
-              <PostText dataText={data.text}/>
-              <PostDivider dividerHeight={6}/>
-            </>
-            ) : null 
-        }
+        <TouchableOpacity activeOpacity={1} onPress={openPost}>
+          <PostDivider dividerHeight={12} />
+          {
+            hasText ? (
+              <>
+                <PostText dataText={data.text} toOpen={toOpen}/>
+                <PostDivider dividerHeight={6}/>
+              </>
+              ) : null 
+          }
+        </TouchableOpacity>
         <PostHeader sourceId={data.copy_history[0].owner_id} dataDate={data.copy_history[0].date} isRepost={true}/>
-        <PostDivider dividerHeight={12} />
-        {
-          hasRepostText ? (
-            <>
-              <PostText dataText={data.copy_history[0].text}/>
-              <PostDivider dividerHeight={6}/>
-            </>
-          ) : null
-        }
+        <TouchableOpacity activeOpacity={1} onPress={openPost}>
+          <PostDivider dividerHeight={12} />
+          {
+            hasRepostText ? (
+              <>
+                <PostText dataText={data.copy_history[0].text} toOpen={toOpen}/>
+                <PostDivider dividerHeight={6}/>
+              </>
+            ) : null
+          }
+        </TouchableOpacity>
         {
         hasPhotos ? (
           <>
@@ -108,15 +122,17 @@ const Post = ({data}) => {
   return (
     <View style={styles.postContainer}>
       <PostHeader sourceId={data.source_id} dataDate={data.date}/>
-      <PostDivider dividerHeight={12}/>
-      {
-        hasText ? (
-          <>
-            <PostText dataText={data.text}/>
-            <PostDivider dividerHeight={6}/>
-          </>
-        ) : null
-      }
+      <TouchableOpacity activeOpacity={1} onPress={openPost}>
+        <PostDivider dividerHeight={12}/>
+        {
+          hasText ? (
+            <>
+              <PostText dataText={data.text} toOpen={toOpen}/>
+              <PostDivider dividerHeight={6}/>
+            </>
+          ) : null
+        }
+      </TouchableOpacity>
       { 
         hasPhotos ? (
           <>

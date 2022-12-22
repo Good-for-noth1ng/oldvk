@@ -6,6 +6,7 @@ import uuid from 'react-native-uuid'
 export const newsSlice = createSlice({
     name: 'news',
     initialState: { 
+        openedPost: [],
         items: [],
         groups: [],
         profiles: [],
@@ -13,6 +14,12 @@ export const newsSlice = createSlice({
         nextFrom: ''
     },
     reducers: {
+        setOpenedPost: (state, action) => {
+            return {
+                ...state,
+                openedPost: [action.payload]
+            }
+        },
         setItems: (state, action) => {
             return {
                 ...state,
@@ -69,5 +76,5 @@ export const newsSlice = createSlice({
         }
     },
 })
-export const { setItems, setGroups, setProfiles, setCurrentPage, setNextFrom, pushGroups, pushItems, pushProfiles } = newsSlice.actions
+export const { setOpenedPost, setItems, setGroups, setProfiles, setCurrentPage, setNextFrom, pushGroups, pushItems, pushProfiles } = newsSlice.actions
 export default newsSlice.reducer

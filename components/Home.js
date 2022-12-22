@@ -16,6 +16,7 @@ import Favorites from '../screens/Favorites';
 import Options from '../screens/Options';
 import NewsTitleSwitcher from './NewsTitleSwitcher';
 import CustomDrawer from './CustomDrawer';
+import NewsRoute from './NewsRoute';
 import { COLORS } from '../constants/theme';
 
 const Drawer = createDrawerNavigator()
@@ -23,22 +24,21 @@ const Drawer = createDrawerNavigator()
 const Home = () => {
   return (
     <Drawer.Navigator 
-      initialRouteName='News' 
+      id='MainDrawer'
+      initialRouteName='Newsfeed' 
       drawerContent={props => <CustomDrawer {...props}/>}
       screenOptions={{
           drawerLabelStyle: {
             marginLeft: -10,
-        },
-        headerStyle: {
-          backgroundColor: COLORS.primary,
-          
-        },
-        headerTintColor: COLORS.white,
-        drawerInactiveTintColor: COLORS.white,
-        drawerActiveTintColor: COLORS.white,
+          },
+          headerStyle: {
+            backgroundColor: COLORS.primary,
+          },
+          headerTintColor: COLORS.white,
+          drawerInactiveTintColor: COLORS.white,
+          drawerActiveTintColor: COLORS.white,
         // drawerType: 'back'
       }}
-      
     >
         <Drawer.Screen name='Friends' component={Friends} options={{
           drawerIcon: ({color}) => (
@@ -70,11 +70,12 @@ const Home = () => {
             <FontAwesome name='users' size={20} color={color}/>
           )
         }}/>
-        <Drawer.Screen name='News' component={News} options={{
+        <Drawer.Screen name='Newsfeed' component={NewsRoute} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='list-alt' size={20} color={color}/>
           ),
-          headerTitle: (props) => <NewsTitleSwitcher {...props} />
+          headerTitle: (props) => <NewsTitleSwitcher {...props} />,
+          
           // headerBackground: ({navigation, route, options}) => {
           //   const title = getHeaderTitle(options, route.name)
           //   return 

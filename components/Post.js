@@ -13,7 +13,7 @@ import PostVideos from './PostVideos'
 import PostDivider from './PostDivider'
 import { setOpenedPost } from '../redux/newsSlice'
 
-const Post = ({data, navigation, toOpen}) => {
+const Post = ({data, navigation, openedPost}) => {
   const dispatch = useDispatch()
   let postPhotos = []
   let postDocs = []
@@ -22,7 +22,7 @@ const Post = ({data, navigation, toOpen}) => {
   const type = data.type
 
   const openPost = () => {
-    if (toOpen) {
+    if (openedPost) {
       dispatch(setOpenedPost(data))
       navigation.navigate('OpenPost')
     }
@@ -66,7 +66,7 @@ const Post = ({data, navigation, toOpen}) => {
           {
             hasText ? (
               <>
-                <PostText dataText={data.text} toOpen={toOpen}/>
+                <PostText dataText={data.text} toOpen={openedPost}/>
                 <PostDivider dividerHeight={6}/>
               </>
               ) : null 
@@ -78,7 +78,7 @@ const Post = ({data, navigation, toOpen}) => {
           {
             hasRepostText ? (
               <>
-                <PostText dataText={data.copy_history[0].text} toOpen={toOpen}/>
+                <PostText dataText={data.copy_history[0].text} toOpen={openedPost}/>
                 <PostDivider dividerHeight={6}/>
               </>
             ) : null
@@ -127,7 +127,7 @@ const Post = ({data, navigation, toOpen}) => {
         {
           hasText ? (
             <>
-              <PostText dataText={data.text} toOpen={toOpen}/>
+              <PostText dataText={data.text} toOpen={openedPost}/>
               <PostDivider dividerHeight={6}/>
             </>
           ) : null
@@ -157,7 +157,7 @@ const Post = ({data, navigation, toOpen}) => {
           </>
         ) : null
       }
-      <BottomPost dataComments={data.comments} dataLikes={data.likes} dataReposts={data.reposts}/>
+      <BottomPost dataComments={data.comments} dataLikes={data.likes} dataReposts={data.reposts} openedPost={openedPost}/>
     </View>
   )
 }
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     margin: 5,
     padding: 10,
     borderRadius: 3,
-    backgroundColor: 'white',
+    backgroundColor: COLORS.white,
   },
   
 })

@@ -5,11 +5,28 @@ import { useSelector, useDispatch } from 'react-redux';
 import { COLORS } from '../constants/theme';
 import Post from '../components/Post'
 import { setItems, setGroups, setProfiles, pushItems, pushGroups, pushProfiles, setNextFrom } from '../redux/newsSlice';
+import { Header } from '@react-navigation/elements';
 
 //TODO make news upload from redux directly
 const News = ({navigation, route}) => {
+
   const drawerNavigator = navigation.getParent()
-  
+  useLayoutEffect(() => {
+    const hideHeader = navigation.addListener('blur', () => {
+      drawerNavigator.setOptions({
+        swipeEnabled: false, 
+        header: () => { 
+        return <Header 
+          headerTitle='Post'
+          // headerTitleAlign={'left'}
+          // headerTintColor={COLORS.white}
+          // headerTitleStyle={{color: COLORS.white}}
+          // headerStyle={{backgroundColor: COLORS.primary, }}
+        />}
+      })
+    })
+    return hideHeader;
+  }, [navigation])
   // useLayoutEffect(() => {
   //   const hideHeader = navigation.addListener('blur', () => {
   //     drawerNavigator.setOptions({headerShown: false, swipeEnabled: false})
@@ -121,7 +138,7 @@ const News = ({navigation, route}) => {
   }
 
   const renderItem = ({item}) => (
-    <Post data={item} navigation={navigation} toOpen={true}/>
+    <Post data={item} navigation={navigation} openedPost={true}/>
   )
 
   return(

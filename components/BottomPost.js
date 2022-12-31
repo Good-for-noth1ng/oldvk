@@ -5,7 +5,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { COLORS } from '../constants/theme'
 
-const BottomPost = ({dataComments, dataLikes, dataReposts}) => {
+const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost}) => {
     let commentsCount = 0
     if (dataComments !== undefined) {
         commentsCount = dataComments?.count
@@ -45,7 +45,7 @@ const BottomPost = ({dataComments, dataLikes, dataReposts}) => {
             setLikes(likes - 1)
         }
     }
-    return (
+    const result = (
         <View style={styles.postBottomContainer}>
             <View>
                 <TouchableOpacity style={styles.buttonContainer} activeOpacity={1}>
@@ -66,7 +66,8 @@ const BottomPost = ({dataComments, dataLikes, dataReposts}) => {
                 </TouchableOpacity>
             </View>
     </View>
-  )
+    )
+    return openedPost ? result : null
 }
 
 export default BottomPost

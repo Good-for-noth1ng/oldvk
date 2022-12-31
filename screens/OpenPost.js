@@ -7,7 +7,7 @@ import { COLORS } from '../constants/theme'
 const OpenPost = ({navigation}) => {
   const data = useSelector(state => state.news.openedPost) 
   const renderItem = ({item}) => (
-    <Post data={item} navigation={navigation} toOpen={false}/>
+    <Post data={item} navigation={navigation} openedPost={false}/>
   )
   return (
     <FlatList 

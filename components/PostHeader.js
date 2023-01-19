@@ -21,11 +21,12 @@ const PostHeader = ({sourceId, dataDate, isRepost}) => {
       minutes = '0' + minutes
     }
     let month = date.getMonth()
-    for (let i = 0; i < 12; i++) {
-      if (month == i + 1) {
-        month = months[i + 1]
-      }
-    }
+    // for (let i = 0; i < 12; i++) {
+    //   if (month == i + 1) {
+    //     month = months[i + 1]
+    //   }
+    // }
+    month = months[month]
     let year = date.getFullYear()
 
     let groupData = {}

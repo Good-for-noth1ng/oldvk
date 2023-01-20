@@ -70,11 +70,12 @@ const News = ({navigation, route}) => {
   } else {
     newsUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=25&v=5.131`
   }
-  const commentsUrl = `https://api.vk.com/method/newsfeed.getComments?access_token=${accessToken}&v=5.131`
+  
+  const commentsUrl = `https://api.vk.com/method/newsfeed.getComments?access_token=${accessToken}`
   
   useEffect(()=> {
     const fetchNews = async () => {
-      setIsLoading(true)    
+      setIsLoading(true);    
       fetch(newsUrl)
         .then((response) => response.json())
         .then((data) => {
@@ -87,7 +88,8 @@ const News = ({navigation, route}) => {
           dispatch(setNextFrom(data.response.next_from));
           setPostContent(items)
           setIsLoading(false);
-        })
+        });
+      // fetch(commentsUrl).then(response => response.json()).then(data => console.log(data))
     }
     fetchNews();
   }, [currentNewsPage])
@@ -135,6 +137,7 @@ const News = ({navigation, route}) => {
           const newPostContent = postContent.concat(items);
           setPostContent(newPostContent);
       });
+    
   }
 
   const renderItem = ({item}) => (

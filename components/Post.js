@@ -57,7 +57,7 @@ const Post = ({data, navigation, openedPost}) => {
   
   if (data.copy_history !== undefined) {
     const hasRepostText = data.copy_history[0].text ? true : false
-
+    
     return (
       <View style={styles.postContainer}>
         <PostHeader sourceId={data.source_id} dataDate={data.date} isRepost={false}/>
@@ -118,7 +118,7 @@ const Post = ({data, navigation, openedPost}) => {
       </View>  
     )
   }
-
+  console.log(data.source_id, data.post_id);
   return (
     <View style={styles.postContainer}>
       <PostHeader sourceId={data.source_id} dataDate={data.date}/>

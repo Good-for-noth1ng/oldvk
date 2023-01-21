@@ -118,7 +118,7 @@ const Post = ({data, navigation, openedPost}) => {
       </View>  
     )
   }
-  console.log(data.source_id, data.post_id);
+  // console.log(data.source_id, data.post_id);
   return (
     <View style={styles.postContainer}>
       <PostHeader sourceId={data.source_id} dataDate={data.date}/>

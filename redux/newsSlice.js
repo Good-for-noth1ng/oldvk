@@ -6,7 +6,7 @@ import uuid from 'react-native-uuid'
 export const newsSlice = createSlice({
     name: 'news',
     initialState: { 
-        openedPost: [],
+        openedPost: null,
         items: [],
         groups: [],
         profiles: [],
@@ -17,7 +17,7 @@ export const newsSlice = createSlice({
         setOpenedPost: (state, action) => {
             return {
                 ...state,
-                openedPost: [action.payload]
+                openedPost: action.payload
             }
         },
         setItems: (state, action) => {

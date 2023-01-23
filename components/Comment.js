@@ -2,7 +2,8 @@ import { StyleSheet, Text, View, Image } from 'react-native'
 import React, {useEffect} from 'react'
 import { useSelector } from 'react-redux'
 
-const Comment = ({data, profiles}) => {
+const Comment = ({data}) => {
+  const profiles = useSelector(state => state.comments.profiles)
   console.log(profiles)
   return (
     <View>

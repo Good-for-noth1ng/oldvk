@@ -25,16 +25,18 @@ const OpenPost = ({navigation}) => {
               return {...item, key: uuid.v4()}
             });
             setComments(items);
-            const commentAuthorUrl = `https://api.vk.com/method/user.get?access_token=${accessToken}&v=5.131&user_ids=${profilesUrlParam}&fields=photo_100`;
+            const commentAuthorUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${profilesUrlParam}&fields=photo_100`;
             fetch(commentAuthorUrl)
               .then(response => response.json())
-              .then(data => dispatch(setProfiles(data.response)));
+              .then(data => {
+                dispatch(setProfiles(data.response));
+              });
         })
     }
     fetchComments(commentsUrl);
   }, []);
   const renderComment = ({item}) => (
-    <Comment data={item} profiles={commentsAuthors}/>
+    <Comment data={item} />
   )
   return (
     <FlatList 

@@ -12,7 +12,7 @@ const OpenPost = ({navigation}) => {
   const data = useSelector(state => state.news.openedPost) 
   const accessToken = useSelector(state => state.user.accessToken);
   const commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&owner_id=${data.source_id}&post_id=${data.post_id}&sort=asc&thread_items_count=2`;
-  console.log(data.source_id, data.post_id)
+  // console.log(data.source_id, data.post_id)
   const [comments, setComments] = useState(null);
   useEffect(() => {
     const fetchComments = async (commentsUrl) => {
@@ -38,11 +38,15 @@ const OpenPost = ({navigation}) => {
   const renderComment = ({item}) => (
     <Comment data={item} />
   )
+  const commentSeparator = () => (
+    <View style={{height: 12, marginLeft: 5, marginRight: 5, backgroundColor: COLORS.white}}></View>
+  )
   return (
     <FlatList 
       ListHeaderComponent={<Post data={data} navigation={navigation} openedPost={false}/>}
       data={comments}
       renderItem={renderComment}      
+      ItemSeparatorComponent={commentSeparator}
     />
   )
 }

@@ -6,6 +6,7 @@ import { COLORS } from '../constants/theme'
 import Comment from '../components/Comment'
 import uuid from 'react-native-uuid'
 import { setProfiles } from '../redux/commentsSlice'
+import OpenedPostBottom from '../components/OpenedPostBottom'
 
 const OpenPost = ({navigation}) => {
   const dispatch = useDispatch()
@@ -15,7 +16,6 @@ const OpenPost = ({navigation}) => {
   console.log(data.source_id, data.post_id)
   const [comments, setComments] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
   useEffect(() => {
     const fetchComments = async (commentsUrl) => {
       fetch(commentsUrl)
@@ -44,6 +44,18 @@ const OpenPost = ({navigation}) => {
   const commentSeparator = () => (
     <View style={{height: 12, marginLeft: 5, marginRight: 5, backgroundColor: COLORS.white}}></View>
   )
+
+  const listHeader = () => (
+    <>
+      <Post data={data} navigation={navigation} openedPost={false}/>
+      <OpenedPostBottom 
+        likes={data.likes.count} 
+        reposts={data.reposts.count} 
+        views={data.views.count} 
+        comments={data.comments.count}
+      />
+    </>
+  )
   return (
     <View>
       {
@@ -52,7 +64,7 @@ const OpenPost = ({navigation}) => {
           <ActivityIndicator size={50} color={COLORS.primary}/>
         </View> :
         <FlatList 
-          ListHeaderComponent={<Post data={data} navigation={navigation} openedPost={false}/>}
+          ListHeaderComponent={listHeader}
           data={comments}
           renderItem={renderComment}      
           ItemSeparatorComponent={commentSeparator}

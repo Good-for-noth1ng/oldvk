@@ -4,31 +4,9 @@ import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import Feather from 'react-native-vector-icons/Feather'
 import { COLORS } from '../constants/theme'
+import { getTimeDate } from '../utils/date'
 
 const PostHeader = ({sourceId, dataDate, isRepost}) => {       
-    const months = [
-      'January', 'February', 'March', 'April', 
-      'May', 'June', 'Jule', 'August', 'September', 
-      'October', 'November', 'December'
-    ]
-    const nowDate = new Date()
-    const nowYear = nowDate.getFullYear()
-    const date = new Date(dataDate * 1000)
-    let monthDate = date.getDate()
-    let hours = date.getHours()
-    let minutes = date.getMinutes()
-    if (minutes < 10) {
-      minutes = '0' + minutes
-    }
-    let month = date.getMonth()
-    // for (let i = 0; i < 12; i++) {
-    //   if (month == i + 1) {
-    //     month = months[i + 1]
-    //   }
-    // }
-    month = months[month]
-    let year = date.getFullYear()
-
     let groupData = {}
     let profileData = {}
     if (sourceId < 0) {
@@ -53,7 +31,7 @@ const PostHeader = ({sourceId, dataDate, isRepost}) => {
                         </Text>
                     </View>
                     <Text style={isRepost ? styles.postTimeTextRepost : styles.postTimeText}>
-                      {monthDate} {month} {hours}:{minutes} {nowYear !== year ? year : ''}
+                      {getTimeDate(dataDate)}
                     </Text>
                 </View>
             </View>

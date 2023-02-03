@@ -5,8 +5,6 @@ import uuid from 'react-native-uuid'
 import { useSelector } from 'react-redux'
 
 const Comments = ({owner_id, post_id}) => {
-  
-  
   return (
     <FlatList 
       data={comments}

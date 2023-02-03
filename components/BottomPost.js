@@ -4,45 +4,30 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { COLORS } from '../constants/theme'
+import { getShortagedNumber } from '../utils/numShortage'
 
 const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost}) => {
-    let commentsCount = 0
-    if (dataComments !== undefined) {
-        commentsCount = dataComments?.count
-        if (commentsCount >= 1000) {
-            commentsCount = Math.floor(commentsCount / 1000)
-            commentsCount = commentsCount.toString().concat('k')
-        }
-    }
-    const [comments, setComments] = useState(commentsCount)
-    
-    let likesCount = 0
-    if (dataLikes !== undefined) {
-        likesCount = dataLikes?.count
-        if (likesCount >= 1000) {
-            likesCount = Math.floor(likesCount / 1000) 
-            likesCount = likesCount.toString().concat('k')
-        }
-    }
-    const [likes, setLikes] = useState(likesCount)
+    // let commentsCount = 0
+    // if (dataComments !== undefined) {
+    //     commentsCount = dataComments?.count
+    //     if (commentsCount >= 1000) {
+    //         commentsCount = Math.floor(commentsCount / 1000)
+    //         commentsCount = commentsCount.toString().concat('k')
+    //     }
+    // }
+    const [commentsCount, setCommentsCount] = useState(dataComments.count !== undefined ? dataComments.count : 0)
 
-    let repostsCount = 0
-    if (dataReposts !== undefined) {
-        repostsCount = dataReposts?.count
-        if (repostsCount >= 1000) {
-            repostsCount = Math.floor(repostsCount / 1000)
-            repostsCount= repostsCount.toString().concat('k')
-        }
-    }
-    const [reposts, setReposts] = useState(repostsCount)
+    const [likesCount, setLikesCount] = useState(dataLikes.count !== undefined ? dataLikes.count : 0)
+    const [repostsCount, setRepostsCount] = useState(dataReposts.count !== undefined ? dataReposts.count : 0)
     const [isLikePressed, setIsLikePressed] = useState(false)
+    
     const handleLikePress = () => {
         if (!isLikePressed) {
             setIsLikePressed(true)
-            setLikes(likes + 1)
+            setLikesCount(likesCount + 1)
         } else {
             setIsLikePressed(false)
-            setLikes(likes - 1)
+            setLikesCount(likesCount - 1)
         }
     }
     const result = (
@@ -50,19 +35,19 @@ const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost}) => {
             <View>
                 <TouchableOpacity style={styles.buttonContainer} activeOpacity={1}>
                     <MaterialCommunityIcons style={styles.iconButton} name='comment' color={COLORS.secondary} size={20}/>
-                    <Text style={styles.buttonText}>{comments}</Text>
+                    <Text style={styles.buttonText}>{getShortagedNumber(commentsCount)}</Text>
                 </TouchableOpacity>
             </View>
 
             <View style={styles.bottomRightContainer}>
                 <TouchableOpacity style={styles.buttonContainer}>
                     <FontAwesome style={styles.iconButton} name='share' color={COLORS.secondary} size={20}/>
-                    <Text style={styles.buttonText}>{reposts}</Text>  
+                    <Text style={styles.buttonText}>{getShortagedNumber(repostsCount)}</Text>  
                 </TouchableOpacity>
             
                 <TouchableOpacity style={styles.buttonContainer} activeOpacity={1} onPress={handleLikePress}>
                     <AntDesign style={{marginRight: 3}} color={isLikePressed ? COLORS.primary : COLORS.secondary} name='like1' size={20} />
-                    <Text style={styles.buttonText}>{likes}</Text>
+                    <Text style={styles.buttonText}>{getShortagedNumber(likesCount)}</Text>
                 </TouchableOpacity>
             </View>
     </View>

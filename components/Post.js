@@ -120,7 +120,15 @@ const Post = ({data, navigation, openedPost}) => {
   }
   // console.log(data.source_id, data.post_id);
   return (
-    <View style={styles.postContainer}>
+    <View style={{
+      padding: 10,
+      marginTop: 5,
+      marginRight: 5,
+      marginBottom: openedPost ? 5 : 0,
+      marginLeft: 5,
+      borderRadius: 3,
+      backgroundColor: COLORS.white,
+      }}>
       <PostHeader sourceId={data.source_id} dataDate={data.date}/>
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12}/>
@@ -166,8 +174,11 @@ export default Post
 
 const styles = StyleSheet.create({
   postContainer: {
-    margin: 5,
     padding: 10,
+    marginTop: 5,
+    marginRight: 5,
+    marginBottom: 5,
+    marginLeft: 5,
     borderRadius: 3,
     backgroundColor: COLORS.white,
   },

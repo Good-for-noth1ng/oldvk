@@ -1,4 +1,4 @@
-import { StyleSheet, FlatList, View } from 'react-native'
+import { StyleSheet, FlatList, View, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Post from '../components/Post'
 import { useSelector, useDispatch } from 'react-redux'
@@ -11,9 +11,11 @@ const OpenPost = ({navigation}) => {
   const dispatch = useDispatch()
   const data = useSelector(state => state.news.openedPost) 
   const accessToken = useSelector(state => state.user.accessToken);
-  const commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&owner_id=${data.source_id}&post_id=${data.post_id}&sort=asc&thread_items_count=2`;
-  // console.log(data.source_id, data.post_id)
+  const commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.source_id}&post_id=${data.post_id}&sort=asc&thread_items_count=2`;
+  console.log(data.source_id, data.post_id)
   const [comments, setComments] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const fetchComments = async (commentsUrl) => {
       fetch(commentsUrl)
@@ -30,6 +32,7 @@ const OpenPost = ({navigation}) => {
               .then(response => response.json())
               .then(data => {
                 dispatch(setProfiles(data.response));
+                setIsLoading(false);
               });
         })
     }
@@ -42,15 +45,33 @@ const OpenPost = ({navigation}) => {
     <View style={{height: 12, marginLeft: 5, marginRight: 5, backgroundColor: COLORS.white}}></View>
   )
   return (
-    <FlatList 
-      ListHeaderComponent={<Post data={data} navigation={navigation} openedPost={false}/>}
-      data={comments}
-      renderItem={renderComment}      
-      ItemSeparatorComponent={commentSeparator}
-    />
+    <View>
+      {
+        isLoading ? 
+        <View style={styles.activityContainer}>
+          <ActivityIndicator size={50} color={COLORS.primary}/>
+        </View> :
+        <FlatList 
+          ListHeaderComponent={<Post data={data} navigation={navigation} openedPost={false}/>}
+          data={comments}
+          renderItem={renderComment}      
+          ItemSeparatorComponent={commentSeparator}
+        />
+      }
+    </View>
+    
   )
 }
 
 export default OpenPost
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  activityContainer: {
+    width: '100%', 
+    height: '100%', 
+    display: 'flex', 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'center',
+  }
+})

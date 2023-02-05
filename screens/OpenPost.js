@@ -1,12 +1,14 @@
-import { StyleSheet, FlatList, View, ActivityIndicator } from 'react-native'
+import { StyleSheet, FlatList, View, ActivityIndicator, Text, Modal, Image } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Post from '../components/Post'
 import { useSelector, useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
 import Comment from '../components/Comment'
 import uuid from 'react-native-uuid'
-import { setProfiles } from '../redux/commentsSlice'
+import { setProfiles, closeAuthorInfo } from '../redux/commentsSlice'
 import OpenedPostBottom from '../components/OpenedPostBottom'
+import DividerWithLine from '../components/DividerWithLine'
+
 
 const OpenPost = ({navigation}) => {
   const dispatch = useDispatch()
@@ -16,6 +18,10 @@ const OpenPost = ({navigation}) => {
   console.log(data.source_id, data.post_id)
   const [comments, setComments] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  let isAuthorInfoOpen = useSelector(state => state.comments.isAuthorInfoOpen);
+  const [authorName, setAuthorName] = useState(useSelector(state => state.comments.authorName))
+  const [authorImgUrl, setAuthorImgUrl] = useState(useSelector(state => state.comments.authorImgUrl))
+  // console.log(authorName)
   useEffect(() => {
     const fetchComments = async (commentsUrl) => {
       fetch(commentsUrl)
@@ -56,19 +62,36 @@ const OpenPost = ({navigation}) => {
       />
     </>
   )
+
+  const listFooter = () => (
+    <DividerWithLine dividerColor={COLORS.white} dividerHeight={15} marginL={5} marginR={5} marginB={5}/>
+  )
   return (
-    <View>
+    <View style={isAuthorInfoOpen && {flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       {
         isLoading ? 
         <View style={styles.activityContainer}>
           <ActivityIndicator size={50} color={COLORS.primary}/>
         </View> :
-        <FlatList 
-          ListHeaderComponent={listHeader}
-          data={comments}
-          renderItem={renderComment}      
-          ItemSeparatorComponent={commentSeparator}
-        />
+        <>
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.light_smoke}}>
+            <Modal  style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} animationType='slide' transparent={true} visible={isAuthorInfoOpen} onRequestClose={() => {dispatch(closeAuthorInfo())}}>
+              <View style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center'}}>
+                <View style={styles.modalView}>
+                  <Image source={{uri: authorImgUrl}}/>
+                  <Text>{authorName}</Text>
+                </View>
+              </View>
+            </Modal>
+          </View>
+          <FlatList 
+            ListHeaderComponent={listHeader}
+            data={comments}
+            renderItem={renderComment}      
+            ItemSeparatorComponent={commentSeparator}
+            ListFooterComponent={listFooter}
+          />
+        </>
       }
     </View>
     
@@ -85,5 +108,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     alignItems: 'center', 
     justifyContent: 'center',
+  },
+  modalView: {
+    width: 250, 
+    height: 250, 
+    backgroundColor: COLORS.white, 
+    justifyContent: 'center', 
+    alignItems: 'center',
+    shadowColor: COLORS.black,
+    borderRadius: 10,
+    shadowOffset: {
+      width: 5,
+      height: 5,
+    },
+    shadowOpacity: 0.25,
+    elevation: 20,
+    shadowRadius: 4,
   }
+
 })

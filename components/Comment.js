@@ -1,20 +1,23 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Modal } from 'react-native'
 import React, {useEffect, useState} from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 import { getShortagedNumber } from '../utils/numShortage'
+import { openAuthorInfo, setAuthorName, setAuthorImgUrl  } from '../redux/commentsSlice'
 
 const Comment = ({data}) => {
+  const dispatch = useDispatch()
   const profiles = useSelector(state => state.comments.profiles)
   const [name, setName] = useState('')
   const [photoUrl, setPhotoUrl] = useState(null)
   const [isLiked, setIsLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(data.likes.count)
-
+  const [showAuthorInfo, setShowAuthorInfo] = useState(false)
+  // url = 'https://vkdia.com/pages/fake-vk-profile/registration-date?vkId=602049422' regDate
   useEffect(() => {
-    console.log(data.date)
+    // console.log(data.from_id)
     profiles.forEach(item => {
       if (item.id === data.from_id) {
         setName(`${item.last_name} ${item.first_name}`);
@@ -32,11 +35,18 @@ const Comment = ({data}) => {
       setIsLiked(false);
     }
   }
+  const handleProfilePress = () => {
+    dispatch(openAuthorInfo())
+    dispatch(setAuthorName(name))
+    dispatch(setAuthorImgUrl(photoUrl))
+    const l = useSelector(state => state.comments.authorName)
+    console.log(l)
+  }
   return (
     <View style={styles.commentContainer}>
-      <View style={{marginRight: 7}}>
+      <TouchableOpacity activeOpacity={1} style={{marginRight: 7}} onPress={handleProfilePress}>
         <Image source={{uri: photoUrl}} style={{width: 38, height: 38, borderRadius: 100}}/>
-      </View>
+      </TouchableOpacity>
       <View style={{width: '86%'}}>
         <Text style={{fontWeight: '700', fontStyle: 'normal', fontSize: 14}}>{name}</Text>
         <Text>{data.text}</Text>

@@ -7,16 +7,7 @@ import { COLORS } from '../constants/theme'
 import { getShortagedNumber } from '../utils/numShortage'
 
 const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost}) => {
-    // let commentsCount = 0
-    // if (dataComments !== undefined) {
-    //     commentsCount = dataComments?.count
-    //     if (commentsCount >= 1000) {
-    //         commentsCount = Math.floor(commentsCount / 1000)
-    //         commentsCount = commentsCount.toString().concat('k')
-    //     }
-    // }
     const [commentsCount, setCommentsCount] = useState(dataComments.count !== undefined ? dataComments.count : 0)
-
     const [likesCount, setLikesCount] = useState(dataLikes.count !== undefined ? dataLikes.count : 0)
     const [repostsCount, setRepostsCount] = useState(dataReposts.count !== undefined ? dataReposts.count : 0)
     const [isLikePressed, setIsLikePressed] = useState(false)

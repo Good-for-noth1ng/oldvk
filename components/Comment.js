@@ -5,7 +5,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 import { getShortagedNumber } from '../utils/numShortage'
-import { openAuthorInfo, setAuthorName, setAuthorImgUrl  } from '../redux/commentsSlice'
+import { openAuthorInfo, setAuthorName, setAuthorImgUrl, setRegistrationDate  } from '../redux/commentsSlice'
+
 
 const Comment = ({data}) => {
   const dispatch = useDispatch()
@@ -15,7 +16,6 @@ const Comment = ({data}) => {
   const [isLiked, setIsLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(data.likes.count)
   const [showAuthorInfo, setShowAuthorInfo] = useState(false)
-  // url = 'https://vkdia.com/pages/fake-vk-profile/registration-date?vkId=602049422' regDate
   useEffect(() => {
     // console.log(data.from_id)
     profiles.forEach(item => {
@@ -36,11 +36,20 @@ const Comment = ({data}) => {
     }
   }
   const handleProfilePress = () => {
-    dispatch(openAuthorInfo())
-    dispatch(setAuthorName(name))
-    dispatch(setAuthorImgUrl(photoUrl))
-    const l = useSelector(state => state.comments.authorName)
-    console.log(l)
+    const profileDataRegUrl = `https://vkdia.com/pages/fake-vk-profile/registration-date?vkId=${data.from_id}`;
+    const re = /^\d*$/g; 
+    fetch(profileDataRegUrl)
+      .then(response => response.json())
+      .then(result => {
+        const regDate = result.regDate 
+        if (re.test(regDate)) {
+          dispatch(setRegistrationDate(regDate))
+          dispatch(setAuthorName(name));
+          dispatch(setAuthorImgUrl(photoUrl));
+          
+        }
+      })
+    dispatch(openAuthorInfo());
   }
   return (
     <View style={styles.commentContainer}>

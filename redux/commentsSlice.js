@@ -7,6 +7,8 @@ export const commentsSlice = createSlice({
         isAuthorInfoOpen: false,
         authorName: '',
         authorImgUrl: '',
+        registrationDate: '',
+        authorInfoIsFetching: true 
     },
     reducers: {
         setProfiles: (state, action) => {
@@ -30,7 +32,7 @@ export const commentsSlice = createSlice({
         setAuthorName: (state, action) => {
             return {
                 ...state,
-                authorFirstName: action.payload
+                authorName: action.payload
             }
         },
         setAuthorImgUrl: (state, action) => {
@@ -38,8 +40,14 @@ export const commentsSlice = createSlice({
                 ...state,
                 authorImgUrl: action.payload
             }
+        },
+        setRegistrationDate: (state, action) => {
+            return {
+                ...state,
+                registrationDate: action.payload
+            }
         }
     }
 });
-export const {setProfiles, closeAuthorInfo, openAuthorInfo, setAuthorName, setAuthorImgUrl} = commentsSlice.actions;
+export const {setProfiles, closeAuthorInfo, openAuthorInfo, setAuthorName, setAuthorImgUrl, setRegistrationDate} = commentsSlice.actions;
 export default commentsSlice.reducer;

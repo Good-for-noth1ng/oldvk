@@ -1,14 +1,15 @@
-import { StyleSheet, FlatList, View, ActivityIndicator, Text, Modal, Image } from 'react-native'
+import { StyleSheet, FlatList, View, ActivityIndicator, Text, Modal, Image, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Post from '../components/Post'
 import { useSelector, useDispatch } from 'react-redux'
+import uuid from 'react-native-uuid'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 import { COLORS } from '../constants/theme'
 import Comment from '../components/Comment'
-import uuid from 'react-native-uuid'
 import { setProfiles, closeAuthorInfo } from '../redux/commentsSlice'
 import OpenedPostBottom from '../components/OpenedPostBottom'
 import DividerWithLine from '../components/DividerWithLine'
-
+import { getTimeDate } from '../utils/date'
 
 const OpenPost = ({navigation}) => {
   const dispatch = useDispatch()
@@ -19,8 +20,9 @@ const OpenPost = ({navigation}) => {
   const [comments, setComments] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   let isAuthorInfoOpen = useSelector(state => state.comments.isAuthorInfoOpen);
-  const [authorName, setAuthorName] = useState(useSelector(state => state.comments.authorName))
-  const [authorImgUrl, setAuthorImgUrl] = useState(useSelector(state => state.comments.authorImgUrl))
+  const authorName = useSelector(state => state.comments.authorName)
+  const authorImgUrl = useSelector(state => state.comments.authorImgUrl)
+  const regestrationDate = useSelector(state => state.comments.registrationDate)
   // console.log(authorName)
   useEffect(() => {
     const fetchComments = async (commentsUrl) => {
@@ -66,8 +68,13 @@ const OpenPost = ({navigation}) => {
   const listFooter = () => (
     <DividerWithLine dividerColor={COLORS.white} dividerHeight={15} marginL={5} marginR={5} marginB={5}/>
   )
+
+  const handleClosingCommentAuthorInfo  = () => {
+    dispatch(closeAuthorInfo());
+  }
+
   return (
-    <View style={isAuthorInfoOpen && {flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+    <View >
       {
         isLoading ? 
         <View style={styles.activityContainer}>
@@ -75,11 +82,27 @@ const OpenPost = ({navigation}) => {
         </View> :
         <>
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.light_smoke}}>
-            <Modal  style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} animationType='slide' transparent={true} visible={isAuthorInfoOpen} onRequestClose={() => {dispatch(closeAuthorInfo())}}>
+            <Modal  
+              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} 
+              animationType='slide' 
+              transparent={true} 
+              visible={isAuthorInfoOpen} 
+              onRequestClose={() => {dispatch(closeAuthorInfo())}}
+            >
               <View style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center'}}>
                 <View style={styles.modalView}>
-                  <Image source={{uri: authorImgUrl}}/>
-                  <Text>{authorName}</Text>
+                    <View style={styles.commentInfoHeader}>
+                      <TouchableOpacity style={styles.crossButton} activeOpacity={1} onPress={handleClosingCommentAuthorInfo}>
+                        <AntDesign name='close' size={20} color={COLORS.primary}/>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={styles.nameAvatarContainer}>
+                      <Image style={styles.avatarInfo} source={{uri: authorImgUrl}}/>
+                      <Text style={styles.nameInfo}>{authorName}</Text>
+                    </View>
+                    <View style={styles.registredContainer}>
+                      <Text style={styles.registredText}>Registred: {getTimeDate(regestrationDate)}</Text>
+                    </View>
                 </View>
               </View>
             </Modal>
@@ -113,7 +136,7 @@ const styles = StyleSheet.create({
     width: 250, 
     height: 250, 
     backgroundColor: COLORS.white, 
-    justifyContent: 'center', 
+    justifyContent: 'flex-start', 
     alignItems: 'center',
     shadowColor: COLORS.black,
     borderRadius: 10,
@@ -124,6 +147,50 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     elevation: 20,
     shadowRadius: 4,
+  },
+  commentInfoHeader: {
+    width: '100%', 
+    height: 40, 
+    display: 'flex', 
+    flexDirection: 'row', 
+    justifyContent: 'flex-end', 
+    alignItems: 'center',
+  },
+  crossButton: {
+    width: 30, 
+    height: 30,
+    marginRight: 10,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  nameAvatarContainer: {
+    width: 230,
+    display: 'flex',
+    paddingLeft: 15,
+    paddingRight: 15,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarInfo: {
+    width: 50, 
+    height: 50, 
+    borderRadius: 100, 
+    marginRight: 5,
+  },
+  nameInfo: {
+    fontSize: 16, 
+    fontWeight: '700', 
+    color: COLORS.black, 
+    marginLeft: 5,
+  },
+  registredContainer: {
+    marginTop: 40
+  },
+  registredText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.black
   }
-
 })

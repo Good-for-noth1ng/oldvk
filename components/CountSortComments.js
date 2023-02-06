@@ -5,7 +5,9 @@ import { COLORS } from '../constants/theme'
 const CountSortComments = ({commentsCount}) => {
   return (
     <View style={styles.countSortContainer}>
-        <Text style={{color: COLORS.secondary}}>{commentsCount} {commentsCount > 1 ? 'COMMENTS' : 'COMMENT'}</Text>
+        <Text style={{color: COLORS.secondary}}>
+          {commentsCount} {commentsCount > 1 || commentsCount == 0 ? 'COMMENTS' : 'COMMENT'}
+        </Text>
         <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
             <Text style={{color: COLORS.primary, fontSize: 15}}>Ascending</Text>
             <FontAwesome color={COLORS.primary} style={{marginLeft: 4}} name='chevron-down'/>

@@ -114,6 +114,7 @@ const Post = ({data, navigation, openedPost}) => {
           dataComments={data.comments} 
           dataLikes={data.likes} 
           dataReposts={data.reposts}
+          openedPost={openedPost}
         />
       </View>  
     )

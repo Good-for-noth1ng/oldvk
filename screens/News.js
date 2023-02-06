@@ -10,23 +10,25 @@ import { Header } from '@react-navigation/elements';
 //TODO make news upload from redux directly
 const News = ({navigation, route}) => {
 
-  const drawerNavigator = navigation.getParent()
-  useLayoutEffect(() => {
-    const hideHeader = navigation.addListener('blur', () => {
-      drawerNavigator.setOptions({
-        swipeEnabled: false, 
-        header: () => { 
-        return <Header 
-          headerTitle='Post'
-          // headerTitleAlign={'left'}
-          // headerTintColor={COLORS.white}
-          // headerTitleStyle={{color: COLORS.white}}
-          // headerStyle={{backgroundColor: COLORS.primary, }}
-        />}
-      })
-    })
-    return hideHeader;
-  }, [navigation])
+  // const drawerNavigator = navigation.getParent()
+  // useLayoutEffect(() => {
+  //   const hideHeader = navigation.addListener('blur', () => {
+  //     drawerNavigator.setOptions({
+  //       swipeEnabled: false, 
+  //       header: () => { 
+  //       return <Header 
+  //         headerTitle='Post'
+  //         // headerTitleAlign={'left'}
+  //         // headerTintColor={COLORS.white}
+  //         // headerTitleStyle={{color: COLORS.white}}
+  //         // headerStyle={{backgroundColor: COLORS.primary, }}
+  //       />}
+  //     })
+  //   })
+  //   return hideHeader;
+  // }, [navigation])
+
+  
   // useLayoutEffect(() => {
   //   const hideHeader = navigation.addListener('blur', () => {
   //     drawerNavigator.setOptions({headerShown: false, swipeEnabled: false})
@@ -156,6 +158,7 @@ const News = ({navigation, route}) => {
                 showsVerticalScrollIndicator={false}
                 initialNumToRender={showedPosts}
                 onEndReached={() => {fetchMoreData()}}
+                style={{backgroundColor: COLORS.light_smoke}}
                 refreshControl={
                   <RefreshControl 
                     refreshing={isLoading} 

@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Image } from 'react-native'
 import React from 'react'
+import { COLORS } from '../constants/theme'
 
 const GroupListItem = ({data}) => {
     let name = data.name.slice(0,30)
@@ -20,9 +21,11 @@ const styles = StyleSheet.create({
     groupIitemContainer: {
         display: 'flex',
         flexDirection: 'row',
-        marginLeft: 15,
-        marginRight: 15,
-        marginBottom: 15
+        marginLeft: 5,
+        marginRight: 5,
+        paddingLeft: 10,
+        paddingRight: 10,
+        backgroundColor: COLORS.white,
     },
     image: {
         width: 50, 

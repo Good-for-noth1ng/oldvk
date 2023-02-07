@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import uuid from 'react-native-uuid';
 import GroupListItem from '../components/GroupListItem';
 import { COLORS } from '../constants/theme';
+import DividerWithLine from '../components/DividerWithLine';
 
 const Groups = () => {
   const accessToken = useSelector(state => state.user.accessToken)
@@ -36,10 +37,13 @@ const Groups = () => {
   const renderItem = ({item}) => (
     <GroupListItem data={item}/>
   )
+  const groupListSeparator = () => (
+    <DividerWithLine dividerHeight={10} marginL={5} marginR={5} dividerColor={COLORS.white}/>
+  )
   return (
     <View>
       <SafeAreaView>
-        <StatusBar backgroundColor={COLORS.primary}/>
+        <StatusBar backgroundColor={COLORS.primary} barStyle={COLORS.white}/>
         {
           isLoading ? 
           <View style={styles.spinnerContainer}>
@@ -51,9 +55,11 @@ const Groups = () => {
               renderItem={renderItem}
               key={uuid.v4()}
               showsVerticalScrollIndicator={false}
+              ItemSeparatorComponent={groupListSeparator}
               refreshControl={
                 <RefreshControl refreshing={isLoading} />
               }
+              
             />
           </View>
         }

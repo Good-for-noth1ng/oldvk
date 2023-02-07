@@ -4,56 +4,33 @@ import uuid from 'react-native-uuid';
 import { useSelector, useDispatch } from 'react-redux';
 import { COLORS } from '../constants/theme';
 import Post from '../components/Post'
+import Entypo from 'react-native-vector-icons/Entypo'
 import { setItems, setGroups, setProfiles, pushItems, pushGroups, pushProfiles, setNextFrom } from '../redux/newsSlice';
 import { Header } from '@react-navigation/elements';
+import CustomHeader from '../components/CustomHeader';
+import NewsTitleSwitcher from '../components/NewsTitleSwitcher';
+import DividerWithLine from '../components/DividerWithLine';
 
 //TODO make news upload from redux directly
 const News = ({navigation, route}) => {
-
-  // const drawerNavigator = navigation.getParent()
-  // useLayoutEffect(() => {
-  //   const hideHeader = navigation.addListener('blur', () => {
-  //     drawerNavigator.setOptions({
-  //       swipeEnabled: false, 
-  //       header: () => { 
-  //       return <Header 
-  //         headerTitle='Post'
-  //         // headerTitleAlign={'left'}
-  //         // headerTintColor={COLORS.white}
-  //         // headerTitleStyle={{color: COLORS.white}}
-  //         // headerStyle={{backgroundColor: COLORS.primary, }}
-  //       />}
-  //     })
-  //   })
-  //   return hideHeader;
-  // }, [navigation])
-
+  const drawerNavigator = navigation.getParent()
   
-  // useLayoutEffect(() => {
-  //   const hideHeader = navigation.addListener('blur', () => {
-  //     drawerNavigator.setOptions({headerShown: false, swipeEnabled: false})
-  //   })
-  //   return hideHeader;
-  // }, [navigation])
+  useLayoutEffect(() => {
+    const hideHeader = navigation.addListener('blur', () => {
+      drawerNavigator.setOptions({headerShown: false, swipeEnabled: false})
+    })
+    return hideHeader;
+  }, [navigation])
 
-  // useLayoutEffect(() => {
-  //   const showHeader = navigation.addListener('focus', () => {
-  //     drawerNavigator.setOptions({
-  //           headerShown: true,
-  //           drawerLabelStyle: {
-  //             marginLeft: -10,
-  //           },
-  //           headerStyle: {
-  //             backgroundColor: COLORS.primary,
-  //           },
-  //           headerTintColor: COLORS.white,
-  //           drawerInactiveTintColor: COLORS.white,
-  //           drawerActiveTintColor: COLORS.white,
-  //           swipeEnabled: true
-  //         })
-  //   })
-  //   return showHeader
-  // }, [navigation])
+  useLayoutEffect(() => {
+    const showHeader = navigation.addListener('focus', () => {
+      drawerNavigator.setOptions({
+            headerShown: false,
+            swipeEnabled: true
+          })
+    })
+    return showHeader
+  }, [navigation])
          
   
   const accessToken = useSelector(state => state.user.accessToken)
@@ -138,6 +115,10 @@ const News = ({navigation, route}) => {
       });
     
   }
+  
+  const handleDrawerOpening = () => {
+    navigation.openDrawer()
+  }
 
   const renderItem = ({item}) => (
     <Post data={item} navigation={navigation} openedPost={true}/>
@@ -146,7 +127,12 @@ const News = ({navigation, route}) => {
   return(
     <View style={styles.newsBackground}>
       <SafeAreaView>
-        <StatusBar backgroundColor={COLORS.primary} />
+        <StatusBar backgroundColor={COLORS.primary} barStyle={COLORS.white} animated={true}/>
+        <CustomHeader 
+          headerName={<NewsTitleSwitcher />} 
+          iconComponent={<Entypo name='menu' color={COLORS.white} size={30}/>}
+          iconTouchHandler={handleDrawerOpening}
+        />
           {isLoading ?
             <View style={styles.spinnerContainer}>
               <ActivityIndicator color={COLORS.primary} size={50}/>
@@ -168,9 +154,12 @@ const News = ({navigation, route}) => {
                   />
                 }
                 ListFooterComponent={
-                  <View style={styles.bottomSpinnerContainer}>
-                    <ActivityIndicator color={COLORS.primary} size={50}/>
-                  </View>
+                  <>
+                    <View style={styles.bottomSpinnerContainer}>
+                      <ActivityIndicator color={COLORS.primary} size={50}/>
+                    </View>
+                    <DividerWithLine dividerHeight={5} marginB={175}/>
+                  </>
                 }
                 maxToRenderPerBatch={5}
                 removeClippedSubviews={true}

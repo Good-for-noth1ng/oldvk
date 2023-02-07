@@ -74,8 +74,8 @@ const Home = () => {
           drawerIcon: ({color}) => (
             <FontAwesome name='list-alt' size={20} color={color}/>
           ),
-          headerTitle: (props) => <NewsTitleSwitcher {...props} />,
-          
+          // headerTitle: (props) => <NewsTitleSwitcher {...props} />,
+          headerShown: false
           // headerBackground: ({navigation, route, options}) => {
           //   const title = getHeaderTitle(options, route.name)
           //   return 

@@ -36,13 +36,13 @@ export default NewsTitleSwitcher
 
 const styles = StyleSheet.create({
   dropdownNews: {
-    margin: 16,
+    // margin: 16,
     height: 50,
     width: 80,
     color: COLORS.white
   },
   dropdownRecommended: {
-    margin: 16,
+    // margin: 16,
     height: 50,
     width: 150,
     color: COLORS.white

@@ -1,4 +1,4 @@
-import { StyleSheet, FlatList, View, ActivityIndicator, Text, Modal, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, FlatList, View, ActivityIndicator, Text, Modal, StatusBar, Image, TouchableOpacity, SafeAreaView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Post from '../components/Post'
 import { useSelector, useDispatch } from 'react-redux'
@@ -10,6 +10,8 @@ import { setProfiles, closeAuthorInfo } from '../redux/commentsSlice'
 import OpenedPostBottom from '../components/OpenedPostBottom'
 import DividerWithLine from '../components/DividerWithLine'
 import { getTimeDate } from '../utils/date'
+import CustomHeader from '../components/CustomHeader'
+import { useLayoutEffect } from 'react'
 
 const OpenPost = ({navigation}) => {
   const dispatch = useDispatch()
@@ -23,6 +25,7 @@ const OpenPost = ({navigation}) => {
   const authorName = useSelector(state => state.comments.authorName)
   const authorImgUrl = useSelector(state => state.comments.authorImgUrl)
   const regestrationDate = useSelector(state => state.comments.registrationDate)
+  const registrationDateIsFetching = useSelector(state => state.comments.authorInfoIsFetching)
   // console.log(authorName)
   useEffect(() => {
     const fetchComments = async (commentsUrl) => {
@@ -52,6 +55,9 @@ const OpenPost = ({navigation}) => {
   const commentSeparator = () => (
     <View style={{height: 12, marginLeft: 5, marginRight: 5, backgroundColor: COLORS.white}}></View>
   )
+  const handleNavigationBack = () => {
+    navigation.pop()
+  }
 
   const listHeader = () => (
     <>
@@ -66,7 +72,7 @@ const OpenPost = ({navigation}) => {
   )
 
   const listFooter = () => (
-    <DividerWithLine dividerColor={COLORS.white} dividerHeight={15} marginL={5} marginR={5} marginB={5}/>
+    <DividerWithLine dividerColor={COLORS.white} dividerHeight={10} marginL={5} marginR={5} marginB={125}/>
   )
 
   const handleClosingCommentAuthorInfo  = () => {
@@ -74,14 +80,21 @@ const OpenPost = ({navigation}) => {
   }
 
   return (
-    <View >
+    <View>
+      <SafeAreaView>
+      <StatusBar barStyle={COLORS.white} backgroundColor={COLORS.primary}/>
+      <CustomHeader 
+        headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>Post</Text>}
+        iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
+        iconTouchHandler={handleNavigationBack}
+      />
       {
         isLoading ? 
         <View style={styles.activityContainer}>
           <ActivityIndicator size={50} color={COLORS.primary}/>
         </View> :
         <>
-          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.light_smoke}}>
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
             <Modal  
               style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} 
               animationType='slide' 
@@ -91,18 +104,26 @@ const OpenPost = ({navigation}) => {
             >
               <View style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center'}}>
                 <View style={styles.modalView}>
-                    <View style={styles.commentInfoHeader}>
+                  {
+                    registrationDateIsFetching ? 
+                      <View style={styles.activityContainer}>
+                        <ActivityIndicator size={50} color={COLORS.primary}/>
+                      </View> :
+                      <>
+                      <View style={styles.commentInfoHeader}>
                       <TouchableOpacity style={styles.crossButton} activeOpacity={1} onPress={handleClosingCommentAuthorInfo}>
                         <AntDesign name='close' size={20} color={COLORS.primary}/>
                       </TouchableOpacity>
-                    </View>
-                    <View style={styles.nameAvatarContainer}>
+                      </View>
+                      <View style={styles.nameAvatarContainer}>
                       <Image style={styles.avatarInfo} source={{uri: authorImgUrl}}/>
                       <Text style={styles.nameInfo}>{authorName}</Text>
-                    </View>
-                    <View style={styles.registredContainer}>
+                      </View>
+                      <View style={styles.registredContainer}>
                       <Text style={styles.registredText}>Registred: {getTimeDate(regestrationDate)}</Text>
-                    </View>
+                      </View>
+                    </>
+                  }  
                 </View>
               </View>
             </Modal>
@@ -116,8 +137,8 @@ const OpenPost = ({navigation}) => {
           />
         </>
       }
+      </SafeAreaView>
     </View>
-    
   )
 }
 
@@ -131,6 +152,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     alignItems: 'center', 
     justifyContent: 'center',
+  },
+  activityContainer: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalView: {
     width: 250, 

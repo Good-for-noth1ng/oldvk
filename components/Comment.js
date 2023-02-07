@@ -5,7 +5,14 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 import { getShortagedNumber } from '../utils/numShortage'
-import { openAuthorInfo, setAuthorName, setAuthorImgUrl, setRegistrationDate  } from '../redux/commentsSlice'
+import { 
+  openAuthorInfo, 
+  setAuthorName, 
+  setAuthorImgUrl, 
+  setRegistrationDate, 
+  startLoadingRegistrationDate,
+  stopLoadingRegistrationDate  
+} from '../redux/commentsSlice'
 
 
 const Comment = ({data}) => {
@@ -38,6 +45,8 @@ const Comment = ({data}) => {
   const handleProfilePress = () => {
     const profileDataRegUrl = `https://vkdia.com/pages/fake-vk-profile/registration-date?vkId=${data.from_id}`;
     const re = /^\d*$/g; 
+    dispatch(startLoadingRegistrationDate())
+    dispatch(openAuthorInfo());
     fetch(profileDataRegUrl)
       .then(response => response.json())
       .then(result => {
@@ -46,10 +55,9 @@ const Comment = ({data}) => {
           dispatch(setRegistrationDate(regDate))
           dispatch(setAuthorName(name));
           dispatch(setAuthorImgUrl(photoUrl));
-          
+          dispatch(stopLoadingRegistrationDate());
         }
-      })
-    dispatch(openAuthorInfo());
+      })  
   }
   return (
     <View style={styles.commentContainer}>

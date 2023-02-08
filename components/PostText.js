@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import React from 'react'
-import { useState } from 'react'
+import React, { useState, useCallback, memo } from 'react'
 import { COLORS } from '../constants/theme'
 //dataText
 const PostText = ({dataText, toOpen}) => {
@@ -20,10 +19,10 @@ const PostText = ({dataText, toOpen}) => {
     }
     const [text, setText] = useState(postText)
     const [readMore, setReadMore] = useState(readMoreText)
-    const handleReadMore = () => {
+    const handleReadMore = useCallback(() => {
         setText(dataText)
         setReadMore(false)
-    } 
+    }, []) 
     return (
         <View
             style={styles.textContainer}

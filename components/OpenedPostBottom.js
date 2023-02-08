@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, Touchable } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useCallback, memo } from 'react'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import DividerWithLine from './DividerWithLine'
@@ -11,14 +11,14 @@ const OpenedPostBottom = ({reposts, likes, views, comments}) => {
   const [isLikePressed, setIsLikePressed] = useState(false);
   const [likesCount, setLikesCount] = useState(likes);
   const [repostsCount, setRepostsCount] = useState(reposts);
-  const handleLikePress = () => {
+  const handleLikePress = useCallback(() => {
     if (isLikePressed) {
       setLikesCount(likesCount - 1);
     } else {
       setLikesCount(likesCount + 1);
     }
     setIsLikePressed(!isLikePressed);
-  }  
+  }, [isLikePressed])  
   return (
     <>
       <View style={styles.bottomPostContainer}>
@@ -58,7 +58,7 @@ const OpenedPostBottom = ({reposts, likes, views, comments}) => {
   )
 }
 
-export default OpenedPostBottom
+export default memo(OpenedPostBottom)
 
 const styles = StyleSheet.create({
   bottomPostContainer: {

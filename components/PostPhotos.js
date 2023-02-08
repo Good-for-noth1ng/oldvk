@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, Modal, TouchableOpacity } from 'react-native'
-import React, {useState, useRef, useLayoutEffect} from 'react'
+import React, {useState, useRef, useLayoutEffect, memo} from 'react'
 import uuid from 'react-native-uuid';
 import { COLORS } from '../constants/theme';
 import { postWidth } from '../constants/theme';

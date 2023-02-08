@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Modal } from 'react-native'
-import React, {useEffect, useState} from 'react'
+import React, { useEffect, useState, memo} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { COLORS } from '../constants/theme'
@@ -92,7 +92,7 @@ const Comment = ({data}) => {
   )
 }
 
-export default Comment
+export default memo(Comment)
 
 const styles = StyleSheet.create({
   commentContainer: {

@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
-import React from 'react'
+import React, { useState, useCallback, memo } from 'react'
 import { COLORS } from '../constants/theme'
-import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import BottomPost from './BottomPost'
 import PostHeader from './PostHeader'
@@ -13,6 +12,7 @@ import PostVideos from './PostVideos'
 import PostDivider from './PostDivider'
 import { setOpenedPost } from '../redux/newsSlice'
 
+
 const Post = ({data, navigation, openedPost}) => {
   const dispatch = useDispatch()
   let postPhotos = []
@@ -21,12 +21,12 @@ const Post = ({data, navigation, openedPost}) => {
   let postVideos = []
   const type = data.type
 
-  const openPost = () => {
+  const openPost = useCallback(() => {
     if (openedPost) {
       dispatch(setOpenedPost(data))
       navigation.navigate('OpenPost')
     }
-  }
+  }, [openedPost])
 
   if (data.attachments !== undefined && type === 'post') {
     let attachments
@@ -171,7 +171,7 @@ const Post = ({data, navigation, openedPost}) => {
   )
 }
 
-export default Post
+export default memo(Post)
 
 const styles = StyleSheet.create({
   postContainer: {

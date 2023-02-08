@@ -1,7 +1,7 @@
 import { View, Text, RefreshControl, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet, FlatList } from 'react-native'
-import React, { useEffect, useState, useLayoutEffect } from 'react'
+import React, { useEffect, useState, useLayoutEffect, useCallback, memo } from 'react'
 import uuid from 'react-native-uuid';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector, useDispatch, } from 'react-redux';
 import { COLORS } from '../constants/theme';
 import Post from '../components/Post'
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -116,11 +116,11 @@ const News = ({navigation, route}) => {
     
   }
   
-  const handleDrawerOpening = () => {
+  const handleDrawerOpening = useCallback(() => {
     navigation.openDrawer()
-  }
+  }, [navigation])
 
-  const renderItem = ({item}) => (
+  const renderItem =  ({item}) => (
     <Post data={item} navigation={navigation} openedPost={true}/>
   )
 
@@ -183,4 +183,4 @@ const styles = StyleSheet.create({
     justifyContentL: 'center',
   }
 })
-export default News
+export default memo(News)

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import React, {useState} from 'react'
+import React, {useState, useCallback, memo} from 'react'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -12,7 +12,7 @@ const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost}) => {
     const [repostsCount, setRepostsCount] = useState(dataReposts.count !== undefined ? dataReposts.count : 0)
     const [isLikePressed, setIsLikePressed] = useState(false)
     
-    const handleLikePress = () => {
+    const handleLikePress = useCallback(() => {
         if (!isLikePressed) {
             setIsLikePressed(true)
             setLikesCount(likesCount + 1)
@@ -20,7 +20,8 @@ const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost}) => {
             setIsLikePressed(false)
             setLikesCount(likesCount - 1)
         }
-    }
+    }, [isLikePressed])
+
     const result = (
         <View style={styles.postBottomContainer}>
             <View>
@@ -46,7 +47,7 @@ const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost}) => {
     return openedPost ? result : null
 }
 
-export default BottomPost
+export default memo(BottomPost)
 
 const styles = StyleSheet.create({
     postBottomContainer: {

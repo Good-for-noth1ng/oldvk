@@ -1,5 +1,5 @@
 import { StyleSheet, FlatList, View, ActivityIndicator, Text, Modal, StatusBar, Image, TouchableOpacity, SafeAreaView } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import Post from '../components/Post'
 import { useSelector, useDispatch } from 'react-redux'
 import uuid from 'react-native-uuid'
@@ -55,9 +55,9 @@ const OpenPost = ({navigation}) => {
   const commentSeparator = () => (
     <View style={{height: 12, marginLeft: 5, marginRight: 5, backgroundColor: COLORS.white}}></View>
   )
-  const handleNavigationBack = () => {
+  const handleNavigationBack = useCallback(() => {
     navigation.pop()
-  }
+  }, [navigation])
 
   const listHeader = () => (
     <>
@@ -75,7 +75,7 @@ const OpenPost = ({navigation}) => {
     <DividerWithLine dividerColor={COLORS.white} dividerHeight={10} marginL={5} marginR={5} marginB={125}/>
   )
 
-  const handleClosingCommentAuthorInfo  = () => {
+  const handleClosingCommentAuthorInfo = () => {
     dispatch(closeAuthorInfo());
   }
 

@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, Image } from 'react-native'
-import React from 'react'
-import { useState } from 'react'
+import React, { useState, memo } from 'react'
 import { useSelector } from 'react-redux'
 import Feather from 'react-native-vector-icons/Feather'
 import { COLORS } from '../constants/theme'
@@ -46,7 +45,7 @@ const PostHeader = ({sourceId, dataDate, isRepost}) => {
     )
 }
 
-export default PostHeader
+export default memo(PostHeader)
 
 const styles = StyleSheet.create({
     postHeaderContainer: {

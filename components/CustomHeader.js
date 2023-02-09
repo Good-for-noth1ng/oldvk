@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { memo } from 'react'
 import Entypo from 'react-native-vector-icons/Entypo'
 import NewsTitleSwitcher from './NewsTitleSwitcher'
 import { COLORS } from '../constants/theme'
@@ -17,7 +17,7 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent}) => {
   )
 }
 
-export default CustomHeader
+export default memo(CustomHeader)
 
 const styles = StyleSheet.create({
   headerContainer: {

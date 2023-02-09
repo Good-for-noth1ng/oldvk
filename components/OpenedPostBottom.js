@@ -9,8 +9,8 @@ import { COLORS } from '../constants/theme'
 
 const OpenedPostBottom = ({reposts, likes, views, comments}) => {
   const [isLikePressed, setIsLikePressed] = useState(false);
-  const [likesCount, setLikesCount] = useState(likes);
-  const [repostsCount, setRepostsCount] = useState(reposts);
+  const [likesCount, setLikesCount] = useState(likes !== undefined ? likes : 0);
+  const [repostsCount, setRepostsCount] = useState(reposts !== undefined ? reposts : 0);
   const handleLikePress = useCallback(() => {
     if (isLikePressed) {
       setLikesCount(likesCount - 1);
@@ -47,7 +47,7 @@ const OpenedPostBottom = ({reposts, likes, views, comments}) => {
         dividerLineWidth={'95%'}
         linePosition={'center'}
       />
-      <CountSortComments commentsCount={comments}/>
+      <CountSortComments comments={comments}/>
       <DividerWithLine 
         dividerHeight={20} 
         dividerColor={COLORS.white}

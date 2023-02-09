@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Modal } from 'react-native'
-import React, { useEffect, useState, memo} from 'react'
+import React, { useEffect, useState, memo, useCallback} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { COLORS } from '../constants/theme'
@@ -33,7 +33,7 @@ const Comment = ({data}) => {
     })
   }, [])
 
-  const handleLikePress = () => {
+  const handleLikePress = useCallback(() => {
     if(!isLiked) {
       setLikesCount(likesCount + 1);
       setIsLiked(true);
@@ -41,8 +41,9 @@ const Comment = ({data}) => {
       setLikesCount(likesCount - 1);
       setIsLiked(false);
     }
-  }
-  const handleProfilePress = () => {
+  })
+  
+  const handleProfilePress = useCallback(() => {
     const profileDataRegUrl = `https://vkdia.com/pages/fake-vk-profile/registration-date?vkId=${data.from_id}`;
     const re = /^\d*$/g; 
     dispatch(startLoadingRegistrationDate())
@@ -58,7 +59,8 @@ const Comment = ({data}) => {
           dispatch(stopLoadingRegistrationDate());
         }
       })  
-  }
+  })
+
   return (
     <View style={styles.commentContainer}>
       <TouchableOpacity activeOpacity={1} style={{marginRight: 7}} onPress={handleProfilePress}>

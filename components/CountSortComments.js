@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useState} from 'react'
 import FontAwesome from 'react-native-vector-icons/FontAwesome5'
 import { COLORS } from '../constants/theme'
-const CountSortComments = ({commentsCount}) => {
+const CountSortComments = ({comments}) => {
+  const [commentsCount, setCommentsCount] = useState(comments !== undefined ? comments : 0)
   return (
     <View style={styles.countSortContainer}>
         <Text style={{color: COLORS.secondary}}>

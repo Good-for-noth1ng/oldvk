@@ -11,32 +11,48 @@ import CustomHeader from '../components/CustomHeader';
 import NewsTitleSwitcher from '../components/NewsTitleSwitcher';
 import DividerWithLine from '../components/DividerWithLine';
 
+//TODO fix comments, likes etc. being undefined
 //TODO make news upload from redux directly
 const News = ({navigation, route}) => {
   const drawerNavigator = navigation.getParent()
   
-  useLayoutEffect(() => {
+  const subscribeOnBlur = useCallback(() => {
     const hideHeader = navigation.addListener('blur', () => {
       drawerNavigator.setOptions({headerShown: false, swipeEnabled: false})
     })
-    return hideHeader;
-  }, [navigation])
+    return hideHeader
+  })
 
-  useLayoutEffect(() => {
+  const subscribeOnFocus = useCallback(() => {
     const showHeader = navigation.addListener('focus', () => {
-      drawerNavigator.setOptions({
-            headerShown: false,
-            swipeEnabled: true
-          })
+      drawerNavigator.setOptions({headerShown: false, swipeEnabled: true})
     })
     return showHeader
-  }, [navigation])
+  })
+
+  // useLayoutEffect(() => {
+  //   const hideHeader = navigation.addListener('blur', () => {
+  //     drawerNavigator.setOptions({headerShown: false, swipeEnabled: false})
+  //   })
+  //   return hideHeader;
+  // }, [navigation])
+
+  // useLayoutEffect(() => {
+  //   const showHeader = navigation.addListener('focus', () => {
+  //     drawerNavigator.setOptions({
+  //           headerShown: false,
+  //           swipeEnabled: true
+  //         })
+  //   })
+  //   return showHeader
+  // }, [navigation])
          
   
   const accessToken = useSelector(state => state.user.accessToken)
   const dispatch = useDispatch()
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  // const [isFetchingMoreData, setIsFetchingMoreData] = useState(false)
   const [showedPosts, setShowedPosts] = useState(7)
   const initPostContent = useSelector(state => state.news.items)
   const [postContent, setPostContent] = useState(initPostContent)
@@ -49,28 +65,31 @@ const News = ({navigation, route}) => {
   } else {
     newsUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=25&v=5.131`
   }
-  
+
+  const fetchNews = useCallback(() => {
+    setIsLoading(true);    
+    fetch(newsUrl)
+      .then((response) => response.json())
+      .then((data) => {
+        const items = data.response.items.map(item => {  
+          return {...item, key: uuid.v4()}
+        })
+        dispatch(setItems(items));
+        dispatch(setGroups(data.response.groups));
+        dispatch(setProfiles(data.response.profiles));
+        dispatch(setNextFrom(data.response.next_from));
+        setPostContent(items)
+        setIsLoading(false);
+      });
+  }, [newsUrl])
+
   useEffect(()=> {
-    const fetchNews = async () => {
-      setIsLoading(true);    
-      fetch(newsUrl)
-        .then((response) => response.json())
-        .then((data) => {
-          const items = data.response.items.map(item => {  
-            return {...item, key: uuid.v4()}
-          })
-          dispatch(setItems(items));
-          dispatch(setGroups(data.response.groups));
-          dispatch(setProfiles(data.response.profiles));
-          dispatch(setNextFrom(data.response.next_from));
-          setPostContent(items)
-          setIsLoading(false);
-        });
-    }
+    subscribeOnBlur();
+    subscribeOnFocus();
     fetchNews();
   }, [currentNewsPage])
   
-  const fetchRefreshData = () => {
+  const fetchRefreshData = useCallback(() => {
     setIsLoading(true)
     let refreshUrl
     if (currentNewsPage === 'News') {
@@ -88,12 +107,12 @@ const News = ({navigation, route}) => {
         dispatch(setGroups(data.response.groups));
         dispatch(setProfiles(data.response.profiles));
         dispatch(setNextFrom(data.response.next_from));
+        setPostContent(items)
         setIsLoading(false)
-        postContent = useSelector(state => state.news.items);
       })
-  }
+  }, [currentNewsPage])
 
-  const fetchMoreData = () => {
+  const fetchMoreData = useCallback(() => {
     let fetchMoreDataUrl
     if (currentNewsPage === 'News') {
       fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&count=25&start_from=${nextFrom}&v=5.131`
@@ -101,29 +120,39 @@ const News = ({navigation, route}) => {
       fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=25&start_from=${nextFrom}&v=5.131`
     }
     fetch(fetchMoreDataUrl)
-        .then((response) => response.json())
-        .then((data) => {
-          const items = data.response.items.map(item => {  
-            return {...item, key: uuid.v4()}
-          })
-          dispatch(pushItems(items));
-          dispatch(pushGroups(data.response.groups));
-          dispatch(pushProfiles(data.response.profiles));
-          dispatch(setNextFrom(data.response.next_from));
-          const newPostContent = postContent.concat(items);
-          setPostContent(newPostContent);
+      .then((response) => response.json())
+      .then((data) => {
+        const items = data.response.items.map(item => {  
+          return {...item, key: uuid.v4()}
+      })
+        dispatch(pushItems(items));
+        dispatch(pushGroups(data.response.groups));
+        dispatch(pushProfiles(data.response.profiles));
+        dispatch(setNextFrom(data.response.next_from));
+        const newPostContent = postContent.concat(items);
+        setPostContent(newPostContent);
       });
-    
-  }
+  })
   
   const handleDrawerOpening = useCallback(() => {
     navigation.openDrawer()
   }, [navigation])
 
-  const renderItem =  ({item}) => (
-    <Post data={item} navigation={navigation} openedPost={true}/>
-  )
+  const renderItem = useCallback(({item}) => {
+    return <Post data={item} navigation={navigation} openedPost={true} dataType={item.type}/>
+  }, [postContent])
 
+  const listFooterComponent = useCallback(() => {
+    return (
+      <>
+        <View style={styles.bottomSpinnerContainer}>
+          <ActivityIndicator color={COLORS.primary} size={50}/>
+        </View>
+        <DividerWithLine dividerHeight={5} marginB={175}/>
+      </>
+    )
+  })
+  
   return(
     <View style={styles.newsBackground}>
       <SafeAreaView>
@@ -143,7 +172,10 @@ const News = ({navigation, route}) => {
                 renderItem={renderItem}
                 showsVerticalScrollIndicator={false}
                 initialNumToRender={showedPosts}
-                onEndReached={() => {fetchMoreData()}}
+                windowSize={5}
+                updateCellsBatchingPeriod={30}
+                onEndReachedThreshold={0.1}
+                onEndReached={fetchMoreData}
                 style={{backgroundColor: COLORS.light_smoke}}
                 refreshControl={
                   <RefreshControl 
@@ -153,14 +185,7 @@ const News = ({navigation, route}) => {
                     tintColor={COLORS.primary}
                   />
                 }
-                ListFooterComponent={
-                  <>
-                    <View style={styles.bottomSpinnerContainer}>
-                      <ActivityIndicator color={COLORS.primary} size={50}/>
-                    </View>
-                    <DividerWithLine dividerHeight={5} marginB={175}/>
-                  </>
-                }
+                ListFooterComponent={listFooterComponent}
                 maxToRenderPerBatch={5}
                 removeClippedSubviews={true}
               />

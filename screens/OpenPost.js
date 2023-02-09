@@ -1,5 +1,5 @@
 import { StyleSheet, FlatList, View, ActivityIndicator, Text, Modal, StatusBar, Image, TouchableOpacity, SafeAreaView } from 'react-native'
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, memo } from 'react'
 import Post from '../components/Post'
 import { useSelector, useDispatch } from 'react-redux'
 import uuid from 'react-native-uuid'
@@ -11,73 +11,83 @@ import OpenedPostBottom from '../components/OpenedPostBottom'
 import DividerWithLine from '../components/DividerWithLine'
 import { getTimeDate } from '../utils/date'
 import CustomHeader from '../components/CustomHeader'
-import { useLayoutEffect } from 'react'
 
 const OpenPost = ({navigation}) => {
+  const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch()
   const data = useSelector(state => state.news.openedPost) 
   const accessToken = useSelector(state => state.user.accessToken);
-  const commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.source_id}&post_id=${data.post_id}&sort=asc&thread_items_count=2`;
-  console.log(data.source_id, data.post_id)
-  const [comments, setComments] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
   let isAuthorInfoOpen = useSelector(state => state.comments.isAuthorInfoOpen);
   const authorName = useSelector(state => state.comments.authorName)
   const authorImgUrl = useSelector(state => state.comments.authorImgUrl)
   const regestrationDate = useSelector(state => state.comments.registrationDate)
   const registrationDateIsFetching = useSelector(state => state.comments.authorInfoIsFetching)
-  // console.log(authorName)
-  useEffect(() => {
-    const fetchComments = async (commentsUrl) => {
-      fetch(commentsUrl)
-        .then(response => response.json())
-        .then(data => {
-            let profilesUrlParam = '';
-            const items = data.response.items.map(item => {
-              profilesUrlParam += `${item.from_id},`
-              return {...item, key: uuid.v4()}
+  const [comments, setComments] = useState(null);
+  
+  
+  const commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.source_id}&post_id=${data.post_id}&sort=asc&thread_items_count=2`;
+  console.log(data.source_id, data.post_id)
+
+  const fetchComments = useCallback(async () => {
+    fetch(commentsUrl)
+      .then(response => response.json())
+      .then(data => {
+          let profilesUrlParam = '';
+          const items = data.response.items.map(item => {
+            profilesUrlParam += `${item.from_id},`
+            return {...item, key: uuid.v4()}
+          });
+          setComments(items);
+          const commentAuthorUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${profilesUrlParam}&fields=photo_100`;
+          fetch(commentAuthorUrl)
+            .then(response => response.json())
+            .then(data => {
+              dispatch(setProfiles(data.response));
+              setIsLoading(false);
             });
-            setComments(items);
-            const commentAuthorUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${profilesUrlParam}&fields=photo_100`;
-            fetch(commentAuthorUrl)
-              .then(response => response.json())
-              .then(data => {
-                dispatch(setProfiles(data.response));
-                setIsLoading(false);
-              });
-        })
-    }
-    fetchComments(commentsUrl);
+      })
+  }, [commentsUrl])
+  // console.log(authorName)
+  useEffect(() => { 
+    fetchComments();
   }, []);
-  const renderComment = ({item}) => (
+
+  
+  const renderComment = useCallback (({item}) => (
     <Comment data={item} />
-  )
-  const commentSeparator = () => (
+  ), [])
+
+  const commentSeparator = useCallback(() => (
     <View style={{height: 12, marginLeft: 5, marginRight: 5, backgroundColor: COLORS.white}}></View>
-  )
+  ), [])
+
   const handleNavigationBack = useCallback(() => {
     navigation.pop()
   }, [navigation])
 
-  const listHeader = () => (
-    <>
-      <Post data={data} navigation={navigation} openedPost={false}/>
-      <OpenedPostBottom 
-        likes={data.likes.count} 
-        reposts={data.reposts.count} 
-        views={data.views.count} 
-        comments={data.comments.count}
-      />
-    </>
-  )
+  const listHeader = useCallback(() => {
+    // console.log(data)
+    // console.log(data.likes)
+    return (
+      <>
+        <Post data={data} navigation={navigation} openedPost={false}/>
+        <OpenedPostBottom 
+          likes={data?.likes?.count} 
+          reposts={data?.reposts?.count} 
+          views={data?.views?.count} 
+          comments={data?.comments?.count}
+        />
+      </>
+    )
+  })
 
-  const listFooter = () => (
-    <DividerWithLine dividerColor={COLORS.white} dividerHeight={10} marginL={5} marginR={5} marginB={125}/>
-  )
+  const listFooter = useCallback(() => {
+    return <DividerWithLine dividerColor={COLORS.white} dividerHeight={10} marginL={5} marginR={5} marginB={125}/>
+  })
 
-  const handleClosingCommentAuthorInfo = () => {
+  const handleClosingCommentAuthorInfo = useCallback(() => {
     dispatch(closeAuthorInfo());
-  }
+  }, [dispatch])
 
   return (
     <View>
@@ -142,7 +152,7 @@ const OpenPost = ({navigation}) => {
   )
 }
 
-export default OpenPost
+export default memo(OpenPost)
 
 const styles = StyleSheet.create({
   activityContainer: {
@@ -168,11 +178,11 @@ const styles = StyleSheet.create({
     shadowColor: COLORS.black,
     borderRadius: 10,
     shadowOffset: {
-      width: 5,
-      height: 5,
+      width: 10,
+      height: 10,
     },
     shadowOpacity: 0.25,
-    elevation: 20,
+    elevation: 13,
     shadowRadius: 4,
   },
   commentInfoHeader: {

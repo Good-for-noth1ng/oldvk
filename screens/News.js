@@ -1,5 +1,5 @@
 import { View, Text, RefreshControl, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet, FlatList } from 'react-native'
-import React, { useEffect, useState, useLayoutEffect, useCallback, memo } from 'react'
+import React, { useEffect, useState, useLayoutEffect, useCallback, memo, useMemo } from 'react'
 import uuid from 'react-native-uuid';
 import { useSelector, useDispatch, } from 'react-redux';
 import { COLORS } from '../constants/theme';
@@ -29,25 +29,7 @@ const News = ({navigation, route}) => {
     })
     return showHeader
   })
-
-  // useLayoutEffect(() => {
-  //   const hideHeader = navigation.addListener('blur', () => {
-  //     drawerNavigator.setOptions({headerShown: false, swipeEnabled: false})
-  //   })
-  //   return hideHeader;
-  // }, [navigation])
-
-  // useLayoutEffect(() => {
-  //   const showHeader = navigation.addListener('focus', () => {
-  //     drawerNavigator.setOptions({
-  //           headerShown: false,
-  //           swipeEnabled: true
-  //         })
-  //   })
-  //   return showHeader
-  // }, [navigation])
          
-  
   const accessToken = useSelector(state => state.user.accessToken)
   const dispatch = useDispatch()
   const [isRefreshing, setIsRefreshing] = useState(false)
@@ -66,7 +48,7 @@ const News = ({navigation, route}) => {
     newsUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=25&v=5.131`
   }
 
-  const fetchNews = useCallback(() => {
+  const fetchNews = () => {
     setIsLoading(true);    
     fetch(newsUrl)
       .then((response) => response.json())
@@ -81,7 +63,7 @@ const News = ({navigation, route}) => {
         setPostContent(items)
         setIsLoading(false);
       });
-  }, [newsUrl])
+  }
 
   useEffect(()=> {
     subscribeOnBlur();
@@ -89,7 +71,7 @@ const News = ({navigation, route}) => {
     fetchNews();
   }, [currentNewsPage])
   
-  const fetchRefreshData = useCallback(() => {
+  const fetchRefreshData = () => {
     setIsLoading(true)
     let refreshUrl
     if (currentNewsPage === 'News') {
@@ -110,9 +92,9 @@ const News = ({navigation, route}) => {
         setPostContent(items)
         setIsLoading(false)
       })
-  }, [currentNewsPage])
+  }
 
-  const fetchMoreData = useCallback(() => {
+  const fetchMoreData = () => {
     let fetchMoreDataUrl
     if (currentNewsPage === 'News') {
       fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&count=25&start_from=${nextFrom}&v=5.131`
@@ -132,17 +114,17 @@ const News = ({navigation, route}) => {
         const newPostContent = postContent.concat(items);
         setPostContent(newPostContent);
       });
-  })
+  }
   
-  const handleDrawerOpening = useCallback(() => {
+  const handleDrawerOpening = () => {
     navigation.openDrawer()
-  }, [navigation])
+  }
 
-  const renderItem = useCallback(({item}) => {
+  const renderItem = ({item}) => {
     return <Post data={item} navigation={navigation} openedPost={true} dataType={item.type}/>
-  }, [postContent])
+  }
 
-  const listFooterComponent = useCallback(() => {
+  const listFooterComponent = () => {
     return (
       <>
         <View style={styles.bottomSpinnerContainer}>
@@ -151,7 +133,7 @@ const News = ({navigation, route}) => {
         <DividerWithLine dividerHeight={5} marginB={175}/>
       </>
     )
-  })
+  }
   
   return(
     <View style={styles.newsBackground}>
@@ -172,9 +154,6 @@ const News = ({navigation, route}) => {
                 renderItem={renderItem}
                 showsVerticalScrollIndicator={false}
                 initialNumToRender={showedPosts}
-                windowSize={5}
-                updateCellsBatchingPeriod={30}
-                onEndReachedThreshold={0.1}
                 onEndReached={fetchMoreData}
                 style={{backgroundColor: COLORS.light_smoke}}
                 refreshControl={
@@ -208,4 +187,4 @@ const styles = StyleSheet.create({
     justifyContentL: 'center',
   }
 })
-export default memo(News)
+export default News

@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View, Image, Modal, TouchableOpacity } from 'react-native'
-import React, {useState, useRef, useLayoutEffect, memo, useCallback} from 'react'
+import React, {useState,  memo } from 'react'
 import uuid from 'react-native-uuid';
 import { COLORS } from '../constants/theme';
 import { postWidth } from '../constants/theme';
 import ImageViewer from 'react-native-image-zoom-viewer'
 
 const PostPhotos = ({postPhotos}) => {
-  const initPhoto = useCallback((width, imageUrl, resizeMode) => {
+  const initPhoto = (width, imageUrl, resizeMode) => {
     return (
     <TouchableOpacity  
         style={{width: width, height: '100%', display: 'flex', borderWidth: 0.5, borderColor: COLORS.white}}  
@@ -19,8 +19,8 @@ const PostPhotos = ({postPhotos}) => {
           style={{width: '100%', height: '100%'}}
           resizeMode={resizeMode}
         />
-      </TouchableOpacity>)
-  })
+    </TouchableOpacity>)
+  }
 
   const [modalVisible, setModalVisible] = useState(false)
   const imgNum = postPhotos.length
@@ -90,8 +90,8 @@ const PostPhotos = ({postPhotos}) => {
     </View>
     totalHeight += height
     grid.push(rowContainer)
-  }
 
+  }
   return (
     <>
       <Modal

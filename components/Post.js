@@ -34,7 +34,7 @@ const Post = ({data, navigation, openedPost, dataType}) => {
     }
   }, [openedPost])
 
-  const initPostData = useCallback(() => {
+  const initPostData = () => {
     // console.log(data.key)
     if (data.attachments !== undefined && dataType === 'post') {  
       let attachments
@@ -55,7 +55,7 @@ const Post = ({data, navigation, openedPost, dataType}) => {
         }
       }
     }
-  }, [data])
+  }
 
   initPostData()
 
@@ -73,7 +73,7 @@ const Post = ({data, navigation, openedPost, dataType}) => {
   // const hasFiles = postDocs ? true : false
   // const hasLinks = postLinks ? true : false
   
-  const checkIsRepost = useCallback(() => {
+  const checkIsRepost = () => {
     if (data.copy_history !== undefined) {
       const hasRepostText = data.copy_history[0].text ? true : false
       
@@ -138,7 +138,7 @@ const Post = ({data, navigation, openedPost, dataType}) => {
         </View>  
       )
     }
-  }, [postDocs, postLinks, postPhotos, data])
+  }
   
   checkIsRepost();
   // console.log(data.source_id, data.post_id);

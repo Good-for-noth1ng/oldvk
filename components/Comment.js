@@ -21,8 +21,9 @@ const Comment = ({data}) => {
   const [name, setName] = useState('')
   const [photoUrl, setPhotoUrl] = useState(null)
   const [isLiked, setIsLiked] = useState(false)
-  const [likesCount, setLikesCount] = useState(data.likes.count)
+  const [likesCount, setLikesCount] = useState(data?.likes?.count !== undefined ? data.likes.count : 0)
   const [showAuthorInfo, setShowAuthorInfo] = useState(false)
+  
   useEffect(() => {
     // console.log(data.from_id)
     profiles.forEach(item => {
@@ -33,7 +34,7 @@ const Comment = ({data}) => {
     })
   }, [])
 
-  const handleLikePress = useCallback(() => {
+  const handleLikePress = () => {
     if(!isLiked) {
       setLikesCount(likesCount + 1);
       setIsLiked(true);
@@ -41,9 +42,9 @@ const Comment = ({data}) => {
       setLikesCount(likesCount - 1);
       setIsLiked(false);
     }
-  })
+  }
   
-  const handleProfilePress = useCallback(() => {
+  const handleProfilePress = () => {
     const profileDataRegUrl = `https://vkdia.com/pages/fake-vk-profile/registration-date?vkId=${data.from_id}`;
     const re = /^\d*$/g; 
     dispatch(startLoadingRegistrationDate())
@@ -59,7 +60,7 @@ const Comment = ({data}) => {
           dispatch(stopLoadingRegistrationDate());
         }
       })  
-  })
+  }
 
   return (
     <View style={styles.commentContainer}>

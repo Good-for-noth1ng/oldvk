@@ -7,40 +7,40 @@ import { COLORS } from '../constants/theme'
 import { getShortagedNumber } from '../utils/numShortage'
 
 const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost}) => {
-    const [commentsCount, setCommentsCount] = useState(dataComments?.count !== undefined ? dataComments.count : 0)
+    // const [commentsCount, setCommentsCount] = useState(dataComments?.count !== undefined ? dataComments.count : 0)
     const [likesCount, setLikesCount] = useState(dataLikes?.count !== undefined ? dataLikes.count : 0)
-    const [repostsCount, setRepostsCount] = useState(dataReposts?.count !== undefined ? dataReposts.count : 0)
+    // const [repostsCount, setRepostsCount] = useState(dataReposts?.count !== undefined ? dataReposts.count : 0)
     const [isLikePressed, setIsLikePressed] = useState(false)
     
-    const handleLikePress = useCallback(() => {
-      InteractionManager.runAfterInteractions(() => {
-        if (!isLikePressed) {
-          setIsLikePressed(true)
-          setLikesCount(likesCount + 1)
-        } else {
-          setIsLikePressed(false)
-          setLikesCount(likesCount - 1)
-        }
-      })
-      
-    }, [isLikePressed])
-
+    const handleLikePress = () => {
+      if (!isLikePressed) {
+        setIsLikePressed(true)
+        setLikesCount(count => count + 1)
+      } else {
+        setIsLikePressed(false)
+        setLikesCount(count => count - 1)
+      }
+    }
     const result = (
       <View style={styles.postBottomContainer}>
         <View>
           <TouchableOpacity style={styles.buttonContainer} activeOpacity={1}>
             <MaterialCommunityIcons style={styles.iconButton} name='comment' color={COLORS.secondary} size={20}/>
-              <Text style={styles.buttonText}>{getShortagedNumber(commentsCount)}</Text>
+            <Text style={styles.buttonText}>
+              {getShortagedNumber(dataComments?.count !== undefined ? dataComments.count : 0)}
+            </Text>
           </TouchableOpacity>
         </View>
         <View style={styles.bottomRightContainer}>
           <TouchableOpacity style={styles.buttonContainer}>
             <FontAwesome style={styles.iconButton} name='share' color={COLORS.secondary} size={20}/>
-              <Text style={styles.buttonText}>{getShortagedNumber(repostsCount)}</Text>  
+            <Text style={styles.buttonText}>
+              {getShortagedNumber(dataReposts?.count !== undefined ? dataReposts.count : 0)}
+            </Text>  
           </TouchableOpacity>  
           <TouchableOpacity style={styles.buttonContainer} activeOpacity={1} onPress={handleLikePress}>
             <AntDesign style={styles.iconButton} color={isLikePressed ? COLORS.primary : COLORS.secondary} name='like1' size={20} />
-              <Text style={styles.buttonText}>{getShortagedNumber(likesCount)}</Text>
+            <Text style={styles.buttonText}>{getShortagedNumber(likesCount)}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -48,7 +48,7 @@ const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost}) => {
     return openedPost ? result : null
 }
 
-export default memo(BottomPost)
+export default BottomPost
 
 const styles = StyleSheet.create({
     postBottomContainer: {

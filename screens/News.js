@@ -35,7 +35,6 @@ const News = ({navigation, route}) => {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   // const [isFetchingMoreData, setIsFetchingMoreData] = useState(false)
-  const [showedPosts, setShowedPosts] = useState(7)
   const initPostContent = useSelector(state => state.news.items)
   const [postContent, setPostContent] = useState(initPostContent)
   const currentNewsPage = useSelector(state => state.news.currentPage)
@@ -134,7 +133,9 @@ const News = ({navigation, route}) => {
       </>
     )
   }
-  
+  const keyExtractor = (item) => {
+    return item.key
+  }
   return(
     <View style={styles.newsBackground}>
       <SafeAreaView>
@@ -153,9 +154,10 @@ const News = ({navigation, route}) => {
                 data={postContent}
                 renderItem={renderItem}
                 showsVerticalScrollIndicator={false}
-                initialNumToRender={showedPosts}
+                initialNumToRender={4}
                 onEndReached={fetchMoreData}
                 style={{backgroundColor: COLORS.light_smoke}}
+                keyExtractor={keyExtractor}
                 refreshControl={
                   <RefreshControl 
                     refreshing={isLoading} 
@@ -167,6 +169,7 @@ const News = ({navigation, route}) => {
                 ListFooterComponent={listFooterComponent}
                 maxToRenderPerBatch={5}
                 removeClippedSubviews={true}
+                
               />
             </View>
         } 

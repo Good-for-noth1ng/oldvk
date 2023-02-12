@@ -1,5 +1,5 @@
 import { View, Text, RefreshControl, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet, FlatList } from 'react-native'
-import React, { useEffect, useState, useLayoutEffect, useCallback, memo, useMemo } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import uuid from 'react-native-uuid';
 import { useSelector, useDispatch, } from 'react-redux';
 import { COLORS } from '../constants/theme';
@@ -10,25 +10,26 @@ import { Header } from '@react-navigation/elements';
 import CustomHeader from '../components/CustomHeader';
 import NewsTitleSwitcher from '../components/NewsTitleSwitcher';
 import DividerWithLine from '../components/DividerWithLine';
+import Repost from '../components/Repost';
 
 //TODO fix comments, likes etc. being undefined
 //TODO make news upload from redux directly
-const News = ({navigation, route}) => {
+const News = ({navigation}) => {
   const drawerNavigator = navigation.getParent()
   
-  const subscribeOnBlur = useCallback(() => {
+  const subscribeOnBlur = () => {
     const hideHeader = navigation.addListener('blur', () => {
       drawerNavigator.setOptions({headerShown: false, swipeEnabled: false})
     })
     return hideHeader
-  })
+  }
 
-  const subscribeOnFocus = useCallback(() => {
+  const subscribeOnFocus = () => {
     const showHeader = navigation.addListener('focus', () => {
       drawerNavigator.setOptions({headerShown: false, swipeEnabled: true})
     })
     return showHeader
-  })
+  }
          
   const accessToken = useSelector(state => state.user.accessToken)
   const dispatch = useDispatch()
@@ -120,7 +121,12 @@ const News = ({navigation, route}) => {
   }
 
   const renderItem = ({item}) => {
-    return <Post data={item} navigation={navigation} openedPost={true} dataType={item.type}/>
+    if(item.copy_history !== undefined) {
+      return <Repost data={item} openedPost={true} navigation={navigation}/>
+    } else if (item.type === 'wall_photo') {
+      return null
+    }
+    return <Post data={item} navigation={navigation} openedPost={true}/>
   }
 
   const listFooterComponent = () => {
@@ -167,9 +173,8 @@ const News = ({navigation, route}) => {
                   />
                 }
                 ListFooterComponent={listFooterComponent}
-                maxToRenderPerBatch={5}
                 removeClippedSubviews={true}
-                
+                updateCellsBatchingPeriod={200}
               />
             </View>
         } 

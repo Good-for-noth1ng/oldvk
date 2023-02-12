@@ -11,6 +11,7 @@ import OpenedPostBottom from '../components/OpenedPostBottom'
 import DividerWithLine from '../components/DividerWithLine'
 import { getTimeDate } from '../utils/date'
 import CustomHeader from '../components/CustomHeader'
+import Repost from '../components/Repost'
 
 const OpenPost = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -53,21 +54,22 @@ const OpenPost = ({navigation}) => {
   }, []);
 
   
-  const renderComment = useCallback (({item}) => (
+  const renderComment = ({item}) => (
     <Comment data={item} />
-  ), [])
+  )
 
-  const commentSeparator = useCallback(() => (
+  const commentSeparator = () => (
     <View style={{height: 12, marginLeft: 5, marginRight: 5, backgroundColor: COLORS.white}}></View>
-  ), [])
+  )
 
-  const handleNavigationBack = useCallback(() => {
+  const handleNavigationBack = () => {
     navigation.pop()
-  }, [navigation])
+  }
 
-  const listHeader = useCallback(() => {
+  const listHeader = () => {
     // console.log(data)
     // console.log(data.likes)
+    if (data.copy_history === undefined) {
     return (
       <>
         <Post data={data} navigation={navigation} openedPost={false}/>
@@ -79,15 +81,27 @@ const OpenPost = ({navigation}) => {
         />
       </>
     )
-  })
+    }
+    return (
+      <>
+        <Repost data={data} openedPost={false}/>
+        <OpenedPostBottom 
+          likes={data?.likes?.count} 
+          reposts={data?.reposts?.count} 
+          views={data?.views?.count} 
+          comments={data?.comments?.count}
+        />
+      </>
+    )
+  }
 
-  const listFooter = useCallback(() => {
+  const listFooter = () => {
     return <DividerWithLine dividerColor={COLORS.white} dividerHeight={10} marginL={5} marginR={5} marginB={125}/>
-  })
+  }
 
-  const handleClosingCommentAuthorInfo = useCallback(() => {
+  const handleClosingCommentAuthorInfo = () => {
     dispatch(closeAuthorInfo());
-  }, [dispatch])
+  }
 
   return (
     <View>

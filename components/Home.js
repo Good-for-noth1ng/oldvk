@@ -10,7 +10,7 @@ import Friends from '../screens/Friends';
 import Photos from '../screens/Photos';
 import Videos from '../screens/Videos';
 import Audio from '../screens/Audio';
-import Groups from '../screens/Groups';
+import GroupList from '../screens/GroupList';
 import Answers from '../screens/Answers';
 import Favorites from '../screens/Favorites';
 import Options from '../screens/Options';
@@ -65,7 +65,7 @@ const Home = () => {
             <FontAwesome name='envelope' size={20} color={color}/>
           )
         }}/>
-        <Drawer.Screen name='Groups' component={Groups} options={{
+        <Drawer.Screen name='GroupList' component={GroupList} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='users' size={20} color={color}/>
           )

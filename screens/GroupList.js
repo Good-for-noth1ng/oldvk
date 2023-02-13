@@ -6,7 +6,7 @@ import GroupListItem from '../components/GroupListItem';
 import { COLORS } from '../constants/theme';
 import DividerWithLine from '../components/DividerWithLine';
 
-const Groups = () => {
+const GroupList = () => {
   const accessToken = useSelector(state => state.user.accessToken)
   const [isLoading, setIsLoading] = useState(true)
   const [groupsData, setGroupsData] = useState(null)
@@ -41,34 +41,31 @@ const Groups = () => {
     <DividerWithLine dividerHeight={10} marginL={5} marginR={5} dividerColor={COLORS.white}/>
   )
   return (
-    <View>
-      <SafeAreaView>
-        <StatusBar backgroundColor={COLORS.primary} barStyle={COLORS.white}/>
-        {
-          isLoading ? 
-          <View style={styles.spinnerContainer}>
-            <ActivityIndicator color={COLORS.primary} size={50}/>
-          </View> :
-          <View>
-            <FlatList 
-              data={groupsData}
-              renderItem={renderItem}
-              key={uuid.v4()}
-              showsVerticalScrollIndicator={false}
-              ItemSeparatorComponent={groupListSeparator}
-              refreshControl={
-                <RefreshControl refreshing={isLoading} />
-              }
-              
-            />
-          </View>
-        }
-      </SafeAreaView>
-    </View>
+    <SafeAreaView>
+      <StatusBar backgroundColor={COLORS.primary} barStyle={COLORS.white}/>
+      {
+        isLoading ? 
+        <View style={styles.spinnerContainer}>
+          <ActivityIndicator color={COLORS.primary} size={50}/>
+        </View> :
+        <View>
+          <FlatList 
+            data={groupsData}
+            renderItem={renderItem}
+            key={uuid.v4()}
+            showsVerticalScrollIndicator={false}
+            ItemSeparatorComponent={groupListSeparator}
+            refreshControl={
+              <RefreshControl refreshing={isLoading} />
+            }    
+          />
+        </View>
+      }
+    </SafeAreaView>
   )
 }
 
-export default Groups
+export default GroupList
 
 const styles = StyleSheet.create({
   spinnerContainer: {

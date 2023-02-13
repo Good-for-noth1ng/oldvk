@@ -4,20 +4,21 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { COLORS } from '../constants/theme';
 import News from '../screens/News'; 
 import OpenPost from '../screens/OpenPost';
+
 const PostStack = createNativeStackNavigator();
 
 const NewsRoute = () => {
   return (
-      <PostStack.Navigator initialRouteName='News'>
-        <PostStack.Screen  
-          name='News' 
-          component={News} 
-          options={{headerShown: false, animationTypeForReplace:'pop'}}/>
-        <PostStack.Screen 
-          name='OpenPost' 
-          component={OpenPost} 
-          options={{headerShown:false, headerTintColor: COLORS.white, headerStyle: styles.headerStyle}}/>
-      </PostStack.Navigator>
+    <PostStack.Navigator initialRouteName='News'>
+      <PostStack.Screen  
+        name='News' 
+        component={News} 
+        options={{headerShown: false, animationTypeForReplace:'pop'}}/>
+      <PostStack.Screen 
+        name='OpenPost' 
+        component={OpenPost} 
+        options={{headerShown:false}}/>
+    </PostStack.Navigator>
   )
 }
 

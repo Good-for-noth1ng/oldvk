@@ -6,7 +6,7 @@ import GroupListItem from '../components/GroupListItem';
 import { COLORS } from '../constants/theme';
 import DividerWithLine from '../components/DividerWithLine';
 
-const GroupList = () => {
+const GroupList = ({navigation}) => {
   const accessToken = useSelector(state => state.user.accessToken)
   const [isLoading, setIsLoading] = useState(true)
   const [groupsData, setGroupsData] = useState(null)
@@ -35,7 +35,7 @@ const GroupList = () => {
     setGroupsData(data.response)
   }
   const renderItem = ({item}) => (
-    <GroupListItem data={item}/>
+    <GroupListItem data={item} navigation={navigation}/>
   )
   const groupListSeparator = () => (
     <DividerWithLine dividerHeight={10} marginL={5} marginR={5} dividerColor={COLORS.white}/>

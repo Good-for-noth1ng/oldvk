@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar } from 'react-native'
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import { COLORS } from '../constants/theme'
+import CustomHeader from '../components/CustomHeader'
 
 const Group = () => {
   const accessToken = useSelector(state => state.user.accessToken)
@@ -14,10 +15,12 @@ const Group = () => {
     .then(data => data.response)
     .then()
   }, [])
+
   return (
-    <View>
-      <Text>Group</Text>
-    </View>
+    <SafeAreaView>
+      <StatusBar backgroundColor={COLORS.primary} barStyle={COLORS.white}/>
+      <CustomHeader />
+    </SafeAreaView>
   )
 }
 

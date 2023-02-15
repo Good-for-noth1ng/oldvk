@@ -76,5 +76,15 @@ export const newsSlice = createSlice({
         }
     },
 })
-export const { setOpenedPost, setItems, setGroups, setProfiles, setCurrentPage, setNextFrom, pushGroups, pushItems, pushProfiles } = newsSlice.actions
+export const { 
+    setOpenedPost, 
+    setItems, 
+    setGroups, 
+    setProfiles, 
+    setCurrentPage, 
+    setNextFrom, 
+    pushGroups, 
+    pushItems, 
+    pushProfiles 
+} = newsSlice.actions
 export default newsSlice.reducer

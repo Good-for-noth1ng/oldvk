@@ -5,13 +5,16 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { COLORS } from '../constants/theme'
 import { getShortagedNumber } from '../utils/numShortage'
+import { useDispatch } from 'react-redux'
+import { setOpenedPost } from '../redux/newsSlice'
 
-const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost}) => {
+const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost, navigation, data}) => {
     // const [commentsCount, setCommentsCount] = useState(dataComments?.count !== undefined ? dataComments.count : 0)
     const [likesCount, setLikesCount] = useState(dataLikes?.count !== undefined ? dataLikes.count : 0)
     // const [repostsCount, setRepostsCount] = useState(dataReposts?.count !== undefined ? dataReposts.count : 0)
     const [isLikePressed, setIsLikePressed] = useState(false)
-    
+    const dispatch = useDispatch()
+
     const handleLikePress = () => {
       if (!isLikePressed) {
         setIsLikePressed(true)
@@ -21,10 +24,18 @@ const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost}) => {
         setLikesCount(count => count - 1)
       }
     }
+
+    const openComments = () => {
+      if(openedPost) {
+        dispatch(setOpenedPost(data))
+        navigation.navigate('OpenPost')
+      }
+    }
+
     const result = (
       <View style={styles.postBottomContainer}>
         <View>
-          <TouchableOpacity style={styles.buttonContainer} activeOpacity={1}>
+          <TouchableOpacity style={styles.buttonContainer} activeOpacity={1} onPress={openComments}>
             <MaterialCommunityIcons style={styles.iconButton} name='comment' color={COLORS.secondary} size={20}/>
             <Text style={styles.buttonText}>
               {getShortagedNumber(dataComments?.count !== undefined ? dataComments.count : 0)}

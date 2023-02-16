@@ -93,12 +93,17 @@ const Post = ({data, navigation, openedPost}) => {
         dataLikes={data.likes} 
         dataReposts={data.reposts} 
         openedPost={openedPost}
+        data={data}
+        navigation={navigation}
       />
     </View>
   )
 }
 
-export default memo(Post)
+const compareStates = (prevState, nextState) => {
+  return prevState.key === nextState.key
+}
+export default memo(Post, compareStates)
 
 const styles = StyleSheet.create({
   postContainer: {

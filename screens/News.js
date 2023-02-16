@@ -155,28 +155,26 @@ const News = ({navigation}) => {
             <View style={styles.spinnerContainer}>
               <ActivityIndicator color={COLORS.primary} size={50}/>
             </View> :
-            <View>
-              <FlatList 
-                data={postContent}
-                renderItem={renderItem}
-                showsVerticalScrollIndicator={false}
-                initialNumToRender={4}
-                onEndReached={fetchMoreData}
-                style={{backgroundColor: COLORS.light_smoke}}
-                keyExtractor={keyExtractor}
-                refreshControl={
-                  <RefreshControl 
-                    refreshing={isLoading} 
-                    onRefresh={fetchRefreshData} 
-                    colors={[COLORS.primary]} 
-                    tintColor={COLORS.primary}
-                  />
-                }
-                ListFooterComponent={listFooterComponent}
-                removeClippedSubviews={true}
-                updateCellsBatchingPeriod={200}
-              />
-            </View>
+            <FlatList 
+              data={postContent}
+              renderItem={renderItem}
+              showsVerticalScrollIndicator={false}
+              initialNumToRender={4}
+              onEndReached={fetchMoreData}
+              style={styles.newsBackground}
+              keyExtractor={keyExtractor}
+              refreshControl={
+                <RefreshControl 
+                  refreshing={isLoading} 
+                  onRefresh={fetchRefreshData} 
+                  colors={[COLORS.primary]} 
+                  tintColor={COLORS.primary}
+                />
+              }
+              ListFooterComponent={listFooterComponent}
+              removeClippedSubviews={true}
+              updateCellsBatchingPeriod={30}
+            />
         } 
       </SafeAreaView>
     </View>

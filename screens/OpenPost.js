@@ -1,5 +1,5 @@
 import { StyleSheet, FlatList, View, ActivityIndicator, Text, Modal, StatusBar, Image, TouchableOpacity, SafeAreaView } from 'react-native'
-import React, { useState, useEffect, useCallback, memo } from 'react'
+import React, { useState, useEffect, useCallback, memo, useRef } from 'react'
 import Post from '../components/Post'
 import { useSelector, useDispatch } from 'react-redux'
 import uuid from 'react-native-uuid'
@@ -24,13 +24,15 @@ const OpenPost = ({navigation}) => {
   const regestrationDate = useSelector(state => state.comments.registrationDate)
   const registrationDateIsFetching = useSelector(state => state.comments.authorInfoIsFetching)
   const [comments, setComments] = useState(null);
-  
-  
+  const commentsList = useRef()
+  // const scrollToComments = () => {}
   const commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.source_id}&post_id=${data.post_id}&sort=asc&thread_items_count=2`;
   console.log(data.source_id, data.post_id)
-
-  const fetchComments = useCallback(async () => {
-    fetch(commentsUrl)
+  if (commentsList.current !== undefined) {
+    commentsList.current.scrollToIndex({index: 1, animated: true})
+  }
+  const fetchComments = async () => {
+    fetch(commentsUrl)  
       .then(response => response.json())
       .then(data => {
           let profilesUrlParam = '';
@@ -45,15 +47,15 @@ const OpenPost = ({navigation}) => {
             .then(data => {
               dispatch(setProfiles(data.response));
               setIsLoading(false);
+              
             });
       })
-  }, [commentsUrl])
+  }
   // console.log(authorName)
   useEffect(() => { 
     fetchComments();
   }, []);
 
-  
   const renderComment = ({item}) => (
     <Comment data={item} />
   )
@@ -152,12 +154,14 @@ const OpenPost = ({navigation}) => {
               </View>
             </Modal>
           </View>
-          <FlatList 
+          <FlatList
+            ref={commentsList}
             ListHeaderComponent={listHeader}
-            data={comments}
+            data={comments} 
             renderItem={renderComment}      
             ItemSeparatorComponent={commentSeparator}
             ListFooterComponent={listFooter}
+            
           />
         </>
       }

@@ -11,7 +11,7 @@ import PostLinks from './PostLinks'
 import PostVideos from './PostVideos'
 import PostDivider from './PostDivider'
 import { setOpenedPost } from '../redux/newsSlice'
-
+import { setScrolling } from '../redux/newsSlice'
 
 const Post = ({data, navigation, openedPost}) => {
   const dispatch = useDispatch();
@@ -23,6 +23,7 @@ const Post = ({data, navigation, openedPost}) => {
   const openPost = () => {
     if (openedPost) {
       dispatch(setOpenedPost(data))
+      dispatch(setScrolling(false))
       navigation.navigate('OpenPost')
     }
   }

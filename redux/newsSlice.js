@@ -11,13 +11,20 @@ export const newsSlice = createSlice({
         groups: [],
         profiles: [],
         currentPage: 'News',
-        nextFrom: ''
+        nextFrom: '',
+        scrollToComments: false
     },
     reducers: {
         setOpenedPost: (state, action) => {
             return {
                 ...state,
                 openedPost: action.payload
+            }
+        },
+        setScrolling: (state, action) => {
+            return {
+                ...state,
+                scrollToComments: action.payload
             }
         },
         setItems: (state, action) => {
@@ -85,6 +92,7 @@ export const {
     setNextFrom, 
     pushGroups, 
     pushItems, 
-    pushProfiles 
+    pushProfiles,
+    setScrolling 
 } = newsSlice.actions
 export default newsSlice.reducer

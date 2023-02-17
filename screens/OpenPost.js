@@ -23,14 +23,12 @@ const OpenPost = ({navigation}) => {
   const authorImgUrl = useSelector(state => state.comments.authorImgUrl)
   const regestrationDate = useSelector(state => state.comments.registrationDate)
   const registrationDateIsFetching = useSelector(state => state.comments.authorInfoIsFetching)
+  const shouldScroll = useSelector(state => state.news.scrollToComments)
   const [comments, setComments] = useState(null);
   const commentsList = useRef()
   // const scrollToComments = () => {}
   const commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.source_id}&post_id=${data.post_id}&sort=asc&thread_items_count=2`;
   console.log(data.source_id, data.post_id)
-  if (commentsList.current !== undefined) {
-    commentsList.current.scrollToIndex({index: 1, animated: true})
-  }
   const fetchComments = async () => {
     fetch(commentsUrl)  
       .then(response => response.json())
@@ -105,6 +103,11 @@ const OpenPost = ({navigation}) => {
     dispatch(closeAuthorInfo());
   }
 
+  const scrollingToComments = () => {
+    if(shouldScroll) {
+      commentsList.current.scrollToIndex({index: 0, animated: true,viewPosition: 0.1})
+    }
+  }
   return (
     <View>
       <SafeAreaView>
@@ -155,6 +158,7 @@ const OpenPost = ({navigation}) => {
             </Modal>
           </View>
           <FlatList
+            onLayout={scrollingToComments}
             ref={commentsList}
             ListHeaderComponent={listHeader}
             data={comments} 

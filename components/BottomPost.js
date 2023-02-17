@@ -6,7 +6,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { COLORS } from '../constants/theme'
 import { getShortagedNumber } from '../utils/numShortage'
 import { useDispatch } from 'react-redux'
-import { setOpenedPost } from '../redux/newsSlice'
+import { setOpenedPost, setScrolling } from '../redux/newsSlice'
 
 const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost, navigation, data}) => {
     // const [commentsCount, setCommentsCount] = useState(dataComments?.count !== undefined ? dataComments.count : 0)
@@ -28,6 +28,7 @@ const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost, navigatio
     const openComments = () => {
       if(openedPost) {
         dispatch(setOpenedPost(data))
+        dispatch(setScrolling(true))
         navigation.navigate('OpenPost')
       }
     }

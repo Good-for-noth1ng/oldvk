@@ -27,8 +27,13 @@ const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost, navigatio
 
     const openComments = () => {
       if(openedPost) {
+        const comments = dataComments?.count !== undefined ? dataComments.count : 0
         dispatch(setOpenedPost(data))
-        dispatch(setScrolling(true))
+        if (comments > 0) {
+          dispatch(setScrolling(true))
+        } else {
+          dispatch(setScrolling(false))
+        }
         navigation.navigate('OpenPost')
       }
     }

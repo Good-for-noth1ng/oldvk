@@ -18,7 +18,7 @@ import NewsTitleSwitcher from './NewsTitleSwitcher';
 import CustomDrawer from './CustomDrawer';
 import NewsRoute from './NewsRoute';
 import { COLORS } from '../constants/theme';
-
+import GropsRoute from './GropsRoute';
 const Drawer = createDrawerNavigator()
 
 const Home = () => {
@@ -65,10 +65,11 @@ const Home = () => {
             <FontAwesome name='envelope' size={20} color={color}/>
           )
         }}/>
-        <Drawer.Screen name='GroupList' component={GroupList} options={{
+        <Drawer.Screen name='Communities' component={GropsRoute} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='users' size={20} color={color}/>
-          )
+          ),
+          headerShown: false
         }}/>
         <Drawer.Screen name='Newsfeed' component={NewsRoute} options={{
           drawerIcon: ({color}) => (

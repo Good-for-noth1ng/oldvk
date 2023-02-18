@@ -163,6 +163,7 @@ const News = ({navigation}) => {
               onEndReached={fetchMoreData}
               style={styles.newsBackground}
               keyExtractor={keyExtractor}
+              onEndReachedThreshold={0.5}
               refreshControl={
                 <RefreshControl 
                   refreshing={isLoading} 
@@ -183,7 +184,7 @@ const News = ({navigation}) => {
 const styles = StyleSheet.create({
   spinnerContainer: {
     width: '100%',
-    height: '100%',
+    height: '90%',
     justifyContent: 'center'
   },
   newsBackground: {

@@ -3,10 +3,11 @@ import React from 'react'
 import { COLORS } from '../constants/theme'
 import { useDispatch } from 'react-redux'
 import { setID } from '../redux/groupSlice'
-
+import { getShortagedNumber } from '../utils/numShortage'
 const GroupListItem = ({data, navigation}) => {
     const dispatch = useDispatch()
-    let name = data.name.slice(0,30)
+    
+    let name = data.name.slice(0,27)
     if (name !== data.name) {
         name += '...'
     }
@@ -16,8 +17,11 @@ const GroupListItem = ({data, navigation}) => {
     }
     return (
     <TouchableOpacity activeOpacity={0.8} onPress={handleOnPress} style={styles.groupIitemContainer}>
-      <Image source={{uri:data.photo_100}} style={styles.image}/>  
-      <Text style={styles.groupName}>{name}</Text>
+      <Image source={{uri:data.photo_100}} style={styles.image}/>
+      <View style={styles.nameAndFollowersContainer}>
+        <Text style={styles.groupName}>{name}</Text>
+        <Text>{data.activity}, {getShortagedNumber(data.members_count)} followers</Text>
+      </View>  
     </TouchableOpacity>
   )
 }
@@ -40,7 +44,10 @@ const styles = StyleSheet.create({
         borderRadius: 4
     },
     groupName: {
-        marginLeft: 10,
-        fontSize: 15,
+        fontSize: 17,
+        fontWeight: '600'
+    },
+    nameAndFollowersContainer: {
+      marginLeft: 12
     }
 })

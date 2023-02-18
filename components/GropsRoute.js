@@ -11,7 +11,7 @@ const GropsRoute = () => {
   return (
     <GroupStack.Navigator initialRouteName='GroupList'>
       <GroupStack.Screen name='GroupList' component={GroupList} options={{headerShown: false}}/>
-      <GroupStack.Screen name='Group' component={Group}/>
+      <GroupStack.Screen name='Group' component={Group} options={{headerShown: false}}/>
       <GroupStack.Screen name='OpenPost' component={OpenPost} options={{headerShown: false}}/>
     </GroupStack.Navigator>
   )

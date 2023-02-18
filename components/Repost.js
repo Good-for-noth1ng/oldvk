@@ -8,7 +8,7 @@ import PostFiles from './PostFiles'
 import PostLinks from './PostLinks'
 import PostVideos from './PostVideos'
 import PostDivider from './PostDivider'
-import { setOpenedPost } from '../redux/newsSlice'
+import { setOpenedPost, setScrolling } from '../redux/newsSlice'
 import { useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
 
@@ -40,6 +40,7 @@ const Repost = ({ data, navigation, openedPost }) => {
   const openPost = () => {
     if(openedPost) {
         dispatch(setOpenedPost(data));
+        dispatch(setScrolling(false))
         navigation.navigate('OpenPost')
     }
   }
@@ -98,6 +99,8 @@ const Repost = ({ data, navigation, openedPost }) => {
         dataLikes={data.likes} 
         dataReposts={data.reposts}
         openedPost={openedPost}
+        navigation={navigation}
+        data={data}
       />
     </View>  
   )

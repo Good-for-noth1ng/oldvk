@@ -27,9 +27,14 @@ const OpenPost = ({navigation}) => {
   const [comments, setComments] = useState(null);
   const commentsList = useRef()
   // const scrollToComments = () => {}
-  const commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.source_id}&post_id=${data.post_id}&sort=asc&thread_items_count=2`;
+  let commentsUrl
+  if (data.source_id !== undefined && data.post_id !== undefined) {
+    commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.source_id}&post_id=${data.post_id}&sort=asc&thread_items_count=2`;
+  } else {
+    commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.owner_id}&post_id=${data.id}&sort=asc&thread_items_count=2`;
+  }
   console.log(data.source_id, data.post_id)
-  const fetchComments = async () => {
+  const fetchComments = () => {
     fetch(commentsUrl)  
       .then(response => response.json())
       .then(data => {
@@ -187,7 +192,7 @@ const styles = StyleSheet.create({
   },
   activityContainer: {
     width: '100%',
-    height: '100%',
+    height: '90%',
     justifyContent: 'center',
     alignItems: 'center',
   },

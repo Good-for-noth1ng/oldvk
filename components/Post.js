@@ -13,7 +13,7 @@ import PostDivider from './PostDivider'
 import { setOpenedPost } from '../redux/newsSlice'
 import { setScrolling } from '../redux/newsSlice'
 
-const Post = ({data, navigation, openedPost}) => {
+const Post = ({data, navigation, openedPost, isCommunityContent, isProfileContent}) => {
   const dispatch = useDispatch();
   let postPhotos = []
   let postDocs = []
@@ -27,9 +27,9 @@ const Post = ({data, navigation, openedPost}) => {
       navigation.navigate('OpenPost')
     }
   }
-
+  // console.log(data.type)
   const initPostData = () => {
-    if (data.attachments !== undefined && data.type === 'post') {  
+    if (data.attachments !== undefined && data.post_type === 'post') {  
       let attachments
       if (data.copy_history !== undefined) {
         attachments = data.copy_history[0].attachments
@@ -54,7 +54,12 @@ const Post = ({data, navigation, openedPost}) => {
   
   return (
     <View style={styles.postContainer}>
-      <PostHeader sourceId={data.source_id} dataDate={data.date}/>
+      <PostHeader 
+        sourceId={data.source_id} 
+        dataDate={data.date} 
+        isCommunityContent={isCommunityContent} 
+        isProfileContent={isProfileContent}
+      />
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12}/>
         {

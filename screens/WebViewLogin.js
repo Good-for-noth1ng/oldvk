@@ -26,6 +26,7 @@ const WebViewLogin = () => {
       console.log(accessToken)
       const expiresIn = url.match(expiresInRegex)[0].split('expires_in=')[1];
       const userId = url.match(userIdRegex)[0].split('user_id=')[1];
+      // console.log(userId)
       dispatch(setAccessToken(accessToken));
       dispatch(setExpiresIn(expiresIn));
       dispatch(setUserId(userId));

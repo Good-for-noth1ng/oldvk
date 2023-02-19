@@ -3,24 +3,27 @@ import React, {useEffect, useState} from 'react'
 import {DrawerContentScrollView, DrawerItemList} from '@react-navigation/drawer'
 import { useSelector } from 'react-redux'
 import {COLORS} from '../constants/theme'
+import DrawerSetOnlineToggler from './DrawerSetOnlineToggler'
+import DrawerSwitchersContainer from './DrawerSwitchersContainer'
 
 const CustomDrawer = (props) => {
-    const urlDrawerPhoto = useSelector(state => state.user.userProfileDrawerPhotoUrl)
-    const firstName = useSelector(state => state.user.firstName)
-    const lastName = useSelector(state => state.user.lastName)
-    return (
-        <View style={{flex: 1, backgroundColor: COLORS.very_dark_gray}}>
-            <DrawerContentScrollView>
-                <TouchableOpacity style={styles.profileDrawerContainer} activeOpacity={1}>
-                    <Image source={{uri: urlDrawerPhoto}} style={styles.profileImageStyle}/>
-                    <View>
-                        <Text style={styles.profileName}>{firstName} {lastName}</Text>
-                    </View>
-                </TouchableOpacity>
-                <DrawerItemList {...props}/>
-            </DrawerContentScrollView>
-        </View>
-    )
+  const urlDrawerPhoto = useSelector(state => state.user.userProfileDrawerPhotoUrl)
+  const firstName = useSelector(state => state.user.firstName)
+  const lastName = useSelector(state => state.user.lastName)
+  return (
+    <View style={{flex: 1, backgroundColor: COLORS.very_dark_gray}}>
+      <DrawerContentScrollView>
+        <TouchableOpacity style={styles.profileDrawerContainer} activeOpacity={1}>
+          <Image source={{uri: urlDrawerPhoto}} style={styles.profileImageStyle}/>
+          <View>
+            <Text style={styles.profileName}>{firstName} {lastName}</Text>
+          </View>
+        </TouchableOpacity>
+        <DrawerItemList {...props}/>
+        <DrawerSwitchersContainer />
+      </DrawerContentScrollView>
+    </View>
+  )
 }
 
 export default CustomDrawer

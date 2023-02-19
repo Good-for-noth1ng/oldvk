@@ -18,6 +18,11 @@ const GroupList = ({navigation}) => {
     fetchGroupIds()
   }, [])
   
+  const refreshGroupList = () => {
+    setIsLoading(true)
+    fetchGroupIds()
+  }
+
   const fetchGroupIds = async () => {
     const getIdsUrl = `https://api.vk.com/method/groups.get?access_token=${accessToken}&v=5.131`
     let response = await fetch(getIdsUrl)
@@ -74,7 +79,12 @@ const GroupList = ({navigation}) => {
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={groupListSeparator}
           refreshControl={
-            <RefreshControl refreshing={isLoading} />
+            <RefreshControl 
+              refreshing={isLoading}
+              onRefresh={refreshGroupList}
+              colors={[COLORS.primary]}
+              tintColor={COLORS.primary} 
+            />
           }    
           ListFooterComponent={footer}
         />

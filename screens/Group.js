@@ -16,7 +16,8 @@ const Group = ({navigation}) => {
   // console.log(groupID)
   const fetchGroupWallContent = `https://api.vk.com/method/wall.get?access_token=${accessToken}&count=20&v=5.131&extended=1&owner_id=${groupID}`
   const [isLoading, setIsLoading] = useState(false)
-  const [postData, setPostData] = useState(null)
+  const postData = useSelector(state => state.group.items) 
+  // const [postData, setPostData] = useState(null)
   const goBack = () => {
     navigation.goBack()
   }
@@ -29,7 +30,7 @@ const Group = ({navigation}) => {
         item = {...item, key: uuid.v4()}
       })
       dispatch(setData(data.response))
-      setPostData(data.response.items)
+      // setPostData(data.response.items)
       setIsLoading(false)
     })
   }, [])
@@ -57,6 +58,7 @@ const Group = ({navigation}) => {
           renderItem={renderItem}
           initialNumToRender={4}
           keyExtractor={keyExtractor}
+          removeClippedSubviews={true}
         />
       }
     </SafeAreaView>

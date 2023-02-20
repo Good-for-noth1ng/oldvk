@@ -3,12 +3,14 @@ import React, { useState } from 'react'
 import DrawerSetOnlineToggler from './DrawerSetOnlineToggler'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
+import Octicons from 'react-native-vector-icons/Octicons'
 import { COLORS } from '../constants/theme'
 
 const DrawerSwitchersContainer = () => {
   const [isOnline, setIsOnline] = useState(false)
   const [allowMarkAsRead, setAllowMarkAsRead] = useState(false)
   const [allowSeeTyping, setAllowSeeTyping] = useState(false)
+  const [theme, setTheme] = useState(false)
   const changeOnlineStatus = () => {
     setIsOnline(prevState => !prevState)
   }
@@ -17,6 +19,9 @@ const DrawerSwitchersContainer = () => {
   }
   const changeTypingStatus = () => {
     setAllowSeeTyping(prevState => !prevState)
+  }
+  const changeTheme = () => {
+    setTheme(prevState => !prevState)
   }
   return (
     <>
@@ -55,6 +60,18 @@ const DrawerSwitchersContainer = () => {
         falseText={'Hide typing'}
         currentState={allowSeeTyping}
         setNewState={changeTypingStatus}
+      />
+      <DrawerSetOnlineToggler 
+        trueIcon={
+          <Octicons name='moon' size={20} color={COLORS.white}/>
+        }
+        falseIcon={
+          <Octicons name='sun' size={20} color={COLORS.white}/>
+        }
+        trueText={'dark mode'}
+        falseText={'light mode'}
+        currentState={theme}
+        setNewState={changeTheme}
       />
     </>
   )

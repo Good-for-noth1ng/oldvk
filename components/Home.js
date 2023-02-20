@@ -37,7 +37,7 @@ const Home = () => {
           headerTintColor: COLORS.white,
           drawerInactiveTintColor: COLORS.white,
           drawerActiveTintColor: COLORS.white,
-        // drawerType: 'back'
+          drawerType: 'slide'
       }}
     >
         <Drawer.Screen name='Friends' component={Friends} options={{

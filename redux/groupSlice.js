@@ -5,6 +5,7 @@ export const groupSlice = createSlice({
   initialState: {
     id: null,
     offset: 0,
+    totalPostCount: 0,
     items: [],
     groups: [],
     profiles: []
@@ -34,15 +35,16 @@ export const groupSlice = createSlice({
         items: action.payload.items,
         groups: action.payload.groups,
         profiles: action.payload.profiles,
-        offset: state.offset + 20
+        offset: state.offset + 20,
+        totalPostCount: action.payload.count
       }
     },
     pushData: (state, action) => {
       return {
         ...state,
-        items: state.items.concat(action.payload.items),
-        groups: state.groups.concat(action.payload.groups),
-        profiles: state.profiles.concat(action.payload.profiles),
+        items: [...state.items, ...action.payload.items],
+        groups: [...state.groups, ...action.payload.groups],
+        profiles: [...state.profiles, ...action.payload.profiles],
         offset: state.offset + 20
       }
     }

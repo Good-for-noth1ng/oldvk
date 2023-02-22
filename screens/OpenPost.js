@@ -33,7 +33,7 @@ const OpenPost = ({navigation}) => {
   } else {
     commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.owner_id}&post_id=${data.id}&sort=asc&thread_items_count=2`;
   }
-  console.log(data.source_id, data.post_id)
+  console.log(data.source_id, data.post_id) //data.from_id. data.id
   const fetchComments = () => {
     fetch(commentsUrl)  
       .then(response => response.json())
@@ -59,12 +59,16 @@ const OpenPost = ({navigation}) => {
     fetchComments();
   }, []);
 
-  const renderComment = ({item}) => (
-    <Comment data={item} />
-  )
+  const renderComment = ({item}) => {
+    if (item.thread.count === 0) {
+      return <Comment data={item} />
+    } else {
+      return <Comment data={item} extraData={item.thread.items} repliesCount={item.thread.count}/>
+    }
+  }
 
   const commentSeparator = () => (
-    <View style={{height: 12, marginLeft: 5, marginRight: 5, backgroundColor: COLORS.white}}></View>
+    <DividerWithLine dividerColor={COLORS.white} dividerHeight={12}/>
   )
 
   const handleNavigationBack = () => {
@@ -101,7 +105,7 @@ const OpenPost = ({navigation}) => {
   }
 
   const listFooter = () => {
-    return <DividerWithLine dividerColor={COLORS.white} dividerHeight={10} marginL={5} marginR={5} marginB={125}/>
+    return <DividerWithLine dividerColor={COLORS.white} dividerHeight={6} marginB={10}/>
   }
 
   const handleClosingCommentAuthorInfo = () => {
@@ -114,8 +118,7 @@ const OpenPost = ({navigation}) => {
     }
   }
   return (
-    <View>
-      <SafeAreaView>
+    <SafeAreaView style={styles.openPostContainer}>
       <StatusBar barStyle={COLORS.white} backgroundColor={COLORS.primary}/>
       <CustomHeader 
         headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>Post</Text>}
@@ -170,12 +173,11 @@ const OpenPost = ({navigation}) => {
             renderItem={renderComment}      
             ItemSeparatorComponent={commentSeparator}
             ListFooterComponent={listFooter}
-            
+            style={{marginLeft: 5, marginRight: 5}}
           />
         </>
       }
-      </SafeAreaView>
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -256,5 +258,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: COLORS.black
+  },
+  openPostContainer: {
+    flex: 1
   }
 })

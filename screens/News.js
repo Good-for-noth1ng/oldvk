@@ -161,7 +161,7 @@ const News = ({navigation}) => {
               showsVerticalScrollIndicator={false}
               initialNumToRender={4}
               onEndReached={fetchMoreData}
-              style={styles.newsBackground}
+              style={styles.listContainer}
               keyExtractor={keyExtractor}
               onEndReachedThreshold={0.5}
               refreshControl={
@@ -188,7 +188,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   newsBackground: {
-    backgroundColor: COLORS.light_smoke
+    backgroundColor: COLORS.light_smoke,
+  },
+  listContainer: {
+    marginLeft: 5,
+    marginRight: 5
   },
   bottomSpinnerContainer: {
     justifyContentL: 'center',

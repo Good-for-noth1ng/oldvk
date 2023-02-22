@@ -115,8 +115,6 @@ const styles = StyleSheet.create({
   postContainer: {
     padding: 10,
     marginTop: 5,
-    marginRight: 5,
-    marginLeft: 5,
     borderRadius: 3,
     backgroundColor: COLORS.white,
   },

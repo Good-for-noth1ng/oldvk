@@ -13,9 +13,10 @@ import {
   startLoadingRegistrationDate,
   stopLoadingRegistrationDate  
 } from '../redux/commentsSlice'
+import CommentBottom from './CommentBottom'
+import CommentReplies from './CommentReplies'
 
-
-const Comment = ({data}) => {
+const Comment = ({data, extraData, isReply, repliesCount}) => {
   const dispatch = useDispatch()
   const profiles = useSelector(state => state.comments.profiles)
   const [name, setName] = useState('')
@@ -61,37 +62,21 @@ const Comment = ({data}) => {
         }
       })  
   }
-
+  
   return (
-    <View style={styles.commentContainer}>
-      <TouchableOpacity activeOpacity={1} style={{marginRight: 7}} onPress={handleProfilePress}>
-        <Image source={{uri: photoUrl}} style={{width: 38, height: 38, borderRadius: 100}}/>
+    <>
+    <View style={isReply ?  styles.commentReplyContainer: styles.commentContainer}>
+      <TouchableOpacity activeOpacity={1} style={styles.imageContainer} onPress={handleProfilePress}>
+        <Image source={{uri: photoUrl}} style={styles.image}/>
       </TouchableOpacity>
-      <View style={{width: '86%'}}>
-        <Text style={{fontWeight: '700', fontStyle: 'normal', fontSize: 14}}>{name}</Text>
+      <View style={styles.commentConentContainer}>
+        <Text style={styles.authorName}>{name}</Text>
         <Text>{data.text}</Text>
-        <View style={{width: '95%', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-          <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={{color: COLORS.secondary, fontSize: 13}}>{getTimeDate(data.date)}</Text>
-            <Text style={{marginLeft: 10, color: COLORS.secondary, fontWeight: '700', fontSize: 13}}>Reply</Text>
-          </View>
-          <TouchableOpacity activeOpacity={1} style={styles.likeOpacityArea} onPress={handleLikePress}>
-            {
-              isLiked ?
-              <>
-                <FontAwesome name='heart'  color={COLORS.primary} size={13}/>
-                <Text style={styles.likesNumberText}>{getShortagedNumber(likesCount)}</Text>
-              </>
-              :
-              <>
-                <FontAwesome name='heart-o'  color={COLORS.secondary} size={13} />
-                <Text style={styles.likesNumberText}>{getShortagedNumber(likesCount)}</Text>
-              </>
-            }
-          </TouchableOpacity>
-        </View>
+        <CommentBottom likesCount={likesCount} handleLikePress={handleLikePress} date={data.date} isLiked={isLiked}/>
       </View>
     </View>
+    <CommentReplies repliesList={extraData} repliesCount={repliesCount}/>
+  </>
   )
 }
 
@@ -102,29 +87,40 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignContent: 'flex-start',
-    marginLeft: 5,
-    marginRight: 5,
+    // marginLeft: 5,
+    // marginRight: 5,
+    paddingLeft: 5,
+    paddingRight: 5,
+    backgroundColor: COLORS.white
+  },
+  imageContainer: {
+    marginRight: 7
+  },
+  image: {
+    width: 38, 
+    height: 38, 
+    borderRadius: 100,
+  },
+  commentReplyContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignContent: 'flex-start',
+    width: '95%',
+    // marginLeft: 5,
+    // marginRight: 5,
     paddingLeft: 5,
     paddingRight: 5,
     backgroundColor: COLORS.white
   },
   commentConentContainer: {
-
+    width: '86%',
+  },
+  authorName: {
+    fontWeight: '700', 
+    fontStyle: 'normal', 
+    fontSize: 14,
   },
   likeIcon: {
     marginRight: 2,
   },
-  likesNumberText: {
-    fontSize: 12,
-    color: COLORS.secondary
-  },
-  likeOpacityArea: {
-    width: 28, 
-    display:'flex', 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    justifyContent: 'space-between', 
-    
-  }
-
 })

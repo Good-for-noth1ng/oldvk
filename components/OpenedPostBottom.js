@@ -40,8 +40,6 @@ const OpenedPostBottom = ({reposts, likes, views, comments}) => {
       <DividerWithLine  
         dividerHeight={40} 
         dividerColor={COLORS.white}
-        marginL={5}
-        marginR={5}
         dividerLineColor={COLORS.light_smoke}
         dividerLineHeight={1}
         dividerLineWidth={'95%'}
@@ -51,8 +49,6 @@ const OpenedPostBottom = ({reposts, likes, views, comments}) => {
       <DividerWithLine 
         dividerHeight={20} 
         dividerColor={COLORS.white}
-        marginL={5}
-        marginR={5}
       />
     </>
   )
@@ -66,8 +62,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginLeft: 5,
-    marginRight: 5,
+    // marginLeft: 5,
+    // marginRight: 5,
     paddingLeft: 7,
     paddingRight: 7,
     height: 20,

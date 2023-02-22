@@ -7,6 +7,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import uuid from 'react-native-uuid';
 import Post from '../components/Post'
 import { setData, pushData } from '../redux/groupSlice'
+import Repost from '../components/Repost'
 
 const Group = ({navigation}) => {
   const dispatch = useDispatch();
@@ -54,6 +55,9 @@ const Group = ({navigation}) => {
     return item.key
   }
   const renderItem = ({item}) => {
+    if(item.copy_history !== undefined) {
+      return <Repost data={item} openedPost={true} navigation={navigation} isCommunityContent={true}/>
+    } 
     return <Post data={item} navigation={navigation} openedPost={true} isCommunityContent={true}/>
   }
   return (
@@ -78,6 +82,7 @@ const Group = ({navigation}) => {
           onEndReached={fetchMoreData}
           showsVerticalScrollIndicator={false}
           onEndReachedThreshold={0.5}
+          style={{marginLeft: 5, marginRight: 5}}
           refreshControl={
             <RefreshControl 
               refreshing={isLoading} 

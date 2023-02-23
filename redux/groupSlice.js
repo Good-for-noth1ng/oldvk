@@ -20,7 +20,8 @@ export const groupSlice = createSlice({
       }
       return {
         ...state,
-        id: id
+        id: id,
+        offset: 0,
       }
     },
     increaseOffset: (state, action) => {

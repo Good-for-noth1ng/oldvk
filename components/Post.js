@@ -55,10 +55,12 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
   return (
     <View style={styles.postContainer}>
       <PostHeader 
-        sourceId={data.source_id} 
+        sourceId={data.source_id}
+        from_id={data.from_id} 
         dataDate={data.date} 
         isCommunityContent={isCommunityContent} 
         isProfileContent={isProfileContent}
+        navigation={navigation}
       />
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12}/>

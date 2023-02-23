@@ -1,13 +1,17 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React, { useState, memo } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Feather from 'react-native-vector-icons/Feather'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
-
-const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfileContent}) => {       
+import { setID } from '../redux/groupSlice'
+const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfileContent, from_id, navigation}) => {       
+  const dispatch = useDispatch()
   let groupData = {}
   let profileData = {}
+  if (sourceId === undefined) {
+    sourceId = from_id
+  }
   if (sourceId < 0 && !isCommunityContent && !isProfileContent) {
     groupData = useSelector(state => state.news.groups.find(group => group.id === 0 - sourceId))
   } else if (sourceId > 0 && !isCommunityContent && !isProfileContent) {
@@ -19,10 +23,13 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
   }
   const [group, setGroup] = useState(groupData)
   const [profile, setProfile] = useState(profileData)
-
+  const openGroup = () => {
+    sourceId !== undefined ? dispatch(setID(sourceId)) : dispatch(setID(from_id))
+    navigation.navigate('Group')
+  }
   return (
     <View style={styles.postHeaderContainer}>
-      <View style={isRepost ? styles.postHeaderLeftsideContainerRepost : styles.postHeaderLeftsideContainer}>
+      <TouchableOpacity onPress={openGroup} style={isRepost ? styles.postHeaderLeftsideContainerRepost : styles.postHeaderLeftsideContainer}>
         <Image 
           style={isRepost ? styles.postImageSourceRepost : styles.postImageSource} 
           source={{uri: group ? group.photo_100 : profile.photo_100}}
@@ -37,7 +44,7 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
             {getTimeDate(dataDate)}
           </Text>
         </View>
-      </View>
+      </TouchableOpacity>
       {
         !isRepost &&
         <View style={styles.postHeaderRightsideContainer}>

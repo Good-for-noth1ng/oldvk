@@ -33,7 +33,7 @@ const OpenPost = ({navigation}) => {
   } else {
     commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.owner_id}&post_id=${data.id}&sort=asc&thread_items_count=2`;
   }
-  console.log(data.source_id, data.post_id) //data.from_id. data.id
+  console.log(data.source_id, data.post_id, data.from_id, data.id) //data.from_id. data.id
   const fetchComments = () => {
     fetch(commentsUrl)  
       .then(response => response.json())

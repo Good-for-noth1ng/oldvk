@@ -68,17 +68,28 @@ const GroupList = ({navigation}) => {
     };
   }
   
-  const saveInput = (query) => {
+  const saveInput = async (query) => {
     const groupSearchUrl = `https://api.vk.com/method/groups.search?q=${query}&access_token=${accessToken}&v=5.131` 
 
     if (!(query.replace(/\s/g, '') === '')) {      
       setIsLoading(true)
-      fetch(groupSearchUrl)
-      .then(response => response.json())
-      .then(data => {
-        setGroupsData(data.response.items)
-        setIsLoading(false)
-      })
+      const searchResponse = await fetch(groupSearchUrl)
+      const searchData = await searchResponse.json()
+      const groupsNum = searchData.response.count
+      const groupsItems = searchData.response.items
+      let ids = ''
+      for(let i = 0; i < groupsItems.length; i++) {
+        ids += groupsItems[i].id
+        if(i !== groupsItems.length - 1) {
+          ids += ','
+        }
+      }
+      let getGroupUrl = `https://api.vk.com/method/groups.getById?group_ids=${ids}&access_token=${accessToken}&fields=members_count,activity&v=5.131`
+      const groupsListResponse = await fetch(getGroupUrl)
+      const data = await groupsListResponse.json()
+      setGroupsData(data.response)
+      setIsLoading(false)
+      
     }
     
   }

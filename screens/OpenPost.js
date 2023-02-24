@@ -41,6 +41,13 @@ const OpenPost = ({navigation}) => {
           let profilesUrlParam = '';
           const items = data.response.items.map(item => {
             profilesUrlParam += `${item.from_id},`
+            if (item.thread.count > 0 && item.thread.items.length >= 2) {
+              for(let j = 0; j < 2; j++) {
+                profilesUrlParam += `${item.thread.items[j].from_id},`
+              }
+            } else if (item.thread.count > 0 && item.thread.items.length === 1){
+              profilesUrlParam += `${item.thread.items[0].from_id},`
+            }
             return {...item, key: uuid.v4()}
           });
           setComments(items);
@@ -59,13 +66,20 @@ const OpenPost = ({navigation}) => {
     fetchComments();
   }, []);
 
-  const renderComment = ({item}) => {
-    if (item.thread.count === 0) {
-      return <Comment data={item} />
-    } else {
-      return <Comment data={item} extraData={item.thread.items} repliesCount={item.thread.count}/>
-    }
-  }
+  const renderComment = ({item}) => (
+  <Comment 
+      commentId={item.id}
+      commentDate={item.date} 
+      likes={item.likes.count} 
+      from_id={item.from_id} 
+      commentText={item.text}
+      threadComments={item.thread.items}
+      threadCount={item.thread.count}
+      navigation={navigation}
+      postId={item.post_id}
+      ownerId={item.owner_id}
+    />
+  )
 
   const commentSeparator = () => (
     <DividerWithLine dividerColor={COLORS.white} dividerHeight={12}/>

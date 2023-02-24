@@ -4,11 +4,16 @@ export const commentsSlice = createSlice({
     name: 'comments',
     initialState: {
         profiles: [],
+        groups: [],
         isAuthorInfoOpen: false,
         authorName: '',
         authorImgUrl: '',
         registrationDate: '',
-        authorInfoIsFetching: false 
+        authorInfoIsFetching: false,
+        threadReplies: [], 
+        threadMainCommentId: 0,
+        ownerId: 0,
+        postId: 0,
     },
     reducers: {
         setProfiles: (state, action) => {
@@ -58,6 +63,31 @@ export const commentsSlice = createSlice({
                 ...state,
                 authorInfoIsFetching: false
             }
+        },
+        setThreadData: (state, action) => {
+            return {
+                ...state,
+                threadReplies: action.payload.items,
+                profiles: [...state.profiles, ...action.payload.profiles],
+                groups: [...state.groups, ...action.payload.groups],
+
+            }
+        },
+        pushThreadData: (state, action) => {
+            return {
+                ...state,
+                threadReplies: [...state.threadReplies, ...action.payload.items],
+                profiles: [...state.profiles, ...action.payload.profiles],
+                groups: [...state.groups, ...action.payload.groups],
+            }
+        },
+        setDataForFetchingCommentThread: (state, action) => {
+            return {
+                ...state,
+                threadMainCommentId: action.payload.threadMainCommentId,
+                ownerId: action.payload.ownerId,
+                postId: action.payload.postId,
+            }
         }
     }
 });
@@ -69,6 +99,9 @@ export const {
     setAuthorImgUrl, 
     setRegistrationDate,
     startLoadingRegistrationDate,
-    stopLoadingRegistrationDate
+    stopLoadingRegistrationDate,
+    setThreadData,
+    pushThreadData,
+    setDataForFetchingCommentThread,
 } = commentsSlice.actions;
 export default commentsSlice.reducer;

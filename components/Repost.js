@@ -25,6 +25,7 @@ const Repost = ({ data, navigation, openedPost, isCommunityContent }) => {
     } else {
       attachments = data.attachments
     }
+    if (attachments !== undefined) {
     for (let i = 0; i < attachments.length; i++) {
       if (attachments[i].type === 'photo') {
         postPhotos.push(attachments[i].photo)
@@ -35,7 +36,7 @@ const Repost = ({ data, navigation, openedPost, isCommunityContent }) => {
       } else if (attachments[i].type === 'video') {
         postVideos.push(attachments[i].video)
       }
-    }
+    }}
   }
   const openPost = () => {
     if(openedPost) {

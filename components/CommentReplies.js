@@ -1,28 +1,62 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
+import { useDispatch } from 'react-redux'
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import Comment from './Comment'
+import CommentReply from './CommentReply'
+import { setDataForFetchingCommentThread } from '../redux/commentsSlice'
 import { COLORS } from '../constants/theme'
-const CommentReplies = ({repliesList, repliesCount}) => {
+import DividerWithLine from './DividerWithLine'
+
+const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfThreadId, navigation, ownerId, postId}) => {
+  const dispatch = useDispatch()
+  const navigateToCommentThread = () => {
+    console.log(ownerId, postId, startOfThreadId)
+    dispatch(setDataForFetchingCommentThread({
+      threadMainCommentId: startOfThreadId,
+      ownerId: ownerId,
+      postId: postId
+    }))
+    navigation.navigate('CommentThread')
+  }
   return (
     <View style={styles.repliesListContainer}>
       {
-        repliesList !==undefined ? 
-          repliesList.length >= 2 ?
+        threadComments.length > 0 ? 
+          threadComments.length === 2 ?
             <>
-              <Comment data={repliesList[0]} isReply={true}/>
-              <Comment data={repliesList[1]} isReply={true}/>
+              <CommentReply 
+                commentDate={threadComments[0].date} 
+                from_id={threadComments[0].from_id} 
+                commentText={threadComments[0].text}
+                likes={threadComments[0].likes.count}
+                fetchProfileInfo={fetchProfileInfo}
+              />
+              <DividerWithLine dividerColor={COLORS.white} dividerHeight={5}/>
+              <CommentReply
+                commentDate={threadComments[1].date} 
+                from_id={threadComments[1].from_id} 
+                commentText={threadComments[1].text}
+                likes={threadComments[1].likes.count}
+                fetchProfileInfo={fetchProfileInfo} 
+              />
+              <DividerWithLine dividerColor={COLORS.white} dividerHeight={7}/>
               {
-                repliesCount > 2 &&
+                threadCount > 2 &&
                 <View style={styles.showMoreContainer}>
-                  <TouchableOpacity style={styles.showMoreCommentsButton}> 
+                  <TouchableOpacity style={styles.showMoreCommentsButton} onPress={navigateToCommentThread}> 
                     <AntDesign name={'arrowdown'} color={COLORS.primary} size={15}/>
                     <Text style={styles.showMoreCommentsButtonText}>Show more</Text>
                   </TouchableOpacity>
                 </View>
               }
             </> : 
-            <Comment data={repliesList[0]} isReply={true}/> 
+            <CommentReply 
+              commentDate={threadComments[0].date} 
+              from_id={threadComments[0].from_id} 
+              commentText={threadComments[0].text}
+              likes={threadComments[0].likes.count}
+              fetchProfileInfo={fetchProfileInfo}
+          /> 
         : null
       }
     </View>
@@ -44,7 +78,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.white
   },
   showMoreContainer: {
-    width: '95%',
+    width: '92%',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-start'

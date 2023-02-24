@@ -12,7 +12,11 @@ const DividerWithLine = ({
     marginR,
     marginT, 
     marginB,
-    linePosition
+    linePosition,
+    borderTL,
+    borderTR,
+    borderBL,
+    borderBR,
 }) => {
   return (
     <View style={{
@@ -27,6 +31,10 @@ const DividerWithLine = ({
         marginRight: marginR,
         marginTop: marginT,
         marginBottom: marginB,
+        borderBottomLeftRadius: borderBL,
+        borderBottomRightRadius: borderBR,
+        borderTopRightRadius: borderTR,
+        borderTopLeftRadius: borderTL
     }}>
       <View style={{width: dividerLineWidth, height: dividerLineHeight, backgroundColor: dividerLineColor}}></View>
     </View>

@@ -1,28 +1,37 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native'
-import React, { useState, useRef } from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, BackHandler } from 'react-native'
+import React, { useState, useRef, useEffect } from 'react'
 import Entypo from 'react-native-vector-icons/Entypo'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import NewsTitleSwitcher from './NewsTitleSwitcher'
 import { COLORS } from '../constants/theme'
 
-const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIcon}) => {
+const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIcon, handleInputChange}) => {
   const [showSearchInputField, setShowSearchInputField] = useState(false)
   const inputField = useRef()
+
+
   const handleSearchIconPress = () => {
     setShowSearchInputField(true)
   }
+
   const initFocusOnField = () => {
     if (inputField.current) {
       inputField.current.focus()
     }
   }
+
   const blurInput = () => {
     setShowSearchInputField(false)
   }
 
   const clearInputField = () => {
     inputField.current.clear()
+  }
+  // const handleInputChange = debounce((...args) => saveInput(...args))
+
+  const handlingChanges = (text) => {
+    handleInputChange(text)
   }
   return (
     <View style={styles.headerContainer}>
@@ -33,13 +42,14 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
             <TouchableOpacity style={styles.inputButtonsContainer} onPress={blurInput}>
               <AntDesign name='arrowleft' size={20} color={COLORS.secondary}/>
             </TouchableOpacity>  
-            <TextInput 
+            <TextInput
               style={styles.inputField} 
               ref={inputField}
               onLayout={initFocusOnField}
               selectionColor={COLORS.secondary}
               placeholder='Search'
               placeholderTextColor={COLORS.smoke}
+              onChangeText={handlingChanges}
             />
             <TouchableOpacity style={styles.inputButtonsContainer} onPress={clearInputField}>
               <AntDesign name='close' size={20} color={COLORS.secondary}/>

@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ActivityIndicator, RefreshControl } from 'react-native'
-import React, {useEffect, useState} from 'react'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ActivityIndicator, RefreshControl, BackHandler } from 'react-native'
+import React, {useEffect, useState, useRef} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import uuid from 'react-native-uuid';
 import GroupListItem from '../components/GroupListItem';
@@ -13,6 +13,7 @@ const GroupList = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(true)
   const [groupsData, setGroupsData] = useState(null)
   const drawerNavigator = navigation.getParent()
+  const searchInputField = useRef(null)
 
   useEffect(() => {
     fetchGroupIds()
@@ -42,18 +43,46 @@ const GroupList = ({navigation}) => {
     setIsLoading(false)
     setGroupsData(data.response)
   }
+
   const openDrawer = () => {
     drawerNavigator.openDrawer()
   }
+
   const renderItem = ({item}) => (
     <GroupListItem data={item} navigation={navigation}/>
   )
+
   const groupListSeparator = () => (
     <DividerWithLine dividerHeight={10} marginL={5} marginR={5} dividerColor={COLORS.white}/>
   )
+
   const footer = () => (
     <DividerWithLine dividerHeight={10} marginL={5} marginR={5} dividerColor={COLORS.white}/>
   )
+
+  const debounce = (func, delay=500) => {
+    let debounceTimer
+    return (...args) => {
+      clearTimeout(debounceTimer)
+      debounceTimer = setTimeout(() => {func(...args)}, delay)
+    };
+  }
+  
+  const saveInput = (query) => {
+    const groupSearchUrl = `https://api.vk.com/method/groups.search?q=${query}&access_token=${accessToken}&v=5.131` 
+
+    if (!(query.replace(/\s/g, '') === '')) {      
+      setIsLoading(true)
+      fetch(groupSearchUrl)
+      .then(response => response.json())
+      .then(data => {
+        setGroupsData(data.response.items)
+        setIsLoading(false)
+      })
+    }
+    
+  }
+  const handleInputChange = debounce((...args) => saveInput(...args))
   return (
     <SafeAreaView>
       <StatusBar backgroundColor={COLORS.primary} barStyle={COLORS.white}/>
@@ -66,6 +95,7 @@ const GroupList = ({navigation}) => {
         }
         iconTouchHandler={openDrawer}
         showSearchIcon={true}
+        handleInputChange={handleInputChange}
       />
       {
         isLoading ? 

@@ -59,10 +59,10 @@ const Repost = ({ data, navigation, openedPost, isCommunityContent }) => {
         }
       </TouchableOpacity>
       <PostHeader 
-        sourceId={data.copy_history[0].owner_id} 
+        sourceId={data.copy_history[0].owner_id !== undefined && data.copy_history[0].owner_id } 
         dataDate={data.copy_history[0].date} 
+        from_id={data.copy_history[0].from_id !== undefined && data.copy_history[0].from_id}
         isRepost={true} 
-        isCommunityContent={true}
       />
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12} />
@@ -117,9 +117,7 @@ const styles = StyleSheet.create({
   postContainer: {
     padding: 10,
   marginTop: 5,
-  marginRight: 5,
   // marginBottom: 5,
-  marginLeft: 5,
   borderRadius: 3,
   backgroundColor: COLORS.white,
   }

@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import GroupList from '../screens/GroupList';
 import OpenPost from '../screens/OpenPost';
 import Group from '../screens/Group';
+import CommentThread from '../screens/CommentThread';
 
 const GroupStack = createNativeStackNavigator();
 
@@ -13,6 +14,7 @@ const GropsRoute = () => {
       <GroupStack.Screen name='GroupList' component={GroupList} options={{headerShown: false}}/>
       <GroupStack.Screen name='Group' component={Group} options={{headerShown: false}}/>
       <GroupStack.Screen name='OpenPost' component={OpenPost} options={{headerShown: false}}/>
+      <GroupStack.Screen name='CommentThread' component={CommentThread} options={{headerShown: false}}/>
     </GroupStack.Navigator>
   )
 }

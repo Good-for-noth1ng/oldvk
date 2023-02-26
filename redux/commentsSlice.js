@@ -22,6 +22,16 @@ export const commentsSlice = createSlice({
                 profiles: action.payload
             }
         },
+        pushProfiles: (state, action) => {
+            const newState = [...state.profiles]
+            for (let i = 0; i < action.payload.length; i++) {
+                newState.push(action.payload[i])
+            }
+            return {
+                ...state,
+                profiles: newState
+            }
+        },
         closeAuthorInfo: (state, action) => {
             return {
                 ...state,
@@ -93,6 +103,7 @@ export const commentsSlice = createSlice({
 });
 export const { 
     setProfiles,
+    pushProfiles,
     closeAuthorInfo, 
     openAuthorInfo, 
     setAuthorName, 

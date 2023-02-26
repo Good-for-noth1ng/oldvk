@@ -6,6 +6,7 @@ import CustomHeader from '../components/CustomHeader'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import uuid from 'react-native-uuid';
 import Post from '../components/Post'
+import { pushProfiles, pushGroups } from '../redux/commentsSlice'
 import { setData, pushData } from '../redux/groupSlice'
 import Repost from '../components/Repost'
 

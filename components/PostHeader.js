@@ -9,17 +9,22 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
   const dispatch = useDispatch()
   let groupData = {}
   let profileData = {}
+  let communityId
   if (sourceId === undefined) {
-    sourceId = from_id
+    communityId = from_id
+  } else {
+    communityId = sourceId
   }
-  if (sourceId < 0 && !isCommunityContent && !isProfileContent) {
-    groupData = useSelector(state => state.news.groups.find(group => group.id === 0 - sourceId))
-  } else if (sourceId > 0 && !isCommunityContent && !isProfileContent) {
-    profileData = useSelector(state => state.news.profiles.find(profile => profile.id === sourceId))
-  } else if (isCommunityContent){
-    groupData = useSelector(state => state.group.groups[0])
-  } else if (isProfileContent) {
-    profileData = useSelector(state => state.group.profiles.find(profile => profile.id === sourceId))
+  if (communityId < 0) {
+    groupData = useSelector(state => state.news.groups.find(group => group.id === 0 - communityId))
+    if (groupData === undefined) {
+      useSelector(state => state.group.groups.find(group => group.id === 0 - communityId))
+    }
+  } else if (sourceId > 0) {
+    profileData = useSelector(state => state.news.profiles.find(profile => profile.id === communityId))
+    if (groupData === undefined) {
+      useSelector(state => state.group.profiles.find(profile => profile.id === 0 - communityId))
+    }
   }
   const [group, setGroup] = useState(groupData)
   const [profile, setProfile] = useState(profileData)

@@ -42,12 +42,12 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
               <DividerWithLine dividerColor={COLORS.white} dividerHeight={7}/>
               {
                 threadCount > 2 &&
-                <View style={styles.showMoreContainer}>
-                  <TouchableOpacity style={styles.showMoreCommentsButton} onPress={navigateToCommentThread}> 
+                <TouchableOpacity style={styles.showMoreContainer} onPress={navigateToCommentThread}>
+                  <View style={styles.showMoreCommentsButton}> 
                     <AntDesign name={'arrowdown'} color={COLORS.primary} size={15}/>
                     <Text style={styles.showMoreCommentsButtonText}>Show more</Text>
-                  </TouchableOpacity>
-                </View>
+                  </View>
+                </TouchableOpacity>
               }
             </> : 
             <CommentReply 
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     width: '92%',
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
   },
   showMoreCommentsButton: {
     width: '30%',

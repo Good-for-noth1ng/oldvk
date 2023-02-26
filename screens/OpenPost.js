@@ -6,7 +6,7 @@ import uuid from 'react-native-uuid'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { COLORS } from '../constants/theme'
 import Comment from '../components/Comment'
-import { setProfiles, closeAuthorInfo } from '../redux/commentsSlice'
+import { setProfiles, closeAuthorInfo, pushProfiles } from '../redux/commentsSlice'
 import OpenedPostBottom from '../components/OpenedPostBottom'
 import DividerWithLine from '../components/DividerWithLine'
 import { getTimeDate } from '../utils/date'
@@ -26,42 +26,44 @@ const OpenPost = ({navigation}) => {
   const shouldScroll = useSelector(state => state.news.scrollToComments)
   const [comments, setComments] = useState(null);
   const commentsList = useRef()
+  const currentLevelCommentsCount = useRef()
+  const offset = useRef(0)
   // const scrollToComments = () => {}
   let commentsUrl
   if (data.source_id !== undefined && data.post_id !== undefined) {
-    commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.source_id}&post_id=${data.post_id}&sort=asc&thread_items_count=2`;
+    commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.source_id}&count=10&post_id=${data.post_id}&sort=asc&offset=${offset.current}&thread_items_count=2&fields=photo_100&extended=1`;
   } else {
-    commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.owner_id}&post_id=${data.id}&sort=asc&thread_items_count=2`;
+    commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.owner_id}&count=10&post_id=${data.id}&sort=asc&thread_items_count=2&offset=${offset.current}&thread_items_count=2&fields=photo_100&extended=1`;
   }
   console.log(data.source_id, data.post_id, data.from_id, data.id) //data.from_id. data.id
-  const fetchComments = () => {
-    fetch(commentsUrl)  
-      .then(response => response.json())
-      .then(data => {
-          let profilesUrlParam = '';
-          const items = data.response.items.map(item => {
-            profilesUrlParam += `${item.from_id},`
-            if (item.thread.count > 0 && item.thread.items.length >= 2) {
-              for(let j = 0; j < 2; j++) {
-                profilesUrlParam += `${item.thread.items[j].from_id},`
-              }
-            } else if (item.thread.count > 0 && item.thread.items.length === 1){
-              profilesUrlParam += `${item.thread.items[0].from_id},`
-            }
-            return {...item, key: uuid.v4()}
-          });
-          setComments(items);
-          const commentAuthorUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${profilesUrlParam}&fields=photo_100`;
-          fetch(commentAuthorUrl)
-            .then(response => response.json())
-            .then(data => {
-              dispatch(setProfiles(data.response));
-              setIsLoading(false);
-              
-            });
-      })
+  
+  const fetchComments = async () => {
+    const commentsResponse = await fetch(commentsUrl)
+    const commentsData = await commentsResponse.json()
+    const items = commentsData.response.items.map(item => {
+      return {...item, key: uuid.v4()}
+    }) 
+    setComments(items)
+    currentLevelCommentsCount.current = commentsData.response.current_level_count - 10
+    offset.current += 10
+    dispatch(setProfiles(commentsData.response.profiles))
+    setIsLoading(false)
   }
-  // console.log(authorName)
+  
+  const fetchMoreComments = async () => {
+    if(currentLevelCommentsCount.current > 0) {
+      const fetchMoreCommentsResponse = await fetch(commentsUrl)
+      const fetchMoreCommentsData = await fetchMoreCommentsResponse.json()
+      const items = await fetchMoreCommentsData.response.items.map(item => {
+        return {...item, key: uuid.v4()}
+      }) 
+      currentLevelCommentsCount.current -= 10
+      offset.current += 10
+      dispatch(pushProfiles(fetchMoreCommentsData.response.profiles))
+      setComments(prevState => prevState.concat(items))
+    }
+  }
+
   useEffect(() => { 
     fetchComments();
   }, []);
@@ -119,7 +121,7 @@ const OpenPost = ({navigation}) => {
   }
 
   const listFooter = () => {
-    return <DividerWithLine dividerColor={COLORS.white} dividerHeight={6} marginB={10}/>
+    return <DividerWithLine dividerColor={COLORS.white} dividerHeight={10} marginB={10} borderBL={4} borderBR={4}/>
   }
 
   const handleClosingCommentAuthorInfo = () => {
@@ -186,7 +188,9 @@ const OpenPost = ({navigation}) => {
             data={comments} 
             renderItem={renderComment}      
             ItemSeparatorComponent={commentSeparator}
+            onEndReached={fetchMoreComments}
             ListFooterComponent={listFooter}
+            onEndReachedThreshold={1}
             style={{marginLeft: 5, marginRight: 5}}
           />
         </>

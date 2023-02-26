@@ -57,7 +57,7 @@ const GroupList = ({navigation}) => {
   )
 
   const footer = () => (
-    <DividerWithLine dividerHeight={10} marginL={5} marginR={5} dividerColor={COLORS.white}/>
+    <DividerWithLine dividerHeight={10} marginL={5} marginB={10} marginR={5} dividerColor={COLORS.white}/>
   )
 
   const debounce = (func, delay=500) => {
@@ -95,7 +95,7 @@ const GroupList = ({navigation}) => {
   }
   const handleInputChange = debounce((...args) => saveInput(...args))
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.mainContainer}>
       <StatusBar backgroundColor={COLORS.primary} barStyle={COLORS.white}/>
       <CustomHeader 
         headerName={
@@ -142,4 +142,7 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center'
   },
+  mainContainer: {
+    flex: 1,
+  }
 })

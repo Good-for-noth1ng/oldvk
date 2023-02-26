@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, FlatList } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import uuid from 'react-native-uuid';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomHeader from '../components/CustomHeader'
 import Comment from '../components/Comment';
 import { COLORS } from '../constants/theme'
-import { setProfiles } from '../redux/commentsSlice';
+import { setProfiles, pushProfiles } from '../redux/commentsSlice';
 import DividerWithLine from '../components/DividerWithLine';
 
 const CommentThread = ({navigation}) => {
@@ -15,21 +15,28 @@ const CommentThread = ({navigation}) => {
   const threadMainCommentId = useSelector(state => state.comments.threadMainCommentId)
   const ownerId = useSelector(state => state.comments.ownerId)
   const postId = useSelector(state => state.comments.postId)
-  let getThreadUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&comment_id=${threadMainCommentId}&extended=1&fields=photo_100&need_likes=1&owner_id=${ownerId}&post_id=${postId}&sort=asc`
+  let getThreadUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&count=10&comment_id=${threadMainCommentId}&extended=1&fields=photo_100&need_likes=1&owner_id=${ownerId}&post_id=${postId}&sort=asc`
   let getThreadMainCommentUrl = `https://api.vk.com/method/wall.getComment?access_token=${accessToken}&v=5.131&comment_id=${threadMainCommentId}&extended=1&fields=photo_100&owner_id=${ownerId}`
   const [isLoading, setIsLoading] = useState(true)
   const [comments, setComments] = useState(null)
   const [mainComment, setMainComment] = useState(null)
+  const threadList = useRef(null)
+  const offset = useRef(10)
+  const currentLevelCommentsCount = useRef(0)
 
   const fetchThreadComments = async () => {
     const threadCommentsResponse = await fetch(getThreadUrl)
     const threadMainCommentResponse = await fetch(getThreadMainCommentUrl)
     const threadCommentsData = await threadCommentsResponse.json() 
     const threadMainCommentData = await threadMainCommentResponse.json()
+    const items = threadCommentsData.response.items.map(item => {
+      return {...item, key: uuid.v4()}
+    }) 
     setMainComment(threadMainCommentData)
+    currentLevelCommentsCount.current = threadCommentsData.response.count - 10
     // console.log(threadMainCommentData.response)
-    setComments(threadCommentsData.response.items)
-    dispatch(setProfiles([...threadCommentsData.response.profiles, ...threadMainCommentData.response.profiles]))
+    setComments(items)
+    dispatch(pushProfiles([...threadCommentsData.response.profiles, threadMainCommentData.response.profiles[0]]))
     setIsLoading(false)
   }
   useEffect(() => {
@@ -39,6 +46,22 @@ const CommentThread = ({navigation}) => {
   const goBack = () => {
     navigation.goBack()
   }
+
+  const fetchMoreComments = async () => {
+    if (currentLevelCommentsCount.current > 0) {
+      let fetchMoreCommentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&count=10&offset=${offset.current}&v=5.131&comment_id=${threadMainCommentId}&extended=1&fields=photo_100&need_likes=1&owner_id=${ownerId}&post_id=${postId}&sort=asc`
+      const fetchMoreCommentsResponse = await fetch(fetchMoreCommentsUrl)
+      const fetchMoreCommentsData = await fetchMoreCommentsResponse.json()
+      const items = fetchMoreCommentsData.response.items.map(item => {
+        return {...item, key: uuid.v4()}
+      })
+      setComments(prevState => [...prevState, ...items])
+      dispatch(pushProfiles(fetchMoreCommentsData.response.profiles))
+      offset.current += 10
+      currentLevelCommentsCount.current -= 10
+    }
+  }
+
   const renderItem = ({item}) => (
     <Comment
       commentId={item.id}
@@ -53,7 +76,7 @@ const CommentThread = ({navigation}) => {
   const listHeader = () => (
     <>
       <DividerWithLine 
-        marginT={5} 
+        marginT={10} 
         dividerHeight={5} 
         dividerColor={COLORS.white}
         borderTL={4}
@@ -83,12 +106,17 @@ const CommentThread = ({navigation}) => {
   )
 
   const listBottom = () => (
-    <DividerWithLine dividerColor={COLORS.white} dividerHeight={10} borderBL={4} borderBR={4}/>
+    <DividerWithLine dividerColor={COLORS.white} marginB={10} dividerHeight={10} borderBL={4} borderBR={4}/>
   )
   
   const keyExtractor = () => {
     return uuid.v4()
   }
+
+  const scrollingToThreadStart = () => {
+    threadList.current.scrollToIndex({index: 2, animated: true})
+  }
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <StatusBar backgroundColor={COLORS.primary} barStyle={COLORS.white}/>
@@ -102,7 +130,9 @@ const CommentThread = ({navigation}) => {
         <View style={styles.spinnerContainer}>
             <ActivityIndicator color={COLORS.primary} size={50}/>
         </View> :
-        <FlatList 
+        <FlatList
+          ref={threadList}
+          onLayout={scrollingToThreadStart} 
           data={comments}
           keyExtractor={keyExtractor}
           renderItem={renderItem}
@@ -110,6 +140,8 @@ const CommentThread = ({navigation}) => {
           ItemSeparatorComponent={commentSeparator}
           ListHeaderComponent={listHeader}
           ListFooterComponent={listBottom}
+          onEndReached={fetchMoreComments}
+          onEndReachedThreshold={1}
         />
       }
     </SafeAreaView>

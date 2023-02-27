@@ -83,7 +83,7 @@ const Group = ({navigation}) => {
           onEndReached={fetchMoreData}
           showsVerticalScrollIndicator={false}
           onEndReachedThreshold={0.5}
-          style={{marginLeft: 5, marginRight: 5}}
+          style={styles.feed}
           refreshControl={
             <RefreshControl 
               refreshing={isLoading} 
@@ -107,9 +107,11 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   feed: {
-    backgroundColor: COLORS.light_smoke
+    marginLeft: 5,
+    marginRight: 5
   },
   feedContainer: {
     flex: 1,
+    backgroundColor: COLORS.light_smoke
   }
 })

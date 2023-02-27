@@ -6,10 +6,18 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import NewsTitleSwitcher from './NewsTitleSwitcher'
 import { COLORS } from '../constants/theme'
 
-const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIcon, handleInputChange}) => {
+const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIcon, handleInputChange, navigation}) => {
   const [showSearchInputField, setShowSearchInputField] = useState(false)
   const inputField = useRef()
 
+  // BackHandler.addEventListener('hardwareBackPress',  () => {
+  //   console.log(showSearchInputField)
+  //   if (showSearchInputField) {
+  //     setShowSearchInputField(false)
+  //     return true
+  //   }
+  //   return false
+  // })
 
   const handleSearchIconPress = () => {
     setShowSearchInputField(true)
@@ -50,6 +58,8 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
               placeholder='Search'
               placeholderTextColor={COLORS.smoke}
               onChangeText={handlingChanges}
+              autoCapitalize='none'
+              onBlur={blurInput}
             />
             <TouchableOpacity style={styles.inputButtonsContainer} onPress={clearInputField}>
               <AntDesign name='close' size={20} color={COLORS.secondary}/>

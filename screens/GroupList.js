@@ -107,6 +107,7 @@ const GroupList = ({navigation}) => {
         iconTouchHandler={openDrawer}
         showSearchIcon={true}
         handleInputChange={handleInputChange}
+        navigation={navigation}
       />
       {
         isLoading ? 
@@ -144,5 +145,6 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     flex: 1,
+    backgroundColor: COLORS.light_smoke
   }
 })

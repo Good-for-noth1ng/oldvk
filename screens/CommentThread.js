@@ -157,7 +157,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   mainContainer: {
-    flex: 1
+    flex: 1,
+    backgroundColor: COLORS.light_smoke
   },
   list: {
     marginRight: 5,

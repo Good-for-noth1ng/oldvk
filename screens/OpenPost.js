@@ -278,6 +278,7 @@ const styles = StyleSheet.create({
     color: COLORS.black
   },
   openPostContainer: {
-    flex: 1
+    flex: 1,
+    backgroundColor: COLORS.light_smoke
   }
 })

@@ -93,7 +93,9 @@ const GroupList = ({navigation}) => {
     }
     
   }
+
   const handleInputChange = debounce((...args) => saveInput(...args))
+  
   return (
     <SafeAreaView style={styles.mainContainer}>
       <StatusBar backgroundColor={COLORS.primary} barStyle={COLORS.white}/>

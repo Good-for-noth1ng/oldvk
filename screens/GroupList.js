@@ -60,7 +60,7 @@ const GroupList = ({navigation}) => {
     <DividerWithLine dividerHeight={10} marginL={5} marginB={10} marginR={5} dividerColor={COLORS.white}/>
   )
 
-  const debounce = (func, delay=500) => {
+  const debounce = (func, delay=300) => {
     let debounceTimer
     return (...args) => {
       clearTimeout(debounceTimer)

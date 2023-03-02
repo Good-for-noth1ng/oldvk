@@ -12,7 +12,7 @@ import DividerWithLine from '../components/DividerWithLine'
 import { getTimeDate } from '../utils/date'
 import CustomHeader from '../components/CustomHeader'
 import Repost from '../components/Repost'
-
+import TextInputField from '../components/TextInputField'
 const OpenPost = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch()
@@ -193,6 +193,7 @@ const OpenPost = ({navigation}) => {
             onEndReachedThreshold={1}
             style={{marginLeft: 5, marginRight: 5}}
           />
+          <TextInputField />
         </>
       }
     </SafeAreaView>
@@ -202,14 +203,6 @@ const OpenPost = ({navigation}) => {
 export default memo(OpenPost)
 
 const styles = StyleSheet.create({
-  activityContainer: {
-    width: '100%', 
-    height: '100%', 
-    display: 'flex', 
-    flexDirection: 'row', 
-    alignItems: 'center', 
-    justifyContent: 'center',
-  },
   activityContainer: {
     width: '100%',
     height: '90%',
@@ -279,6 +272,6 @@ const styles = StyleSheet.create({
   },
   openPostContainer: {
     flex: 1,
-    backgroundColor: COLORS.light_smoke
+    backgroundColor: COLORS.light_smoke,
   }
 })

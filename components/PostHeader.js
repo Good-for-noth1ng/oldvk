@@ -18,12 +18,12 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
   if (communityId < 0) {
     groupData = useSelector(state => state.news.groups.find(group => group.id === 0 - communityId))
     if (groupData === undefined) {
-      useSelector(state => state.group.groups.find(group => group.id === 0 - communityId))
+      groupData = useSelector(state => state.group.groups.find(group => group.id === 0 - communityId))
     }
-  } else if (sourceId > 0) {
+  } else if (communityId > 0) {
     profileData = useSelector(state => state.news.profiles.find(profile => profile.id === communityId))
     if (groupData === undefined) {
-      useSelector(state => state.group.profiles.find(profile => profile.id === 0 - communityId))
+      profileData = useSelector(state => state.group.profiles.find(profile => profile.id === 0 - communityId))
     }
   }
   const [group, setGroup] = useState(groupData)
@@ -35,6 +35,7 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
   return (
     <View style={styles.postHeaderContainer}>
       <TouchableOpacity onPress={openGroup} style={isRepost ? styles.postHeaderLeftsideContainerRepost : styles.postHeaderLeftsideContainer}>
+        {isRepost ? <Feather name='corner-up-right' size={20} style={styles.repostIcon} color={COLORS.secondary}/> : null}
         <Image 
           style={isRepost ? styles.postImageSourceRepost : styles.postImageSource} 
           source={{uri: group ? group.photo_100 : profile.photo_100}}
@@ -127,5 +128,8 @@ const styles = StyleSheet.create({
       postTimeTextRepost: {
         fontSize: 12,
         fontWeight: '600'
+      },
+      repostIcon: {
+        marginRight: 5
       }
 })

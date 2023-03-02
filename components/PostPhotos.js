@@ -53,7 +53,13 @@ const PostPhotos = ({postPhotos}) => {
       let widthPercent = 100 / imgPerRow
       let width = postWidth * (widthPercent / 100)
       widthOfImages.push(width)
-      let lastIndexUrl = postPhotos[index]?.sizes.length - 2
+      let lastIndexUrl
+      if (postPhotos[index]?.sizes.length > 9) {
+        lastIndexUrl = postPhotos[index]?.sizes.length - 2
+      } else {
+        lastIndexUrl = postPhotos[index]?.sizes.length - 1
+      }
+       
       let originHeight = postPhotos[index]?.sizes[lastIndexUrl].height
       let originWidth = postPhotos[index]?.sizes[lastIndexUrl].width
       resolution = originHeight / originWidth

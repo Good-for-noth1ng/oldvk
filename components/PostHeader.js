@@ -5,7 +5,8 @@ import Feather from 'react-native-vector-icons/Feather'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 import { setID } from '../redux/groupSlice'
-const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfileContent, from_id, navigation}) => {       
+const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfileContent, from_id, navigation}) => {  
+  // if (isRepost) {console.log(sourceId, from_id)}     
   const dispatch = useDispatch()
   let groupData = {}
   let profileData = {}

@@ -72,7 +72,7 @@ const OpenPost = ({navigation}) => {
   <Comment 
       commentId={item.id}
       commentDate={item.date} 
-      likes={item.likes.count} 
+      likes={item?.likes?.count} 
       from_id={item.from_id} 
       commentText={item.text}
       threadComments={item.thread.items}
@@ -80,6 +80,8 @@ const OpenPost = ({navigation}) => {
       navigation={navigation}
       postId={item.post_id}
       ownerId={item.owner_id}
+      attachments={item?.attachments}
+      is_deleted={item.deleted}
     />
   )
 
@@ -109,7 +111,7 @@ const OpenPost = ({navigation}) => {
     }
     return (
       <>
-        <Repost data={data} openedPost={false}/>
+        <Repost data={data} openedPost={false} navigation={navigation}/>
         <OpenedPostBottom 
           likes={data?.likes?.count} 
           reposts={data?.reposts?.count} 
@@ -132,6 +134,10 @@ const OpenPost = ({navigation}) => {
     if(shouldScroll) {
       commentsList.current.scrollToIndex({index: 0, animated: true,viewPosition: 0.1})
     }
+  }
+
+  const keyExtractor = (item) => {
+    return item.key
   }
   return (
     <SafeAreaView style={styles.openPostContainer}>
@@ -192,6 +198,7 @@ const OpenPost = ({navigation}) => {
             ListFooterComponent={listFooter}
             onEndReachedThreshold={1}
             style={{marginLeft: 5, marginRight: 5}}
+            keyExtractor={keyExtractor}
           />
           <TextInputField />
         </>

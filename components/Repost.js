@@ -12,7 +12,7 @@ import { setOpenedPost, setScrolling } from '../redux/newsSlice'
 import { useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
 
-const Repost = ({ data, navigation, openedPost, isCommunityContent }) => {
+const Repost = ({ data, navigation, openedPost }) => {
   const dispatch = useDispatch()
   let postPhotos = []
   let postDocs = []
@@ -47,7 +47,7 @@ const Repost = ({ data, navigation, openedPost, isCommunityContent }) => {
   }
   return (
     <View style={styles.postContainer}>
-      <PostHeader sourceId={data.owner_id} dataDate={data.date} isRepost={false} />
+      <PostHeader sourceId={data.owner_id} dataDate={data.date} isRepost={false} navigation={navigation}/>
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12} />
         {

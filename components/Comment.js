@@ -13,8 +13,9 @@ import {
 import CommentBottom from './CommentBottom'
 import CommentReplies from './CommentReplies'
 import DividerWithLine from './DividerWithLine'
+import CommentPhotos from './CommentPhotos'
 
-const Comment = ({from_id, commentText, commentDate, likes, threadCount, threadComments, commentId, navigation, postId, ownerId}) => {
+const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, likes, threadCount, threadComments, commentId, navigation, postId, ownerId}) => {
   const dispatch = useDispatch()
   const profiles = useSelector(state => state.comments.profiles)
   const [name, setName] = useState('')
@@ -22,7 +23,15 @@ const Comment = ({from_id, commentText, commentDate, likes, threadCount, threadC
   const [isLiked, setIsLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(likes)
   const [showAuthorInfo, setShowAuthorInfo] = useState(false)
-  
+  let commentPhotos = []
+
+  if (attachments !== undefined) {
+    for (let i = 0; i < attachments.length; i++) {
+      if (attachments[i].type === 'photo') {
+        commentPhotos.push(attachments[i].photo)
+      }
+    }
+  }
   useEffect(() => {
     // console.log(data.from_id)
     profiles.forEach(item => {
@@ -68,11 +77,17 @@ const Comment = ({from_id, commentText, commentDate, likes, threadCount, threadC
     <>
     <View style={styles.commentContainer}>
       <TouchableOpacity activeOpacity={1} style={styles.imageContainer} onPress={handleProfilePress}>
-        <Image source={{uri: photoUrl}} style={styles.image}/>
+        <Image source={is_deleted ? require('../assets/avatars/banned-light.jpg') : {uri: photoUrl}} style={styles.image}/>
       </TouchableOpacity>
       <View style={styles.commentConentContainer}>
-        <Text style={styles.authorName}>{name}</Text>
-        <Text>{commentText}</Text>
+        {
+          is_deleted ? <View style={styles.deltedContainer}><Text style={styles.deletedText}>Comment deleted</Text></View> : 
+          <>
+            <Text style={styles.authorName}>{name}</Text>
+            {commentText ? <Text style={styles.text}>{commentText}</Text> : null}
+            {commentPhotos.length > 0 ? <CommentPhotos commentPhotos={commentPhotos}/> : null}
+          </>
+        }
         <CommentBottom likesCount={likesCount} handleLikePress={handleLikePress} date={commentDate} isLiked={isLiked}/>
       </View>
     </View>
@@ -125,6 +140,9 @@ const styles = StyleSheet.create({
   commentConentContainer: {
     width: '86%',
   },
+  text: {
+    fontSize: 15
+  },
   authorName: {
     fontWeight: '700', 
     fontStyle: 'normal', 
@@ -132,5 +150,13 @@ const styles = StyleSheet.create({
   },
   likeIcon: {
     marginRight: 2,
+  },
+  deltedContainer: {
+    height: 35,
+    justifyContent: 'center',
+  },
+  deletedText: {
+    color: COLORS.secondary,
+    fontSize: 16,
   },
 })

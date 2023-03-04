@@ -1,13 +1,14 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React, { useState, useCallback, memo } from 'react'
 import { COLORS } from '../constants/theme'
+import { getHyperlinkInText } from '../utils/hyperlinks'
 //dataText
 const PostText = ({dataText, toOpen}) => {
   let postText = ''
   let readMoreText
   if (dataText !== undefined) {
     if (dataText.split(' ').length > 50 && toOpen) {
-      postText = dataText.split(' ').slice(0, 50).join(' ')
+      postText = dataText.split(' ').slice(0, 70).join(' ')
       readMoreText = true
     } else {
       readMoreText = false
@@ -27,7 +28,7 @@ const PostText = ({dataText, toOpen}) => {
   return (
     <View style={styles.textContainer}>
       <Text>
-        {text}
+        {getHyperlinkInText(text)}
         {readMore ? '...' : ''}
       </Text>
         {readMore ? 

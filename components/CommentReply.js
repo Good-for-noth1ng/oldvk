@@ -3,7 +3,7 @@ import React, { useState, useEffect} from 'react'
 import { useSelector } from 'react-redux'
 import CommentBottom from './CommentBottom'
 import { COLORS } from '../constants/theme'
-
+import { getHyperlinkInText } from '../utils/hyperlinks'
 const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes}) => {
   const profiles = useSelector(state => state.comments.profiles)
   const [name, setName] = useState('')
@@ -15,7 +15,7 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
     // console.log(data.from_id)
     profiles.forEach(item => {
       if (item.id === from_id) {
-        setName(`${item.last_name} ${item.first_name}`);
+        setName(`${item.first_name} ${item.last_name}`);
         setPhotoUrl(item.photo_100);
       }
     })
@@ -42,7 +42,7 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
       </TouchableOpacity>
       <View style={styles.commentConentContainer}>
         <Text style={styles.authorName}>{name}</Text>
-        <Text>{commentText}</Text>
+        <Text>{getHyperlinkInText(commentText)}</Text>
         <CommentBottom likesCount={likesCount} handleLikePress={handleLikePress} date={commentDate} isLiked={isLiked}/>
       </View>
     </View>

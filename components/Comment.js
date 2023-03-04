@@ -14,6 +14,7 @@ import CommentBottom from './CommentBottom'
 import CommentReplies from './CommentReplies'
 import DividerWithLine from './DividerWithLine'
 import CommentPhotos from './CommentPhotos'
+import { getHyperlinkInText } from '../utils/hyperlinks'
 
 const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, likes, threadCount, threadComments, commentId, navigation, postId, ownerId}) => {
   const dispatch = useDispatch()
@@ -36,7 +37,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
     // console.log(data.from_id)
     profiles.forEach(item => {
       if (item.id === from_id) {
-        setName(`${item.last_name} ${item.first_name}`);
+        setName(`${item.first_name} ${item.last_name}`);
         setPhotoUrl(item.photo_100);
       }
     })
@@ -84,7 +85,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
           is_deleted ? <View style={styles.deltedContainer}><Text style={styles.deletedText}>Comment deleted</Text></View> : 
           <>
             <Text style={styles.authorName}>{name}</Text>
-            {commentText ? <Text style={styles.text}>{commentText}</Text> : null}
+            {commentText ? <Text style={styles.text}>{getHyperlinkInText(commentText)}</Text> : null}
             {commentPhotos.length > 0 ? <CommentPhotos commentPhotos={commentPhotos}/> : null}
           </>
         }

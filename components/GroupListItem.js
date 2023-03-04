@@ -32,8 +32,6 @@ const styles = StyleSheet.create({
     groupIitemContainer: {
         display: 'flex',
         flexDirection: 'row',
-        marginLeft: 5,
-        marginRight: 5,
         paddingLeft: 10,
         paddingRight: 10,
         backgroundColor: COLORS.white,

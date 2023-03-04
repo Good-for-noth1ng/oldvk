@@ -53,11 +53,11 @@ const GroupList = ({navigation}) => {
   )
 
   const groupListSeparator = () => (
-    <DividerWithLine dividerHeight={10} marginL={5} marginR={5} dividerColor={COLORS.white}/>
+    <DividerWithLine dividerHeight={10} dividerColor={COLORS.white}/>
   )
 
   const footer = () => (
-    <DividerWithLine dividerHeight={10} marginL={5} marginB={10} marginR={5} dividerColor={COLORS.white}/>
+    <DividerWithLine dividerHeight={10} marginB={10} borderBL={5} borderBR={5} dividerColor={COLORS.white}/>
   )
 
   const debounce = (func, delay=300) => {
@@ -130,6 +130,7 @@ const GroupList = ({navigation}) => {
               tintColor={COLORS.primary} 
             />
           }    
+          style={styles.list}
           ListFooterComponent={footer}
         />
       }
@@ -148,5 +149,9 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     backgroundColor: COLORS.light_smoke
+  },
+  list: {
+    marginLeft: 5,
+    marginRight: 5,
   }
 })

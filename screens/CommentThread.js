@@ -109,8 +109,8 @@ const CommentThread = ({navigation}) => {
     <DividerWithLine dividerColor={COLORS.white} marginB={10} dividerHeight={10} borderBL={4} borderBR={4}/>
   )
   
-  const keyExtractor = () => {
-    return uuid.v4()
+  const keyExtractor = (item) => {
+    return item.key
   }
 
   const scrollingToThreadStart = () => {

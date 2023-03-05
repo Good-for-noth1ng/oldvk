@@ -3,41 +3,54 @@ import React from "react"
 import { COLORS } from "../constants/theme"
 import uuid from 'react-native-uuid';
 
-export const getHyperlinkInText = (comment) => {
-  const wordsList = comment.split(' ')
-  const userPatternWithComma = /^\[id\d*\|.*\]\,$/ //   text.match(/\[club\d*\|.*\]/)
-  const userPattern = /^\[id\d*\|.*\]$/
-  const communityPatternWithComma = /^\[club\d*\|.*\]\,$/
-  const communityPattern = /^\[club\d*\|.*\]$/
+const getNameFromHyperlink = (str) => {
+  let idPart = str.split('|')[0]
+  let namePart =  str.split('|')[1]
+  let name = namePart.split(']')[0]
+  return name
+}
+const findUrls = (wordsList, needsToBeSplited = false) => {
+  const urlPattern = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))|(#[^\s]*)/
   let updatedWordsList = []
-  let variablesForFormatting = []
+  // console.log(wordsList)
+  // return wordsList
   for (let i = 0; i < wordsList.length; i++) {
-    if (userPatternWithComma.test(wordsList[i]) || userPattern.test(wordsList[i])) {
-      let idPart = wordsList[i].split('|')[0]
-      let namePart = wordsList[i].split('|')[1]
-      let id = idPart.split('[')[1]
-      let name = namePart.split(']')[0]
-      if (userPatternWithComma.test(wordsList[i])) {
-        updatedWordsList.push(<Text key={uuid.v4()} style={{color: COLORS.primary}}>{name}</Text>)
-        updatedWordsList.push(', ')
-      } else {
-        updatedWordsList.push(<Text key={uuid.v4()} style={{color: COLORS.primary}}>{name}</Text>)
-      }
-    } else if (communityPattern.test(wordsList[i]) || communityPatternWithComma.test(wordsList[i])) {
-      let idPart = wordsList[i].split('|')[0]
-      let namePart = wordsList[i].split('|')[1]
-      let id = idPart.split('[')[1]
-      let name = namePart.split(']')[0]
-      if (communityPatternWithComma.test(wordsList[i])) {
-        updatedWordsList.push(<Text key={uuid.v4()} style={{color: COLORS.primary}}>{name}</Text>)
-        updatedWordsList.push(', ')
-      } else {
-        updatedWordsList.push(<Text key={uuid.v4()} style={{color: COLORS.primary}}>{name} </Text>)
+    if(typeof wordsList[i] === 'string') {
+      let splitedWordsList = wordsList[i].split(' ')
+      for (let j = 0; j < splitedWordsList.length; j++) {
+        if (urlPattern.test(splitedWordsList[j])) {
+          updatedWordsList.push(<Text key={uuid.v4()} style={{color: COLORS.primary}}>{splitedWordsList[j]} </Text>)
+        } else {
+          updatedWordsList.push(splitedWordsList[j])
+          updatedWordsList.push(' ')
+        }
       }
     } else {
       updatedWordsList.push(wordsList[i])
-      updatedWordsList.push(' ')
     }
   }
   return updatedWordsList
+}
+
+export const getHyperlinkInText = (comment) => {
+  const apropriateStrings = comment.match(/(\[id\d*\|[^\]]*\])|(\[club\d*\|[^\]]*\])|(\[https:\/\/[^\s\)]*\|[^\]]*\])/g)
+  let wordsList = []
+  let text = comment
+  if (apropriateStrings !== null) {
+    let numOfApropriateStrings = apropriateStrings.length
+    for (let i = 0; i < numOfApropriateStrings; i++) {
+      let indexOfHyperlinkStart = text.search(/(\[id\d*\|[^\]]*\])|(\[club\d*\|[^\]]*\])|(\[https:\/\/[^\s\)]*\|[^\]]*\])/) //(\[https:\/\/[^\s\)]*\|[^\]]*\])
+      wordsList.push(text.slice(0, indexOfHyperlinkStart))
+      wordsList.push(<Text style={{color: COLORS.primary}} key={uuid.v4()}>{getNameFromHyperlink(apropriateStrings[i])}</Text>)
+      text = text.slice(indexOfHyperlinkStart + apropriateStrings[i].length, text.length)
+      if (i === apropriateStrings.length - 1) {
+        wordsList.push(text)
+      }
+    }
+    // console.log(wordsList)
+    return findUrls(wordsList)
+  }
+  const result = findUrls(comment.split(' ')) 
+  return result
+  
 }

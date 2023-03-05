@@ -42,7 +42,7 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
       </TouchableOpacity>
       <View style={styles.commentConentContainer}>
         <Text style={styles.authorName}>{name}</Text>
-        <Text>{getHyperlinkInText(commentText)}</Text>
+        <Text style={styles.replyText}>{getHyperlinkInText(commentText)}</Text>
         <CommentBottom likesCount={likesCount} handleLikePress={handleLikePress} date={commentDate} isLiked={isLiked}/>
       </View>
     </View>
@@ -88,4 +88,7 @@ const styles = StyleSheet.create({
   likeIcon: {
     marginRight: 2,
   },
+  replyText: {
+    fontSize: 15
+  }
 })

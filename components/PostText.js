@@ -27,7 +27,7 @@ const PostText = ({dataText, toOpen}) => {
    
   return (
     <View style={styles.textContainer}>
-      <Text>
+      <Text style={styles.text}>
         {getHyperlinkInText(text)}
         {readMore ? '...' : ''}
       </Text>
@@ -52,5 +52,8 @@ const styles = StyleSheet.create({
     showMoreText: {
         color: COLORS.primary,
         fontWeight: '700'
+    },
+    text: {
+      fontSize: 15
     }
 })

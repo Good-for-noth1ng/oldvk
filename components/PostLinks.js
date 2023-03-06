@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Linking } from 'react-native'
 import React from 'react'
 import Feather from 'react-native-vector-icons/Feather'
 import { COLORS } from '../constants/theme'
@@ -17,7 +17,7 @@ const PostLinks = ({postLinks}) => {
       address += '...' 
     }
     return (  
-      <TouchableOpacity style={styles.linkContainer} activeOpacity={1}>
+      <TouchableOpacity style={styles.linkContainer} activeOpacity={1} onPress={() => Linking.openURL(url)}>
        <View style={styles.linkIconContainer}>
          <Feather name='arrow-up-right' size={30} color={COLORS.secondary} />
        </View>

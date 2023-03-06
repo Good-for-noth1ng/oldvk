@@ -1,16 +1,15 @@
 import { StyleSheet, Text, View, Image } from 'react-native'
 import React from 'react'
 import { COLORS, SIZES } from '../constants/theme'
-
-const Header = ({screenName}) => {
+// 
+const Header = ({screenName, theme}) => {
   return (
-    <View style={styles.headerStyle}>
+    <View style={theme !== 'light' ? styles.headerStyleLight : styles.headerStyleDark}>
       <View style={styles.textLogoContainerStyle}>
         <View style={styles.logoContainerStyle}>  
-          <Image source={
-              require('../assets/icons/vk_logo_eng_blue.png')
-          }
-              style={styles.logoStyle}
+          <Image 
+            source={theme !== 'light' ? require('../assets/icons/vk_logo_eng_blue.png') : require ('../assets/icons/vk_logo_eng_black.png')}
+            style={styles.logoStyle}
           />
         </View>
         <Text style={styles.screenNameStyle}>{screenName}</Text>
@@ -34,16 +33,25 @@ const styles = StyleSheet.create({
     logoStyle: {
         width: '80%',
         height: '80%',
-
     },
-    headerStyle: {
+    headerStyleLight: {
         width: '100%',
         height: 55,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: COLORS.primary,
+        backgroundColor: COLORS.primary
+    },
+    headerStyleDark: {
+      width: '100%',
+        height: 55,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        backgroundColor: COLORS.dark_active_button,
+
     },
     screenNameStyle: {
       color: COLORS.white,

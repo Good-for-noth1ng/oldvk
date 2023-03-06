@@ -3,6 +3,8 @@ import userReducer from './userSlice'
 import newsReducer from './newsSlice'
 import commentsReducer from "./commentsSlice";
 import groupReducer from "./groupSlice";
+import searchResultsReducer from "./searchResultsSlice";
+import colorSchemeReducer from "./colorSchemeSlice";
 
 export const store = configureStore({
     reducer: {
@@ -10,11 +12,13 @@ export const store = configureStore({
         news: newsReducer,
         comments: commentsReducer,
         group: groupReducer,
+        searchResults: searchResultsReducer,
+        colorScheme: colorSchemeReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         immutableCheck: {
-            ignoredPaths: ['user', 'news', 'comments, group']
+            ignoredPaths: ['user', 'news', 'comments', 'group', 'searchResults', 'colorScheme']
         },
-        serializableCheck: { ignoredPaths: ['user', 'news', 'comments', 'group'] }
+        serializableCheck: { ignoredPaths: ['user', 'news', 'comments', 'group', 'searchResults', 'colorScheme'] }
       })
 })

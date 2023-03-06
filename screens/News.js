@@ -1,4 +1,4 @@
-import { View, Text, RefreshControl, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet, FlatList } from 'react-native'
+import { View, Text, RefreshControl, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet, FlatList, useColorScheme } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
 import uuid from 'react-native-uuid';
 import { useSelector, useDispatch, } from 'react-redux';

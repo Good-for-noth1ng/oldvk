@@ -7,7 +7,9 @@ export const COLORS = {
     black: 'rgb(0, 0, 0)',
     smoke: '#aeb7c2',
     light_smoke: '#dbdcdd',
-    very_dark_gray: '#303342'
+    very_dark_gray: '#303342',
+    light_black: '#202021c9',
+    dark_active_button: '#272727'
 }
 
 export const postWidth = Dimensions.get('window').width - 30

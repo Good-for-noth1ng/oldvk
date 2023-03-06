@@ -8,6 +8,7 @@ import Comment from '../components/Comment';
 import { COLORS } from '../constants/theme'
 import { setProfiles, pushProfiles } from '../redux/commentsSlice';
 import DividerWithLine from '../components/DividerWithLine';
+import TextInputField from '../components/TextInputField';
 
 const CommentThread = ({navigation}) => {
   const dispatch = useDispatch()
@@ -130,19 +131,22 @@ const CommentThread = ({navigation}) => {
         <View style={styles.spinnerContainer}>
             <ActivityIndicator color={COLORS.primary} size={50}/>
         </View> :
-        <FlatList
-          ref={threadList}
-          onLayout={scrollingToThreadStart} 
-          data={comments}
-          keyExtractor={keyExtractor}
-          renderItem={renderItem}
-          style={styles.list}
-          ItemSeparatorComponent={commentSeparator}
-          ListHeaderComponent={listHeader}
-          ListFooterComponent={listBottom}
-          onEndReached={fetchMoreComments}
-          onEndReachedThreshold={1}
-        />
+        <>
+          <FlatList
+            ref={threadList}
+            onLayout={scrollingToThreadStart} 
+            data={comments}
+            keyExtractor={keyExtractor}
+            renderItem={renderItem}
+            style={styles.list}
+            ItemSeparatorComponent={commentSeparator}
+            ListHeaderComponent={listHeader}
+            ListFooterComponent={listBottom}
+            onEndReached={fetchMoreComments}
+            onEndReachedThreshold={1}
+          />
+          <TextInputField />
+        </>
       }
     </SafeAreaView>
   )

@@ -1,4 +1,4 @@
-import { Text } from "react-native"
+import { Text, Linking } from "react-native"
 import React from "react"
 import { COLORS } from "../constants/theme"
 import uuid from 'react-native-uuid';
@@ -10,19 +10,31 @@ const getNameFromHyperlink = (str) => {
   return name
 }
 const findUrls = (wordsList, needsToBeSplited = false) => {
-  const urlPattern = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))|(#[^\s]*)/
+  const urlPattern = /(https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*))/
+  const hashTagPattern = /#[^\s\)\(\[\]\{\}\d][^\s\)\(\[\]\{\}]*|#[^\d]*/
   let updatedWordsList = []
   // console.log(wordsList)
   // return wordsList
   for (let i = 0; i < wordsList.length; i++) {
-    if(typeof wordsList[i] === 'string') {
-      let splitedWordsList = wordsList[i].split(' ')
-      for (let j = 0; j < splitedWordsList.length; j++) {
-        if (urlPattern.test(splitedWordsList[j])) {
-          updatedWordsList.push(<Text key={uuid.v4()} style={{color: COLORS.primary}}>{splitedWordsList[j]} </Text>)
-        } else {
-          updatedWordsList.push(splitedWordsList[j])
-          updatedWordsList.push(' ')
+    if (typeof wordsList[i] === 'string') {
+      let splitedByNewLinesTransition = wordsList[i].split('\n')
+      for (let j = 0; j < splitedByNewLinesTransition.length; j++) {
+        let splitedBySpaces = splitedByNewLinesTransition[j].split(' ')
+        for (let k = 0; k < splitedBySpaces.length; k++) {
+          if(urlPattern.test(splitedBySpaces[k])) {
+            updatedWordsList.push(<Text onPress={() => Linking.openURL(splitedBySpaces[k])} key={uuid.v4()} style={{color: COLORS.primary}}>{splitedBySpaces[k]}</Text>)
+          } else if (hashTagPattern.test(splitedBySpaces[k])) {
+            updatedWordsList.push(<Text key={uuid.v4()} style={{color: COLORS.primary}}>{splitedBySpaces[k]}</Text>)
+            if (k !== splitedBySpaces.length - 1) {
+              updatedWordsList.push(' ')  
+            }
+          } else {
+            updatedWordsList.push(splitedBySpaces[k])
+            updatedWordsList.push(' ')
+          }  
+        }
+        if (j !== splitedByNewLinesTransition.length - 1) {
+          updatedWordsList.push('\n')
         }
       }
     } else {
@@ -49,8 +61,7 @@ export const getHyperlinkInText = (comment) => {
     }
     // console.log(wordsList)
     return findUrls(wordsList)
-  }
-  const result = findUrls(comment.split(' ')) 
-  return result
+  } 
+  return findUrls(comment.split(' '))
   
 }

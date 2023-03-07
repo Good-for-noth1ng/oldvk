@@ -3,7 +3,7 @@ import React, { useState, useCallback, memo } from 'react'
 import { COLORS } from '../constants/theme'
 import { getHyperlinkInText } from '../utils/hyperlinks'
 //dataText
-const PostText = ({dataText, toOpen}) => {
+const PostText = ({dataText, toOpen, isLightTheme}) => {
   let postText = ''
   let readMoreText
   if (dataText !== undefined) {
@@ -27,7 +27,7 @@ const PostText = ({dataText, toOpen}) => {
    
   return (
     <View style={styles.textContainer}>
-      <Text style={styles.text}>
+      <Text style={!isLightTheme ? styles.textLight : styles.textDark}>
         {getHyperlinkInText(text)}
         {readMore ? '...' : ''}
       </Text>
@@ -53,7 +53,12 @@ const styles = StyleSheet.create({
         color: COLORS.primary,
         fontWeight: '700'
     },
-    text: {
-      fontSize: 15
+    textLight: {
+      fontSize: 15,
+      color: COLORS.black
+    },
+    textDark: {
+      fontSize: 15,
+      color: COLORS.primary_text
     }
 })

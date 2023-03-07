@@ -2,7 +2,8 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, Linking } from 'react-
 import React from 'react'
 import Feather from 'react-native-vector-icons/Feather'
 import { COLORS } from '../constants/theme'
-const PostLinks = ({postLinks}) => {
+
+const PostLinks = ({postLinks, isLightTheme}) => {
   if (postLinks.length > 0) {
     const postLink = postLinks[0]
     const url = postLink.url
@@ -22,10 +23,8 @@ const PostLinks = ({postLinks}) => {
          <Feather name='arrow-up-right' size={30} color={COLORS.secondary} />
        </View>
        <View style={styles.linkInfoContainer}>
-         <Text style={styles.nameStyle}>{title}</Text>
-         <View style={styles.linkAddressContainer}>
-           <Text style={{marginRight: 4}}>{address}</Text>
-         </View>
+         <Text style={!isLightTheme ? styles.nameLight : styles.nameDark}>{title}</Text>
+          <Text style={!isLightTheme ? styles.addressLight : styles.addressDark}>{address}</Text>
        </View>
      </TouchableOpacity>
   )} else {
@@ -59,10 +58,20 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     marginLeft: 10,
   },
-  nameStyle: {
+  nameLight: {
     fontSize: 14,
+    color: COLORS.black,
   },
-  linkAddressContainer: {
-
+  nameDark: {
+    fontSize: 14,
+    color: COLORS.primary_text,
+  },
+  addressLight: {
+    fontSize: 13,
+    color: COLORS.black,
+  },
+  addressDark: {
+    fontSize: 13,
+    color: COLORS.primary_text
   }
 })

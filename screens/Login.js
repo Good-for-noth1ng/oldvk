@@ -16,19 +16,20 @@ const Login = ({navigation}) => {
   if (colorScheme === 'dark') {
     dispatch(toggleCurrentColorScheme())
   }
+  const isLightTheme = colorScheme !== 'light';
   return (
     // <View>
-    <SafeAreaView style={colorScheme !== 'light' ? styles.mainContainerLight : styles.mainContainerDark}>
-      <StatusBar backgroundColor={colorScheme !== 'light' ? COLORS.primary : COLORS.black} barStyle={COLORS.white}/>
-        <Header screenName={'Авторизация'} theme={colorScheme}/>
+    <SafeAreaView style={isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
+      <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
+        <Header screenName={'Авторизация'} isLight={isLightTheme}/>
         <View style={styles.heroButtonContainer}>
           <View style={styles.textContainer}>
-            <Text style={styles.textHeader}>Добро пожаловать!</Text>
-            <Text style={styles.subtitle}>
+            <Text style={isLightTheme ? styles.textHeaderLight : styles.textHeaderDark}>Добро пожаловать!</Text>
+            <Text style={isLightTheme ? styles.subtitleLight : styles.subtitleDark}>
               oldvk - мобильное приложение для соцсети вконтакте
             </Text>
           </View>
-          <LoginButton buttonText={'Авторизоваться через vk.com'}  navigation={navigation}/>
+          <LoginButton buttonText={'Авторизоваться через vk.com'} isLightTheme={isLightTheme}  navigation={navigation}/>
         </View>
     </SafeAreaView>
   )
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
   },
   mainContainerDark: {
     flex: 1,
-    backgroundColor: COLORS.very_dark_gray
+    backgroundColor: COLORS.background_dark
   },
   heroButtonContainer: {
     display: 'flex',
@@ -57,14 +58,27 @@ const styles = StyleSheet.create({
     height: '45%',
     justifyContent: 'space-between',
   },
-  textHeader: {
+  textHeaderLight: {
     fontSize: SIZES.extraLarge,
     fontWeight: '700',
-    textAlign: 'center'
+    textAlign: 'center',
+    color: COLORS.black
   },
-  subtitle: {
+  textHeaderDark: {
+    fontSize: SIZES.extraLarge,
+    fontWeight: '700',
+    textAlign: 'center',
+    color: COLORS.primary_text
+  },
+  subtitleLight: {
     fontSize: SIZES.medium,
-    textAlign: 'center'
+    textAlign: 'center',
+    color: COLORS.black,  
+  },
+  subtitleDark: {
+    fontSize: SIZES.medium,
+    textAlign: 'center',
+    color: COLORS.primary_text,
   }
 });
 

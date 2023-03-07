@@ -8,7 +8,7 @@ import { getShortagedNumber } from '../utils/numShortage'
 import { useDispatch } from 'react-redux'
 import { setOpenedPost, setScrolling } from '../redux/newsSlice'
 
-const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost, navigation, data}) => {
+const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost, navigation, data, isLightTheme}) => {
     // const [commentsCount, setCommentsCount] = useState(dataComments?.count !== undefined ? dataComments.count : 0)
     const [likesCount, setLikesCount] = useState(dataLikes?.count !== undefined ? dataLikes.count : 0)
     // const [repostsCount, setRepostsCount] = useState(dataReposts?.count !== undefined ? dataReposts.count : 0)
@@ -37,12 +37,12 @@ const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost, navigatio
         navigation.navigate('OpenPost')
       }
     }
-
+    const unactiveButtonColor = !isLightTheme ? COLORS.secondary : COLORS.smoke;
     const result = (
       <View style={styles.postBottomContainer}>
         <View>
           <TouchableOpacity style={styles.buttonContainer} activeOpacity={1} onPress={openComments}>
-            <MaterialCommunityIcons style={styles.iconButton} name='comment' color={COLORS.secondary} size={20}/>
+            <MaterialCommunityIcons style={styles.iconButton} name='comment' color={unactiveButtonColor} size={20}/>
             <Text style={styles.buttonText}>
               {getShortagedNumber(dataComments?.count !== undefined ? dataComments.count : 0)}
             </Text>
@@ -50,13 +50,13 @@ const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost, navigatio
         </View>
         <View style={styles.bottomRightContainer}>
           <TouchableOpacity style={styles.buttonContainer}>
-            <FontAwesome style={styles.iconButton} name='share' color={COLORS.secondary} size={20}/>
+            <FontAwesome style={styles.iconButton} name='share' color={unactiveButtonColor} size={20}/>
             <Text style={styles.buttonText}>
               {getShortagedNumber(dataReposts?.count !== undefined ? dataReposts.count : 0)}
             </Text>  
           </TouchableOpacity>  
           <TouchableOpacity style={styles.buttonContainer} activeOpacity={1} onPress={handleLikePress}>
-            <AntDesign style={styles.iconButton} color={isLikePressed ? COLORS.primary : COLORS.secondary} name='like1' size={20} />
+            <AntDesign style={styles.iconButton} color={isLikePressed ? COLORS.primary : unactiveButtonColor} name='like1' size={20} />
             <Text style={styles.buttonText}>{getShortagedNumber(likesCount)}</Text>
           </TouchableOpacity>
         </View>

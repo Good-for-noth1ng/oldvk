@@ -7,7 +7,7 @@ import { setDataForFetchingCommentThread } from '../redux/commentsSlice'
 import { COLORS } from '../constants/theme'
 import DividerWithLine from './DividerWithLine'
 
-const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfThreadId, navigation, ownerId, postId}) => {
+const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfThreadId, navigation, ownerId, postId, isLightTheme}) => {
   const dispatch = useDispatch()
   const navigateToCommentThread = () => {
     console.log(ownerId, postId, startOfThreadId)

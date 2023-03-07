@@ -3,13 +3,13 @@ import { createSlice } from "@reduxjs/toolkit";
 export const colorSchemeSlice = createSlice({
     name: 'colorScheme',
     initialState: {
-        currentColorScheme: 'light'
+        isCurrentSchemeLight: true
     },
     reducers: {
         toggleCurrentColorScheme: (state, action) => {
             return {
                 ...state,
-                currentColorScheme: !state.currentColorScheme 
+                isCurrentSchemeLight: !state.isCurrentSchemeLight 
             }
         }
     }

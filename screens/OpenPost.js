@@ -14,6 +14,7 @@ import CustomHeader from '../components/CustomHeader'
 import Repost from '../components/Repost'
 import TextInputField from '../components/TextInputField'
 const OpenPost = ({navigation}) => {
+  const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch()
   const data = useSelector(state => state.news.openedPost) 
@@ -82,6 +83,7 @@ const OpenPost = ({navigation}) => {
       ownerId={item.owner_id}
       attachments={item?.attachments}
       is_deleted={item.deleted}
+      isLightTheme={isLightTheme}
     />
   )
 
@@ -99,12 +101,13 @@ const OpenPost = ({navigation}) => {
     if (data.copy_history === undefined) {
     return (
       <>
-        <Post data={data} navigation={navigation} openedPost={false}/>
+        <Post data={data} navigation={navigation} openedPost={false} isLigthTheme={isLightTheme}/>
         <OpenedPostBottom 
           likes={data?.likes?.count} 
           reposts={data?.reposts?.count} 
           views={data?.views?.count} 
           comments={data?.comments?.count}
+          isLightTheme={isLightTheme}
         />
       </>
     )
@@ -140,12 +143,13 @@ const OpenPost = ({navigation}) => {
     return item.key
   }
   return (
-    <SafeAreaView style={styles.openPostContainer}>
-      <StatusBar barStyle={COLORS.white} backgroundColor={COLORS.primary}/>
+    <SafeAreaView style={!isLightTheme ? styles.openPostContainerLight : styles.openPostContainerDark}>
+      <StatusBar barStyle={COLORS.white} backgroundColor={!isLightTheme ? COLORS.primary : COLORS.primary_dark}/>
       <CustomHeader 
         headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>Post</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={handleNavigationBack}
+        isLightTheme={isLightTheme}
       />
       {
         isLoading ? 
@@ -277,8 +281,12 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: COLORS.black
   },
-  openPostContainer: {
+  openPostContainerLight: {
     flex: 1,
     backgroundColor: COLORS.light_smoke,
+  },
+  openPostContainerDark: {
+    flex: 1,
+    backgroundColor: COLORS.background_dark,
   }
 })

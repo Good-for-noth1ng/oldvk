@@ -8,8 +8,12 @@ export const COLORS = {
     smoke: '#aeb7c2',
     light_smoke: '#dbdcdd',
     very_dark_gray: '#303342',
-    light_black: '#202021c9',
-    dark_active_button: '#272727'
+
+    light_black: '#202021c9',   
+    primary_dark: '#272727', //    primary_dark: '#272727', background_post: '#222222' rgba(255, 255, 255, 0.08) 
+    background_dark: '#141414',
+    primary_text: '#e1e3e6'
+
 }
 
 export const postWidth = Dimensions.get('window').width - 30

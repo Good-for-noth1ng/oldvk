@@ -6,7 +6,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import NewsTitleSwitcher from './NewsTitleSwitcher'
 import { COLORS } from '../constants/theme'
 
-const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIcon, handleInputChange, navigation}) => {
+const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIcon, handleInputChange, navigation, isLightTheme}) => {
   const [showSearchInputField, setShowSearchInputField] = useState(false)
   const inputField = useRef()
 
@@ -42,7 +42,7 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
     handleInputChange(text)
   }
   return (
-    <View style={styles.headerContainer}>
+    <View style={!isLightTheme ? styles.headerContainerLight : styles.headerContainerDark}>
       {
         showSearchInputField ?
         <View style={styles.inputFieldContainer}>
@@ -89,7 +89,7 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
 export default CustomHeader
 
 const styles = StyleSheet.create({
-  headerContainer: {
+  headerContainerLight: {
     width: '100%',
     height: 60,
     flexDirection: 'row',
@@ -97,7 +97,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: COLORS.primary,
   },
-
+  headerContainerDark: {
+    width: '100%',
+    height: 60,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    backgroundColor: COLORS.primary_dark,
+  },
   inputFieldContainer: {
     width: '100%',
     height: 40,

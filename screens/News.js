@@ -16,7 +16,7 @@ import Repost from '../components/Repost';
 //TODO make news upload from redux directly
 const News = ({navigation}) => {
   const drawerNavigator = navigation.getParent()
-  
+  const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const subscribeOnBlur = () => {
     const hideHeader = navigation.addListener('blur', () => {
       drawerNavigator.setOptions({headerShown: false, swipeEnabled: false})
@@ -126,7 +126,7 @@ const News = ({navigation}) => {
     } else if (item.type === 'wall_photo') {
       return null
     }
-    return <Post data={item} navigation={navigation} openedPost={true}/>
+    return <Post data={item} navigation={navigation} openedPost={true} isLigthTheme={isLightTheme}/>
   }
 
   const listFooterComponent = () => {
@@ -143,42 +143,41 @@ const News = ({navigation}) => {
     return item.key
   }
   return(
-    <View style={styles.newsBackground}>
-      <SafeAreaView>
-        <StatusBar backgroundColor={COLORS.primary} barStyle={COLORS.white} animated={true}/>
-        <CustomHeader 
-          headerName={<NewsTitleSwitcher />} 
-          iconComponent={<Entypo name='menu' color={COLORS.white} size={30}/>}
-          iconTouchHandler={handleDrawerOpening}
-        />
-          {isLoading ?
-            <View style={styles.spinnerContainer}>
-              <ActivityIndicator color={COLORS.primary} size={50}/>
-            </View> :
-            <FlatList 
-              data={postContent}
-              renderItem={renderItem}
-              showsVerticalScrollIndicator={false}
-              initialNumToRender={4}
-              onEndReached={fetchMoreData}
-              style={styles.listContainer}
-              keyExtractor={keyExtractor}
-              onEndReachedThreshold={0.5}
-              refreshControl={
-                <RefreshControl 
-                  refreshing={isLoading} 
-                  onRefresh={fetchRefreshData} 
-                  colors={[COLORS.primary]} 
-                  tintColor={COLORS.primary}
-                />
-              }
-              ListFooterComponent={listFooterComponent}
-              removeClippedSubviews={true}
-              updateCellsBatchingPeriod={30}
-            />
-        } 
-      </SafeAreaView>
-    </View>
+    <SafeAreaView style={!isLightTheme ? styles.newsBackgroundLight : styles.newsBackgroundDark}>
+      <StatusBar backgroundColor={!isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white} animated={true}/>
+      <CustomHeader 
+        headerName={<NewsTitleSwitcher />} 
+        iconComponent={<Entypo name='menu' color={COLORS.white} size={30}/>}
+        iconTouchHandler={handleDrawerOpening}
+        isLightTheme={isLightTheme}
+      />
+        {isLoading ?
+          <View style={styles.spinnerContainer}>
+            <ActivityIndicator color={COLORS.primary} size={50}/>
+          </View> :
+          <FlatList 
+            data={postContent}
+            renderItem={renderItem}
+            showsVerticalScrollIndicator={false}
+            initialNumToRender={4}
+            onEndReached={fetchMoreData}
+            style={styles.listContainer}
+            keyExtractor={keyExtractor}
+            onEndReachedThreshold={0.5}
+            refreshControl={
+              <RefreshControl 
+                refreshing={isLoading} 
+                onRefresh={fetchRefreshData} 
+                colors={[COLORS.primary]} 
+                tintColor={COLORS.primary}
+              />
+            }
+            ListFooterComponent={listFooterComponent}
+            removeClippedSubviews={true}
+            updateCellsBatchingPeriod={30}
+          />
+      } 
+    </SafeAreaView>
   )
 }
 const styles = StyleSheet.create({
@@ -187,8 +186,11 @@ const styles = StyleSheet.create({
     height: '90%',
     justifyContent: 'center'
   },
-  newsBackground: {
+  newsBackgroundLight: {
     backgroundColor: COLORS.light_smoke,
+  },
+  newsBackgroundDark: {
+    backgroundColor: COLORS.background_dark
   },
   listContainer: {
     marginLeft: 5,

@@ -16,7 +16,7 @@ import DividerWithLine from './DividerWithLine'
 import CommentPhotos from './CommentPhotos'
 import { getHyperlinkInText } from '../utils/hyperlinks'
 
-const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, likes, threadCount, threadComments, commentId, navigation, postId, ownerId}) => {
+const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, likes, threadCount, threadComments, commentId, navigation, postId, ownerId, isLightTheme}) => {
   const dispatch = useDispatch()
   const profiles = useSelector(state => state.comments.profiles)
   const [name, setName] = useState('')
@@ -76,7 +76,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
   // console.log(threadComments[0])
   return (
     <>
-    <View style={styles.commentContainer}>
+    <View style={!isLightTheme ? styles.commentContainerLight : styles.commentContainerDark}>
       <TouchableOpacity activeOpacity={1} style={styles.imageContainer} onPress={handleProfilePress}>
         <Image source={is_deleted ? require('../assets/avatars/banned-light.jpg') : {uri: photoUrl}} style={styles.image}/>
       </TouchableOpacity>
@@ -109,15 +109,21 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
 export default memo(Comment)
 
 const styles = StyleSheet.create({
-  commentContainer: {
+  commentContainerLight: {
     display: 'flex',
     flexDirection: 'row',
     alignContent: 'flex-start',
-    // marginLeft: 5,
-    // marginRight: 5,
     paddingLeft: 5,
     paddingRight: 5,
     backgroundColor: COLORS.white
+  },
+  commentContainerDark: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignContent: 'flex-start',
+    paddingLeft: 5,
+    paddingRight: 5,
+    backgroundColor: COLORS.primary_dark
   },
   imageContainer: {
     marginRight: 7

@@ -4,7 +4,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { COLORS } from '../constants/theme'
 import uuid from 'react-native-uuid';
 
-const PostFiles = ({postDocs}) => {
+const PostFiles = ({postDocs, isLightTheme}) => {
   let renderDocs = []
   for (let i = 0; i < postDocs.length; i++) {
     let doc = postDocs[i]
@@ -29,12 +29,8 @@ const PostFiles = ({postDocs}) => {
          <FontAwesome name='file' size={22} color={COLORS.secondary} />
        </View>
        <View style={styles.fileInfoContainer}>
-         <Text style={styles.nameStyle}>{name}</Text>
-         <View style={styles.sizeFormatContainer}>
-           <Text style={{marginRight: 4}}>{doc.ext}</Text>
-           <Text>{size}</Text>
-           <Text>{quantity}</Text>
-         </View>
+         <Text style={!isLightTheme ? styles.nameLight : styles.nameDark}>{name}</Text>
+          <Text style={!isLightTheme ? styles.additionalInfoLight : styles.additionalInfoDark}>{doc.ext} {size} {quantity}</Text>
        </View>
      </TouchableOpacity>
     )
@@ -66,13 +62,22 @@ const styles = StyleSheet.create({
     // backgroundColor: COLORS.secondary
 
   },
-  sizeFormatContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-  },
-  nameStyle: {
+  nameLight: {
     fontSize: 14,
+    color: COLORS.black,
     // fontWeight: '700',
+  },
+  nameDark: {
+    fontSize: 14,
+    color: COLORS.primary_text,
+  },
+  additionalInfoLight: {
+    fontSize: 13,
+    color: COLORS.black
+  },
+  additionalInfoDark: {
+    fontSize: 13,
+    color: COLORS.primary_text
   },
   fileIconContainer: {
     display: 'flex',

@@ -13,7 +13,7 @@ import PostDivider from './PostDivider'
 import { setOpenedPost } from '../redux/newsSlice'
 import { setScrolling } from '../redux/newsSlice'
 
-const Post = ({data, navigation, openedPost, isCommunityContent, isProfileContent}) => {
+const Post = ({data, navigation, openedPost, isCommunityContent, isProfileContent, isLigthTheme}) => {
   const dispatch = useDispatch();
   let postPhotos = []
   let postDocs = []
@@ -53,7 +53,7 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
   initPostData()
   
   return (
-    <View style={styles.postContainer}>
+    <View style={!isLigthTheme ? styles.postContainerLight : styles.postContainerDark}>
       <PostHeader 
         sourceId={data.source_id}
         from_id={data.from_id} 
@@ -61,13 +61,14 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
         isCommunityContent={isCommunityContent} 
         isProfileContent={isProfileContent}
         navigation={navigation}
+        isLightTheme={isLigthTheme}
       />
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12}/>
         {
           data.text ? (
             <>
-              <PostText dataText={data.text} toOpen={openedPost}/>
+              <PostText dataText={data.text} toOpen={openedPost} isLightTheme={isLigthTheme}/>
               <PostDivider dividerHeight={6}/>
             </>
           ) : null
@@ -82,16 +83,12 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
         ) : null
       }
       {
-        postDocs ? (
-          <>
-            <PostFiles postDocs={postDocs}/>  
-          </>
-          ) : <PostDivider dividerHeight={5}/>
+        postDocs ? <PostFiles postDocs={postDocs} isLightTheme={isLigthTheme}/> : <PostDivider dividerHeight={5}/>
       }
       {
         postLinks ? ( 
           <>
-            <PostLinks postLinks={postLinks}/>
+            <PostLinks postLinks={postLinks} isLightTheme={isLigthTheme}/>
             <PostDivider dividerHeight={6} />
           </>
         ) : null
@@ -103,6 +100,7 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
         openedPost={openedPost}
         data={data}
         navigation={navigation}
+        isLightTheme={isLigthTheme}
       />
     </View>
   )
@@ -114,11 +112,16 @@ const compareStates = (prevState, nextState) => {
 export default memo(Post, compareStates)
 
 const styles = StyleSheet.create({
-  postContainer: {
+  postContainerLight: {
     padding: 10,
     marginTop: 5,
     borderRadius: 3,
     backgroundColor: COLORS.white,
   },
-  
+  postContainerDark: {
+    padding: 10,
+    marginTop: 5,
+    borderRadius: 3,
+    backgroundColor: COLORS.primary_dark,
+  }
 })

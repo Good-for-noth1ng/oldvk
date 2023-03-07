@@ -5,7 +5,7 @@ import Feather from 'react-native-vector-icons/Feather'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 import { setID } from '../redux/groupSlice'
-const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfileContent, from_id, navigation}) => {  
+const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfileContent, from_id, navigation, isLightTheme}) => {  
   // if (isRepost) {console.log(sourceId, from_id)}     
   const dispatch = useDispatch()
   let groupData = {}
@@ -33,6 +33,16 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
     sourceId !== undefined ? dispatch(setID(sourceId)) : dispatch(setID(from_id))
     navigation.navigate('Group')
   }
+  
+  let postNameTextStyle;
+  let postTimeTextStyle;
+  if (isRepost) {
+    postNameTextStyle = !isLightTheme ? styles.postNameTextRepostLight : styles.postNameTextRepostDark; 
+    postTimeTextStyle = !isLightTheme ? styles.postTimeTextRepostLight : styles.postTimeTextRepostDark;
+  } else {
+    postNameTextStyle = !isLightTheme ? styles.postNameTextLight : styles.postNameTextDark;
+    postTimeTextStyle = !isLightTheme ? styles.postTimeTextLight : styles.postNameTextDark;
+  }
   return (
     <View style={styles.postHeaderContainer}>
       <TouchableOpacity onPress={openGroup} style={isRepost ? styles.postHeaderLeftsideContainerRepost : styles.postHeaderLeftsideContainer}>
@@ -43,11 +53,11 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
         />
         <View style={styles.sourceNameContainer}>
           <View style={isRepost ? styles.postNameContainerRepost : styles.postNameContainer}>
-            <Text style={isRepost ? styles.postNameTextRepost : styles.postNameText }>
+            <Text style={postNameTextStyle}>
               {group ? group.name : profile.last_name + ' ' + profile.first_name}
             </Text>
           </View>
-          <Text style={isRepost ? styles.postTimeTextRepost : styles.postTimeText}>
+          <Text style={postTimeTextStyle}>
             {getTimeDate(dataDate)}
           </Text>
         </View>
@@ -69,7 +79,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        // marginBottom: 12,
       },
       postHeaderLeftsideContainer: {
         display: 'flex',
@@ -114,21 +123,45 @@ const styles = StyleSheet.create({
         // alignItems: 'flex-end',
         // backgroundColor: COLORS.secondary
       },
-      postNameText: {
+      postNameTextLight: {
         fontSize: 16,
-        fontWeight: '600'
+        fontWeight: '600',
+        color: COLORS.black
       },
-      postNameTextRepost: {
+      postNameTextDark: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: COLORS.primary_text
+      },
+      postNameTextRepostLight: {
         fontSize: 14,
-        fontWeight: '600'
+        fontWeight: '600',
+        color: COLORS.black
       },
-      postTimeText: {
+      postNameTextRepostDark: {
         fontSize: 14,
-        fontWeight: '600'
+        fontWeight: '600',
+        color: COLORS.primary_text
       },
-      postTimeTextRepost: {
+      postTimeTextLight: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: COLORS.black
+      },
+      postTimeTextDark: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: COLORS.primary_text
+      },
+      postTimeTextRepostLight: {
         fontSize: 12,
-        fontWeight: '600'
+        fontWeight: '600',
+        color: COLORS.black
+      },
+      postTimeTextRepostDark: {
+        fontSize: 12,
+        fontWeight: '600',
+        color: COLORS.primary_text
       },
       repostIcon: {
         marginRight: 5

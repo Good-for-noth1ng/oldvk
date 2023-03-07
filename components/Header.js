@@ -2,13 +2,13 @@ import { StyleSheet, Text, View, Image } from 'react-native'
 import React from 'react'
 import { COLORS, SIZES } from '../constants/theme'
 // 
-const Header = ({screenName, theme}) => {
+const Header = ({screenName, isLight}) => {
   return (
-    <View style={theme !== 'light' ? styles.headerStyleLight : styles.headerStyleDark}>
+    <View style={isLight ? styles.headerStyleLight : styles.headerStyleDark}>
       <View style={styles.textLogoContainerStyle}>
         <View style={styles.logoContainerStyle}>  
           <Image 
-            source={theme !== 'light' ? require('../assets/icons/vk_logo_eng_blue.png') : require ('../assets/icons/vk_logo_eng_black.png')}
+            source={isLight ? require('../assets/icons/vk_logo_eng_blue.png') : require ('../assets/icons/vk_logo_eng_black.png')}
             style={styles.logoStyle}
           />
         </View>
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: COLORS.dark_active_button,
+        backgroundColor: COLORS.primary_dark,
 
     },
     screenNameStyle: {

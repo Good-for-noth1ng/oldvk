@@ -19,7 +19,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
     navigation.navigate('CommentThread')
   }
   return (
-    <View style={styles.repliesListContainer}>
+    <View style={!isLightTheme ? styles.repliesListContainerLight : styles.repliesListContainerDark}>
       {
         threadComments.length > 0 ? 
           threadComments.length === 2 ?
@@ -30,16 +30,18 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
                 commentText={threadComments[0].text}
                 likes={threadComments[0].likes.count}
                 fetchProfileInfo={fetchProfileInfo}
+                isLightTheme={isLightTheme}
               />
-              <DividerWithLine dividerColor={COLORS.white} dividerHeight={5}/>
+              <DividerWithLine dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={5}/>
               <CommentReply
                 commentDate={threadComments[1].date} 
                 from_id={threadComments[1].from_id} 
                 commentText={threadComments[1].text}
                 likes={threadComments[1].likes.count}
-                fetchProfileInfo={fetchProfileInfo} 
+                fetchProfileInfo={fetchProfileInfo}
+                isLightTheme={isLightTheme} 
               />
-              <DividerWithLine dividerColor={COLORS.white} dividerHeight={7}/>
+              <DividerWithLine dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={7}/>
               {
                 threadCount > 2 &&
                 <TouchableOpacity style={styles.showMoreContainer} onPress={navigateToCommentThread}>
@@ -56,7 +58,8 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
               commentText={threadComments[0].text}
               likes={threadComments[0].likes.count}
               fetchProfileInfo={fetchProfileInfo}
-          /> 
+              isLightTheme={isLightTheme}
+            /> 
         : null
       }
     </View>
@@ -66,16 +69,23 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
 export default CommentReplies
 
 const styles = StyleSheet.create({
-  repliesListContainer: {
+  repliesListContainerLight: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-end',
     width: '100%',
-    // marginLeft: 5,
-    // marginRight: 5,
     paddingLeft: 5,
     paddingRight: 5,
     backgroundColor: COLORS.white
+  },
+  repliesListContainerDark: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    width: '100%',
+    paddingLeft: 5,
+    paddingRight: 5,
+    backgroundColor: COLORS.primary_dark
   },
   showMoreContainer: {
     width: '92%',

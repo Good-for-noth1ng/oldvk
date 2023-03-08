@@ -46,12 +46,12 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
       {
         showSearchInputField ?
         <View style={styles.inputFieldContainer}>
-          <View style={styles.inputFieldInnerContainer}> 
+          <View style={!isLightTheme ? styles.inputFieldInnerContainerLight : styles.inputFieldInnerContainerDark}> 
             <TouchableOpacity style={styles.inputButtonsContainer} onPress={blurInput}>
               <AntDesign name='arrowleft' size={20} color={COLORS.secondary}/>
             </TouchableOpacity>  
             <TextInput
-              style={styles.inputField} 
+              style={!isLightTheme ? styles.inputFieldLight : styles.inputFieldDark} 
               ref={inputField}
               onLayout={initFocusOnField}
               selectionColor={COLORS.secondary}
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center'
   },
-  inputFieldInnerContainer: {
+  inputFieldInnerContainerLight: {
     width: '90%',
     height: 40,
     flexDirection: 'row',
@@ -120,12 +120,26 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: COLORS.white,
   },
-  inputField: {
+  inputFieldInnerContainerDark: {
+    width: '90%',
+    height: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 10,
+    backgroundColor: COLORS.background_dark,
+  },
+  inputFieldLight: {
     width: '75%',
     height: '100%',
     fontSize: 17,
-    backgroundColor: COLORS.white,
     color: COLORS.black
+  },
+  inputFieldDark: {
+    width: '75%',
+    height: '100%',
+    fontSize: 17,
+    color: COLORS.primary_text
   },
   inputButtonsContainer: {
     // backgroundColor: COLORS.light_smoke, 

@@ -88,7 +88,7 @@ const OpenPost = ({navigation}) => {
   )
 
   const commentSeparator = () => (
-    <DividerWithLine dividerColor={COLORS.white} dividerHeight={12}/>
+    <DividerWithLine dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={12}/>
   )
 
   const handleNavigationBack = () => {
@@ -114,19 +114,20 @@ const OpenPost = ({navigation}) => {
     }
     return (
       <>
-        <Repost data={data} openedPost={false} navigation={navigation}/>
+        <Repost data={data} openedPost={false} navigation={navigation} isLightMode={isLightTheme}/>
         <OpenedPostBottom 
           likes={data?.likes?.count} 
           reposts={data?.reposts?.count} 
           views={data?.views?.count} 
           comments={data?.comments?.count}
+          isLightTheme={isLightTheme}
         />
       </>
     )
   }
 
   const listFooter = () => {
-    return <DividerWithLine dividerColor={COLORS.white} dividerHeight={10} marginB={10} borderBL={4} borderBR={4}/>
+    return <DividerWithLine dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={10} marginB={10} borderBL={4} borderBR={4}/>
   }
 
   const handleClosingCommentAuthorInfo = () => {
@@ -154,7 +155,7 @@ const OpenPost = ({navigation}) => {
       {
         isLoading ? 
         <View style={styles.activityContainer}>
-          <ActivityIndicator size={50} color={COLORS.primary}/>
+          <ActivityIndicator size={50} color={!isLightTheme ? COLORS.primary : COLORS.white}/>
         </View> :
         <>
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -204,7 +205,7 @@ const OpenPost = ({navigation}) => {
             style={{marginLeft: 5, marginRight: 5}}
             keyExtractor={keyExtractor}
           />
-          <TextInputField />
+          <TextInputField isLightTheme={isLightTheme}/>
         </>
       }
     </SafeAreaView>

@@ -14,6 +14,7 @@ const GroupList = ({navigation}) => {
   const [groupsData, setGroupsData] = useState(null)
   const drawerNavigator = navigation.getParent()
   const searchInputField = useRef(null)
+  const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
 
   useEffect(() => {
     fetchGroupIds()
@@ -49,15 +50,21 @@ const GroupList = ({navigation}) => {
   }
 
   const renderItem = ({item}) => (
-    <GroupListItem data={item} navigation={navigation}/>
+    <GroupListItem data={item} navigation={navigation} isLightTheme={isLightTheme}/>
   )
 
   const groupListSeparator = () => (
-    <DividerWithLine dividerHeight={10} dividerColor={COLORS.white}/>
+    <DividerWithLine dividerHeight={10} dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark}/>
   )
 
   const footer = () => (
-    <DividerWithLine dividerHeight={10} marginB={10} borderBL={5} borderBR={5} dividerColor={COLORS.white}/>
+    <DividerWithLine 
+      dividerHeight={10} 
+      marginB={10} 
+      borderBL={5} 
+      borderBR={5} 
+      dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark}
+    />
   )
 
   const debounce = (func, delay=700) => {
@@ -97,9 +104,10 @@ const GroupList = ({navigation}) => {
   const handleInputChange = debounce((...args) => saveInput(...args))
   
   return (
-    <SafeAreaView style={styles.mainContainer}>
-      <StatusBar backgroundColor={COLORS.primary} barStyle={COLORS.white}/>
-      <CustomHeader 
+    <SafeAreaView style={!isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
+      <StatusBar backgroundColor={!isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
+      <CustomHeader
+        isLightTheme={isLightTheme} 
         headerName={
           <Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>Communities</Text>
         }
@@ -114,7 +122,7 @@ const GroupList = ({navigation}) => {
       {
         isLoading ? 
         <View style={styles.spinnerContainer}>
-          <ActivityIndicator color={COLORS.primary} size={50}/>
+          <ActivityIndicator color={!isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
         </View> :
         <FlatList 
           data={groupsData}
@@ -126,8 +134,8 @@ const GroupList = ({navigation}) => {
             <RefreshControl 
               refreshing={isLoading}
               onRefresh={refreshGroupList}
-              colors={[COLORS.primary]}
-              tintColor={COLORS.primary} 
+              colors={[COLORS.primary, COLORS.white]}
+              tintColor={!isLightTheme ? COLORS.primary : COLORS.white} 
             />
           }    
           style={styles.list}
@@ -146,9 +154,13 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center'
   },
-  mainContainer: {
+  mainContainerLight: {
     flex: 1,
     backgroundColor: COLORS.light_smoke
+  },
+  mainContainerDark: {
+    flex: 1,
+    backgroundColor: COLORS.background_dark
   },
   list: {
     marginLeft: 5,

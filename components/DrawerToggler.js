@@ -4,7 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { COLORS } from '../constants/theme'
 import { useSelector } from 'react-redux'
 
-const DrawerSetOnlineToggler = ({ trueIcon, falseIcon, trueText, falseText, currentState, setNewState}) => {
+const DrawerToggler = ({ trueIcon, falseIcon, trueText, falseText, currentState, setNewState}) => {
   const accessToken = useSelector(state => state.user.accessToken)
   const setOfflineUrl = `https://api.vk.com/method/account.setOffline?access_token=${accessToken}&v=5.131`
   const toggleSwitch = () => {
@@ -34,7 +34,7 @@ const DrawerSetOnlineToggler = ({ trueIcon, falseIcon, trueText, falseText, curr
   )
 }
 
-export default DrawerSetOnlineToggler
+export default DrawerToggler
 
 const styles = StyleSheet.create({
   switchContainer: {

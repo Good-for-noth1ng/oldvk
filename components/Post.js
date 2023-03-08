@@ -107,10 +107,10 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
 }
 
 const compareStates = (prevState, nextState) => {
-  return prevState.key === nextState.key
+  return prevState.key === nextState.key && prevState.isLightTheme === nextState.isLightTheme
 }
-export default memo(Post, compareStates)
-
+// export default memo(Post, compareStates)
+export default Post
 const styles = StyleSheet.create({
   postContainerLight: {
     padding: 10,

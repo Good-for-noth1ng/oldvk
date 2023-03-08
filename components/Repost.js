@@ -12,7 +12,7 @@ import { setOpenedPost, setScrolling } from '../redux/newsSlice'
 import { useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
 
-const Repost = ({ data, navigation, openedPost }) => {
+const Repost = ({ data, navigation, openedPost, isLightMode }) => {
   const dispatch = useDispatch()
   let postPhotos = []
   let postDocs = []
@@ -46,14 +46,14 @@ const Repost = ({ data, navigation, openedPost }) => {
     }
   }
   return (
-    <View style={styles.postContainer}>
-      <PostHeader sourceId={data.owner_id} dataDate={data.date} isRepost={false} navigation={navigation}/>
+    <View style={!isLightMode ? styles.postContainerLight : styles.postContainerDark}>
+      <PostHeader sourceId={data.owner_id} dataDate={data.date} isLightTheme={isLightMode} isRepost={false} navigation={navigation}/>
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12} />
         {
           data.text ? (
           <>
-            <PostText dataText={data.text} toOpen={openedPost}/>
+            <PostText dataText={data.text} toOpen={openedPost} isLightTheme={isLightMode}/>
             <PostDivider dividerHeight={6}/>
           </>
           ) : null 
@@ -64,13 +64,14 @@ const Repost = ({ data, navigation, openedPost }) => {
         dataDate={data.copy_history[0].date} 
         from_id={data.copy_history[0].from_id !== undefined && data.copy_history[0].from_id}
         isRepost={true} 
+        isLightTheme={isLightMode}
       />
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12} />
         {
           data.copy_history[0].text ? (
             <>
-              <PostText dataText={data.copy_history[0].text} toOpen={openedPost}/>
+              <PostText dataText={data.copy_history[0].text} isLightTheme={isLightMode} toOpen={openedPost}/>
               <PostDivider dividerHeight={6}/>
             </>
           ) : null
@@ -85,16 +86,12 @@ const Repost = ({ data, navigation, openedPost }) => {
         ) : null
       }
       {
-        postDocs ? (
-          <>
-            <PostFiles postDocs={postDocs}/>  
-          </>
-        ) : <PostDivider dividerHeight={5}/>
+        postDocs ? <PostFiles postDocs={postDocs} isLightTheme={isLightMode}/>  : <PostDivider dividerHeight={5}/>
       }
       { 
         postLinks ? ( 
           <>
-            <PostLinks postLinks={postLinks}/>
+            <PostLinks postLinks={postLinks} isLightTheme={isLightMode}/>
             <PostDivider dividerHeight={6} />
           </>
         ) 
@@ -107,6 +104,7 @@ const Repost = ({ data, navigation, openedPost }) => {
         openedPost={openedPost}
         navigation={navigation}
         data={data}
+        isLightTheme={isLightMode}
       />
     </View>  
   )
@@ -115,11 +113,16 @@ const Repost = ({ data, navigation, openedPost }) => {
 export default Repost
 
 const styles = StyleSheet.create({
-  postContainer: {
+  postContainerLight: {
     padding: 10,
-  marginTop: 5,
-  // marginBottom: 5,
-  borderRadius: 3,
-  backgroundColor: COLORS.white,
+    marginTop: 5,
+    borderRadius: 3,
+    backgroundColor: COLORS.white,
+  },
+  postContainerDark: {
+    padding: 10,
+    marginTop: 5,
+    borderRadius: 3,
+    backgroundColor: COLORS.primary_dark,
   }
 })

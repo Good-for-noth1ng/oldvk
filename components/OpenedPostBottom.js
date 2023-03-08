@@ -41,7 +41,7 @@ const OpenedPostBottom = ({reposts, likes, views, comments, isLightTheme}) => {
       <DividerWithLine  
         dividerHeight={40} 
         dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark}
-        dividerLineColor={!isLightTheme ? COLORS.light_smoke : COLORS.smoke}
+        dividerLineColor={!isLightTheme ? COLORS.light_smoke : COLORS.secondary}
         dividerLineHeight={1}
         dividerLineWidth={'95%'}
         linePosition={'center'}

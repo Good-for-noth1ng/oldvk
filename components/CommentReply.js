@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux'
 import CommentBottom from './CommentBottom'
 import { COLORS } from '../constants/theme'
 import { getHyperlinkInText } from '../utils/hyperlinks'
-const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes}) => {
+const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme}) => {
   const profiles = useSelector(state => state.comments.profiles)
   const [name, setName] = useState('')
   const [photoUrl, setPhotoUrl] = useState(null)
@@ -36,13 +36,13 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
   }
 
   return (
-    <View style={styles.commentReplyContainer}>
+    <View style={!isLightTheme ? styles.commentReplyContainerLight : styles.commentReplyContainerDark}>
       <TouchableOpacity activeOpacity={1} style={styles.imageContainer} onPress={handleProfilePress}>
         <Image source={{uri: photoUrl}} style={styles.image}/>
       </TouchableOpacity>
       <View style={styles.commentConentContainer}>
-        <Text style={styles.authorName}>{name}</Text>
-        <Text style={styles.replyText}>{getHyperlinkInText(commentText)}</Text>
+        <Text style={!isLightTheme ? styles.authorNameLight : styles.authorNameDark}>{name}</Text>
+        <Text style={!isLightTheme ? styles.replyTextLight : styles.replyTextDark}>{getHyperlinkInText(commentText)}</Text>
         <CommentBottom likesCount={likesCount} handleLikePress={handleLikePress} date={commentDate} isLiked={isLiked}/>
       </View>
     </View>
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     height: 32, 
     borderRadius: 100,
   },
-  commentReplyContainer: {
+  commentReplyContainerLight: {
     display: 'flex',
     flexDirection: 'row',
     alignContent: 'flex-start',
@@ -77,18 +77,39 @@ const styles = StyleSheet.create({
     paddingRight: 5,
     backgroundColor: COLORS.white
   },
+  commentReplyContainerDark: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignContent: 'flex-start',
+    width: '95%',
+    paddingLeft: 5,
+    paddingRight: 5,
+    backgroundColor: COLORS.primary_dark
+  },
   commentConentContainer: {
     width: '86%',
   },
-  authorName: {
+  authorNameLight: {
     fontWeight: '700', 
     fontStyle: 'normal', 
     fontSize: 14,
+    color: COLORS.black,
+  },
+  authorNameDark: {
+    fontWeight: '700', 
+    fontStyle: 'normal', 
+    fontSize: 14,
+    color: COLORS.primary_text,
+  },
+  replyTextLight: {
+    fontSize: 15,
+    color: COLORS.black
+  },
+  replyTextDark: {
+    fontSize: 15,
+    color: COLORS.primary_text
   },
   likeIcon: {
     marginRight: 2,
   },
-  replyText: {
-    fontSize: 15
-  }
 })

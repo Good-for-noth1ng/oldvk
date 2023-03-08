@@ -24,6 +24,7 @@ const CommentThread = ({navigation}) => {
   const threadList = useRef(null)
   const offset = useRef(10)
   const currentLevelCommentsCount = useRef(0)
+  const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
 
   const fetchThreadComments = async () => {
     const threadCommentsResponse = await fetch(getThreadUrl)
@@ -70,6 +71,7 @@ const CommentThread = ({navigation}) => {
       likes={item.likes.count} 
       from_id={item.from_id} 
       commentText={item.text}
+      isLightTheme={isLightTheme}
       threadComments={[]}
     />
   )
@@ -79,7 +81,7 @@ const CommentThread = ({navigation}) => {
       <DividerWithLine 
         marginT={10} 
         dividerHeight={5} 
-        dividerColor={COLORS.white}
+        dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark}
         borderTL={4}
         borderTR={4}
       />
@@ -90,24 +92,31 @@ const CommentThread = ({navigation}) => {
         from_id={mainComment.response.items[0].from_id}
         commentText={mainComment.response.items[0].text}
         threadComments={[]}
+        isLightTheme={isLightTheme}
       />
       <DividerWithLine 
         dividerHeight={16} 
         dividerLineHeight={1} 
-        dividerLineColor={COLORS.light_smoke} 
+        dividerLineColor={!isLightTheme ? COLORS.light_smoke : COLORS.secondary} 
         dividerLineWidth={300}
-        dividerColor={COLORS.white}
+        dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark}
         linePosition={'center'}
       />
     </>
   )
 
   const commentSeparator = () => (
-    <DividerWithLine dividerColor={COLORS.white} dividerHeight={10}/>
+    <DividerWithLine dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={10}/>
   )
 
   const listBottom = () => (
-    <DividerWithLine dividerColor={COLORS.white} marginB={10} dividerHeight={10} borderBL={4} borderBR={4}/>
+    <DividerWithLine 
+      dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark} 
+      marginB={10} 
+      dividerHeight={10} 
+      borderBL={4} 
+      borderBR={4}
+    />
   )
   
   const keyExtractor = (item) => {
@@ -119,17 +128,18 @@ const CommentThread = ({navigation}) => {
   }
 
   return (
-    <SafeAreaView style={styles.mainContainer}>
-      <StatusBar backgroundColor={COLORS.primary} barStyle={COLORS.white}/>
+    <SafeAreaView style={!isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
+      <StatusBar backgroundColor={!isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
       <CustomHeader
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
         headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>Comment replies</Text>}
+        isLightTheme={isLightTheme}
       />
       {
         isLoading ?
         <View style={styles.spinnerContainer}>
-            <ActivityIndicator color={COLORS.primary} size={50}/>
+            <ActivityIndicator color={!isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
         </View> :
         <>
           <FlatList
@@ -145,7 +155,7 @@ const CommentThread = ({navigation}) => {
             onEndReached={fetchMoreComments}
             onEndReachedThreshold={1}
           />
-          <TextInputField />
+          <TextInputField isLightTheme={isLightTheme}/>
         </>
       }
     </SafeAreaView>
@@ -160,9 +170,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  mainContainer: {
+  mainContainerLight: {
     flex: 1,
     backgroundColor: COLORS.light_smoke
+  },
+  mainContainerDark: {
+    flex: 1,
+    backgroundColor: COLORS.background_dark
   },
   list: {
     marginRight: 5,

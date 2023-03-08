@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react'
 import Feather from 'react-native-vector-icons/Feather'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { COLORS } from '../constants/theme'
-const TextInputField = () => {
+const TextInputField = ({isLightTheme}) => {
   const inputField = useRef('')
   const [colorOfSendButton, setColorOfSendButton] = useState(false)
   const handleChanges = (text) => {
@@ -14,11 +14,11 @@ const TextInputField = () => {
     }
   }
   return (
-    <View style={styles.inputContainer}>
+    <View style={!isLightTheme ? styles.inputContainerLight : styles.inputContainerDark}>
       <Feather name='paperclip' color={COLORS.secondary} size={25}/>
       <TextInput 
         ref={inputField}
-        style={styles.input}
+        style={!isLightTheme ? styles.inputLight : styles.inputDark}
         placeholder={'Comment'}
         placeholderTextColor={COLORS.smoke}
         selectionColor={COLORS.secondary}
@@ -33,18 +33,32 @@ const TextInputField = () => {
 export default TextInputField
 
 const styles = StyleSheet.create({
-    inputContainer: {
-        width: '100%',
-        height: 50,
-        backgroundColor: COLORS.white,
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center'
-    },
-    input: {
-        width: '75%',
-        height: 40,
-        fontSize: 17,
-        // backgroundColor: COLORS.light_smoke
-    }
+  inputContainerLight: {
+    width: '100%',
+    height: 50,
+    backgroundColor: COLORS.white,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center'
+  },
+  inputContainerDark: {
+    width: '100%',
+    height: 50,
+    backgroundColor: COLORS.primary_dark,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center'
+  },
+  inputLight: {
+    width: '75%',
+    height: 40,
+    fontSize: 17,
+    color: COLORS.black
+  },
+  inputDark: {
+    width: '75%',
+    height: 40,
+    fontSize: 17,
+    color: COLORS.primary_text
+  }
 })

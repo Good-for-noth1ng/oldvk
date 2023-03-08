@@ -122,7 +122,7 @@ const News = ({navigation}) => {
 
   const renderItem = ({item}) => {
     if(item.copy_history !== undefined) {
-      return <Repost data={item} openedPost={true} navigation={navigation}/>
+      return <Repost data={item} openedPost={true} navigation={navigation} isLightMode={isLightTheme}/>
     } else if (item.type === 'wall_photo') {
       return null
     }
@@ -133,7 +133,7 @@ const News = ({navigation}) => {
     return (
       <>
         <View style={styles.bottomSpinnerContainer}>
-          <ActivityIndicator color={COLORS.primary} size={50}/>
+          <ActivityIndicator color={!isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
         </View>
         <DividerWithLine dividerHeight={5} marginB={175}/>
       </>
@@ -153,7 +153,7 @@ const News = ({navigation}) => {
       />
         {isLoading ?
           <View style={styles.spinnerContainer}>
-            <ActivityIndicator color={COLORS.primary} size={50}/>
+            <ActivityIndicator color={!isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
           </View> :
           <FlatList 
             data={postContent}
@@ -168,8 +168,8 @@ const News = ({navigation}) => {
               <RefreshControl 
                 refreshing={isLoading} 
                 onRefresh={fetchRefreshData} 
-                colors={[COLORS.primary]} 
-                tintColor={COLORS.primary}
+                colors={[COLORS.primary, COLORS.white]} 
+                tintColor={!isLightTheme ? COLORS.primary : COLORS.white}
               />
             }
             ListFooterComponent={listFooterComponent}

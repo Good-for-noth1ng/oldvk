@@ -3,7 +3,6 @@ import React, {useEffect, useState} from 'react'
 import {DrawerContentScrollView, DrawerItemList} from '@react-navigation/drawer'
 import { useSelector } from 'react-redux'
 import {COLORS} from '../constants/theme'
-import DrawerSetOnlineToggler from './DrawerSetOnlineToggler'
 import DrawerSwitchersContainer from './DrawerSwitchersContainer'
 
 const CustomDrawer = (props) => {

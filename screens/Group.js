@@ -21,7 +21,8 @@ const Group = ({navigation}) => {
   const fetchGroupInfo = `https://api.vk.com/method/groups.getById?access_token=${accessToken}`
   const [isLoading, setIsLoading] = useState(false)
   const postData = useSelector(state => state.group.items) 
-  // const [postData, setPostData] = useState(null)
+  const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
+  
   const goBack = () => {
     navigation.goBack()
   }
@@ -57,22 +58,24 @@ const Group = ({navigation}) => {
   }
   const renderItem = ({item}) => {
     if(item.copy_history !== undefined) {
-      return <Repost data={item} openedPost={true} navigation={navigation} isCommunityContent={true}/>
+      return <Repost isLightMode={isLightTheme} data={item} openedPost={true} navigation={navigation} isCommunityContent={true}/>
     } 
-    return <Post data={item} navigation={navigation} openedPost={true} isCommunityContent={true}/>
+    return <Post data={item} navigation={navigation} openedPost={true} isCommunityContent={true} isLigthTheme={isLightTheme}/>
   }
+
   return (
-    <SafeAreaView style={styles.feedContainer}>
-      <StatusBar backgroundColor={COLORS.primary} barStyle={COLORS.white}/>
+    <SafeAreaView style={!isLightTheme ? styles.feedContainerLight : styles.feedContainerDark}>
+      <StatusBar backgroundColor={!isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
       <CustomHeader 
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
         headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>Community</Text>}
+        isLightTheme={isLightTheme}
       />
       {
         isLoading ?
         <View style={styles.spinnerContainer}>
-          <ActivityIndicator color={COLORS.primary} size={50}/>
+          <ActivityIndicator color={!isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
         </View> : 
         <FlatList 
           data={postData}
@@ -88,8 +91,8 @@ const Group = ({navigation}) => {
             <RefreshControl 
               refreshing={isLoading} 
               onRefresh={fetchData} 
-              colors={[COLORS.primary]} 
-              tintColor={COLORS.primary}
+              colors={[COLORS.primary, COLORS.white]} 
+              tintColor={!isLightTheme ? COLORS.primary : COLORS.white}
             />
           }
         />
@@ -110,8 +113,12 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5
   },
-  feedContainer: {
+  feedContainerLight: {
     flex: 1,
-    backgroundColor: COLORS.light_smoke
-  }
+    backgroundColor: COLORS.light_smoke,
+  },
+  feedContainerDark: {
+    flex: 1,
+    backgroundColor: COLORS.background_dark,
+  },
 })

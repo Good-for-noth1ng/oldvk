@@ -1,16 +1,21 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
-import DrawerSetOnlineToggler from './DrawerSetOnlineToggler'
+import { useSelector, useDispatch } from 'react-redux'
+import { toggleCurrentColorScheme } from '../redux/colorSchemeSlice'
+import DrawerToggler from './DrawerToggler'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import Octicons from 'react-native-vector-icons/Octicons'
 import { COLORS } from '../constants/theme'
 
 const DrawerSwitchersContainer = () => {
+  const dispatch = useDispatch()
   const [isOnline, setIsOnline] = useState(false)
   const [allowMarkAsRead, setAllowMarkAsRead] = useState(false)
   const [allowSeeTyping, setAllowSeeTyping] = useState(false)
   const [theme, setTheme] = useState(false)
+  const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
+
   const changeOnlineStatus = () => {
     setIsOnline(prevState => !prevState)
   }
@@ -21,11 +26,11 @@ const DrawerSwitchersContainer = () => {
     setAllowSeeTyping(prevState => !prevState)
   }
   const changeTheme = () => {
-    setTheme(prevState => !prevState)
+    dispatch(toggleCurrentColorScheme())
   }
   return (
     <>
-      <DrawerSetOnlineToggler
+      <DrawerToggler
         trueIcon={
           <MaterialCommunityIcons name='ghost-off-outline' size={20} color={COLORS.white}/>
         } 
@@ -37,7 +42,7 @@ const DrawerSwitchersContainer = () => {
         falseText={'Offline'}
         trueText={'Online'}
       />
-      <DrawerSetOnlineToggler
+      <DrawerToggler
         trueIcon={
           <SimpleLineIcons name='envelope-open' size={20} color={COLORS.white}/>
         }
@@ -49,7 +54,7 @@ const DrawerSwitchersContainer = () => {
         currentState={allowMarkAsRead}
         setNewState={changeReadStatus}
       />
-      <DrawerSetOnlineToggler 
+      <DrawerToggler 
         trueIcon={
           <MaterialCommunityIcons name='pencil-outline' size={20} color={COLORS.white}/>
         }
@@ -61,7 +66,7 @@ const DrawerSwitchersContainer = () => {
         currentState={allowSeeTyping}
         setNewState={changeTypingStatus}
       />
-      <DrawerSetOnlineToggler 
+      <DrawerToggler 
         trueIcon={
           <Octicons name='moon' size={20} color={COLORS.white}/>
         }
@@ -70,7 +75,7 @@ const DrawerSwitchersContainer = () => {
         }
         trueText={'dark mode'}
         falseText={'light mode'}
-        currentState={theme}
+        currentState={isLightTheme}
         setNewState={changeTheme}
       />
     </>

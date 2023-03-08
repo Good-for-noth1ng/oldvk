@@ -84,15 +84,17 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
         {
           is_deleted ? <View style={styles.deltedContainer}><Text style={styles.deletedText}>Comment deleted</Text></View> : 
           <>
-            <Text style={styles.authorName}>{name}</Text>
-            {commentText ? <Text style={styles.text}>{getHyperlinkInText(commentText)}</Text> : null}
+            <Text style={!isLightTheme ? styles.authorNameLight : styles.authorNameDark}>{name}</Text>
+            {commentText ? <Text style={!isLightTheme ? styles.textLight : styles.textDark}>
+              {getHyperlinkInText(commentText)}
+            </Text> : null}
             {commentPhotos.length > 0 ? <CommentPhotos commentPhotos={commentPhotos}/> : null}
           </>
         }
         <CommentBottom likesCount={likesCount} handleLikePress={handleLikePress} date={commentDate} isLiked={isLiked}/>
       </View>
     </View>
-    {threadCount > 0 && <DividerWithLine dividerColor={COLORS.white} dividerHeight={8}/>}
+    {threadCount > 0 && <DividerWithLine dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={8}/>}
     <CommentReplies 
       threadComments={threadComments} 
       threadCount={threadCount} 
@@ -101,12 +103,14 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
       navigation={navigation}
       postId={postId}
       ownerId={ownerId}
+      isLightTheme={isLightTheme}
     />
   </>
   )
 }
 
-export default memo(Comment)
+// export default memo(Comment)
+export default Comment
 
 const styles = StyleSheet.create({
   commentContainerLight: {
@@ -133,27 +137,29 @@ const styles = StyleSheet.create({
     height: 38, 
     borderRadius: 100,
   },
-  commentReplyContainer: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignContent: 'flex-start',
-    width: '95%',
-    // marginLeft: 5,
-    // marginRight: 5,
-    paddingLeft: 5,
-    paddingRight: 5,
-    backgroundColor: COLORS.white
-  },
+  
   commentConentContainer: {
     width: '86%',
   },
-  text: {
-    fontSize: 15
+  textLight: {
+    fontSize: 15,
+    color: COLORS.black,
   },
-  authorName: {
+  textDark: {
+    fontSize: 15,
+    color: COLORS.primary_text
+  },
+  authorNameLight: {
     fontWeight: '700', 
     fontStyle: 'normal', 
     fontSize: 14,
+    color: COLORS.black
+  },
+  authorNameDark: {
+    fontWeight: '700', 
+    fontStyle: 'normal', 
+    fontSize: 14,
+    color: COLORS.primary_text
   },
   likeIcon: {
     marginRight: 2,

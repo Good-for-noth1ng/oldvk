@@ -1,7 +1,8 @@
 
 import React from 'react'
-import { Text, View, TouchableOpacity, useWindowDimensions, Dimensions, StyleSheet } from 'react-native'
+import { Text, View, TouchableOpacity, useWindowDimensions, Dimensions, StyleSheet, Touchable } from 'react-native'
 import { SIZES, COLORS } from '../constants/theme'
+import Entypo from 'react-native-vector-icons/Entypo'
 
 export const LoginButton = ({buttonText, navigation, isLightTheme }) => {  
   return (
@@ -9,6 +10,18 @@ export const LoginButton = ({buttonText, navigation, isLightTheme }) => {
       <Text style={isLightTheme ? styles.textLight : styles.textDark}>
         {buttonText}
       </Text>
+    </TouchableOpacity>
+  )
+}
+
+export const OptionsButton = ({buttonIcon, buttonText}) => {
+  return (
+    <TouchableOpacity>
+      <View>
+        {buttonIcon}
+        <Text style={styles.buttonTextStyle}>{buttonText}</Text>
+      </View>
+      <Entypo name='chevron-right' color={COLORS.secondary} size={22} style={styles.optionsIcon}/>
     </TouchableOpacity>
   )
 }
@@ -41,5 +54,16 @@ const styles = StyleSheet.create({
     fontSize: SIZES.small + 2,
     color: COLORS.primary_text,
     textAlign: 'center'
-  }
+  },
+  optionsIcon: {
+    marginLeft: 5,
+    marginRight: 10
+  },
+  buttonTextStyle: {
+    fontSize: 17,
+  },
+  nameAndButtonIconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
 });

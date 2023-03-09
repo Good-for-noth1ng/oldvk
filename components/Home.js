@@ -91,12 +91,13 @@ const Home = () => {
           drawerIcon: ({color}) => (
             <Entypo name='star' size={20} color={color}/>
           )
-        }}/>
+        }}/> */}
         <Drawer.Screen name='Options' component={Options} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='gear' size={20} color={color}/>
-          )
-        }}/> */}
+          ),
+          headerShown: false
+        }}/>
     </Drawer.Navigator>
   )
 }

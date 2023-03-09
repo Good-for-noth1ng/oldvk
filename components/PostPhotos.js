@@ -9,7 +9,7 @@ const PostPhotos = ({postPhotos}) => {
   const initPhoto = (width, imageUrl, resizeMode) => {
     return (
     <TouchableOpacity  
-        style={{width: width, height: '100%', display: 'flex', marginLeft: 0.5, marginRight: 0.5, marginTop: 0.5, marginBottom: 0.5}}  
+        style={{width: width, height: '100%', display: 'flex',}}  
         key={uuid.v4()} 
         onPress={() => {setModalVisible(!modalVisible)}}
         activeOpacity={0.5}

@@ -16,32 +16,34 @@ const Group = ({navigation}) => {
   const groupID = useSelector(state => state.group.id) 
   const offset = useSelector(state => state.group.offset) 
   const [postsCount, setPostsCount] = useState(0)
-  // console.log(groupID)
-  const fetchGroupWallContent = `https://api.vk.com/method/wall.get?access_token=${accessToken}&count=20&v=5.131&extended=1&owner_id=${groupID}`
-  const fetchGroupInfo = `https://api.vk.com/method/groups.getById?access_token=${accessToken}`
-  const [isLoading, setIsLoading] = useState(false)
+  console.log(groupID)
+  const fetchGroupWallContentUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&count=20&v=5.131&extended=1&owner_id=${groupID}`
+  const fetchGroupInfoUrl = `https://api.vk.com/method/groups.getById?access_token=${accessToken}&group_id=${groupID}&fields=members_count,counters,description,status`
+  const [isLoading, setIsLoading] = useState(true)  
   const postData = useSelector(state => state.group.items) 
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   
   const goBack = () => {
     navigation.goBack()
   }
-  const fetchData = () => {
-    setIsLoading(true)
-    fetch(fetchGroupWallContent)
-    .then(response => response.json())
-    .then(data => {
-      data.response.items.forEach((item, index, array) => {
-        array[index] = {...item, key: uuid.v4()}
-      })
-      dispatch(setData(data.response))
-      setPostsCount(data.response.count)
-      setIsLoading(false)
+
+  const fetchData = async () => {
+    const response = await fetch(fetchGroupWallContentUrl)
+    const groupHeaderResponse = await fetch(fetchGroupInfoUrl)
+    const data = await response.json()
+    const groupHeaderData = await groupHeaderResponse.json()
+    data.response.items.forEach((item, index, array) => {
+      array[index] = {...item, key: uuid.v4()}
     })
+    dispatch(setData(data.response))
+    setPostsCount(data.response.count)
+    setIsLoading(false)
   }
+
   useEffect(() => {
     fetchData()
   }, [])
+
   const fetchMoreData = () => {
     const url = `https://api.vk.com/method/wall.get?owner_id=${groupID}&access_token=${accessToken}&extended=1&count=20&offset=${offset}&v=5.131`
     fetch(url)
@@ -53,9 +55,11 @@ const Group = ({navigation}) => {
       dispatch(pushData(data.response))
     })
   }
+
   const keyExtractor = (item) => {
     return item.key
   }
+
   const renderItem = ({item}) => {
     if(item.copy_history !== undefined) {
       return <Repost isLightMode={isLightTheme} data={item} openedPost={true} navigation={navigation} isCommunityContent={true}/>

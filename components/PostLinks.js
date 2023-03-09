@@ -18,7 +18,7 @@ const PostLinks = ({postLinks, isLightTheme}) => {
       address += '...' 
     }
     return (  
-      <TouchableOpacity style={styles.linkContainer} activeOpacity={1} onPress={() => Linking.openURL(url)}>
+      <TouchableOpacity style={styles.linkContainer} activeOpacity={0.7} onPress={() => Linking.openURL(url)}>
        <View style={styles.linkIconContainer}>
          <Feather name='arrow-up-right' size={30} color={COLORS.secondary} />
        </View>

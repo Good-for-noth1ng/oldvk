@@ -163,7 +163,7 @@ const News = ({navigation}) => {
             onEndReached={fetchMoreData}
             style={styles.listContainer}
             keyExtractor={keyExtractor}
-            onEndReachedThreshold={0.5}
+            onEndReachedThreshold={1}
             refreshControl={
               <RefreshControl 
                 refreshing={isLoading} 

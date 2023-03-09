@@ -27,7 +27,7 @@ const PostText = ({dataText, toOpen, isLightTheme}) => {
    
   return (
     <View style={styles.textContainer}>
-      <Text style={!isLightTheme ? styles.textLight : styles.textDark}>
+      <Text style={isLightTheme ? styles.textLight : styles.textDark}>
         {getHyperlinkInText(text)}
         {readMore ? '...' : ''}
       </Text>
@@ -46,7 +46,7 @@ const PostText = ({dataText, toOpen, isLightTheme}) => {
   )
 }
 
-export default memo(PostText)
+export default PostText
 
 const styles = StyleSheet.create({
     showMoreText: {

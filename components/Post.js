@@ -53,7 +53,7 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
   initPostData()
   
   return (
-    <View style={!isLigthTheme ? styles.postContainerLight : styles.postContainerDark}>
+    <View style={isLigthTheme ? styles.postContainerLight : styles.postContainerDark}>
       <PostHeader 
         sourceId={data.source_id}
         from_id={data.from_id} 

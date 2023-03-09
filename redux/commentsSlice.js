@@ -32,6 +32,22 @@ export const commentsSlice = createSlice({
                 profiles: newState
             }
         },
+        setGroups: (state, action) => {
+            return {
+                ...state,
+                groups: action.payload
+            }
+        },
+        pushGroups: (state, action) => {
+            const newState = [...state.groups]
+            for (let i = 0; i < action.payload.length; i++) {
+                newState.push(action.payload[i])
+            }
+            return {
+                ...state,
+                groups: newState
+            }
+        },
         closeAuthorInfo: (state, action) => {
             return {
                 ...state,
@@ -104,6 +120,8 @@ export const commentsSlice = createSlice({
 export const { 
     setProfiles,
     pushProfiles,
+    setGroups,
+    pushGroups,
     closeAuthorInfo, 
     openAuthorInfo, 
     setAuthorName, 

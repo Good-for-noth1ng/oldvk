@@ -29,8 +29,8 @@ const PostFiles = ({postDocs, isLightTheme}) => {
          <FontAwesome name='file' size={22} color={COLORS.secondary} />
        </View>
        <View style={styles.fileInfoContainer}>
-         <Text style={!isLightTheme ? styles.nameLight : styles.nameDark}>{name}</Text>
-          <Text style={!isLightTheme ? styles.additionalInfoLight : styles.additionalInfoDark}>{doc.ext} {size} {quantity}</Text>
+         <Text style={isLightTheme ? styles.nameLight : styles.nameDark}>{name}</Text>
+          <Text style={isLightTheme ? styles.additionalInfoLight : styles.additionalInfoDark}>{doc.ext} {size} {quantity}</Text>
        </View>
      </TouchableOpacity>
     )

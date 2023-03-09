@@ -4,22 +4,28 @@ import { useSelector } from 'react-redux'
 import CommentBottom from './CommentBottom'
 import { COLORS } from '../constants/theme'
 import { getHyperlinkInText } from '../utils/hyperlinks'
+
 const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme}) => {
   const profiles = useSelector(state => state.comments.profiles)
-  const [name, setName] = useState('')
-  const [photoUrl, setPhotoUrl] = useState(null)
+  const groups = useSelector(state => state.comments.groups)
+  const authors = [...groups, ...profiles]
+  // const [name, setName] = useState('')
+  // const [photoUrl, setPhotoUrl] = useState(null)
+  let name
+  let photoUrl
   const [isLiked, setIsLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(likes)
   
-  useEffect(() => {
-    // console.log(data.from_id)
-    profiles.forEach(item => {
-      if (item.id === from_id) {
-        setName(`${item.first_name} ${item.last_name}`);
-        setPhotoUrl(item.photo_100);
+  authors.forEach(item => {
+    if (item.id === from_id) {
+      if(item.name === undefined) {
+        name = `${item.first_name} ${item.last_name}`;
+      } else {
+        name = item.name;
       }
-    })
-  }, [])
+      photoUrl = item.photo_100;
+    }
+  })
 
   const handleProfilePress = () => {
     fetchProfileInfo(from_id, name, photoUrl)
@@ -36,13 +42,13 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
   }
 
   return (
-    <View style={!isLightTheme ? styles.commentReplyContainerLight : styles.commentReplyContainerDark}>
+    <View style={isLightTheme ? styles.commentReplyContainerLight : styles.commentReplyContainerDark}>
       <TouchableOpacity activeOpacity={1} style={styles.imageContainer} onPress={handleProfilePress}>
         <Image source={{uri: photoUrl}} style={styles.image}/>
       </TouchableOpacity>
       <View style={styles.commentConentContainer}>
-        <Text style={!isLightTheme ? styles.authorNameLight : styles.authorNameDark}>{name}</Text>
-        <Text style={!isLightTheme ? styles.replyTextLight : styles.replyTextDark}>{getHyperlinkInText(commentText)}</Text>
+        <Text style={isLightTheme ? styles.authorNameLight : styles.authorNameDark}>{name}</Text>
+        <Text style={isLightTheme ? styles.replyTextLight : styles.replyTextDark}>{getHyperlinkInText(commentText)}</Text>
         <CommentBottom likesCount={likesCount} handleLikePress={handleLikePress} date={commentDate} isLiked={isLiked}/>
       </View>
     </View>

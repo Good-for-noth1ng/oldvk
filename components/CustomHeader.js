@@ -42,16 +42,16 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
     handleInputChange(text)
   }
   return (
-    <View style={!isLightTheme ? styles.headerContainerLight : styles.headerContainerDark}>
+    <View style={isLightTheme ? styles.headerContainerLight : styles.headerContainerDark}>
       {
         showSearchInputField ?
         <View style={styles.inputFieldContainer}>
-          <View style={!isLightTheme ? styles.inputFieldInnerContainerLight : styles.inputFieldInnerContainerDark}> 
+          <View style={isLightTheme ? styles.inputFieldInnerContainerLight : styles.inputFieldInnerContainerDark}> 
             <TouchableOpacity style={styles.inputButtonsContainer} onPress={blurInput}>
               <AntDesign name='arrowleft' size={20} color={COLORS.secondary}/>
             </TouchableOpacity>  
             <TextInput
-              style={!isLightTheme ? styles.inputFieldLight : styles.inputFieldDark} 
+              style={isLightTheme ? styles.inputFieldLight : styles.inputFieldDark} 
               ref={inputField}
               onLayout={initFocusOnField}
               selectionColor={COLORS.secondary}

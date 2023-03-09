@@ -19,11 +19,15 @@ import { getHyperlinkInText } from '../utils/hyperlinks'
 const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, likes, threadCount, threadComments, commentId, navigation, postId, ownerId, isLightTheme}) => {
   const dispatch = useDispatch()
   const profiles = useSelector(state => state.comments.profiles)
-  const [name, setName] = useState('')
-  const [photoUrl, setPhotoUrl] = useState(null)
+  const groups = useSelector(state => state.comments.groups)
+  const authors = [...groups, ...profiles]
+  let name
+  let photoUrl
+  // const [name, setName] = useState('')
+  // const [photoUrl, setPhotoUrl] = useState(null)
   const [isLiked, setIsLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(likes)
-  const [showAuthorInfo, setShowAuthorInfo] = useState(false)
+  
   let commentPhotos = []
 
   if (attachments !== undefined) {
@@ -33,16 +37,16 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
       }
     }
   }
-  useEffect(() => {
-    // console.log(data.from_id)
-    profiles.forEach(item => {
-      if (item.id === from_id) {
-        setName(`${item.first_name} ${item.last_name}`);
-        setPhotoUrl(item.photo_100);
+  authors.forEach(item => {
+    if (item.id === from_id) {
+      if (item.name === undefined) {
+        name = `${item.first_name} ${item.last_name}`;
+      } else {
+        name = item.name;
       }
-    })
-  }, [])
-
+        photoUrl = item.photo_100;
+    }
+  })
   const handleLikePress = () => {
     if(!isLiked) {
       setLikesCount(prevState => prevState + 1);
@@ -73,10 +77,10 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
   const handleProfilePress = () => {  
     fetchProfileInfo(from_id, name, photoUrl)  
   }
-  // console.log(threadComments[0])
+  
   return (
     <>
-    <View style={!isLightTheme ? styles.commentContainerLight : styles.commentContainerDark}>
+    <View style={isLightTheme ? styles.commentContainerLight : styles.commentContainerDark}>
       <TouchableOpacity activeOpacity={1} style={styles.imageContainer} onPress={handleProfilePress}>
         <Image source={is_deleted ? require('../assets/avatars/banned-light.jpg') : {uri: photoUrl}} style={styles.image}/>
       </TouchableOpacity>
@@ -84,8 +88,8 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
         {
           is_deleted ? <View style={styles.deltedContainer}><Text style={styles.deletedText}>Comment deleted</Text></View> : 
           <>
-            <Text style={!isLightTheme ? styles.authorNameLight : styles.authorNameDark}>{name}</Text>
-            {commentText ? <Text style={!isLightTheme ? styles.textLight : styles.textDark}>
+            <Text style={isLightTheme ? styles.authorNameLight : styles.authorNameDark}>{name}</Text>
+            {commentText ? <Text style={isLightTheme ? styles.textLight : styles.textDark}>
               {getHyperlinkInText(commentText)}
             </Text> : null}
             {commentPhotos.length > 0 ? <CommentPhotos commentPhotos={commentPhotos}/> : null}
@@ -94,7 +98,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
         <CommentBottom likesCount={likesCount} handleLikePress={handleLikePress} date={commentDate} isLiked={isLiked}/>
       </View>
     </View>
-    {threadCount > 0 && <DividerWithLine dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={8}/>}
+    {threadCount > 0 && <DividerWithLine dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={8}/>}
     <CommentReplies 
       threadComments={threadComments} 
       threadCount={threadCount} 

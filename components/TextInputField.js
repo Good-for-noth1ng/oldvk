@@ -14,11 +14,11 @@ const TextInputField = ({isLightTheme}) => {
     }
   }
   return (
-    <View style={!isLightTheme ? styles.inputContainerLight : styles.inputContainerDark}>
+    <View style={isLightTheme ? styles.inputContainerLight : styles.inputContainerDark}>
       <Feather name='paperclip' color={COLORS.secondary} size={25}/>
       <TextInput 
         ref={inputField}
-        style={!isLightTheme ? styles.inputLight : styles.inputDark}
+        style={isLightTheme ? styles.inputLight : styles.inputDark}
         placeholder={'Comment'}
         placeholderTextColor={COLORS.smoke}
         selectionColor={COLORS.secondary}

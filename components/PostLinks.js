@@ -23,8 +23,8 @@ const PostLinks = ({postLinks, isLightTheme}) => {
          <Feather name='arrow-up-right' size={30} color={COLORS.secondary} />
        </View>
        <View style={styles.linkInfoContainer}>
-         <Text style={!isLightTheme ? styles.nameLight : styles.nameDark}>{title}</Text>
-          <Text style={!isLightTheme ? styles.addressLight : styles.addressDark}>{address}</Text>
+         <Text style={isLightTheme ? styles.nameLight : styles.nameDark}>{title}</Text>
+          <Text style={isLightTheme ? styles.addressLight : styles.addressDark}>{address}</Text>
        </View>
      </TouchableOpacity>
   )} else {

@@ -64,8 +64,8 @@ const Group = ({navigation}) => {
   }
 
   return (
-    <SafeAreaView style={!isLightTheme ? styles.feedContainerLight : styles.feedContainerDark}>
-      <StatusBar backgroundColor={!isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
+    <SafeAreaView style={isLightTheme ? styles.feedContainerLight : styles.feedContainerDark}>
+      <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
       <CustomHeader 
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
@@ -75,7 +75,7 @@ const Group = ({navigation}) => {
       {
         isLoading ?
         <View style={styles.spinnerContainer}>
-          <ActivityIndicator color={!isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+          <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
         </View> : 
         <FlatList 
           data={postData}
@@ -92,7 +92,7 @@ const Group = ({navigation}) => {
               refreshing={isLoading} 
               onRefresh={fetchData} 
               colors={[COLORS.primary, COLORS.white]} 
-              tintColor={!isLightTheme ? COLORS.primary : COLORS.white}
+              tintColor={isLightTheme ? COLORS.primary : COLORS.white}
             />
           }
         />

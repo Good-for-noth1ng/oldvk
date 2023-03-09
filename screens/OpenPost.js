@@ -6,13 +6,14 @@ import uuid from 'react-native-uuid'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { COLORS } from '../constants/theme'
 import Comment from '../components/Comment'
-import { setProfiles, closeAuthorInfo, pushProfiles } from '../redux/commentsSlice'
+import { setProfiles, closeAuthorInfo, pushProfiles, setGroups, pushGroups } from '../redux/commentsSlice'
 import OpenedPostBottom from '../components/OpenedPostBottom'
 import DividerWithLine from '../components/DividerWithLine'
 import { getTimeDate } from '../utils/date'
 import CustomHeader from '../components/CustomHeader'
 import Repost from '../components/Repost'
 import TextInputField from '../components/TextInputField'
+
 const OpenPost = ({navigation}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const [isLoading, setIsLoading] = useState(true);
@@ -48,6 +49,7 @@ const OpenPost = ({navigation}) => {
     currentLevelCommentsCount.current = commentsData.response.current_level_count - 10
     offset.current += 10
     dispatch(setProfiles(commentsData.response.profiles))
+    dispatch(setGroups(commentsData.response.groups))
     setIsLoading(false)
   }
   
@@ -61,6 +63,7 @@ const OpenPost = ({navigation}) => {
       currentLevelCommentsCount.current -= 10
       offset.current += 10
       dispatch(pushProfiles(fetchMoreCommentsData.response.profiles))
+      dispatch(pushGroups(fetchMoreCommentsData.response.groups))
       setComments(prevState => prevState.concat(items))
     }
   }
@@ -88,7 +91,7 @@ const OpenPost = ({navigation}) => {
   )
 
   const commentSeparator = () => (
-    <DividerWithLine dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={12}/>
+    <DividerWithLine dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={12}/>
   )
 
   const handleNavigationBack = () => {
@@ -127,7 +130,7 @@ const OpenPost = ({navigation}) => {
   }
 
   const listFooter = () => {
-    return <DividerWithLine dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={10} marginB={10} borderBL={4} borderBR={4}/>
+    return <DividerWithLine dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={10} marginB={10} borderBL={4} borderBR={4}/>
   }
 
   const handleClosingCommentAuthorInfo = () => {
@@ -144,8 +147,8 @@ const OpenPost = ({navigation}) => {
     return item.key
   }
   return (
-    <SafeAreaView style={!isLightTheme ? styles.openPostContainerLight : styles.openPostContainerDark}>
-      <StatusBar barStyle={COLORS.white} backgroundColor={!isLightTheme ? COLORS.primary : COLORS.primary_dark}/>
+    <SafeAreaView style={isLightTheme ? styles.openPostContainerLight : styles.openPostContainerDark}>
+      <StatusBar barStyle={COLORS.white} backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark}/>
       <CustomHeader 
         headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>Post</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
@@ -155,7 +158,7 @@ const OpenPost = ({navigation}) => {
       {
         isLoading ? 
         <View style={styles.activityContainer}>
-          <ActivityIndicator size={50} color={!isLightTheme ? COLORS.primary : COLORS.white}/>
+          <ActivityIndicator size={50} color={isLightTheme ? COLORS.primary : COLORS.white}/>
         </View> :
         <>
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -212,7 +215,7 @@ const OpenPost = ({navigation}) => {
   )
 }
 
-export default memo(OpenPost)
+export default OpenPost
 
 const styles = StyleSheet.create({
   activityContainer: {

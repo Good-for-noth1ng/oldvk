@@ -81,7 +81,7 @@ const CommentThread = ({navigation}) => {
       <DividerWithLine 
         marginT={10} 
         dividerHeight={5} 
-        dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark}
+        dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
         borderTL={4}
         borderTR={4}
       />
@@ -97,21 +97,21 @@ const CommentThread = ({navigation}) => {
       <DividerWithLine 
         dividerHeight={16} 
         dividerLineHeight={1} 
-        dividerLineColor={!isLightTheme ? COLORS.light_smoke : COLORS.secondary} 
+        dividerLineColor={isLightTheme ? COLORS.light_smoke : COLORS.secondary} 
         dividerLineWidth={300}
-        dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark}
+        dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
         linePosition={'center'}
       />
     </>
   )
 
   const commentSeparator = () => (
-    <DividerWithLine dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={10}/>
+    <DividerWithLine dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={10}/>
   )
 
   const listBottom = () => (
     <DividerWithLine 
-      dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark} 
+      dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} 
       marginB={10} 
       dividerHeight={10} 
       borderBL={4} 
@@ -128,8 +128,8 @@ const CommentThread = ({navigation}) => {
   }
 
   return (
-    <SafeAreaView style={!isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
-      <StatusBar backgroundColor={!isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
+    <SafeAreaView style={isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
+      <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
       <CustomHeader
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
@@ -139,7 +139,7 @@ const CommentThread = ({navigation}) => {
       {
         isLoading ?
         <View style={styles.spinnerContainer}>
-            <ActivityIndicator color={!isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
         </View> :
         <>
           <FlatList

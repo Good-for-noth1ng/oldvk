@@ -75,7 +75,7 @@ const DrawerSwitchersContainer = () => {
         }
         trueText={'dark mode'}
         falseText={'light mode'}
-        currentState={isLightTheme}
+        currentState={!isLightTheme}
         setNewState={changeTheme}
       />
     </>

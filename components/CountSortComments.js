@@ -5,7 +5,7 @@ import { COLORS } from '../constants/theme'
 const CountSortComments = ({comments, isLightTheme}) => {
   const [commentsCount, setCommentsCount] = useState(comments !== undefined ? comments : 0)
   return (
-    <View style={!isLightTheme ? styles.countSortContainerLight : styles.countSortContainerDark}>
+    <View style={isLightTheme ? styles.countSortContainerLight : styles.countSortContainerDark}>
         <Text style={{color: COLORS.secondary}}>
           {commentsCount} {commentsCount > 1 || commentsCount == 0 ? 'COMMENTS' : 'COMMENT'}
         </Text>

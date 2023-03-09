@@ -37,11 +37,11 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
   let postNameTextStyle;
   let postTimeTextStyle;
   if (isRepost) {
-    postNameTextStyle = !isLightTheme ? styles.postNameTextRepostLight : styles.postNameTextRepostDark; 
-    postTimeTextStyle = !isLightTheme ? styles.postTimeTextRepostLight : styles.postTimeTextRepostDark;
+    postNameTextStyle = isLightTheme ? styles.postNameTextRepostLight : styles.postNameTextRepostDark; 
+    postTimeTextStyle = isLightTheme ? styles.postTimeTextRepostLight : styles.postTimeTextRepostDark;
   } else {
-    postNameTextStyle = !isLightTheme ? styles.postNameTextLight : styles.postNameTextDark;
-    postTimeTextStyle = !isLightTheme ? styles.postTimeTextLight : styles.postNameTextDark;
+    postNameTextStyle = isLightTheme ? styles.postNameTextLight : styles.postNameTextDark;
+    postTimeTextStyle = isLightTheme ? styles.postTimeTextLight : styles.postNameTextDark;
   }
   return (
     <View style={styles.postHeaderContainer}>

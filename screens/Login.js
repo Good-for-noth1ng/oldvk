@@ -16,7 +16,7 @@ const Login = ({navigation}) => {
   if (colorScheme === 'dark') {
     dispatch(toggleCurrentColorScheme())
   }
-  const isLightTheme = colorScheme !== 'light';
+  const isLightTheme = colorScheme === 'light';
   return (
     // <View>
     <SafeAreaView style={isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>

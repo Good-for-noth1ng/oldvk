@@ -37,7 +37,7 @@ const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost, navigatio
         navigation.navigate('OpenPost')
       }
     }
-    const unactiveButtonColor = !isLightTheme ? COLORS.secondary : COLORS.smoke;
+    const unactiveButtonColor = isLightTheme ? COLORS.secondary : COLORS.smoke;
     const result = (
       <View style={styles.postBottomContainer}>
         <View>

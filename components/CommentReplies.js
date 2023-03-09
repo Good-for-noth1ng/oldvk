@@ -19,7 +19,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
     navigation.navigate('CommentThread')
   }
   return (
-    <View style={!isLightTheme ? styles.repliesListContainerLight : styles.repliesListContainerDark}>
+    <View style={isLightTheme ? styles.repliesListContainerLight : styles.repliesListContainerDark}>
       {
         threadComments.length > 0 ? 
           threadComments.length === 2 ?
@@ -32,7 +32,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
                 fetchProfileInfo={fetchProfileInfo}
                 isLightTheme={isLightTheme}
               />
-              <DividerWithLine dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={5}/>
+              <DividerWithLine dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={5}/>
               <CommentReply
                 commentDate={threadComments[1].date} 
                 from_id={threadComments[1].from_id} 

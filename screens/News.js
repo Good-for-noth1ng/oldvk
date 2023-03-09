@@ -133,7 +133,7 @@ const News = ({navigation}) => {
     return (
       <>
         <View style={styles.bottomSpinnerContainer}>
-          <ActivityIndicator color={!isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+          <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
         </View>
         <DividerWithLine dividerHeight={5} marginB={175}/>
       </>
@@ -143,8 +143,8 @@ const News = ({navigation}) => {
     return item.key
   }
   return(
-    <SafeAreaView style={!isLightTheme ? styles.newsBackgroundLight : styles.newsBackgroundDark}>
-      <StatusBar backgroundColor={!isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white} animated={true}/>
+    <SafeAreaView style={isLightTheme ? styles.newsBackgroundLight : styles.newsBackgroundDark}>
+      <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white} animated={true}/>
       <CustomHeader 
         headerName={<NewsTitleSwitcher />} 
         iconComponent={<Entypo name='menu' color={COLORS.white} size={30}/>}
@@ -153,7 +153,7 @@ const News = ({navigation}) => {
       />
         {isLoading ?
           <View style={styles.spinnerContainer}>
-            <ActivityIndicator color={!isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
           </View> :
           <FlatList 
             data={postContent}
@@ -169,7 +169,7 @@ const News = ({navigation}) => {
                 refreshing={isLoading} 
                 onRefresh={fetchRefreshData} 
                 colors={[COLORS.primary, COLORS.white]} 
-                tintColor={!isLightTheme ? COLORS.primary : COLORS.white}
+                tintColor={isLightTheme ? COLORS.primary : COLORS.white}
               />
             }
             ListFooterComponent={listFooterComponent}

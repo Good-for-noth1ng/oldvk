@@ -54,7 +54,7 @@ const GroupList = ({navigation}) => {
   )
 
   const groupListSeparator = () => (
-    <DividerWithLine dividerHeight={10} dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark}/>
+    <DividerWithLine dividerHeight={10} dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}/>
   )
 
   const footer = () => (
@@ -63,7 +63,7 @@ const GroupList = ({navigation}) => {
       marginB={10} 
       borderBL={5} 
       borderBR={5} 
-      dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark}
+      dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
     />
   )
 
@@ -104,8 +104,8 @@ const GroupList = ({navigation}) => {
   const handleInputChange = debounce((...args) => saveInput(...args))
   
   return (
-    <SafeAreaView style={!isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
-      <StatusBar backgroundColor={!isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
+    <SafeAreaView style={isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
+      <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
       <CustomHeader
         isLightTheme={isLightTheme} 
         headerName={
@@ -122,7 +122,7 @@ const GroupList = ({navigation}) => {
       {
         isLoading ? 
         <View style={styles.spinnerContainer}>
-          <ActivityIndicator color={!isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+          <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
         </View> :
         <FlatList 
           data={groupsData}
@@ -135,7 +135,7 @@ const GroupList = ({navigation}) => {
               refreshing={isLoading}
               onRefresh={refreshGroupList}
               colors={[COLORS.primary, COLORS.white]}
-              tintColor={!isLightTheme ? COLORS.primary : COLORS.white} 
+              tintColor={isLightTheme ? COLORS.primary : COLORS.white} 
             />
           }    
           style={styles.list}

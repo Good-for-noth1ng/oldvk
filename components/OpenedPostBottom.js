@@ -19,10 +19,10 @@ const OpenedPostBottom = ({reposts, likes, views, comments, isLightTheme}) => {
     }
     setIsLikePressed(!isLikePressed);
   }, [isLikePressed])
-  const unactiveButtonColor = !isLightTheme ? COLORS.secondary : COLORS.smoke  
+  const unactiveButtonColor = isLightTheme ? COLORS.secondary : COLORS.smoke  
   return (
     <>
-      <View style={!isLightTheme ? styles.bottomPostContainerLight : styles.bottomPostContainerDark}>
+      <View style={isLightTheme ? styles.bottomPostContainerLight : styles.bottomPostContainerDark}>
         <View style={styles.leftButtonsContainer}>
           <TouchableOpacity onPress={handleLikePress} activeOpacity={1} style={styles.leftButtons}>
             <AntDesign name='like1' style={styles.iconsInfoGap} size={20} color={isLikePressed ? COLORS.primary : unactiveButtonColor}/>
@@ -40,8 +40,8 @@ const OpenedPostBottom = ({reposts, likes, views, comments, isLightTheme}) => {
       </View>
       <DividerWithLine  
         dividerHeight={40} 
-        dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark}
-        dividerLineColor={!isLightTheme ? COLORS.light_smoke : COLORS.secondary}
+        dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+        dividerLineColor={isLightTheme ? COLORS.light_smoke : COLORS.secondary}
         dividerLineHeight={1}
         dividerLineWidth={'95%'}
         linePosition={'center'}
@@ -49,7 +49,7 @@ const OpenedPostBottom = ({reposts, likes, views, comments, isLightTheme}) => {
       <CountSortComments comments={comments} isLightTheme={isLightTheme}/>
       <DividerWithLine 
         dividerHeight={20} 
-        dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark}
+        dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
       />
     </>
   )

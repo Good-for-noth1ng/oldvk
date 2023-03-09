@@ -20,12 +20,12 @@ const GroupListItem = ({data, navigation, isLightTheme}) => {
     <TouchableOpacity 
       activeOpacity={0.8} 
       onPress={handleOnPress} 
-      style={!isLightTheme ? styles.groupIitemContainerLight : styles.groupIitemContainerDark}
+      style={isLightTheme ? styles.groupIitemContainerLight : styles.groupIitemContainerDark}
     >
       <Image source={{uri:data.photo_100}} style={styles.image}/>
       <View style={styles.nameAndFollowersContainer}>
-        <Text style={!isLightTheme ? styles.groupNameLight : styles.groupNameDark}>{name}</Text>
-        <Text style={!isLightTheme ? styles.additionalInfoLight : styles.additionalInfoDark}>
+        <Text style={isLightTheme ? styles.groupNameLight : styles.groupNameDark}>{name}</Text>
+        <Text style={isLightTheme ? styles.additionalInfoLight : styles.additionalInfoDark}>
           {data.activity}, {getShortagedNumber(data.members_count)} followers
         </Text>
       </View>  

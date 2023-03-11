@@ -17,6 +17,7 @@ import Repost from '../components/Repost';
 const News = ({navigation}) => {
   const drawerNavigator = navigation.getParent()
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
+  
   const subscribeOnBlur = () => {
     const hideHeader = navigation.addListener('blur', () => {
       drawerNavigator.setOptions({headerShown: false, swipeEnabled: false})

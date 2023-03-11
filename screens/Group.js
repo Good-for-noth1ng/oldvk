@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, FlatList, RefreshControl } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useLayoutEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
 import CustomHeader from '../components/CustomHeader'
@@ -9,6 +9,7 @@ import Post from '../components/Post'
 import { pushProfiles, pushGroups } from '../redux/commentsSlice'
 import { setData, pushData } from '../redux/groupSlice'
 import Repost from '../components/Repost'
+import WallHeader from '../components/WallHeader'
 
 const Group = ({navigation}) => {
   const dispatch = useDispatch();
@@ -18,11 +19,12 @@ const Group = ({navigation}) => {
   const [postsCount, setPostsCount] = useState(0)
   console.log(groupID)
   const fetchGroupWallContentUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&count=20&v=5.131&extended=1&owner_id=${groupID}`
-  const fetchGroupInfoUrl = `https://api.vk.com/method/groups.getById?access_token=${accessToken}&group_id=${groupID}&fields=members_count,counters,description,status`
+  const fetchGroupInfoUrl = `https://api.vk.com/method/groups.getById?access_token=${accessToken}&v=5.131&group_id=${-1 * groupID}&fields=members_count,counters,description,status`
   const [isLoading, setIsLoading] = useState(true)  
   const postData = useSelector(state => state.group.items) 
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
-  
+  const [wallHeaderData, setWallHeaderData] = useState({})
+
   const goBack = () => {
     navigation.goBack()
   }
@@ -32,6 +34,17 @@ const Group = ({navigation}) => {
     const groupHeaderResponse = await fetch(fetchGroupInfoUrl)
     const data = await response.json()
     const groupHeaderData = await groupHeaderResponse.json()
+    setWallHeaderData(prevState => ({
+      ...prevState,
+      communityName: groupHeaderData.response[0].name,
+      communityMembersCount: groupHeaderData.response[0].members_count,
+      communityAvatarUrl: groupHeaderData.response[0].photo_200,
+      communityStatus: groupHeaderData.response[0].status,
+      isMemberOfCommunity: groupHeaderData.response[0].is_member === 1 ? true : false,
+      counters: groupHeaderData.response[0].counters
+    }))
+    
+    
     data.response.items.forEach((item, index, array) => {
       array[index] = {...item, key: uuid.v4()}
     })
@@ -55,7 +68,16 @@ const Group = ({navigation}) => {
       dispatch(pushData(data.response))
     })
   }
-
+  const listHeader = () => (
+    <WallHeader
+      name={wallHeaderData.communityName}
+      membersCount={wallHeaderData.communityMembersCount}
+      avatarUrl={wallHeaderData.communityAvatarUrl}
+      status={wallHeaderData.communityStatus}
+      isMember={wallHeaderData.isMemberOfCommunity} 
+      counters={wallHeaderData.counters}
+    />
+  )
   const keyExtractor = (item) => {
     return item.key
   }
@@ -91,6 +113,7 @@ const Group = ({navigation}) => {
           showsVerticalScrollIndicator={false}
           onEndReachedThreshold={0.5}
           style={styles.feed}
+          ListHeaderComponent={listHeader}
           refreshControl={
             <RefreshControl 
               refreshing={isLoading} 

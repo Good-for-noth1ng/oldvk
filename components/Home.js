@@ -14,7 +14,7 @@ import GroupList from '../screens/GroupList';
 import Answers from '../screens/Answers';
 import Favorites from '../screens/Favorites';
 import Options from '../screens/Options';
-import NewsTitleSwitcher from './NewsTitleSwitcher';
+import OptionsRoute from './OptionsRoute';
 import CustomDrawer from './CustomDrawer';
 import NewsRoute from './NewsRoute';
 import { COLORS } from '../constants/theme';
@@ -92,7 +92,7 @@ const Home = () => {
             <Entypo name='star' size={20} color={color}/>
           )
         }}/> */}
-        <Drawer.Screen name='Options' component={Options} options={{
+        <Drawer.Screen name='Options' component={OptionsRoute} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='gear' size={20} color={color}/>
           ),

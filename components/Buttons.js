@@ -14,14 +14,22 @@ export const LoginButton = ({buttonText, navigation, isLightTheme }) => {
   )
 }
 
-export const OptionsButton = ({buttonIcon, buttonText}) => {
+export const OptionsButton = ({buttonIcon, buttonText, isLightTheme, buttonPressHandler}) => {
   return (
-    <TouchableOpacity>
-      <View>
+    <TouchableOpacity style={isLightTheme ? styles.optionsButtonContainerLight : styles.optionsButtonContainerDark} onPress={buttonPressHandler}>
+      <View style={styles.nameAndButtonIconContainer}>
         {buttonIcon}
-        <Text style={styles.buttonTextStyle}>{buttonText}</Text>
+        <Text style={isLightTheme ? styles.buttonTextStyleLight : styles.buttonTextStyleDark}>{buttonText}</Text>
       </View>
       <Entypo name='chevron-right' color={COLORS.secondary} size={22} style={styles.optionsIcon}/>
+    </TouchableOpacity>
+  )
+}
+
+export const WallHeaderButton = ({ wallHeaderButtonText }) => {
+  return (
+    <TouchableOpacity style={styles.wallHeaderButton}>
+      <Text style={styles.wallHeaderButtonTextStyle}>{wallHeaderButtonText}</Text>
     </TouchableOpacity>
   )
 }
@@ -55,15 +63,48 @@ const styles = StyleSheet.create({
     color: COLORS.primary_text,
     textAlign: 'center'
   },
+
   optionsIcon: {
     marginLeft: 5,
     marginRight: 10
   },
-  buttonTextStyle: {
+  buttonTextStyleLight: {
     fontSize: 17,
+    color: COLORS.black
+  },
+  buttonTextStyleDark: {
+    fontSize: 17,
+    color: COLORS.primary_text
   },
   nameAndButtonIconContainer: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',    
   },
+  optionsButtonContainerLight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: 50,
+    backgroundColor: COLORS.white
+  },
+  optionsButtonContainerDark: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: 50,
+    backgroundColor: COLORS.primary_dark
+  },
+
+  wallHeaderButton: {
+    backgroundColor: COLORS.primary,
+    height: 35,
+    width: '48%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5
+  },
+  wallHeaderButtonTextStyle: {
+    color: COLORS.white,
+    fontSize: 17
+  }
 });

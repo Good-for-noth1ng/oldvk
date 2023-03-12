@@ -26,10 +26,10 @@ export const OptionsButton = ({buttonIcon, buttonText, isLightTheme, buttonPress
   )
 }
 
-export const WallHeaderButton = ({ wallHeaderButtonText }) => {
+export const WallHeaderButton = ({ isActiveState, activeStateText, inactiveStateText }) => {
   return (
-    <TouchableOpacity style={styles.wallHeaderButton}>
-      <Text style={styles.wallHeaderButtonTextStyle}>{wallHeaderButtonText}</Text>
+    <TouchableOpacity style={isActiveState ? styles.wallHeaderButtonActiveState : styles.wallHeaderButtonInactiveState}>
+      <Text style={styles.wallHeaderButtonTextStyle}>{isActiveState ? activeStateText : inactiveStateText}</Text>
     </TouchableOpacity>
   )
 }
@@ -95,8 +95,16 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary_dark
   },
 
-  wallHeaderButton: {
+  wallHeaderButtonActiveState: {
     backgroundColor: COLORS.primary,
+    height: 35,
+    width: '48%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 5
+  },
+  wallHeaderButtonInactiveState: {
+    backgroundColor: COLORS.secondary,
     height: 35,
     width: '48%',
     alignItems: 'center',

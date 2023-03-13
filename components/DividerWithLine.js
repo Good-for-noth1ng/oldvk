@@ -17,9 +17,10 @@ const DividerWithLine = ({
     borderTR,
     borderBL,
     borderBR,
+    componentKey
 }) => {
   return (
-    <View style={{
+    <View key={componentKey} style={{
         display: 'flex',
         flexDirection: 'column', 
         justifyContent: linePosition,
@@ -34,7 +35,7 @@ const DividerWithLine = ({
         borderBottomLeftRadius: borderBL,
         borderBottomRightRadius: borderBR,
         borderTopRightRadius: borderTR,
-        borderTopLeftRadius: borderTL
+        borderTopLeftRadius: borderTL,
     }}>
       <View style={{width: dividerLineWidth, height: dividerLineHeight, backgroundColor: dividerLineColor}}></View>
     </View>

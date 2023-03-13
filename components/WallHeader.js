@@ -17,7 +17,7 @@ const WallHeader = ({name, membersCount, avatarUrl, status, isMember, counters})
         <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(membersCount)}</Text>
         <Text style={styles.counterName} key={uuid.v4()}>members</Text>
       </TouchableOpacity>
-    )
+    );
   }
   for (let key in counters) {
     if (row.length === 3) {
@@ -80,9 +80,12 @@ const styles = StyleSheet.create({
   },
   additionalInfoContainer: {
     marginLeft: 10,
+    // backgroundColor: COLORS.secondary,
+    width: '73%'
   },
   nameContainer: {
     width: '90%', 
+    
   },
   statusContainer: {
     width: '88%', 
@@ -107,8 +110,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   counterButton: {
-    width: 100,
-    height: 70,
+    width: 105,
+    height: 75,
     backgroundColor: COLORS.primary_dark,
     borderRadius: 5,
     justifyContent: 'center',

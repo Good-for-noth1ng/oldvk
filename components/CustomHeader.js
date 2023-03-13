@@ -6,7 +6,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import NewsTitleSwitcher from './NewsTitleSwitcher'
 import { COLORS } from '../constants/theme'
 
-const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIcon, handleInputChange, navigation, isLightTheme}) => {
+const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIcon, handleInputChange, navigation, isLightTheme, gapForSearchIcon}) => {
   const [showSearchInputField, setShowSearchInputField] = useState(false)
   const inputField = useRef()
 
@@ -36,7 +36,6 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
   const clearInputField = () => {
     inputField.current.clear()
   }
-  // const handleInputChange = debounce((...args) => saveInput(...args))
 
   const handlingChanges = (text) => {
     handleInputChange(text)
@@ -78,9 +77,10 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
       
       {
         showSearchIcon && !showSearchInputField ? 
-        <TouchableOpacity style={styles.searchIcon} onPress={handleSearchIconPress}>
+        <TouchableOpacity style={{marginLeft: gapForSearchIcon}} onPress={handleSearchIconPress}>
           <FontAwesome name='search' size={20} color={COLORS.white}/>
-        </TouchableOpacity> : null
+        </TouchableOpacity>
+         : null
       }
     </View>
   )

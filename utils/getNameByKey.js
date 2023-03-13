@@ -4,6 +4,8 @@ export const getNameInGroupHeader = (key) => {
       return 'audio playlists';
     case 'clips_followers':
       return 'clips followers';
+    case 'market_services':
+      return 'market services';
     default:
       return key;
   }

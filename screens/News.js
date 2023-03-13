@@ -136,7 +136,7 @@ const News = ({navigation}) => {
         <View style={styles.bottomSpinnerContainer}>
           <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
         </View>
-        <DividerWithLine dividerHeight={5} marginB={175}/>
+        {/* <DividerWithLine dividerHeight={5} marginB={175}/> */}
       </>
     )
   }

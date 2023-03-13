@@ -13,7 +13,6 @@ const GroupList = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(true)
   const [groupsData, setGroupsData] = useState(null)
   const drawerNavigator = navigation.getParent()
-  const searchInputField = useRef(null)
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
 
   useEffect(() => {
@@ -24,7 +23,7 @@ const GroupList = ({navigation}) => {
     setIsLoading(true)
     fetchGroupIds()
   }
-
+  //TODO: fix several requests to api
   const fetchGroupIds = async () => {
     const getIdsUrl = `https://api.vk.com/method/groups.get?access_token=${accessToken}&v=5.131`
     let response = await fetch(getIdsUrl)
@@ -118,6 +117,7 @@ const GroupList = ({navigation}) => {
         showSearchIcon={true}
         handleInputChange={handleInputChange}
         navigation={navigation}
+        gapForSearchIcon={'35%'}
       />
       {
         isLoading ? 

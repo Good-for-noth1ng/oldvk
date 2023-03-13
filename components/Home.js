@@ -44,6 +44,7 @@ const Home = () => {
           drawerIcon: ({color}) => (
             <FontAwesome name='user' color={color} size={20}/>
           ),
+          headerShown: false
         }}/>
         {/* <Drawer.Screen name='Photos' component={Photos} options={{
           drawerIcon: ({color}) => (

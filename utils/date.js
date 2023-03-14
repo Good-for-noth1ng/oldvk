@@ -82,3 +82,38 @@ export const getTimeDate = (unixTime) => {
         return `${date.getDate()} ${getShortMonth(date)} ${date.getFullYear()} at ${date.getHours()}:${getMinutes(date)}`
     }
 }
+
+const stringifyAge = (age) => {
+  if (age === 1) {
+    return `${age} year old`
+  } else {
+    return `${age} years old`
+  }
+}
+
+export const getUserAge = (str) => {
+  const pattern = /\d*\.\d*\.\d*/
+  if (pattern.test(str)) {
+  const year = Number(str.split('.')[2])
+  const month = Number(str.split('.')[1])
+  const day = Number(str.split('.')[0])
+  const date = new Date()
+  const currentYear = date.getFullYear()
+  const currentMonth = date.getMonth() + 1
+  const currentDay = date.getDate()
+
+  if (currentMonth > month) {
+    return stringifyAge(currentYear - year)
+  } else if (month === currentMonth) {
+    if (currentDay >= day) {
+      return stringifyAge(currentYear - year)
+    } else {
+      return stringifyAge(currentYear - year - 1)
+    }
+  } else {
+    return stringifyAge(currentYear - year - 1)
+  }
+  } else {
+    return null
+  }
+}

@@ -19,6 +19,8 @@ import CustomDrawer from './CustomDrawer';
 import NewsRoute from './NewsRoute';
 import { COLORS } from '../constants/theme';
 import GropsRoute from './GropsRoute';
+import FriendsRoute from './FriendsRoute';
+
 const Drawer = createDrawerNavigator()
 
 const Home = () => {
@@ -40,7 +42,7 @@ const Home = () => {
           drawerType: 'slide'
       }}
     >
-        <Drawer.Screen name='Friends' component={Friends} options={{
+        <Drawer.Screen name='Friends' component={FriendsRoute} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='user' color={color} size={20}/>
           ),

@@ -1,8 +1,11 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
+import uuid from 'react-native-uuid';
 import Entypo from 'react-native-vector-icons/Entypo'
 import CustomHeader from '../components/CustomHeader'
+import UserListItem from '../components/UserListItem'
+import DividerWithLine from '../components/DividerWithLine'
 import { COLORS } from '../constants/theme'
 
 const Friends = ({navigation}) => {
@@ -15,6 +18,32 @@ const Friends = ({navigation}) => {
     navigation.openDrawer()
   }
 
+  const listSeparator = () => (
+    <DividerWithLine dividerHeight={10} dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}/>
+  )
+
+  const footer = () => (
+    <DividerWithLine 
+      dividerHeight={10} 
+      marginB={10} 
+      borderBL={5} 
+      borderBR={5} 
+      dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+    />
+  )
+  const renderItem = ({item}) => (
+    <UserListItem 
+      imgUrl={item.photo_100} 
+      firstName={item.first_name} 
+      lastName={item.last_name}
+      id={item.id}
+      navigation={navigation}
+      isLightTheme={isLightTheme} 
+      bdate={item.bdate}
+      city={item.city}
+    />
+  )
+
   const debounce = (func, delay=700) => {
     let debounceTimer
     return (...args) => {
@@ -24,27 +53,14 @@ const Friends = ({navigation}) => {
   }
   
   const saveInput = async (query) => {
-    const groupSearchUrl = `https://api.vk.com/method/groups.search?q=${query}&access_token=${accessToken}&v=5.131` 
+    const usersSearchUrl = `https://api.vk.com/method/users.search?q=${query}&access_token=${accessToken}&v=5.131&fields=bdate,city,photo_100` 
 
     if (!(query.replace(/\s/g, '') === '')) {      
-    //   setIsLoading(true)
-    //   const searchResponse = await fetch(groupSearchUrl)
-    //   const searchData = await searchResponse.json()
-    //   const groupsNum = searchData.response.count
-    //   const groupsItems = searchData.response.items
-    //   let ids = ''
-    //   for(let i = 0; i < groupsItems.length; i++) {
-    //     ids += groupsItems[i].id
-    //     if(i !== groupsItems.length - 1) {
-    //       ids += ','
-    //     }
-    //   }
-    //   let getGroupUrl = `https://api.vk.com/method/groups.getById?group_ids=${ids}&access_token=${accessToken}&fields=members_count,activity&v=5.131`
-    //   const groupsListResponse = await fetch(getGroupUrl)
-    //   const data = await groupsListResponse.json()
-    //   setGroupsData(data.response)
-    //   setIsLoading(false)
-      
+      setIsLoading(true)
+      const searchResults = await fetch(usersSearchUrl)
+      const searchData = await searchResults.json()
+      setFriendsData(searchData.response.items)
+      setIsLoading(false)
     }
   }
   const handleInputChange = debounce((...args) => saveInput(...args))
@@ -62,6 +78,20 @@ const Friends = ({navigation}) => {
          gapForSearchIcon={'45%'}
          handleInputChange={handleInputChange}
       />
+      {
+        isLoading ?
+        <View style={styles.spinnerContainer}>
+          <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+        </View> :
+        <FlatList 
+          key={uuid.v4()}
+          style={styles.list}
+          data={friendsData}
+          renderItem={renderItem}
+          ItemSeparatorComponent={listSeparator}
+          ListFooterComponent={footer}
+        />
+      }
     </SafeAreaView>
   )
 }
@@ -81,5 +111,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: COLORS.white,
     fontWeight: 'bold',
+  },
+  spinnerContainer: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+  list: {
+    marginLeft: 5,
+    marginRight: 5
   }
 })

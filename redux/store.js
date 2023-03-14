@@ -5,6 +5,7 @@ import commentsReducer from "./commentsSlice";
 import groupReducer from "./groupSlice";
 import searchResultsReducer from "./searchResultsSlice";
 import colorSchemeReducer from "./colorSchemeSlice";
+import userWallReducer from "./userWallSlice";
 
 export const store = configureStore({
     reducer: {
@@ -14,11 +15,12 @@ export const store = configureStore({
         group: groupReducer,
         searchResults: searchResultsReducer,
         colorScheme: colorSchemeReducer,
+        userWall: userWallReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware({
         immutableCheck: {
-            ignoredPaths: ['user', 'news', 'comments', 'group', 'searchResults', 'colorScheme']
+            ignoredPaths: ['user', 'news', 'comments', 'group', 'searchResults', 'colorScheme', 'userWall']
         },
-        serializableCheck: { ignoredPaths: ['user', 'news', 'comments', 'group', 'searchResults', 'colorScheme'] }
+        serializableCheck: { ignoredPaths: ['user', 'news', 'comments', 'group', 'searchResults', 'colorScheme', 'userWall'] }
       })
 })

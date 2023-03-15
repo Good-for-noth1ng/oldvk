@@ -24,13 +24,15 @@ const WallHeader = ({name, membersCount, avatarUrl, status, isMember, counters})
       countersGrid.push(<View key={uuid.v4()} style={styles.counterRow}>{row}</View>)
       row = []
     }
-    if(counters[key] !== 0) {
-      row.push(
-        <TouchableOpacity key={uuid.v4()} style={styles.counterButton}>
-          <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
-          <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
-        </TouchableOpacity>
-      )
+    if (key !== 'online_friends' && key !== 'clips_followers') {
+      if(counters[key] !== 0) {
+        row.push(
+          <TouchableOpacity key={uuid.v4()} style={styles.counterButton}>
+            <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
+          </TouchableOpacity>
+        )
+      }
     }
   }
   if (row.length > 0) {

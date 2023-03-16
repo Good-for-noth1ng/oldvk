@@ -18,15 +18,27 @@ const UserProfile = () => {
   const fetchData = async () => {
     const userInfoResponse = await fetch(userInfoUrl)
     const userInfoData = await userInfoResponse.json()
+    let isOnlineUsingMobile
+    let isOnlineUsingPC
+    if (userInfoData.response[0].online && (userInfoData.response[0].online_app || userInfoData.response[0].online_mobile)) {
+      isOnlineUsingMobile = true
+      isOnlineUsingPC = false
+    } else {
+      isOnlineUsingMobile = false
+      isOnlineUsingPC = true
+    }
     setWallHeaderData({
       userName: `${userInfoData.response[0].first_name} ${userInfoData.response[0].last_name}`,
       isClosed: userInfoData.response[0].is_closed,
-      isOnline: userInfoData.response[0].online,
+      isOnlineUsingMobile: isOnlineUsingMobile,
+      isOnlineUsingPC: isOnlineUsingPC,
       friendStatus: userInfoData.response[0].friend_status,
       avatarUrl: userInfoData.response[0].photo_200,
       status: userInfoData.response[0].status,
-      counters: userInfoData.response[0].counters
+      counters: userInfoData.response[0].counters,
+      lastSeen: userInfoData.response[0].last_seen,
     })
+    setIsLoading(false)
   }
 
   useEffect(() => {
@@ -39,6 +51,9 @@ const UserProfile = () => {
       avatarUrl={wallHeaderData.avatarUrl}
       status={wallHeaderData.status}
       counters={wallHeaderData.counters}
+      lastSeen={wallHeaderData.lastSeen}
+      isOnlineUsingMobile={wallHeaderData.isOnlineUsingMobile}
+      isOnlineUsingPC={wallHeaderData.isOnlineUsingPC}
     />
   )
 
@@ -51,7 +66,7 @@ const UserProfile = () => {
         headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>Profile</Text>}
       />
       {
-        !isLoading ?
+        isLoading ?
         <View style={styles.spinnerContainer}>
           <ActivityIndicator size={50} color={isLightTheme ? COLORS.primary : COLORS.white}/>
         </View> : 

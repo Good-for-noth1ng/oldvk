@@ -3,7 +3,10 @@ import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomHeader from '../components/CustomHeader'
-import WallHeader from '../components/WallHeader'
+import WallHeaderGeneralInfo from '../components/WallHeaderGeneralInfo';
+import WallHeaderCountersGrid from '../components/WallHeaderCountersGrid';
+import WallHeaderButtons from '../components/WallHeaderButtons';
+import DividerWithLine from '../components/DividerWithLine'
 import { COLORS } from '../constants/theme'
 
 const UserProfile = () => {
@@ -12,7 +15,8 @@ const UserProfile = () => {
   const userId = useSelector(state => state.userWall.id)
   console.log(userId)
   const [isLoading, setIsLoading] = useState(true) 
-  const userInfoUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${userId}&fields=friend_status,followers_count,photo_200,online,last_seen,counters,status`
+  const userInfoUrlFields = 'friend_status,followers_count,photo_200,online,last_seen,counters,status,can_send_friend_request,can_write_private_message'
+  const userInfoUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${userId}&fields=${userInfoUrlFields}`
   const [wallHeaderData , setWallHeaderData] = useState({})
 
   const fetchData = async () => {
@@ -20,12 +24,15 @@ const UserProfile = () => {
     const userInfoData = await userInfoResponse.json()
     let isOnlineUsingMobile
     let isOnlineUsingPC
-    if (userInfoData.response[0].online && (userInfoData.response[0].online_app || userInfoData.response[0].online_mobile)) {
+    if (userInfoData.response[0].online === 1 && (userInfoData.response[0].online_app || userInfoData.response[0].online_mobile)) {
       isOnlineUsingMobile = true
       isOnlineUsingPC = false
-    } else {
+    } else if (userInfoData.response[0].online === 1) {
       isOnlineUsingMobile = false
       isOnlineUsingPC = true
+    } else {
+      isOnlineUsingMobile = false
+      isOnlineUsingPC = false
     }
     setWallHeaderData({
       userName: `${userInfoData.response[0].first_name} ${userInfoData.response[0].last_name}`,
@@ -37,6 +44,8 @@ const UserProfile = () => {
       status: userInfoData.response[0].status,
       counters: userInfoData.response[0].counters,
       lastSeen: userInfoData.response[0].last_seen,
+      canSendFriendRequest: userInfoData.response[0].can_send_friend_request,
+      canWritePrivateMessage: userInfoData.response[0].can_write_private_message
     })
     setIsLoading(false)
   }
@@ -46,15 +55,24 @@ const UserProfile = () => {
   }, [])
 
   const listHeader = () => (
-    <WallHeader
-      name={wallHeaderData.userName} 
-      avatarUrl={wallHeaderData.avatarUrl}
-      status={wallHeaderData.status}
-      counters={wallHeaderData.counters}
-      lastSeen={wallHeaderData.lastSeen}
-      isOnlineUsingMobile={wallHeaderData.isOnlineUsingMobile}
-      isOnlineUsingPC={wallHeaderData.isOnlineUsingPC}
-    />
+    <View style={styles.wallHeaderContainer}>
+      <WallHeaderGeneralInfo 
+        name={wallHeaderData.userName}
+        avatarUrl={wallHeaderData.avatarUrl}
+        status={wallHeaderData.status}
+        lastSeen={wallHeaderData.lastSeen}
+        isOnlineUsingMobile={wallHeaderData.isOnlineUsingMobile}
+        isOnlineUsingPC={wallHeaderData.isOnlineUsingPC}
+      />
+      <WallHeaderButtons
+        isUserWall={true}  
+        friendStatus={wallHeaderData.friendStatus}
+        canSendFriendRequest={wallHeaderData.canSendFriendRequest}
+        canWritePrivateMessage={wallHeaderData.canWritePrivateMessage}
+      />
+      <DividerWithLine dividerHeight={10}/>
+      <WallHeaderCountersGrid counters={wallHeaderData.counters}/>
+    </View>
   )
 
   return (
@@ -98,5 +116,11 @@ const styles = StyleSheet.create({
   list: {
     marginLeft: 5,
     marginRight: 5
-  }
+  },
+  wallHeaderContainer: {
+    padding: 10,
+    backgroundColor: COLORS.very_dark_gray,
+    borderRadius: 5,
+    marginTop: 5
+  },
 })

@@ -26,9 +26,16 @@ export const OptionsButton = ({buttonIcon, buttonText, isLightTheme, buttonPress
   )
 }
 
-export const WallHeaderButton = ({ isActiveState, activeStateText, inactiveStateText }) => {
+export const WallHeaderButton = ({ isActiveState, activeStateText, inactiveStateText, buttonWidth }) => {
   return (
-    <TouchableOpacity style={isActiveState ? styles.wallHeaderButtonActiveState : styles.wallHeaderButtonInactiveState}>
+    <TouchableOpacity style={{
+      backgroundColor: isActiveState ? COLORS.primary : COLORS.secondary,
+      height: 45,
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 5
+    }}>
       <Text style={styles.wallHeaderButtonTextStyle}>{isActiveState ? activeStateText : inactiveStateText}</Text>
     </TouchableOpacity>
   )
@@ -97,7 +104,7 @@ const styles = StyleSheet.create({
 
   wallHeaderButtonActiveState: {
     backgroundColor: COLORS.primary,
-    height: 35,
+    height: 45,
     width: '48%',
     alignItems: 'center',
     justifyContent: 'center',
@@ -105,14 +112,16 @@ const styles = StyleSheet.create({
   },
   wallHeaderButtonInactiveState: {
     backgroundColor: COLORS.secondary,
-    height: 35,
+    height: 45,
     width: '48%',
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 5
   },
+
   wallHeaderButtonTextStyle: {
     color: COLORS.white,
-    fontSize: 17
+    fontSize: 17,
+    textAlign: 'center'
   }
 });

@@ -21,7 +21,14 @@ const WallHeaderCountersGrid = ({ membersCount, counters }) => {
       countersGrid.push(<View key={uuid.v4()} style={styles.counterRow}>{row}</View>)
       row = []
     }
-    if (key !== 'online_friends' && key !== 'clips_followers') {
+    if (
+      key !== 'online_friends' && 
+      key !== 'clips_followers' && 
+      key !== 'clips_views' && 
+      key !== 'clips' && 
+      key !== 'clips_likes' && 
+      key !== 'pages'
+    ) {
       if(counters[key] !== 0) {
         row.push(
           <TouchableOpacity key={uuid.v4()} style={styles.counterButton}>
@@ -48,7 +55,7 @@ const styles = StyleSheet.create({
   counterRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     marginTop: 5,
     marginBottom: 5,
   },
@@ -58,7 +65,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary_dark,
     borderRadius: 5,
     justifyContent: 'center',
-    alignItems: 'center'    
+    alignItems: 'center',    
   },
   counterNumber: {
     fontSize: 17,

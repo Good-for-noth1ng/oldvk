@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ActivityIndicator } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import uuid from 'react-native-uuid';
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -13,11 +13,22 @@ const Friends = ({navigation}) => {
   const accessToken = useSelector(state => state.user.accessToken)
   const [isLoading, setIsLoading] = useState(true)
   const [friendsData, setFriendsData] = useState(null)
-  
+  const fetchFriendsUrl = `https://api.vk.com/method/friends.get?access_token=${accessToken}&v=5.131`
   const handleDrawerOpening = () => {
     navigation.openDrawer()
   }
 
+  const fetchFriends = async () => {
+    const response = await fetch(fetchFriendsUrl)
+    const data = await response.json()
+    if (data.response.items.length === 0) {
+      setFriendsData(null)
+      setIsLoading(false)
+    }
+  }
+  useEffect(() => {
+    fetchFriends()
+  }, [])
   const listSeparator = () => (
     <DividerWithLine dividerHeight={10} dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}/>
   )
@@ -31,6 +42,7 @@ const Friends = ({navigation}) => {
       dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
     />
   )
+
   const renderItem = ({item}) => (
     <UserListItem 
       imgUrl={item.photo_100} 
@@ -83,6 +95,11 @@ const Friends = ({navigation}) => {
         <View style={styles.spinnerContainer}>
           <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
         </View> :
+        friendsData === null ?
+        <View>
+          <Text>No Friends</Text>
+        </View>
+         :
         <FlatList 
           key={uuid.v4()}
           style={styles.list}

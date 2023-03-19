@@ -14,14 +14,15 @@ import WallHeader from '../components/WallHeader'
 const Group = ({navigation}) => {
   const dispatch = useDispatch();
   const accessToken = useSelector(state => state.user.accessToken)
-  const groupID = useSelector(state => state.group.id) 
-  const offset = useSelector(state => state.group.offset) 
+  const groupData = useSelector(state => state.group)
+  const groupID = groupData.id //useSelector(state => state.group.id) 
+  const offset = groupData.offset //useSelector(state => state.group.offset) 
+  const postData = groupData.items //useSelector(state => state.group.items)
   const [postsCount, setPostsCount] = useState(0)
   console.log(groupID)
   const fetchGroupWallContentUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&count=20&v=5.131&extended=1&owner_id=${groupID}`
-  const fetchGroupInfoUrl = `https://api.vk.com/method/groups.getById?access_token=${accessToken}&v=5.131&group_id=${-1 * groupID}&fields=members_count,counters,description,status`
+  const fetchGroupInfoUrl = `https://api.vk.com/method/groups.getById?access_token=${accessToken}&v=5.131&group_id=${-1 * groupID}&fields=members_count,counters,description,status,can_message`
   const [isLoading, setIsLoading] = useState(true)  
-  const postData = useSelector(state => state.group.items) 
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const [wallHeaderData, setWallHeaderData] = useState({})
 
@@ -41,7 +42,8 @@ const Group = ({navigation}) => {
       communityAvatarUrl: groupHeaderData.response[0].photo_200,
       communityStatus: groupHeaderData.response[0].status,
       isMemberOfCommunity: groupHeaderData.response[0].is_member === 1 ? true : false,
-      counters: groupHeaderData.response[0].counters
+      counters: groupHeaderData.response[0].counters,
+      canMessage: groupHeaderData.response[0].can_message
     }))
     
     
@@ -76,6 +78,7 @@ const Group = ({navigation}) => {
       status={wallHeaderData.communityStatus}
       isMember={wallHeaderData.isMemberOfCommunity} 
       counters={wallHeaderData.counters}
+      canWritePrivateMessage={wallHeaderData.canMessage}
     />
   )
   const keyExtractor = (item) => {

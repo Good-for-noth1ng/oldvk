@@ -73,6 +73,10 @@ const UserProfile = ({navigation}) => {
     setIsLoading(false)
   }
 
+  const goBack = () => {
+    navigation.pop()
+  }
+
   useEffect(() => {
     fetchData()
   }, [])
@@ -115,6 +119,7 @@ const UserProfile = ({navigation}) => {
       <CustomHeader 
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         isLightTheme={isLightTheme}
+        iconTouchHandler={goBack}
         headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>Profile</Text>}
       />
       {

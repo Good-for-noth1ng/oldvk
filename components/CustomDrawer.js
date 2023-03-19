@@ -6,13 +6,15 @@ import {COLORS} from '../constants/theme'
 import DrawerSwitchersContainer from './DrawerSwitchersContainer'
 
 const CustomDrawer = (props) => {
-  const urlDrawerPhoto = useSelector(state => state.user.userProfileDrawerPhotoUrl)
-  const firstName = useSelector(state => state.user.firstName)
-  const lastName = useSelector(state => state.user.lastName)
+  const userData = useSelector(state => state.user)
+  const urlDrawerPhoto = userData.userProfileDrawerPhotoUrl
+  const firstName = userData.firstName
+  const lastName = userData.lastName
+  //props.navigation
   return (
     <View style={{flex: 1, backgroundColor: COLORS.very_dark_gray}}>
       <DrawerContentScrollView>
-        <TouchableOpacity style={styles.profileDrawerContainer} activeOpacity={1}>
+        <TouchableOpacity style={styles.profileDrawerContainer} activeOpacity={0.8}>
           <Image source={{uri: urlDrawerPhoto}} style={styles.profileImageStyle}/>
           <View>
             <Text style={styles.profileName}>{firstName} {lastName}</Text>

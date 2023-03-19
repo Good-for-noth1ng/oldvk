@@ -39,19 +39,24 @@ const WallHeaderButtons = ({ isUserWall, isMember, canWritePrivateMessage, canSe
         )
       }
     }
+  } else {
+    buttons.push(
+      <WallHeaderButton key={uuid.v4()} activeStateText={'Follow'} inactiveStateText={'Unfollow'} isActiveState={!isMember}/>
+    )
+    if (canWritePrivateMessage === 1) {
+      buttons.push(
+        <DividerWithLine key={uuid.v4()} dividerWidth={10}/>
+      )
+      buttons.push(
+        <WallHeaderButton key={uuid.v4()} activeStateText={'Message'} isActiveState={true}/>
+      )
+    }
   }
   return (
     <View>
-      {
-        isUserWall ?
-        <View style={styles.buttonsContainer}>
-          {buttons}
-        </View> :
-        <View style={styles.buttonsContainer}>
-          <WallHeaderButton activeStateText={'Follow'} inactiveStateText={'Unfollow'} isActiveState={!isMember}/>
-          <WallHeaderButton activeStateText={'Message'} isActiveState={true}/>
-        </View>
-      }
+      <View style={styles.buttonsContainer}>
+        {buttons}
+      </View>
     </View>
     
   )

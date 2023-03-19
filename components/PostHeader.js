@@ -10,21 +10,24 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
   const dispatch = useDispatch()
   let groupData = {}
   let profileData = {}
-  let communityId
+  let wallId
   if (sourceId === undefined) {
-    communityId = from_id
+    wallId = from_id
   } else {
-    communityId = sourceId
+    wallId = sourceId
   }
-  if (communityId < 0) {
-    groupData = useSelector(state => state.news.groups.find(group => group.id === 0 - communityId))
+  if (wallId < 0) {
+    groupData = useSelector(state => state.news.groups.find(group => group.id === 0 - wallId))
     if (groupData === undefined) {
-      groupData = useSelector(state => state.group.groups.find(group => group.id === 0 - communityId))
+      groupData = useSelector(state => state.group.groups.find(group => group.id === 0 - wallId))
     }
-  } else if (communityId > 0) {
-    profileData = useSelector(state => state.news.profiles.find(profile => profile.id === communityId))
+  } else if (wallId > 0) {
+    profileData = useSelector(state => state.news.profiles.find(profile => profile.id === wallId))
     if (groupData === undefined) {
-      profileData = useSelector(state => state.group.profiles.find(profile => profile.id === 0 - communityId))
+      profileData = useSelector(state => state.group.profiles.find(profile => profile.id === 0 - wallId))
+    }
+    if (!profileData) {
+      profileData = useSelector(state => state.userWall.profiles.find(profile => profile.id === wallId))
     }
   }
   const [group, setGroup] = useState(groupData)
@@ -54,7 +57,7 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
         <View style={styles.sourceNameContainer}>
           <View style={isRepost ? styles.postNameContainerRepost : styles.postNameContainer}>
             <Text style={postNameTextStyle}>
-              {group ? group.name : profile.last_name + ' ' + profile.first_name}
+              {group ? group.name : profile.first_name + ' ' + profile.last_name}
             </Text>
           </View>
           <Text style={postTimeTextStyle}>

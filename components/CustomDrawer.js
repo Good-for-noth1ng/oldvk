@@ -10,7 +10,7 @@ const CustomDrawer = (props) => {
   const urlDrawerPhoto = userData.userProfileDrawerPhotoUrl
   const firstName = userData.firstName
   const lastName = userData.lastName
-  //props.navigation
+  
   return (
     <View style={{flex: 1, backgroundColor: COLORS.very_dark_gray}}>
       <DrawerContentScrollView>

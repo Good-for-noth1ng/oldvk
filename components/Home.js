@@ -22,7 +22,6 @@ import GropsRoute from './GropsRoute';
 import FriendsRoute from './FriendsRoute';
 
 const Drawer = createDrawerNavigator()
-
 const Home = () => {
   return (
     <Drawer.Navigator 

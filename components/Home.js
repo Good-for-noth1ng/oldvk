@@ -3,8 +3,6 @@ import React from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { getHeaderTitle } from '@react-navigation/elements'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import Entypo from 'react-native-vector-icons/Entypo'
-import News from '../screens/News';
 import Messages from '../screens/Messages';
 import Friends from '../screens/Friends';
 import Photos from '../screens/Photos';
@@ -17,9 +15,9 @@ import Options from '../screens/Options';
 import OptionsRoute from './OptionsRoute';
 import CustomDrawer from './CustomDrawer';
 import NewsRoute from './NewsRoute';
-import { COLORS } from '../constants/theme';
 import GropsRoute from './GropsRoute';
 import FriendsRoute from './FriendsRoute';
+import { COLORS } from '../constants/theme';
 
 const Drawer = createDrawerNavigator()
 

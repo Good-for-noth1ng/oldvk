@@ -20,7 +20,6 @@ import FriendsRoute from './FriendsRoute';
 import { COLORS } from '../constants/theme';
 
 const Drawer = createDrawerNavigator()
-
 const Home = () => {
   return (
     <Drawer.Navigator 

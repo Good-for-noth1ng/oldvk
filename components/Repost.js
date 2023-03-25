@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { memo } from 'react'
 import BottomPost from './BottomPost'
 import PostHeader from './PostHeader'
 import PostText from './PostText'
@@ -110,7 +110,7 @@ const Repost = ({ data, navigation, openedPost, isLightMode }) => {
   )
 }
 
-export default Repost
+export default memo(Repost)
 
 const styles = StyleSheet.create({
   postContainerLight: {

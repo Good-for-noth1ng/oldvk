@@ -114,7 +114,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
 }
 
 // export default memo(Comment)
-export default Comment
+export default memo(Comment)
 
 const styles = StyleSheet.create({
   commentContainerLight: {

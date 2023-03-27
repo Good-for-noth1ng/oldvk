@@ -140,6 +140,7 @@ const News = ({navigation}) => {
       </>
     )
   }
+  
   const keyExtractor = (item) => {
     return item.key
   }

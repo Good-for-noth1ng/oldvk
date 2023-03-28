@@ -27,7 +27,7 @@ const Group = ({navigation}) => {
   const [wallHeaderData, setWallHeaderData] = useState({})
 
   const goBack = () => {
-    navigation.goBack()
+    navigation.pop()
   }
 
   const fetchData = async () => {

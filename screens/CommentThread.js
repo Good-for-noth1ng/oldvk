@@ -46,7 +46,7 @@ const CommentThread = ({navigation}) => {
   }, [])
 
   const goBack = () => {
-    navigation.goBack()
+    navigation.pop()
   }
 
   const fetchMoreComments = async () => {

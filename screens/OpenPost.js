@@ -102,18 +102,18 @@ const OpenPost = ({navigation}) => {
     // console.log(data)
     // console.log(data.likes)
     if (data.copy_history === undefined) {
-    return (
-      <>
-        <Post data={data} navigation={navigation} openedPost={false} isLigthTheme={isLightTheme}/>
-        <OpenedPostBottom 
-          likes={data?.likes?.count} 
-          reposts={data?.reposts?.count} 
-          views={data?.views?.count} 
-          comments={data?.comments?.count}
-          isLightTheme={isLightTheme}
-        />
-      </>
-    )
+      return (
+        <>
+          <Post data={data} navigation={navigation} openedPost={false} isLigthTheme={isLightTheme}/>
+          <OpenedPostBottom 
+            likes={data?.likes?.count} 
+            reposts={data?.reposts?.count} 
+            views={data?.views?.count} 
+            comments={data?.comments?.count}
+            isLightTheme={isLightTheme}
+          />
+        </>
+      )
     }
     return (
       <>
@@ -161,35 +161,35 @@ const OpenPost = ({navigation}) => {
           <ActivityIndicator size={50} color={isLightTheme ? COLORS.primary : COLORS.white}/>
         </View> :
         <>
-          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <View style={styles.modalContainer}>
             <Modal  
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} 
+              style={styles.modal} 
               animationType='slide' 
               transparent={true} 
               visible={isAuthorInfoOpen} 
               onRequestClose={() => {dispatch(closeAuthorInfo())}}
             >
-              <View style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center'}}>
-                <View style={styles.modalView}>
+              <View style={styles.modalViewContainer}>
+                <View style={isLightTheme ? styles.modalViewLight : styles.modalViewDark}>
                   {
                     registrationDateIsFetching ? 
                       <View style={styles.activityContainer}>
-                        <ActivityIndicator size={50} color={COLORS.primary}/>
+                        <ActivityIndicator size={50} color={isLightTheme ? COLORS.primary : COLORS.white}/>
                       </View> :
                       <>
-                      <View style={styles.commentInfoHeader}>
-                      <TouchableOpacity style={styles.crossButton} activeOpacity={1} onPress={handleClosingCommentAuthorInfo}>
-                        <AntDesign name='close' size={20} color={COLORS.primary}/>
-                      </TouchableOpacity>
-                      </View>
-                      <View style={styles.nameAvatarContainer}>
-                      <Image style={styles.avatarInfo} source={{uri: authorImgUrl}}/>
-                      <Text style={styles.nameInfo}>{authorName}</Text>
-                      </View>
-                      <View style={styles.registredContainer}>
-                      <Text style={styles.registredText}>Registred: {getTimeDate(regestrationDate)}</Text>
-                      </View>
-                    </>
+                        <View style={styles.commentInfoHeader}>
+                          <TouchableOpacity style={styles.crossButton} activeOpacity={1} onPress={handleClosingCommentAuthorInfo}>
+                            <AntDesign name='close' size={20} color={isLightTheme ? COLORS.primary : COLORS.white}/>
+                          </TouchableOpacity>
+                        </View>
+                        <View style={styles.nameAvatarContainer}>
+                          <Image style={styles.avatarInfo} source={{uri: authorImgUrl}}/>
+                          <Text style={isLightTheme ? styles.nameInfoLight : styles.nameInfoDark}>{authorName}</Text>
+                        </View>
+                        <View style={styles.registredContainer}>
+                          <Text style={styles.registredText}>Registred: {getTimeDate(regestrationDate)}</Text>
+                        </View>
+                      </>
                   }  
                 </View>
               </View>
@@ -224,10 +224,42 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  modalView: {
+  modalContainer: {
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center',
+  },
+  modal: {
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center',
+  },
+  modalViewContainer: {
+    width: '100%', 
+    height: '100%', 
+    justifyContent: 'center', 
+    alignItems: 'center'
+  },
+  modalViewLight: {
     width: 250, 
     height: 250, 
     backgroundColor: COLORS.white, 
+    justifyContent: 'flex-start', 
+    alignItems: 'center',
+    shadowColor: COLORS.black,
+    borderRadius: 10,
+    shadowOffset: {
+      width: 10,
+      height: 10,
+    },
+    shadowOpacity: 0.25,
+    elevation: 13,
+    shadowRadius: 4,
+  },
+  modalViewDark: {
+    width: 250, 
+    height: 250, 
+    backgroundColor: COLORS.very_dark_gray, 
     justifyContent: 'flex-start', 
     alignItems: 'center',
     shadowColor: COLORS.black,
@@ -271,10 +303,16 @@ const styles = StyleSheet.create({
     borderRadius: 100, 
     marginRight: 5,
   },
-  nameInfo: {
+  nameInfoLight: {
     fontSize: 16, 
     fontWeight: '700', 
     color: COLORS.black, 
+    marginLeft: 5,
+  },
+  nameInfoDark: {
+    fontSize: 16, 
+    fontWeight: '700', 
+    color: COLORS.white, 
     marginLeft: 5,
   },
   registredContainer: {
@@ -283,7 +321,7 @@ const styles = StyleSheet.create({
   registredText: {
     fontSize: 16,
     fontWeight: '600',
-    color: COLORS.black
+    color: COLORS.secondary
   },
   openPostContainerLight: {
     flex: 1,

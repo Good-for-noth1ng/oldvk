@@ -182,6 +182,9 @@ const News = ({navigation}) => {
     </SafeAreaView>
   )
 }
+
+export default News
+
 const styles = StyleSheet.create({
   spinnerContainer: {
     width: '100%',
@@ -202,4 +205,3 @@ const styles = StyleSheet.create({
     justifyContentL: 'center',
   }
 })
-export default News

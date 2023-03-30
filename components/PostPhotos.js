@@ -6,7 +6,6 @@ import { postWidth } from '../constants/theme';
 import ImageViewer from 'react-native-image-zoom-viewer'
 
 const PostPhotos = ({postPhotos}) => {
-  
   const initPhoto = (width, imageUrl, resizeMode) => {
     return (
     <TouchableOpacity  

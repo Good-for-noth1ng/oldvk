@@ -21,6 +21,7 @@ const PostPhotos = ({postPhotos}) => {
         />
     </TouchableOpacity>)
   }
+  
   const [modalVisible, setModalVisible] = useState(false)
   const imgNum = postPhotos.length
   const rowNum = Math.ceil(imgNum / 3)

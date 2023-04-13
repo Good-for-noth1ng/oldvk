@@ -37,7 +37,7 @@ export const groupSlice = createSlice({
         groups: action.payload.groups,
         profiles: action.payload.profiles,
         offset: state.offset + 20,
-        totalPostCount: action.payload.count
+        totalPostCount: action.payload.count - 20
       }
     },
     pushData: (state, action) => {
@@ -46,7 +46,8 @@ export const groupSlice = createSlice({
         items: [...state.items, ...action.payload.items],
         groups: [...state.groups, ...action.payload.groups],
         profiles: [...state.profiles, ...action.payload.profiles],
-        offset: state.offset + 20
+        offset: state.offset + 20,
+        totalPostCount: state.totalPostCount - 20
       }
     }
   },

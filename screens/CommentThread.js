@@ -23,7 +23,7 @@ const CommentThread = ({navigation}) => {
   const [mainComment, setMainComment] = useState(null)
   const threadList = useRef(null)
   const offset = useRef(10)
-  const currentLevelCommentsCount = useRef(0)
+  const currentLevelCommentsCount = useRef()
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
 
   const fetchThreadComments = async () => {
@@ -109,15 +109,28 @@ const CommentThread = ({navigation}) => {
     <DividerWithLine dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={10}/>
   )
 
-  const listBottom = () => (
-    <DividerWithLine 
-      dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} 
-      marginB={10} 
-      dividerHeight={10} 
-      borderBL={4} 
-      borderBR={4}
-    />
-  )
+  const listBottom = () => {
+    if (currentLevelCommentsCount.current > 0) {
+      return (
+        <>
+          <View style={isLightTheme ? styles.bottomSpinnerContainerLight : styles.bottomSpinnerContainerDark}>
+            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+          </View>
+          <DividerWithLine dividerHeight={5} marginB={5} borderBL={4} borderBR={4}/>
+        </>
+      )
+    } else {
+      return (
+        <DividerWithLine 
+          dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} 
+          marginB={10} 
+          dividerHeight={10} 
+          borderBL={4} 
+          borderBR={4}
+        />
+      )
+    }
+  }
   
   const keyExtractor = (item) => {
     return item.key
@@ -181,5 +194,12 @@ const styles = StyleSheet.create({
   list: {
     marginRight: 5,
     marginLeft: 5
+  },
+  bottomSpinnerContainerLight:{
+    justifyContent: 'center',
+    backgroundColor: COLORS.white
+  },
+  bottomSpinnerContainerDark: {
+    backgroundColor: COLORS.primary_dark
   }
 })

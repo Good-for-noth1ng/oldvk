@@ -10,6 +10,7 @@ import { pushProfiles, pushGroups } from '../redux/commentsSlice'
 import { setData, pushData } from '../redux/groupSlice'
 import Repost from '../components/Repost'
 import WallHeader from '../components/WallHeader'
+import DividerWithLine from '../components/DividerWithLine'
 
 const Group = ({navigation}) => {
   const dispatch = useDispatch();
@@ -18,7 +19,7 @@ const Group = ({navigation}) => {
   const groupID = groupData.id //useSelector(state => state.group.id) 
   const offset = groupData.offset //useSelector(state => state.group.offset) 
   const postData = groupData.items //useSelector(state => state.group.items)
-  const [postsCount, setPostsCount] = useState(0)
+  const totalPostCount = groupData.totalPostCount
   console.log(groupID)
   const fetchGroupWallContentUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&count=20&v=5.131&extended=1&owner_id=${groupID}`
   const fetchGroupInfoUrl = `https://api.vk.com/method/groups.getById?access_token=${accessToken}&v=5.131&group_id=${-1 * groupID}&fields=members_count,counters,description,status,can_message`
@@ -51,7 +52,6 @@ const Group = ({navigation}) => {
       array[index] = {...item, key: uuid.v4()}
     })
     dispatch(setData(data.response))
-    setPostsCount(data.response.count)
     setIsLoading(false)
   }
 
@@ -70,6 +70,7 @@ const Group = ({navigation}) => {
       dispatch(pushData(data.response))
     })
   }
+
   const listHeader = () => (
     <WallHeader
       name={wallHeaderData.communityName}
@@ -92,6 +93,21 @@ const Group = ({navigation}) => {
     return <Post data={item} navigation={navigation} openedPost={true} isCommunityContent={true} isLigthTheme={isLightTheme}/>
   }
 
+  const listFooter = () => {
+    if (totalPostCount > 0) {
+      return (
+        <>
+          <View style={styles.bottomSpinnerContainer}>
+            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+          </View>
+          <DividerWithLine dividerHeight={5}/>
+        </>
+      )
+    } else {
+      return null
+    }
+  }
+  
   return (
     <SafeAreaView style={isLightTheme ? styles.feedContainerLight : styles.feedContainerDark}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
@@ -117,6 +133,7 @@ const Group = ({navigation}) => {
           onEndReachedThreshold={0.5}
           style={styles.feed}
           ListHeaderComponent={listHeader}
+          ListFooterComponent={listFooter}
           refreshControl={
             <RefreshControl 
               refreshing={isLoading} 
@@ -151,4 +168,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background_dark,
   },
+  bottomSpinnerContainer: {
+    justifyContent: 'center'
+  }
 })

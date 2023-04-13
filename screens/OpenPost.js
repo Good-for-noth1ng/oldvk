@@ -20,11 +20,14 @@ const OpenPost = ({navigation}) => {
   const dispatch = useDispatch()
   const data = useSelector(state => state.news.openedPost) 
   const accessToken = useSelector(state => state.user.accessToken);
-  let isAuthorInfoOpen = useSelector(state => state.comments.isAuthorInfoOpen);
-  const authorName = useSelector(state => state.comments.authorName)
-  const authorImgUrl = useSelector(state => state.comments.authorImgUrl)
-  const regestrationDate = useSelector(state => state.comments.registrationDate)
-  const registrationDateIsFetching = useSelector(state => state.comments.authorInfoIsFetching)
+
+  const commentsGeneralData = useSelector(state => state.comments); 
+  let isAuthorInfoOpen = commentsGeneralData.isAuthorInfoOpen;
+  const authorName = commentsGeneralData.authorName;
+  const authorImgUrl = commentsGeneralData.authorImgUrl;
+  const regestrationDate = commentsGeneralData.registrationDate;
+  const registrationDateIsFetching = commentsGeneralData.authorInfoIsFetching;
+  
   const shouldScroll = useSelector(state => state.news.scrollToComments)
   const [comments, setComments] = useState(null);
   const commentsList = useRef()
@@ -130,7 +133,18 @@ const OpenPost = ({navigation}) => {
   }
 
   const listFooter = () => {
-    return <DividerWithLine dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={10} marginB={10} borderBL={4} borderBR={4}/>
+    if (currentLevelCommentsCount.current > 0) {
+      return (
+        <>
+          <View style={isLightTheme ? styles.bottomSpinnerContainerLight : styles.bottomSpinnerContainerDark}>
+            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+          </View>
+          <DividerWithLine dividerHeight={5} marginB={5} borderBL={4} borderBR={4}/>
+        </>
+      )
+    } else {
+      return <DividerWithLine dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={10} marginB={10} borderBL={4} borderBR={4}/>
+    }
   }
 
   const handleClosingCommentAuthorInfo = () => {
@@ -330,5 +344,13 @@ const styles = StyleSheet.create({
   openPostContainerDark: {
     flex: 1,
     backgroundColor: COLORS.background_dark,
+  },
+  bottomSpinnerContainerLight: {
+    justifyContent: 'center',
+    backgroundColor: COLORS.white,
+  },
+  bottomSpinnerContainerDark: {
+    justifyContent: 'center',
+    backgroundColor: COLORS.primary_dark, 
   }
 })

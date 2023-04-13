@@ -44,9 +44,9 @@ const News = ({navigation}) => {
 
   let newsUrl
   if (currentNewsPage === 'News') {
-    newsUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&count=25&v=5.131`
+    newsUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&count=20&v=5.131`
   } else {
-    newsUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=25&v=5.131`
+    newsUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=20&v=5.131`
   }
 
   const fetchNews = () => {
@@ -98,9 +98,9 @@ const News = ({navigation}) => {
   const fetchMoreData = () => {
     let fetchMoreDataUrl
     if (currentNewsPage === 'News') {
-      fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&count=25&start_from=${nextFrom}&v=5.131`
+      fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&count=20&start_from=${nextFrom}&v=5.131`
     } else {
-      fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=25&start_from=${nextFrom}&v=5.131`
+      fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=20&start_from=${nextFrom}&v=5.131`
     }
     fetch(fetchMoreDataUrl)
       .then((response) => response.json())
@@ -136,7 +136,7 @@ const News = ({navigation}) => {
         <View style={styles.bottomSpinnerContainer}>
           <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
         </View>
-        <DividerWithLine dividerHeight={5} marginB={20}/>
+        <DividerWithLine dividerHeight={5} marginB={60}/>
       </>
     )
   }

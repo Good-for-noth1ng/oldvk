@@ -49,7 +49,7 @@ const WebViewLogin = () => {
     <View style={{flex: 1}}>
       <WebView 
         source={{
-          uri: `https://oauth.vk.com/authorize?client_id=${APP_ID}&display=mobile&redirect_uri=${REDIRECT_URI}&scope=${PERMISION_CODE}&response_type=token&v=5.131&revoke=1`
+          uri: `https://oauth.vk.com/authorize?client_id=${51613222}&display=mobile&redirect_uri=${REDIRECT_URI}&scope=${402582}&response_type=token&v=5.131&revoke=1`
         }}
         onNavigationStateChange={onNavChange}
       />      

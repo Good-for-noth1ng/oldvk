@@ -6,27 +6,28 @@ import { COLORS } from '../constants/theme'
 import { getHyperlinkInText } from '../utils/hyperlinks'
 
 const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme}) => {
-  const profiles = useSelector(state => state.comments.profiles)
-  const groups = useSelector(state => state.comments.groups)
+  const authorsGeneralInfo = useSelector(state => state.comments)
+  const groups = authorsGeneralInfo.groups
+  const profiles = authorsGeneralInfo.profiles
   const authors = [...groups, ...profiles]
-  // const [name, setName] = useState('')
-  // const [photoUrl, setPhotoUrl] = useState(null)
   let name
   let photoUrl
   const [isLiked, setIsLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(likes)
-  
-  authors.forEach(item => {
+  profiles.forEach(item => {
     if (item.id === from_id) {
-      if(item.name === undefined) {
-        name = `${item.first_name} ${item.last_name}`;
-      } else {
-        name = item.name;
-      }
-      photoUrl = item.photo_100;
+      name = `${item.first_name} ${item.last_name}`;
+      photoUrl = item.photo_100; 
     }
   })
-
+  if (name === undefined) {
+    groups.forEach(item => {
+      if (item.id === (from_id * (-1))) {
+        name = item.name
+        photoUrl = item.photo_100
+      }
+    })
+  }
   const handleProfilePress = () => {
     fetchProfileInfo(from_id, name, photoUrl)
   }

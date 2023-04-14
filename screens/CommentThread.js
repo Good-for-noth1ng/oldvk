@@ -25,7 +25,6 @@ const CommentThread = ({navigation}) => {
   const offset = useRef(10)
   const currentLevelCommentsCount = useRef()
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
-
   const fetchThreadComments = async () => {
     const threadCommentsResponse = await fetch(getThreadUrl)
     const threadMainCommentResponse = await fetch(getThreadMainCommentUrl)

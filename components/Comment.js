@@ -18,11 +18,11 @@ import { getHyperlinkInText } from '../utils/hyperlinks'
 
 const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, likes, threadCount, threadComments, commentId, navigation, postId, ownerId, isLightTheme}) => {
   const dispatch = useDispatch()
-  const profiles = useSelector(state => state.comments.profiles)
-  const groups = useSelector(state => state.comments.groups)
-  const authors = [...groups, ...profiles]
-  let name
-  let photoUrl
+  const authorsGeneralInfo = useSelector(state => state.comments)
+  const profiles = authorsGeneralInfo.profiles
+  const groups = authorsGeneralInfo.groups
+  let name = undefined
+  let photoUrl = undefined
   // const [name, setName] = useState('')
   // const [photoUrl, setPhotoUrl] = useState(null)
   const [isLiked, setIsLiked] = useState(false)
@@ -37,16 +37,32 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
       }
     }
   }
-  authors.forEach(item => {
+
+  profiles.forEach(item => {
     if (item.id === from_id) {
-      if (item.name === undefined) {
-        name = `${item.first_name} ${item.last_name}`;
-      } else {
-        name = item.name;
-      }
-        photoUrl = item.photo_100;
+      name = `${item.first_name} ${item.last_name}`;
+      photoUrl = item.photo_100;
     }
   })
+
+  if (name === undefined) {
+    groups.forEach(item => {
+      if (item.id === (from_id * (-1))) {
+        name = item.name
+        photoUrl = item.photo_100
+      }
+    })
+  }
+  // authors.forEach(item => {
+  //   if (item.id === from_id) {
+  //     if (item.name === undefined) {
+  //       name = `${item.first_name} ${item.last_name}`;
+  //     } else {
+  //       name = item.name;
+  //     }
+  //       photoUrl = item.photo_100;
+  //   }
+  // })
   const handleLikePress = () => {
     if(!isLiked) {
       setLikesCount(prevState => prevState + 1);

@@ -8,7 +8,8 @@ import {
   setAuthorImgUrl, 
   setRegistrationDate, 
   startLoadingRegistrationDate,
-  stopLoadingRegistrationDate  
+  stopLoadingRegistrationDate,
+  setRegistrationData  
 } from '../redux/commentsSlice'
 import CommentBottom from './CommentBottom'
 import CommentReplies from './CommentReplies'
@@ -53,16 +54,6 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
       }
     })
   }
-  // authors.forEach(item => {
-  //   if (item.id === from_id) {
-  //     if (item.name === undefined) {
-  //       name = `${item.first_name} ${item.last_name}`;
-  //     } else {
-  //       name = item.name;
-  //     }
-  //       photoUrl = item.photo_100;
-  //   }
-  // })
   const handleLikePress = () => {
     if(!isLiked) {
       setLikesCount(prevState => prevState + 1);
@@ -72,20 +63,29 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
       setIsLiked(false);
     }
   }
+
+  //TODO: refact dispatch calls num
   const fetchProfileInfo = (vkId, name, photoUrl) => {
     let profileDataRegUrl = `https://vkdia.com/pages/fake-vk-profile/registration-date?vkId=${vkId}`;
     const re = /^\d*$/g; 
     dispatch(startLoadingRegistrationDate())
-    dispatch(openAuthorInfo());
+    // dispatch(openAuthorInfo());
     fetch(profileDataRegUrl)
       .then(response => response.json())
       .then(result => {
         const regDate = result.regDate 
         if (re.test(regDate)) {
-          dispatch(setRegistrationDate(regDate))
-          dispatch(setAuthorName(name));
-          dispatch(setAuthorImgUrl(photoUrl));
-          dispatch(stopLoadingRegistrationDate());
+          dispatch(
+            setRegistrationData({
+              registrationDate: regDate,
+              authorName: name,
+              authorImgUrl: photoUrl
+            })
+          )
+          // dispatch(setRegistrationDate(regDate))
+          // dispatch(setAuthorName(name));
+          // dispatch(setAuthorImgUrl(photoUrl));
+          // dispatch(stopLoadingRegistrationDate());
         }
       })
   }
@@ -105,9 +105,12 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
           is_deleted ? <View style={styles.deltedContainer}><Text style={styles.deletedText}>Comment deleted</Text></View> : 
           <>
             <Text style={isLightTheme ? styles.authorNameLight : styles.authorNameDark}>{name}</Text>
-            {commentText ? <Text style={isLightTheme ? styles.textLight : styles.textDark}>
-              {getHyperlinkInText(commentText)}
-            </Text> : null}
+            {
+              commentText ? 
+              <Text style={isLightTheme ? styles.textLight : styles.textDark}>
+                {getHyperlinkInText(commentText)}
+              </Text> : null
+            }
             {commentPhotos.length > 0 ? <CommentPhotos commentPhotos={commentPhotos}/> : null}
           </>
         }

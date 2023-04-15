@@ -12,7 +12,7 @@ const PostPhotos = ({postPhotos}) => {
         style={{width: width, height: '100%', display: 'flex',}}  
         key={uuid.v4()} 
         onPress={() => {setModalVisible(!modalVisible)}}
-        activeOpacity={0.5}
+        activeOpacity={1}
       >
         <Image 
           source={{uri: imageUrl}}

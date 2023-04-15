@@ -45,6 +45,7 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
           postLinks.push(attachments[i].link)
         } else if (attachments[i].type === 'video') {
           postVideos.push(attachments[i].video)
+          // postPhotos.push(attachments[i].video)
         }
       }
     }

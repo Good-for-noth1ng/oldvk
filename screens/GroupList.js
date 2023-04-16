@@ -7,6 +7,7 @@ import { COLORS } from '../constants/theme';
 import DividerWithLine from '../components/DividerWithLine';
 import CustomHeader from '../components/CustomHeader';
 import Entypo from 'react-native-vector-icons/Entypo'
+import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
 
 const GroupList = ({navigation}) => {
   const accessToken = useSelector(state => state.user.accessToken)
@@ -14,7 +15,9 @@ const GroupList = ({navigation}) => {
   const [groupsData, setGroupsData] = useState(null)
   const drawerNavigator = navigation.getParent()
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
-
+  const offset = 30
+  const [groupsCount, setGroupsCount] = useState(null)
+  const remainToFetchNum = useRef()
   useEffect(() => {
     fetchGroupIds()
   }, [])
@@ -23,29 +26,43 @@ const GroupList = ({navigation}) => {
     setIsLoading(true)
     fetchGroupIds()
   }
-  //TODO: fix several requests to api
+
+  //TODO: fix several rerenders
   const fetchGroupIds = async () => {
-    const getIdsUrl = `https://api.vk.com/method/groups.get?access_token=${accessToken}&v=5.131`
+    const getIdsUrl = `https://api.vk.com/method/groups.get?access_token=${accessToken}&v=5.131&extended=1&fields=activity,members_count`
     let response = await fetch(getIdsUrl)
     let data = await response.json()
-    const groupsNum = data.response.count
-    const listIds = data.response.items
-    let ids = ''
-    for (let i = 0; i < groupsNum; i++) {
-      ids += listIds[i]
-      if (i !== groupsNum - 1) {
-        ids += ','
-      }
-    }
-    let getGroupUrl = `https://api.vk.com/method/groups.getById?group_ids=${ids}&access_token=${accessToken}&fields=members_count,activity&v=5.131`
-    response = await fetch(getGroupUrl)
-    data = await response.json()
+    remainToFetchNum.current = data.response.count - 30
+    setGroupsCount(data.response.count)
+    setGroupsData(data.response.items)
     setIsLoading(false)
-    setGroupsData(data.response)
   }
 
   const openDrawer = () => {
     drawerNavigator.openDrawer()
+  }
+
+  const listHeader = () => {
+    return (
+      <>
+        <DividerWithLine 
+          dividerHeight={10} 
+          marginT={10} 
+          borderTL={5} 
+          borderTR={5} 
+          dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+        />
+        <SearchResultHeaderCounter 
+          isLightTheme={isLightTheme}
+          counterNum={groupsCount}
+          counterName={'All Communities'} 
+        />
+        <DividerWithLine 
+          dividerHeight={10}  
+          dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+        />
+      </>  
+    )
   }
 
   const renderItem = ({item}) => (
@@ -56,15 +73,27 @@ const GroupList = ({navigation}) => {
     <DividerWithLine dividerHeight={10} dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}/>
   )
 
-  const footer = () => (
-    <DividerWithLine 
-      dividerHeight={10} 
-      marginB={10} 
-      borderBL={5} 
-      borderBR={5} 
-      dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
-    />
-  )
+  const footer = () => {
+    if (remainToFetchNum.current > 0) {
+      return (
+        <>
+          <View style={isLightTheme ? styles.bottomSpinnerContainerDark : styles.bottomSpinnerContainerDark}>
+            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white}/>
+          </View>
+          <DividerWithLine dividerHeight={5} marginB={5} borderBL={5} borderBR={5}/>
+        </>
+      )
+    }
+    return (
+      <DividerWithLine 
+        dividerHeight={10} 
+        marginB={10} 
+        borderBL={5} 
+        borderBR={5} 
+        dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+      />
+    )
+  }
 
   const debounce = (func, delay=700) => {
     let debounceTimer
@@ -93,6 +122,7 @@ const GroupList = ({navigation}) => {
       let getGroupUrl = `https://api.vk.com/method/groups.getById?group_ids=${ids}&access_token=${accessToken}&fields=members_count,activity&v=5.131`
       const groupsListResponse = await fetch(getGroupUrl)
       const data = await groupsListResponse.json()
+      setGroupsCount(groupsNum)
       setGroupsData(data.response)
       setIsLoading(false)
       
@@ -130,6 +160,7 @@ const GroupList = ({navigation}) => {
           key={uuid.v4()}
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={groupListSeparator}
+          ListHeaderComponent={listHeader}
           refreshControl={
             <RefreshControl 
               refreshing={isLoading}
@@ -165,5 +196,21 @@ const styles = StyleSheet.create({
   list: {
     marginLeft: 5,
     marginRight: 5,
+  },
+  listHeaderCounterTextLight: {
+    fontSize: 14,
+    color: COLORS.black,
+  },
+  listHeaderCounterTextDark: {
+    fontSize: 14,
+    color: COLORS.white
+  },
+  bottomSpinnerContainerLight: {
+    justifyContent: 'center',
+    backgroundColor: COLORS.white
+  },
+  bottomSpinnerContainerDark: {
+    justifyContent: 'center',
+    backgroundColor: COLORS.white
   }
 })

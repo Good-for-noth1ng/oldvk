@@ -15,9 +15,12 @@ const GroupList = ({navigation}) => {
   const [groupsData, setGroupsData] = useState(null)
   const drawerNavigator = navigation.getParent()
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
-  const offset = 30
   const [groupsCount, setGroupsCount] = useState(null)
   const remainToFetchNum = useRef()
+  const offset = useRef(0)
+  const count = 30
+  const [groupsCounterName, setGroupsCounterName] = useState('All communities')
+  
   useEffect(() => {
     fetchGroupIds()
   }, [])
@@ -29,10 +32,11 @@ const GroupList = ({navigation}) => {
 
   //TODO: fix several rerenders
   const fetchGroupIds = async () => {
-    const getIdsUrl = `https://api.vk.com/method/groups.get?access_token=${accessToken}&v=5.131&extended=1&fields=activity,members_count`
+    const getIdsUrl = `https://api.vk.com/method/groups.get?access_token=${accessToken}&v=5.131&extended=1&fields=activity,members_count&count=${count}&offset=${offset.current}`
     let response = await fetch(getIdsUrl)
     let data = await response.json()
-    remainToFetchNum.current = data.response.count - 30
+    remainToFetchNum.current = data.response.count - count
+    offset.current += count
     setGroupsCount(data.response.count)
     setGroupsData(data.response.items)
     setIsLoading(false)
@@ -55,7 +59,7 @@ const GroupList = ({navigation}) => {
         <SearchResultHeaderCounter 
           isLightTheme={isLightTheme}
           counterNum={groupsCount}
-          counterName={'All Communities'} 
+          counterName={groupsCounterName} 
         />
         <DividerWithLine 
           dividerHeight={10}  
@@ -123,9 +127,9 @@ const GroupList = ({navigation}) => {
       const groupsListResponse = await fetch(getGroupUrl)
       const data = await groupsListResponse.json()
       setGroupsCount(groupsNum)
+      setGroupsCounterName('Search result')
       setGroupsData(data.response)
       setIsLoading(false)
-      
     }
     
   }

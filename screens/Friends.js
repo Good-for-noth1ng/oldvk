@@ -7,12 +7,15 @@ import CustomHeader from '../components/CustomHeader'
 import UserListItem from '../components/UserListItem'
 import DividerWithLine from '../components/DividerWithLine'
 import { COLORS } from '../constants/theme'
+import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
 
 const Friends = ({navigation}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const [isLoading, setIsLoading] = useState(true)
   const [friendsData, setFriendsData] = useState(null)
+  const [friendsCount, setFriendsCount] = useState(null)
+  const [friendsCounterName, setFriendsCounterName] = useState('All communities')
   const fetchFriendsUrl = `https://api.vk.com/method/friends.get?access_token=${accessToken}&v=5.131`
   const handleDrawerOpening = () => {
     navigation.openDrawer()
@@ -26,12 +29,37 @@ const Friends = ({navigation}) => {
       setIsLoading(false)
     }
   }
+
   useEffect(() => {
     fetchFriends()
   }, [])
+
   const listSeparator = () => (
     <DividerWithLine dividerHeight={10} dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}/>
   )
+  
+  const listHeader = () => {
+    return (
+      <>
+        <DividerWithLine 
+          dividerHeight={10} 
+          marginT={10} 
+          borderTL={5} 
+          borderTR={5} 
+          dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+        />
+        <SearchResultHeaderCounter 
+          isLightTheme={isLightTheme}
+          counterNum={friendsCount}
+          counterName={friendsCounterName} 
+        />
+        <DividerWithLine 
+          dividerHeight={10}  
+          dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+        />
+      </>  
+    )
+  }
 
   const footer = () => (
     <DividerWithLine 
@@ -72,6 +100,8 @@ const Friends = ({navigation}) => {
       const searchResults = await fetch(usersSearchUrl)
       const searchData = await searchResults.json()
       setFriendsData(searchData.response.items)
+      setFriendsCount(searchData.response.count)
+      setFriendsCounterName('Search result')
       setIsLoading(false)
     }
   }
@@ -96,8 +126,8 @@ const Friends = ({navigation}) => {
           <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
         </View> :
         friendsData === null ?
-        <View>
-          <Text>No Friends</Text>
+        <View style={styles.noFriendsContainer}>
+          <Text style={styles.noFriendsText}>No Friends</Text>
         </View>
          :
         <FlatList 
@@ -107,6 +137,7 @@ const Friends = ({navigation}) => {
           renderItem={renderItem}
           ItemSeparatorComponent={listSeparator}
           ListFooterComponent={footer}
+          ListHeaderComponent={listHeader}
         />
       }
     </SafeAreaView>
@@ -136,5 +167,16 @@ const styles = StyleSheet.create({
   list: {
     marginLeft: 5,
     marginRight: 5
+  },
+  noFriendsContainer: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center'  
+  },
+  noFriendsText: {
+    color: COLORS.secondary,
+    fontSize: 17,
+    fontWeight: 'bold',
   }
 })

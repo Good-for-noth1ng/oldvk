@@ -32,13 +32,15 @@ const GroupList = ({navigation}) => {
 
   //TODO: fix several rerenders
   const fetchGroupIds = async () => {
+    offset.current = 0
     const getIdsUrl = `https://api.vk.com/method/groups.get?access_token=${accessToken}&v=5.131&extended=1&fields=activity,members_count&count=${count}&offset=${offset.current}`
     let response = await fetch(getIdsUrl)
     let data = await response.json()
     remainToFetchNum.current = data.response.count - count
     offset.current += count
-    setGroupsCount(data.response.count)
     setGroupsData(data.response.items)
+    setGroupsCount(data.response.count)
+    setGroupsCounterName('All communities')
     setIsLoading(false)
   }
 
@@ -109,7 +111,6 @@ const GroupList = ({navigation}) => {
   
   const saveInput = async (query) => {
     const groupSearchUrl = `https://api.vk.com/method/groups.search?q=${query}&access_token=${accessToken}&v=5.131` 
-
     if (!(query.replace(/\s/g, '') === '')) {      
       setIsLoading(true)
       const searchResponse = await fetch(groupSearchUrl)

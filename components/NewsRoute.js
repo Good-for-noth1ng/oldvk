@@ -6,6 +6,7 @@ import News from '../screens/News';
 import OpenPost from '../screens/OpenPost';
 import Group from '../screens/Group';
 import CommentThread from '../screens/CommentThread';
+import UserProfile from '../screens/UserProfile';
 
 const PostStack = createNativeStackNavigator();
 
@@ -31,6 +32,11 @@ const NewsRoute = () => {
         name='CommentThread'
         component={CommentThread}
         options={{headerShown: false, animationTypeForReplace: 'pop'}} 
+      />
+      <PostStack.Screen 
+        name='UserProfile'
+        component={UserProfile}
+        options={{headerShown: false, animationTypeForReplace: 'pop'}}
       />
     </PostStack.Navigator>
   )

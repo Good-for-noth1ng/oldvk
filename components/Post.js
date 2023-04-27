@@ -12,6 +12,7 @@ import PostVideos from './PostVideos'
 import PostDivider from './PostDivider'
 import { setOpenedPost } from '../redux/newsSlice'
 import { setScrolling } from '../redux/newsSlice'
+import PostSigner from './PostSigner' 
 
 const Post = ({data, navigation, openedPost, isCommunityContent, isProfileContent, isLigthTheme}) => {
   const dispatch = useDispatch();
@@ -19,7 +20,8 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
   let postDocs = []
   let postLinks = []
   let postVideos = []
-  
+  const signerID = data.signer_id
+
   const openPost = () => {
     if (openedPost) {
       dispatch(setOpenedPost(data))
@@ -93,6 +95,11 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
             <PostDivider dividerHeight={6} />
           </>
         ) : null
+      }
+      {
+        signerID ? 
+        <PostSigner signerID={signerID} navigation={navigation}/> :
+        null
       }
       <BottomPost 
         dataComments={data.comments} 

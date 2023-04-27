@@ -92,14 +92,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     height: 50,
-    backgroundColor: COLORS.white
+    backgroundColor: COLORS.white,
+    borderRadius: 5,
   },
   optionsButtonContainerDark: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     height: 50,
-    backgroundColor: COLORS.primary_dark
+    backgroundColor: COLORS.primary_dark,
+    borderRadius: 5,
   },
 
   wallHeaderButtonActiveState: {

@@ -21,14 +21,17 @@ const WebViewLogin = () => {
     // console.log(url)
     if (regex.test(url)) {
       const accessTokenRegex = /access_token=[a-zA-Z0-9-._]*/g;
-      const expiresInRegex = /expire_in=\d*/g;
+      const expiresInRegex = /expires_in=\d*/g;
+      const expireInRegex = /expire_in=\d*/g;
       const userIdRegex = /user_id=.*/g;
       const accessToken = url.match(accessTokenRegex)[0].split('access_token=')[1];
-      console.log(url, accessToken, expiresIn, userId)
-      const expiresIn = url.match(expiresInRegex)[0].split('expire_in=')[1];
+      let expiresIn
+      expiresIn = url.match(expiresInRegex)[0].split('expires_in=')[1];
+      if (expiresIn === undefined) {
+        expiresIn = url.match(expireInRegex)[0].split('expires_in=')[1];
+      }
       const userId = url.match(userIdRegex)[0].split('user_id=')[1];
-      // console.log(expiresIn)
-      // console.log(userId)
+      console.log(url, '\n', accessToken, '\n', expiresIn, '\n', userId)
       // TODO: shortage dispatch calls
       dispatch(setAccessToken(accessToken));
       dispatch(setExpiresIn(expiresIn));

@@ -10,6 +10,7 @@ import CustomHeader from '../components/CustomHeader'
 import { OptionsButton } from '../components/Buttons'
 import { COLORS } from '../constants/theme'
 
+//TODO use flatlist instead of view
 const Options = ({navigation}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const handleDrawerOpening = () => {
@@ -39,7 +40,7 @@ const Options = ({navigation}) => {
         iconTouchHandler={handleDrawerOpening}
         isLightTheme={isLightTheme}
       /> 
-      <View style={styles.buttonsContainer}>
+      <View style={isLightTheme ? styles.buttonsContainerLight : styles.buttonsContainerDark}>
         <OptionsButton 
           buttonIcon={<FontAwesome5 name='user-alt' size={22} color={COLORS.secondary} style={styles.icon}/>}
           buttonText={'Учетная запись'}
@@ -86,12 +87,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background_dark
   },
-  buttonsContainer: {
+  buttonsContainerLight: {
     marginLeft: 5,
     marginRight: 5,
     marginTop: 10,
     borderRadius: 5,
     backgroundColor: COLORS.white
+  },
+  buttonsContainerDark: {
+    marginLeft: 5,
+    marginRight: 5,
+    marginTop: 10,
+    borderRadius: 5,
+    backgroundColor: COLORS.primary_dark
   },
   icon: {
     marginLeft: 5, 

@@ -1,6 +1,7 @@
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Image } from 'react-native'
 import React from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { useSelector } from 'react-redux';
 import { getHeaderTitle } from '@react-navigation/elements'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Messages from '../screens/Messages';
@@ -17,10 +18,14 @@ import CustomDrawer from './CustomDrawer';
 import NewsRoute from './NewsRoute';
 import GropsRoute from './GropsRoute';
 import FriendsRoute from './FriendsRoute';
+import UserProfile from '../screens/UserProfile';
 import { COLORS } from '../constants/theme';
 
 const Drawer = createDrawerNavigator()
 const Home = () => {
+  // const userData = useSelector(state => state.user)
+  // const urlDrawerPhoto = userData.userProfileDrawerPhotoUrl
+  // const userName = `${userData.firstName} ${userData.lastName}`
   return (
     <Drawer.Navigator 
       id='MainDrawer'
@@ -39,6 +44,13 @@ const Home = () => {
           drawerType: 'slide'
       }}
     >
+        {/* <Drawer.Screen name={userName} component={UserProfile} options={{
+          drawerIcon: () => (
+            <Image source={{uri: urlDrawerPhoto}} style={{width: 80, height: 80, borderRadius: 5}}/>
+          ),
+          headerShown: false
+        }}/> */}
+
         <Drawer.Screen name='Friends' component={FriendsRoute} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='user' color={color} size={20}/>
@@ -96,7 +108,8 @@ const Home = () => {
           drawerIcon: ({color}) => (
             <FontAwesome name='gear' size={20} color={color}/>
           ),
-          headerShown: false
+          headerShown: false,
+          
         }}/>
     </Drawer.Navigator>
   )

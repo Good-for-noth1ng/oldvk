@@ -10,7 +10,8 @@ import {
   setUserId, 
   setUserDrawerImageUrl,
   setFirstName,
-  setLastName 
+  setLastName,
+  initUserData 
 } from '../redux/userSlice'
 
 const WebViewLogin = () => {
@@ -32,19 +33,29 @@ const WebViewLogin = () => {
       }
       const userId = url.match(userIdRegex)[0].split('user_id=')[1];
       console.log(url, '\n', accessToken, '\n', expiresIn, '\n', userId)
-      // TODO: shortage dispatch calls
-      dispatch(setAccessToken(accessToken));
-      dispatch(setExpiresIn(expiresIn));
-      dispatch(setUserId(userId));
-      dispatch(setLogin());
+      
+      // dispatch(setAccessToken(accessToken));
+      // dispatch(setExpiresIn(expiresIn));
+      // dispatch(setUserId(userId));
+      // dispatch(setLogin());
+
       const imageRequestUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&user_ids=${userId}&fields=photo_100&v=5.131`
       const getUserImage = (imageRequestUrl) => {
         fetch(imageRequestUrl)
           .then((response) => response.json())
           .then((data) => {
-            dispatch(setUserDrawerImageUrl(data.response[0].photo_100));
-            dispatch(setFirstName(data.response[0].first_name));
-            dispatch(setLastName(data.response[0].last_name));
+
+            // dispatch(setUserDrawerImageUrl(data.response[0].photo_100));
+            // dispatch(setFirstName(data.response[0].first_name));
+            // dispatch(setLastName(data.response[0].last_name));
+            dispatch(initUserData({
+              accessToken,
+              expiresIn,
+              userId,
+              userProfileDrawerPhotoUrl: data.response[0].photo_100,
+              firstName: data.response[0].first_name,
+              lastName: data.response[0].last_name
+            }));
           })
       }
       getUserImage(imageRequestUrl);

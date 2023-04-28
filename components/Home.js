@@ -23,9 +23,9 @@ import { COLORS } from '../constants/theme';
 
 const Drawer = createDrawerNavigator()
 const Home = () => {
-  // const userData = useSelector(state => state.user)
-  // const urlDrawerPhoto = userData.userProfileDrawerPhotoUrl
-  // const userName = `${userData.firstName} ${userData.lastName}`
+  const userData = useSelector(state => state.user)
+  const urlDrawerPhoto = userData.userProfileDrawerPhotoUrl
+  const userName = `${userData.firstName} ${userData.lastName}`
   return (
     <Drawer.Navigator 
       id='MainDrawer'
@@ -44,12 +44,15 @@ const Home = () => {
           drawerType: 'slide'
       }}
     >
-        {/* <Drawer.Screen name={userName} component={UserProfile} options={{
+        <Drawer.Screen name={userName} component={UserProfile} options={{
           drawerIcon: () => (
             <Image source={{uri: urlDrawerPhoto}} style={{width: 80, height: 80, borderRadius: 5}}/>
           ),
-          headerShown: false
-        }}/> */}
+          headerShown: false,
+          drawerItemStyle: {
+            display: 'none'
+          }
+        }}/>
 
         <Drawer.Screen name='Friends' component={FriendsRoute} options={{
           drawerIcon: ({color}) => (

@@ -41,7 +41,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingLeft: 19
+    paddingLeft: 19,
+    // backgroundColor: COLORS.light_smoke,
+    height: 50
   },
   textIconContainer: {
     flexDirection: 'row',

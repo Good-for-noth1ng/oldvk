@@ -6,6 +6,7 @@ import DrawerToggler from './DrawerToggler'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import Octicons from 'react-native-vector-icons/Octicons'
+import { CustomDrawerButton } from './Buttons'
 import { COLORS } from '../constants/theme'
 
 const DrawerSwitchersContainer = () => {
@@ -73,10 +74,14 @@ const DrawerSwitchersContainer = () => {
         falseIcon={
           <Octicons name='sun' size={20} color={COLORS.white}/>
         }
-        trueText={'dark mode'}
-        falseText={'light mode'}
+        trueText={'Dark mode'}
+        falseText={'Light mode'}
         currentState={!isLightTheme}
         setNewState={changeTheme}
+      />
+      <CustomDrawerButton 
+        buttonIcon={<MaterialCommunityIcons name='door-open' color={COLORS.white} size={20}/>}
+        buttonText={'Logout'}
       />
     </>
   )

@@ -8,9 +8,13 @@ import { getShortagedNumber } from '../utils/numShortage'
 const GroupListItem = ({data, navigation, isLightTheme}) => {
   const dispatch = useDispatch()
     
-  let name = data.name.slice(0,27)
+  let name = data.name.slice(0,23)
   if (name !== data.name) {
     name += '...'
+  }
+  let communityInfo = `${data.activity}, ${getShortagedNumber(data.members_count)} followers` 
+  if (communityInfo !== communityInfo.slice(0,33)) {
+    communityInfo = communityInfo.slice(0,33) + '...'
   }
   const handleOnPress = () => {
     dispatch(setID(data.id))
@@ -26,7 +30,7 @@ const GroupListItem = ({data, navigation, isLightTheme}) => {
       <View style={styles.nameAndFollowersContainer}>
         <Text style={isLightTheme ? styles.groupNameLight : styles.groupNameDark}>{name}</Text>
         <Text style={isLightTheme ? styles.additionalInfoLight : styles.additionalInfoDark}>
-          {data.activity}, {getShortagedNumber(data.members_count)} followers
+          {communityInfo}
         </Text>
       </View>  
     </TouchableOpacity>

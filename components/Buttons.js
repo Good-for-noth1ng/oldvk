@@ -4,6 +4,16 @@ import { Text, View, TouchableOpacity, useWindowDimensions, Dimensions, StyleShe
 import { SIZES, COLORS } from '../constants/theme'
 import Entypo from 'react-native-vector-icons/Entypo'
 
+
+export const CustomDrawerButton = ({ buttonIcon, buttonText, pressHandler }) => {
+  return (
+    <TouchableOpacity style={styles.drawerButtonContainer} onPress={pressHandler}>
+      <View>{buttonIcon}</View>
+      <Text style={styles.drawerButtonText}>{buttonText}</Text>
+    </TouchableOpacity>
+  )
+}
+
 export const LoginButton = ({buttonText, navigation, isLightTheme }) => {  
   return (
     <TouchableOpacity style={isLightTheme ? styles.buttonContainerLight : styles.buttonContainerDark} onPress={() => navigation.navigate('WebViewLogin')}>
@@ -125,5 +135,19 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontSize: 17,
     textAlign: 'center'
+  },
+
+  drawerButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingLeft: 19,
+    height: 50
+    // backgroundColor: COLORS.light_smoke,
+  },
+  drawerButtonText: {
+    color: COLORS.white,
+    fontSize: 15,
+    marginLeft: 25,
   }
 });

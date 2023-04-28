@@ -18,6 +18,7 @@ const GroupList = ({navigation}) => {
   const [groupsCount, setGroupsCount] = useState(null)
   const remainToFetchNum = useRef()
   const offset = useRef(0)
+  const hasQuery = useRef(false)
   const count = 30
   const [groupsCounterName, setGroupsCounterName] = useState('All communities')
   

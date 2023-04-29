@@ -8,7 +8,7 @@ import { getShortagedNumber } from '../utils/numShortage'
 const GroupListItem = ({data, navigation, isLightTheme}) => {
   const dispatch = useDispatch()
     
-  let name = data.name.slice(0,23)
+  let name = data.name.slice(0,24)
   if (name !== data.name) {
     name += '...'
   }

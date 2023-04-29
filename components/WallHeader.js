@@ -5,6 +5,7 @@ import DividerWithLine from '../components/DividerWithLine'
 import WallHeaderGeneralInfo from './WallHeaderGeneralInfo';
 import WallHeaderCountersGrid from './WallHeaderCountersGrid';
 import WallHeaderButtons from './WallHeaderButtons';
+import WallHeaderPostSuggestButton from './WallHeaderPostSuggestButton';
 
 const WallHeader = ({name, membersCount, avatarUrl, status, isMember, counters, lastSeen, isOnlineUsingMobile, isOnlineUsingPC, canSendFriendRequest, canWritePrivateMessage, isUserWall }) => {
   return (
@@ -25,6 +26,8 @@ const WallHeader = ({name, membersCount, avatarUrl, status, isMember, counters, 
       />
       <DividerWithLine dividerHeight={10}/>
       <WallHeaderCountersGrid membersCount={membersCount} counters={counters}/>
+      <DividerWithLine dividerHeight={10}/>
+      <WallHeaderPostSuggestButton />
     </View>
   )
 }

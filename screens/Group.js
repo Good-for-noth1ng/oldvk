@@ -16,9 +16,9 @@ const Group = ({navigation}) => {
   const dispatch = useDispatch();
   const accessToken = useSelector(state => state.user.accessToken)
   const groupData = useSelector(state => state.group)
-  const groupID = groupData.id //useSelector(state => state.group.id) 
-  const offset = groupData.offset //useSelector(state => state.group.offset) 
-  const postData = groupData.items //useSelector(state => state.group.items)
+  const groupID = groupData.id  
+  const offset = groupData.offset  
+  const postData = groupData.items 
   const totalPostCount = groupData.totalPostCount
   console.log(groupID)
   const fetchGroupWallContentUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&count=20&v=5.131&extended=1&owner_id=${groupID}`

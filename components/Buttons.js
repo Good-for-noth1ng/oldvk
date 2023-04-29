@@ -1,6 +1,6 @@
 
 import React from 'react'
-import { Text, View, TouchableOpacity, useWindowDimensions, Dimensions, StyleSheet, Touchable } from 'react-native'
+import { Text, View, TouchableOpacity, useWindowDimensions, Dimensions, StyleSheet, TouchableHighlight } from 'react-native'
 import { SIZES, COLORS } from '../constants/theme'
 import Entypo from 'react-native-vector-icons/Entypo'
 

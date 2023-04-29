@@ -25,7 +25,7 @@ const UserProfile = ({navigation}) => {
   const postData = userData.items
   console.log(userId)
   const [isLoading, setIsLoading] = useState(true) 
-  const userInfoUrlFields = 'friend_status,followers_count,photo_200,online,last_seen,counters,status,can_send_friend_request,can_write_private_message'
+  const userInfoUrlFields = 'friend_status,followers_count,photo_200,online,last_seen,counters,status,can_send_friend_request,can_write_private_message,can_post'
   const userInfoUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${userId}&fields=${userInfoUrlFields}`
   const userWallUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&v=5.131&owner_id=${userId}&extended=1&count=20`
   const [wallHeaderData , setWallHeaderData] = useState({})
@@ -113,6 +113,12 @@ const UserProfile = ({navigation}) => {
     return <Post data={item} navigation={navigation} openedPost={true} isLigthTheme={isLightTheme} isProfileContent/>
   }
 
+  const listFooter = () => {
+    return (
+      <DividerWithLine marginB={5}/>      
+    )
+  }
+
   return (
     <SafeAreaView style={isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
@@ -132,6 +138,7 @@ const UserProfile = ({navigation}) => {
           style={styles.list}
           ListHeaderComponent={listHeader}
           renderItem={renderItem}
+          ListFooterComponent={listFooter}
         />
       }
     </SafeAreaView>

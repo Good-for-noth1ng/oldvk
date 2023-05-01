@@ -16,27 +16,27 @@ const NewsRoute = () => {
       <PostStack.Screen  
         name='News' 
         component={News} 
-        options={{headerShown: false, animationTypeForReplace:'pop'}}
+        options={{headerShown: false, animation: 'slide_from_right'}}
       />
       <PostStack.Screen 
         name='OpenPost' 
         component={OpenPost} 
-        options={{headerShown:false}}
+        options={{headerShown:false, animation: 'slide_from_right'}}
       />
       <PostStack.Screen
         name='Group'
         component={Group}
-        options={{headerShown: false, animationTypeForReplace:'pop'}}
+        options={{headerShown: false, animation: 'slide_from_right'}}
       />
       <PostStack.Screen
         name='CommentThread'
         component={CommentThread}
-        options={{headerShown: false, animationTypeForReplace: 'pop'}} 
+        options={{headerShown: false, animation: 'slide_from_right'}} 
       />
       <PostStack.Screen 
         name='UserProfile'
         component={UserProfile}
-        options={{headerShown: false, animationTypeForReplace: 'pop'}}
+        options={{headerShown: false, animation: 'slide_from_right'}}
       />
     </PostStack.Navigator>
   )

@@ -12,12 +12,12 @@ const OptionsStack = createNativeStackNavigator();
 const OptionsRoute = () => {
   return (
     <OptionsStack.Navigator>
-      <OptionsStack.Screen name='OptionsMain' component={Options} options={{headerShown: false}}/>
-      <OptionsStack.Screen name='Account' component={Account} options={{headerShown: false}}/>
-      <OptionsStack.Screen name='Security' component={Security} options={{headerShown: false}}/>
-      <OptionsStack.Screen name='Privacy' component={Privacy} options={{headerShown: false}}/>
-      <OptionsStack.Screen name='Notifications' component={Notifications} options={{headerShown: false}}/>
-      <OptionsStack.Screen name='Blacklist' component={Blacklist} options={{headerShown: false}}/>  
+      <OptionsStack.Screen name='OptionsMain' component={Options} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <OptionsStack.Screen name='Account' component={Account} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <OptionsStack.Screen name='Security' component={Security} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <OptionsStack.Screen name='Privacy' component={Privacy} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <OptionsStack.Screen name='Notifications' component={Notifications} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <OptionsStack.Screen name='Blacklist' component={Blacklist} options={{headerShown: false, animation: 'slide_from_right'}}/>  
     </OptionsStack.Navigator>
   )
 }

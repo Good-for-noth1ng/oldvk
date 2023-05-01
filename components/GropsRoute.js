@@ -12,11 +12,11 @@ const GroupStack = createNativeStackNavigator();
 const GropsRoute = () => {
   return (
     <GroupStack.Navigator initialRouteName='GroupList'>
-      <GroupStack.Screen name='GroupList' component={GroupList} options={{headerShown: false}}/>
-      <GroupStack.Screen name='Group' component={Group} options={{headerShown: false}}/>
-      <GroupStack.Screen name='OpenPost' component={OpenPost} options={{headerShown: false}}/>
-      <GroupStack.Screen name='CommentThread' component={CommentThread} options={{headerShown: false}}/>
-      <GroupStack.Screen name='UserProfile' component={UserProfile} options={{headerShown: false}}/>
+      <GroupStack.Screen name='GroupList' component={GroupList} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <GroupStack.Screen name='Group' component={Group} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <GroupStack.Screen name='OpenPost' component={OpenPost} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <GroupStack.Screen name='CommentThread' component={CommentThread} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <GroupStack.Screen name='UserProfile' component={UserProfile} options={{headerShown: false, animation: 'slide_from_right'}}/>
     </GroupStack.Navigator>
   )
 }

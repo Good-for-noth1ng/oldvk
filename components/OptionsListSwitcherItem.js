@@ -3,7 +3,7 @@ import React from 'react'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { COLORS } from '../constants/theme'
 
-const OptionsListSwitcherItem = ({ iconName, name, value, isLightTheme }) => {
+const OptionsListSwitcherItem = ({ iconName, name, value, isLightTheme, setNewValue }) => {
   return (
     <View style={styles.buttonContainer}>
       <View style={styles.iconsTextContainer}>  

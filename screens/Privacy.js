@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomHeader from '../components/CustomHeader'
@@ -11,6 +11,7 @@ import { COLORS } from '../constants/theme'
 const Privacy = ({navigation}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const listItemsData = useSelector(state => state.options.privacy.items)
+  const [isLoading, setIsLoading] = useState(true)
   
   const goBack = () => {
     navigation.pop()

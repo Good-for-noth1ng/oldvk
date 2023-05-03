@@ -14,7 +14,6 @@ const DrawerSwitchersContainer = () => {
   const [isOnline, setIsOnline] = useState(false)
   const [allowMarkAsRead, setAllowMarkAsRead] = useState(false)
   const [allowSeeTyping, setAllowSeeTyping] = useState(false)
-  const [theme, setTheme] = useState(false)
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
 
   const changeOnlineStatus = () => {
@@ -29,6 +28,7 @@ const DrawerSwitchersContainer = () => {
   const changeTheme = () => {
     dispatch(toggleCurrentColorScheme())
   }
+  
   return (
     <>
       <DrawerToggler

@@ -4,6 +4,9 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { COLORS } from '../constants/theme'
 
 const OptionsListSwitcherItem = ({ iconName, name, value, isLightTheme, setNewValue }) => {
+  const toggleSwitcher = () => {
+    setNewValue()
+  }
   return (
     <View style={styles.buttonContainer}>
       <View style={styles.iconsTextContainer}>  
@@ -14,7 +17,12 @@ const OptionsListSwitcherItem = ({ iconName, name, value, isLightTheme, setNewVa
           {name}
         </Text>
       </View>
-      <Switch />
+      <Switch
+        value={value}
+        onValueChange={toggleSwitcher}
+        trackColor={{false: COLORS.secondary, true: COLORS.smoke}}
+        thumbColor={COLORS.light_smoke}
+      />
     </View>
   )
 }

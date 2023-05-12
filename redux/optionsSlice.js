@@ -4,7 +4,31 @@ import uuid from 'react-native-uuid';
 export const optionsSlice = createSlice({
   name: 'options',
   initialState: {
-    account: {},
+    account: {
+      items: [
+        {
+          type: 'inputField',
+          name: 'First Name',
+          value: '',
+          key: uuid.v4(),
+          handler: null
+        },
+        {
+          type: 'inputField',
+          name: 'Last Name',
+          value: '',
+          key: uuid.v4(),
+          handler: null
+        },
+        {
+          type: 'inputField',
+          name: 'Nick Name',
+          value: '',
+          key: uuid.v4(),
+          handler: null
+        },
+      ]
+    },
     security: {},
     privacy: {
       items: [
@@ -93,9 +117,31 @@ export const optionsSlice = createSlice({
           ]
         }
       }
+    },
+    setAccountProperties: (state, action) => {
+      return {
+        ...state,
+        account: {
+          ...state.account,
+          items: [
+            {
+              ...state.account.items[0],
+              value: action.payload.first_name
+            },
+            {
+              ...state.account.items[1],
+              value: action.payload.last_name
+            },
+            {
+              ...state.account.items[2],
+              value: action.payload.screen_name ?  action.payload.screen_name : "You don't have nick name yet"
+            },
+          ]
+        }
+      }
     }
   }
 });
 
-export const { setPrivacyProperties, setNoWallReplies, setOwnPostsDefault } = optionsSlice.actions
+export const { setPrivacyProperties, setNoWallReplies, setOwnPostsDefault, setAccountProperties } = optionsSlice.actions
 export default optionsSlice.reducer;

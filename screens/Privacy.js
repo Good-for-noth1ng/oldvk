@@ -21,12 +21,6 @@ const Privacy = ({navigation}) => {
     fetch(getPrivacySettingsUrl)
     .then(response => response.json())
     .then(data => {
-      // const propertiesData = data.response.map((item, index) => {
-      //   return {
-      //     ...item,
-      //     handler: handlers[index]
-      //   }
-      // })
       dispatch(setPrivacyProperties({
         ...data.response,
         ownPostsDefaultHandler: setOwnPostsDefaultProperty, 
@@ -120,6 +114,10 @@ const styles = StyleSheet.create({
   listDark: {
     marginLeft: 5,
     marginRight: 5,
+    marginTop: 5,
+    marginBottom: 5,
+    borderRadius: 5,
+    paddingTop: 5,
     backgroundColor: COLORS.primary_dark
   }
 })

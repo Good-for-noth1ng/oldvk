@@ -9,6 +9,7 @@ export const COLORS = {
     light_smoke: '#dbdcdd',
     very_dark_gray: '#303342',
     primary_blue_dark: '#2a5885',
+    very_light_gray: 'hsla(240,7%,70%,.22)',
 
     light_black: '#202021c9',   
     primary_dark: '#272727', //    primary_dark: '#272727', background_post: '#222222' rgba(255, 255, 255, 0.08) 

@@ -144,6 +144,7 @@ const News = ({navigation}) => {
   const keyExtractor = (item) => {
     return item.key
   }
+  
   return(
     <SafeAreaView style={isLightTheme ? styles.newsBackgroundLight : styles.newsBackgroundDark}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white} animated={true}/>

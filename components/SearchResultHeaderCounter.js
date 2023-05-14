@@ -1,12 +1,13 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import { getShortagedNumber } from '../utils/numShortage'
 import { COLORS } from '../constants/theme'
 
 const SearchResultHeaderCounter = ({ counterNum, isLightTheme, counterName }) => {
   return (
     <View style={isLightTheme ? styles.containerLight : styles.containerDark}>
       <Text style={isLightTheme ? styles.textNameLight : styles.textNameDark}>{counterName}   </Text>
-      <Text style={styles.textNum}>{counterNum}</Text>
+      <Text style={styles.textNum}>{getShortagedNumber(counterNum)}</Text>
     </View>
   )
 }

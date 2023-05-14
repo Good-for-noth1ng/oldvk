@@ -18,29 +18,39 @@ const GroupList = ({navigation}) => {
   const [groupsCount, setGroupsCount] = useState(null)
   const remainToFetchNum = useRef()
   const offset = useRef(0)
-  const hasQuery = useRef(false)
-  const count = 30
+  const searchQuery = useRef('')
+  const count = 5
   const [groupsCounterName, setGroupsCounterName] = useState('All communities')
   
   useEffect(() => {
-    fetchGroupIds()
+    initGroupList()
   }, [])
   
   const refreshGroupList = () => {
     setIsLoading(true)
-    fetchGroupIds()
+    initGroupList()
   }
 
-  //TODO: fix several rerenders
-  const fetchGroupIds = async () => {
-    offset.current = 0
+  const fetchUsersGroups = async () => {
     const getIdsUrl = `https://api.vk.com/method/groups.get?access_token=${accessToken}&v=5.131&extended=1&fields=activity,members_count&count=${count}&offset=${offset.current}`
     let response = await fetch(getIdsUrl)
     let data = await response.json()
-    remainToFetchNum.current = data.response.count - count
     offset.current += count
-    setGroupsData(data.response.items)
-    setGroupsCount(data.response.count)
+    const items = data.response.items.map(item => {return {...item, key: uuid.v4()}})
+    return {
+      items: items,
+      count: data.response.count
+    }
+  }
+
+  //TODO: fix several rerenders
+  const initGroupList = async () => {
+    offset.current = 0
+    searchQuery.current = ''
+    const fetchedUsersGroups = await fetchUsersGroups()
+    remainToFetchNum.current = fetchedUsersGroups.count - count
+    setGroupsData(fetchedUsersGroups.items)
+    setGroupsCount(fetchedUsersGroups.count)
     setGroupsCounterName('All communities')
     setIsLoading(false)
   }
@@ -84,10 +94,16 @@ const GroupList = ({navigation}) => {
     if (remainToFetchNum.current > 0) {
       return (
         <>
-          <View style={isLightTheme ? styles.bottomSpinnerContainerDark : styles.bottomSpinnerContainerDark}>
-            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white}/>
+          <View style={isLightTheme ? styles.bottomSpinnerContainerLight : styles.bottomSpinnerContainerDark}>
+            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={40}/>
           </View>
-          <DividerWithLine dividerHeight={5} marginB={5} borderBL={5} borderBR={5}/>
+          <DividerWithLine 
+            dividerHeight={5} 
+            marginB={5} 
+            borderBL={5} 
+            borderBR={5} 
+            dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+          />
         </>
       )
     }
@@ -102,6 +118,39 @@ const GroupList = ({navigation}) => {
     )
   }
 
+  const fetchMoreGroups = async () => {
+    if (searchQuery.current === '') {
+      const fetchedUsersGroups = await fetchUsersGroups()
+      remainToFetchNum.current -= count
+      setGroupsData(prevState => [...prevState, ...fetchedUsersGroups.items])
+    } else {
+      const fetchedByQueryGroups = await getGroupsByQuery()
+      remainToFetchNum.current -= count
+      setGroupsData(prevState => [...prevState, ...fetchedByQueryGroups.items])
+    }
+  }
+
+  const getGroupsByQuery = async () => {
+    const groupSearchUrl = `https://api.vk.com/method/groups.search?q=${searchQuery.current}&access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}`
+    const searchResponse = await fetch(groupSearchUrl)
+    const searchData = await searchResponse.json()
+    const groupsNum = searchData.response.count
+    const groupsItems = searchData.response.items
+    offset.current += count
+    const ids = groupsItems.map(item => {
+      return item.id
+    }).join()
+    const getGroupUrl = `https://api.vk.com/method/groups.getById?group_ids=${ids}&access_token=${accessToken}&fields=members_count,activity&v=5.131`
+    const groupsListResponse = await fetch(getGroupUrl)
+    const data = await groupsListResponse.json()
+    const items = data.response.map(item => {return {...item, key: uuid.v4()}})
+    return {
+      items: items,
+      counterName: 'Search result',
+      groupsNum: groupsNum 
+    }
+  }
+
   const debounce = (func, delay=700) => {
     let debounceTimer
     return (...args) => {
@@ -111,26 +160,15 @@ const GroupList = ({navigation}) => {
   }
   
   const saveInput = async (query) => {
-    const groupSearchUrl = `https://api.vk.com/method/groups.search?q=${query}&access_token=${accessToken}&v=5.131` 
+    offset.current = 0
+    searchQuery.current = query   
     if (!(query.replace(/\s/g, '') === '')) {      
       setIsLoading(true)
-      const searchResponse = await fetch(groupSearchUrl)
-      const searchData = await searchResponse.json()
-      const groupsNum = searchData.response.count
-      const groupsItems = searchData.response.items
-      let ids = ''
-      for(let i = 0; i < groupsItems.length; i++) {
-        ids += groupsItems[i].id
-        if(i !== groupsItems.length - 1) {
-          ids += ','
-        }
-      }
-      let getGroupUrl = `https://api.vk.com/method/groups.getById?group_ids=${ids}&access_token=${accessToken}&fields=members_count,activity&v=5.131`
-      const groupsListResponse = await fetch(getGroupUrl)
-      const data = await groupsListResponse.json()
-      setGroupsCount(groupsNum)
-      setGroupsCounterName('Search result')
-      setGroupsData(data.response)
+      const fetchedByQueryGroups = await getGroupsByQuery()
+      remainToFetchNum.current = fetchedByQueryGroups.groupsNum - count  
+      setGroupsCount(fetchedByQueryGroups.groupsNum)
+      setGroupsCounterName(fetchedByQueryGroups.counterName)
+      setGroupsData(fetchedByQueryGroups.items)
       setIsLoading(false)
     }
     
@@ -138,6 +176,10 @@ const GroupList = ({navigation}) => {
 
   const handleInputChange = debounce((...args) => saveInput(...args))
   
+  const keyExtractor = (item) => {
+    return item.key
+  }
+
   return (
     <SafeAreaView style={isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
@@ -154,6 +196,7 @@ const GroupList = ({navigation}) => {
         handleInputChange={handleInputChange}
         navigation={navigation}
         gapForSearchIcon={'35%'}
+        onCleaningInput={initGroupList}
       />
       {
         isLoading ? 
@@ -163,10 +206,11 @@ const GroupList = ({navigation}) => {
         <FlatList 
           data={groupsData}
           renderItem={renderItem}
-          key={uuid.v4()}
+          keyExtractor={keyExtractor}
           showsVerticalScrollIndicator={false}
           ItemSeparatorComponent={groupListSeparator}
           ListHeaderComponent={listHeader}
+          onEndReached={fetchMoreGroups}
           refreshControl={
             <RefreshControl 
               refreshing={isLoading}
@@ -217,6 +261,6 @@ const styles = StyleSheet.create({
   },
   bottomSpinnerContainerDark: {
     justifyContent: 'center',
-    backgroundColor: COLORS.white
+    backgroundColor: COLORS.primary_dark
   }
 })

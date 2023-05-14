@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ActivityIndicator } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import uuid from 'react-native-uuid';
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -15,23 +15,41 @@ const Friends = ({navigation}) => {
   const [isLoading, setIsLoading] = useState(true)
   const [friendsData, setFriendsData] = useState(null)
   const [friendsCount, setFriendsCount] = useState(null)
-  const [friendsCounterName, setFriendsCounterName] = useState('All communities')
-  const fetchFriendsUrl = `https://api.vk.com/method/friends.get?access_token=${accessToken}&v=5.131`
+  const [friendsCounterName, setFriendsCounterName] = useState('All friends')
+  const count = 5
+  const offset = useRef(0)
+  const remainToFetchNum = useRef()
+  const searchQuery = useRef('')
+  const fetchFriendsUrl = `https://api.vk.com/method/friends.get?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}`
+  
   const handleDrawerOpening = () => {
     navigation.openDrawer()
   }
 
+
   const fetchFriends = async () => {
     const response = await fetch(fetchFriendsUrl)
     const data = await response.json()
-    if (data.response.items.length === 0) {
+    const items = data.response.items.map(item => { return {...item, key: uuid.v4()}})
+    offset.current += count
+    return {
+      items: items,
+      count: data.response.count,
+    }
+  }
+
+  const initFriendsList = async () => {
+    offset.current = 0
+    searchQuery.current = ''
+    const fetchedFriendsList = await fetchFriends()
+    if (fetchedFriendsList.count === 0) {
       setFriendsData(null)
       setIsLoading(false)
     }
   }
 
   useEffect(() => {
-    fetchFriends()
+    initFriendsList()
   }, [])
 
   const listSeparator = () => (
@@ -61,7 +79,23 @@ const Friends = ({navigation}) => {
     )
   }
 
-  const footer = () => (
+  const footer = () => {
+    if (remainToFetchNum.current > 0) {
+      return (
+        <>
+          <View style={isLightTheme ? styles.bottomSpinnerContainerLight : styles.bottomSpinnerContainerDark}>
+            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={40}/>
+          </View>
+          <DividerWithLine 
+            dividerHeight={5} 
+            marginB={5} 
+            borderBL={5} 
+            borderBR={5} 
+            dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+          />
+        </>
+      )
+    }
     <DividerWithLine 
       dividerHeight={10} 
       marginB={10} 
@@ -69,7 +103,7 @@ const Friends = ({navigation}) => {
       borderBR={5} 
       dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
     />
-  )
+  }
 
   const renderItem = ({item}) => (
     <UserListItem 
@@ -84,6 +118,31 @@ const Friends = ({navigation}) => {
     />
   )
 
+  const fetchMoreUsers = async () => {
+    if (searchQuery.current === '') {
+      const fetchedFriendsList = await fetchFriends()
+      remainToFetchNum.current -= count 
+      setFriendsData(prevState => [...prevState, ...fetchedFriendsList.items])
+    } else {
+      const fetchedUsers = await getFriendsByQuery()
+      remainToFetchNum.current -= count
+      setFriendsData(prevState => [...prevState, ...fetchedUsers.items])
+    }
+  }
+
+  const getFriendsByQuery = async () => {
+    const usersSearchUrl = `https://api.vk.com/method/users.search?q=${searchQuery.current}&access_token=${accessToken}&v=5.131&fields=bdate,city,photo_100&offset=${offset.current}&count=${count}`
+    const searchResults = await fetch(usersSearchUrl)
+    const searchData = await searchResults.json()
+    offset.current += count
+    const items = searchData.response.items.map(item => {return {...item, key: uuid.v4()}})
+    return {
+      counterName: 'Search result',
+      count: searchData.response.count,
+      items: items
+    }
+  }
+
   const debounce = (func, delay=700) => {
     let debounceTimer
     return (...args) => {
@@ -93,20 +152,25 @@ const Friends = ({navigation}) => {
   }
   
   const saveInput = async (query) => {
-    const usersSearchUrl = `https://api.vk.com/method/users.search?q=${query}&access_token=${accessToken}&v=5.131&fields=bdate,city,photo_100` 
-
+    offset.current = 0
+    searchQuery.current = query
     if (!(query.replace(/\s/g, '') === '')) {      
       setIsLoading(true)
-      const searchResults = await fetch(usersSearchUrl)
-      const searchData = await searchResults.json()
-      setFriendsData(searchData.response.items)
-      setFriendsCount(searchData.response.count)
-      setFriendsCounterName('Search result')
+      const fetchedByQueryUsers = await getFriendsByQuery()
+      remainToFetchNum.current = fetchedByQueryUsers.count - count
+      setFriendsData(fetchedByQueryUsers.items)
+      setFriendsCount(fetchedByQueryUsers.count)
+      setFriendsCounterName(fetchedByQueryUsers.counterName)
       setIsLoading(false)
     }
   }
+
   const handleInputChange = debounce((...args) => saveInput(...args))
-  
+
+  const keyExtractor = (item) => {
+    return item.key
+  }
+
   return (
     <SafeAreaView style={isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
@@ -119,6 +183,7 @@ const Friends = ({navigation}) => {
          navigation={navigation}
          gapForSearchIcon={'45%'}
          handleInputChange={handleInputChange}
+         onCleaningInput={initFriendsList}
       />
       {
         isLoading ?
@@ -131,13 +196,14 @@ const Friends = ({navigation}) => {
         </View>
          :
         <FlatList 
-          key={uuid.v4()}
           style={styles.list}
           data={friendsData}
           renderItem={renderItem}
           ItemSeparatorComponent={listSeparator}
           ListFooterComponent={footer}
           ListHeaderComponent={listHeader}
+          keyExtractor={keyExtractor}
+          onEndReached={fetchMoreUsers}
         />
       }
     </SafeAreaView>
@@ -178,5 +244,13 @@ const styles = StyleSheet.create({
     color: COLORS.secondary,
     fontSize: 17,
     fontWeight: 'bold',
-  }
+  },
+  bottomSpinnerContainerLight: {
+    justifyContent: 'center',
+    backgroundColor: COLORS.white
+  },
+  bottomSpinnerContainerDark: {
+    justifyContent: 'center',
+    backgroundColor: COLORS.primary_dark
+  },
 })

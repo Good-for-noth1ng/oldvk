@@ -139,11 +139,24 @@ const OpenPost = ({navigation}) => {
           <View style={isLightTheme ? styles.bottomSpinnerContainerLight : styles.bottomSpinnerContainerDark}>
             <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
           </View>
-          <DividerWithLine dividerHeight={5} marginB={5} borderBL={5} borderBR={5}/>
+          <DividerWithLine 
+            dividerHeight={5} 
+            marginB={5} 
+            borderBL={5} 
+            borderBR={5}
+            dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+          />
         </>
       )
     } else {
-      return <DividerWithLine dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={10} marginB={10} borderBL={4} borderBR={4}/>
+      return (
+        <DividerWithLine 
+          dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} 
+          dividerHeight={10} 
+          marginB={10} 
+          borderBL={5} 
+          borderBR={5}/>
+        )
     }
   }
 

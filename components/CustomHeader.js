@@ -2,13 +2,15 @@ import { StyleSheet, Text, View, TouchableOpacity, TextInput, BackHandler } from
 import React, { useState, useRef, useEffect } from 'react'
 import Entypo from 'react-native-vector-icons/Entypo'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import NewsTitleSwitcher from './NewsTitleSwitcher'
 import { COLORS } from '../constants/theme'
 
-const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIcon, handleInputChange, navigation, isLightTheme, gapForSearchIcon, rightsideIconComponent, rightsideIconComponentTouchHandler}) => {
+const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIcon, handleInputChange, navigation, isLightTheme, gapForSearchIcon, rightsideIconComponent, rightsideIconComponentTouchHandler, onCleaningInput, onOptionsButton}) => {
   const [showSearchInputField, setShowSearchInputField] = useState(false)
   const inputField = useRef()
+  const [inputFieldText, setInputFieldText] = useState('')
 
   // BackHandler.addEventListener('hardwareBackPress',  () => {
   //   console.log(showSearchInputField)
@@ -35,9 +37,13 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
 
   const clearInputField = () => {
     inputField.current.clear()
+    if (onCleaningInput !== undefined) {
+      onCleaningInput()
+    }
   }
 
   const handlingChanges = (text) => {
+    setInputFieldText(text)
     handleInputChange(text)
   }
   return (
@@ -58,11 +64,18 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
               placeholderTextColor={COLORS.smoke}
               onChangeText={handlingChanges}
               autoCapitalize='none'
-              onBlur={blurInput}
+              value={inputFieldText}
             />
             <TouchableOpacity style={styles.inputButtonsContainer} onPress={clearInputField}>
               <AntDesign name='close' size={20} color={COLORS.secondary}/>
             </TouchableOpacity>
+            {
+              onOptionsButton && (
+                <TouchableOpacity onPress={onOptionsButton}>
+                  <Ionicons name='options-outline' size={20} color={COLORS.secondary}/>
+                </TouchableOpacity>
+              )
+            }
           </View>
         </View> :
         <>

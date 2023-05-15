@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ActivityIndicator, RefreshControl, BackHandler } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ActivityIndicator, RefreshControl, BackHandler, Animated } from 'react-native'
 import React, {useEffect, useState, useRef} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import uuid from 'react-native-uuid';
@@ -8,6 +8,7 @@ import DividerWithLine from '../components/DividerWithLine';
 import CustomHeader from '../components/CustomHeader';
 import Entypo from 'react-native-vector-icons/Entypo'
 import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
+import Overlay from '../components/Overlay';
 
 const GroupList = ({navigation}) => {
   const accessToken = useSelector(state => state.user.accessToken)
@@ -21,7 +22,24 @@ const GroupList = ({navigation}) => {
   const searchQuery = useRef('')
   const count = 5
   const [groupsCounterName, setGroupsCounterName] = useState('All communities')
+  const slideAnimation = useRef(new Animated.Value(2000)).current
   
+  const closeFilterMenu = () => {
+    Animated.timing(slideAnimation, {
+      toValue: 2000,
+      duration: 500,
+      useNativeDriver: true
+    }).start()
+  }
+
+  const handleTouch = () => {
+    Animated.timing(slideAnimation, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: true
+    }).start()
+  }
+
   useEffect(() => {
     initGroupList()
   }, [])
@@ -180,6 +198,9 @@ const GroupList = ({navigation}) => {
     return item.key
   }
 
+  const openFilters = () => {
+    handleTouch()
+  }
   return (
     <SafeAreaView style={isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
@@ -197,6 +218,7 @@ const GroupList = ({navigation}) => {
         navigation={navigation}
         gapForSearchIcon={'35%'}
         onCleaningInput={initGroupList}
+        onOptionsButton={openFilters}
       />
       {
         isLoading ? 
@@ -223,6 +245,13 @@ const GroupList = ({navigation}) => {
           ListFooterComponent={footer}
         />
       }
+      <Overlay 
+        slideAnimation={slideAnimation} 
+        handleShadowTouch={closeFilterMenu} 
+        isLightTheme={isLightTheme}
+        headerText={'Filters'}
+        actionButtonText={'Show Results'}
+      />
     </SafeAreaView>
   )
 }

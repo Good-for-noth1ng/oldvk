@@ -195,6 +195,7 @@ const OpenPost = ({navigation}) => {
               transparent={true} 
               visible={isAuthorInfoOpen} 
               onRequestClose={() => {dispatch(closeAuthorInfo())}}
+              useNativeDriver={true}
             >
               <View style={styles.modalViewContainer}>
                 <View style={isLightTheme ? styles.modalViewLight : styles.modalViewDark}>

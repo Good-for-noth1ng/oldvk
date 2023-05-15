@@ -46,17 +46,22 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
     setInputFieldText(text)
     handleInputChange(text)
   }
+
+  const openOptions = () => {
+    onOptionsButton()
+  }
+
   return (
-    <View style={isLightTheme ? styles.headerContainerLight : styles.headerContainerDark}>
+    <View style={[styles.headerContainer, isLightTheme ? {backgroundColor: COLORS.primary} : {backgroundColor: COLORS.primary_dark}]}>
       {
         showSearchInputField ?
         <View style={styles.inputFieldContainer}>
-          <View style={isLightTheme ? styles.inputFieldInnerContainerLight : styles.inputFieldInnerContainerDark}> 
+          <View style={[styles.inputFieldInnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.background_dark}]}> 
             <TouchableOpacity style={styles.inputButtonsContainer} onPress={blurInput}>
               <AntDesign name='arrowleft' size={20} color={COLORS.secondary}/>
             </TouchableOpacity>  
             <TextInput
-              style={isLightTheme ? styles.inputFieldLight : styles.inputFieldDark} 
+              style={[styles.inputField, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]} 
               ref={inputField}
               onLayout={initFocusOnField}
               selectionColor={COLORS.secondary}
@@ -66,16 +71,18 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
               autoCapitalize='none'
               value={inputFieldText}
             />
-            <TouchableOpacity style={styles.inputButtonsContainer} onPress={clearInputField}>
-              <AntDesign name='close' size={20} color={COLORS.secondary}/>
-            </TouchableOpacity>
-            {
-              onOptionsButton && (
-                <TouchableOpacity onPress={onOptionsButton}>
-                  <Ionicons name='options-outline' size={20} color={COLORS.secondary}/>
-                </TouchableOpacity>
-              )
-            }
+            <View style={{width: 70, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}}>
+              <TouchableOpacity onPress={clearInputField}>
+                <AntDesign name='close' size={20} color={COLORS.secondary}/>
+              </TouchableOpacity>
+              {
+                onOptionsButton && (
+                  <TouchableOpacity onPress={openOptions}>
+                    <Ionicons name='options-outline' size={20} color={COLORS.secondary}/>
+                  </TouchableOpacity>
+                )
+              }
+            </View>
           </View>
         </View> :
         <>
@@ -108,21 +115,12 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
 export default CustomHeader
 
 const styles = StyleSheet.create({
-  headerContainerLight: {
+  headerContainer: {
     width: '100%',
     height: 60,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    backgroundColor: COLORS.primary,
-  },
-  headerContainerDark: {
-    width: '100%',
-    height: 60,
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: COLORS.primary_dark,
   },
   inputFieldContainer: {
     width: '100%',
@@ -130,38 +128,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center'
   },
-  inputFieldInnerContainerLight: {
-    width: '90%',
+  inputFieldInnerContainer: {
+    width: '85%',
     height: 40,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     borderRadius: 10,
-    backgroundColor: COLORS.white,
   },
-  inputFieldInnerContainerDark: {
-    width: '90%',
-    height: 40,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 10,
-    backgroundColor: COLORS.background_dark,
-  },
-  inputFieldLight: {
-    width: '75%',
+  inputField: {
+    width: '65%',
     height: '100%',
     fontSize: 17,
-    color: COLORS.black
   },
-  inputFieldDark: {
-    width: '75%',
-    height: '100%',
-    fontSize: 17,
-    color: COLORS.primary_text
-  },
-  inputButtonsContainer: {
-    // backgroundColor: COLORS.light_smoke, 
+  inputButtonsContainer: { 
     width: '12%', 
     height: '100%',
     justifyContent: 'center',

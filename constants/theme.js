@@ -1,20 +1,20 @@
 import { Dimensions } from "react-native";
 export const COLORS = {
-    primary: 'rgba(81, 129, 184, 1)',
-    primary_light: '#447bba',
-    white: 'rgb(255,255,255)',
+    primary: 'hsl(212, 42%, 52%)', // hsl(212, 42%, 52%) rgba(81, 129, 184, 1)
+    primary_light: 'hsl(212, 46%, 50%)', // hsl(212, 46%, 50%) #447bba
+    white: 'hsl(0, 0%, 100%)', // hsl(0, 0%, 100%) rgb(255,255,255)
     secondary: 'hsl(213, 11%, 55%)',
-    black: 'rgb(0, 0, 0)',
-    smoke: '#aeb7c2',
-    light_smoke: '#dbdcdd',
-    very_dark_gray: '#303342',
-    primary_blue_dark: '#2a5885',
-    very_light_gray: 'hsla(240,7%,70%,.22)',
+    black: 'hsl(0, 0%, 0%)', // hsl(0, 0%, 0%) rgb(0, 0, 0)
+    smoke: 'hsl(213, 14%, 72%)',// hsl(213, 14%, 72%) #aeb7c2
+    light_smoke: 'hsl(210, 3%, 86%)', // hsl(210, 3%, 86%) #dbdcdd
+    very_dark_gray: 'hsl(230, 16%, 22%)', // hsl(230, 16%, 22%) #303342
+    primary_blue_dark: 'hsl(210, 68%, 52%)', // hsl(210, 68%, 52%) #2a5885
+    very_light_gray: 'hsl(240,9%,93%)', // hsl(240,9%,93%) hsla(240,7%,70%,.22)
 
     light_black: '#202021c9',   
-    primary_dark: '#272727', //    primary_dark: '#272727', background_post: '#222222' rgba(255, 255, 255, 0.08) 
-    background_dark: '#141414',
-    primary_text: '#e1e3e6'
+    primary_dark: '#272727', //  primary_dark: '#272727', background_post: '#222222' rgba(255, 255, 255, 0.08) hsl(0, 0%, 15%)
+    background_dark: '#141414', // hsl(0, 0%, 8%)
+    primary_text: '#e1e3e6' // hsl(216, 9%, 89%)
 
 }
 

@@ -76,7 +76,7 @@ const OpenPost = ({navigation}) => {
   }, []);
 
   const renderComment = ({item}) => (
-  <Comment 
+    <Comment 
       commentId={item.id}
       commentDate={item.date} 
       likes={item?.likes?.count} 
@@ -188,7 +188,7 @@ const OpenPost = ({navigation}) => {
           <ActivityIndicator size={50} color={isLightTheme ? COLORS.primary : COLORS.white}/>
         </View> :
         <>
-          <View style={styles.modalContainer}>
+          {/* <View style={styles.modalContainer}>
             <Modal  
               style={styles.modal} 
               animationType='slide' 
@@ -222,7 +222,7 @@ const OpenPost = ({navigation}) => {
                 </View>
               </View>
             </Modal>
-          </View>
+          </View> */}
           <FlatList
             onLayout={scrollingToComments}
             ref={commentsList}

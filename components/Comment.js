@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Animated, Pressable } from 'react-native'
 import React, { useEffect, useState, memo, } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
@@ -28,7 +28,14 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
   // const [photoUrl, setPhotoUrl] = useState(null)
   const [isLiked, setIsLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(likes)
-  
+
+  const onLongPressDelay = 500
+  const colorTransitionAnimation = new Animated.Value(0)
+  const commentBgInitColor = isLightTheme ? COLORS.white : COLORS.primary_dark
+  const commentBgColor = colorTransitionAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [commentBgInitColor, COLORS.primary_light]
+  })
   let commentPhotos = []
 
   if (attachments !== undefined) {
@@ -94,41 +101,61 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
     fetchProfileInfo(from_id, name, photoUrl)  
   }
   
+  const onPressIn = () => {
+    Animated.timing(colorTransitionAnimation, {
+      toValue: 1,
+      duration: onLongPressDelay,
+      useNativeDriver: false,
+    }).start();
+  }
+
+  const onPressOut = () => {
+    Animated.timing(colorTransitionAnimation, {
+      toValue: 0,
+      duration: onLongPressDelay,
+      useNativeDriver: false,
+    }).start();
+  }
+
   return (
     <>
-    <View style={isLightTheme ? styles.commentContainerLight : styles.commentContainerDark}>
-      <TouchableOpacity activeOpacity={1} style={styles.imageContainer} onPress={handleProfilePress}>
-        <Image source={is_deleted ? require('../assets/avatars/banned-light.jpg') : {uri: photoUrl}} style={styles.image}/>
-      </TouchableOpacity>
-      <View style={styles.commentConentContainer}>
-        {
-          is_deleted ? <View style={styles.deltedContainer}><Text style={styles.deletedText}>Comment deleted</Text></View> : 
-          <>
-            <Text style={isLightTheme ? styles.authorNameLight : styles.authorNameDark}>{name}</Text>
+      <Pressable onPressIn={onPressIn} onPressOut={onPressOut} unstable_pressDelay={200}>
+        <Animated.View 
+          style={[styles.commentContainer, {backgroundColor: commentBgColor}]}
+        >
+          <TouchableOpacity activeOpacity={1} style={styles.imageContainer} onPress={handleProfilePress}>
+            <Image source={is_deleted ? require('../assets/avatars/banned-light.jpg') : {uri: photoUrl}} style={styles.image}/>
+          </TouchableOpacity>
+          <View style={styles.commentConentContainer}>
             {
-              commentText ? 
-              <Text style={isLightTheme ? styles.textLight : styles.textDark}>
-                {getHyperlinkInText(commentText)}
-              </Text> : null
+              is_deleted ? <View style={styles.deltedContainer}><Text style={styles.deletedText}>Comment deleted</Text></View> : 
+              <>
+                <Text style={isLightTheme ? styles.authorNameLight : styles.authorNameDark}>{name}</Text>
+                {
+                  commentText ? 
+                  <Text style={isLightTheme ? styles.textLight : styles.textDark}>
+                    {getHyperlinkInText(commentText)}
+                  </Text> : null
+                }
+                {commentPhotos.length > 0 ? <CommentPhotos commentPhotos={commentPhotos}/> : null}
+              </>
             }
-            {commentPhotos.length > 0 ? <CommentPhotos commentPhotos={commentPhotos}/> : null}
-          </>
-        }
-        <CommentBottom likesCount={likesCount} handleLikePress={handleLikePress} date={commentDate} isLiked={isLiked}/>
-      </View>
-    </View>
-    {threadCount > 0 && <DividerWithLine dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={8}/>}
-    <CommentReplies 
-      threadComments={threadComments} 
-      threadCount={threadCount} 
-      fetchProfileInfo={fetchProfileInfo}
-      startOfThreadId={commentId}
-      navigation={navigation}
-      postId={postId}
-      ownerId={ownerId}
-      isLightTheme={isLightTheme}
-    />
-  </>
+            <CommentBottom likesCount={likesCount} handleLikePress={handleLikePress} date={commentDate} isLiked={isLiked}/>
+          </View>
+        </Animated.View>
+      </Pressable>
+      {threadCount > 0 && <DividerWithLine dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={8}/>}
+      <CommentReplies 
+        threadComments={threadComments} 
+        threadCount={threadCount} 
+        fetchProfileInfo={fetchProfileInfo}
+        startOfThreadId={commentId}
+        navigation={navigation}
+        postId={postId}
+        ownerId={ownerId}
+        isLightTheme={isLightTheme}
+      />
+    </>
   )
 }
 
@@ -136,22 +163,22 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
 export default memo(Comment)
 
 const styles = StyleSheet.create({
-  commentContainerLight: {
+  commentContainer: {
     display: 'flex',
     flexDirection: 'row',
     alignContent: 'flex-start',
     paddingLeft: 5,
     paddingRight: 5,
-    backgroundColor: COLORS.white
+    // backgroundColor: COLORS.white
   },
-  commentContainerDark: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignContent: 'flex-start',
-    paddingLeft: 5,
-    paddingRight: 5,
-    backgroundColor: COLORS.primary_dark
-  },
+  // commentContainerDark: {
+  //   display: 'flex',
+  //   flexDirection: 'row',
+  //   alignContent: 'flex-start',
+  //   paddingLeft: 5,
+  //   paddingRight: 5,
+  //   backgroundColor: COLORS.primary_dark
+  // },
   imageContainer: {
     marginRight: 7
   },

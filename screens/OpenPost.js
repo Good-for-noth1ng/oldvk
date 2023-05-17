@@ -1,18 +1,24 @@
-import { StyleSheet, FlatList, View, ActivityIndicator, Text, Modal, StatusBar, Image, TouchableOpacity, SafeAreaView } from 'react-native'
+import { StyleSheet, FlatList, View, ActivityIndicator, Text, Modal, StatusBar, Image, TouchableOpacity, SafeAreaView, Animated } from 'react-native'
 import React, { useState, useEffect, useCallback, memo, useRef } from 'react'
-import Post from '../components/Post'
 import { useSelector, useDispatch } from 'react-redux'
 import uuid from 'react-native-uuid'
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import { COLORS } from '../constants/theme'
-import Comment from '../components/Comment'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import Feather from 'react-native-vector-icons/Feather'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Octicons from 'react-native-vector-icons/Octicons'
 import { setProfiles, closeAuthorInfo, pushProfiles, setGroups, pushGroups } from '../redux/commentsSlice'
+import Post from '../components/Post'
+import Comment from '../components/Comment'
 import OpenedPostBottom from '../components/OpenedPostBottom'
 import DividerWithLine from '../components/DividerWithLine'
-import { getTimeDate } from '../utils/date'
 import CustomHeader from '../components/CustomHeader'
 import Repost from '../components/Repost'
 import TextInputField from '../components/TextInputField'
+import OverlayWithButtons from '../components/OverlayWithButtons'
+import { getTimeDate } from '../utils/date'
+import { COLORS } from '../constants/theme'
+
 
 const OpenPost = ({navigation}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
@@ -25,7 +31,7 @@ const OpenPost = ({navigation}) => {
   let isAuthorInfoOpen = commentsGeneralData.isAuthorInfoOpen;
   const authorName = commentsGeneralData.authorName;
   const authorImgUrl = commentsGeneralData.authorImgUrl;
-  const regestrationDate = commentsGeneralData.registrationDate;
+  const registrationDate = commentsGeneralData.registrationDate;
   const registrationDateIsFetching = commentsGeneralData.authorInfoIsFetching;
   
   const shouldScroll = useSelector(state => state.news.scrollToComments)
@@ -33,7 +39,55 @@ const OpenPost = ({navigation}) => {
   const commentsList = useRef()
   const currentLevelCommentsCount = useRef()
   const offset = useRef(0)
-  // const scrollToComments = () => {}
+  
+  const slideAnimation = useRef(new Animated.Value(2000)).current
+  
+  const closeCommentMenu = () => {
+    Animated.timing(slideAnimation, {
+      toValue: 2000,
+      duration: 500,
+      useNativeDriver: true
+    }).start()
+  }
+
+  const openCommentMenu = () => {
+    Animated.timing(slideAnimation, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: true
+    }).start()
+  }
+
+  //TODO: replace icons to buttons
+  const commentMenuButtonIconSize = 20
+  const commentMenuButtons = [
+    {
+      icon: <Ionicons name='arrow-undo-outline' color={COLORS.white} size={commentMenuButtonIconSize} />,
+      text: 'Reply',
+      key: uuid.v4()
+    },
+    {
+      icon: <Feather name='users' color={COLORS.white} size={commentMenuButtonIconSize}/>,
+      text: 'Liked',
+      key: uuid.v4()
+    },
+    {
+      icon: <MaterialCommunityIcons name='content-copy' color={COLORS.white} size={commentMenuButtonIconSize}/>,
+      text: 'Copy',
+      key: uuid.v4()
+    },
+    {
+      icon: <Ionicons name='arrow-redo-outline' color={COLORS.white} size={commentMenuButtonIconSize}/>,
+      text: 'Share',
+      key: uuid.v4()
+    },
+    {
+      icon: <Octicons name='report' color={COLORS.white} size={commentMenuButtonIconSize}/>,
+      text: 'Report',
+      key: uuid.v4(),
+    },
+    
+  ]
   let commentsUrl
   if (data.source_id !== undefined && data.post_id !== undefined) {
     commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.source_id}&count=10&post_id=${data.post_id}&sort=asc&offset=${offset.current}&thread_items_count=2&fields=photo_100&extended=1`;
@@ -90,6 +144,7 @@ const OpenPost = ({navigation}) => {
       attachments={item?.attachments}
       is_deleted={item.deleted}
       isLightTheme={isLightTheme}
+      openCommentMenu={openCommentMenu}
     />
   )
 
@@ -233,10 +288,19 @@ const OpenPost = ({navigation}) => {
             onEndReached={fetchMoreComments}
             ListFooterComponent={listFooter}
             onEndReachedThreshold={1}
-            style={{marginLeft: 5, marginRight: 5}}
+            style={[styles.list, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}
             keyExtractor={keyExtractor}
           />
           <TextInputField isLightTheme={isLightTheme}/>
+          <OverlayWithButtons 
+            slideAnimation={slideAnimation}
+            handleShadowTouch={closeCommentMenu}
+            isLightTheme={isLightTheme}
+            buttons={commentMenuButtons}
+            registrationDate={registrationDate}
+            authorImgUrl={authorImgUrl}
+            authorName={authorName}
+          />
         </>
       }
     </SafeAreaView>
@@ -251,6 +315,10 @@ const styles = StyleSheet.create({
     height: '90%',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  list: {
+    marginLeft: 5,
+    marginRight: 5,
   },
   modalContainer: {
     flex: 1, 

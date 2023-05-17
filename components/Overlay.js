@@ -3,7 +3,7 @@ import React, { useRef } from 'react'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { COLORS } from '../constants/theme'
 
-const Overlay = ({slideAnimation, handleShadowTouch, isLightTheme, headerText, actionButtonText}) => {
+const Overlay = ({slideAnimation, handleShadowTouch, isLightTheme, headerText, actionButtonText, overlayContentComponent}) => {
   
   const onShadowPress = () => {
     handleShadowTouch()
@@ -22,6 +22,7 @@ const Overlay = ({slideAnimation, handleShadowTouch, isLightTheme, headerText, a
             <AntDesign name='close' color={isLightTheme ? COLORS.primary : COLORS.white} size={27}/>
           </TouchableOpacity>
         </View>
+        {overlayContentComponent}
         <View style={styles.actionButtonContainer}>
           <TouchableOpacity activeOpacity={0.8} style={[styles.actionButton]}>
             <Text style={styles.actionButtonText}>{actionButtonText}</Text>

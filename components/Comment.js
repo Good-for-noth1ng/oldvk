@@ -17,7 +17,7 @@ import DividerWithLine from './DividerWithLine'
 import CommentPhotos from './CommentPhotos'
 import { getHyperlinkInText } from '../utils/hyperlinks'
 
-const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, likes, threadCount, threadComments, commentId, navigation, postId, ownerId, isLightTheme}) => {
+const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, likes, threadCount, threadComments, commentId, navigation, postId, ownerId, isLightTheme, openCommentMenu}) => {
   const dispatch = useDispatch()
   const authorsGeneralInfo = useSelector(state => state.comments)
   const profiles = authorsGeneralInfo.profiles
@@ -31,10 +31,11 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
 
   const onLongPressDelay = 500
   const colorTransitionAnimation = new Animated.Value(0)
+  const commentBgEndColor = isLightTheme ? COLORS.light_blue : COLORS.light_black
   const commentBgInitColor = isLightTheme ? COLORS.white : COLORS.primary_dark
   const commentBgColor = colorTransitionAnimation.interpolate({
     inputRange: [0, 1],
-    outputRange: [commentBgInitColor, COLORS.primary_light]
+    outputRange: [commentBgInitColor, commentBgEndColor]
   })
   let commentPhotos = []
 
@@ -98,7 +99,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
   }
 
   const handleProfilePress = () => {  
-    fetchProfileInfo(from_id, name, photoUrl)  
+    fetchProfileInfo(from_id, name, photoUrl)
   }
   
   const onPressIn = () => {
@@ -117,9 +118,14 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
     }).start();
   }
 
+  const handleLongPress = () => {
+    fetchProfileInfo(from_id, name, photoUrl)
+    openCommentMenu()
+  }
+
   return (
     <>
-      <Pressable onPressIn={onPressIn} onPressOut={onPressOut} unstable_pressDelay={200}>
+      <Pressable onPressIn={onPressIn} onPressOut={onPressOut} onLongPress={handleLongPress} unstable_pressDelay={300}>
         <Animated.View 
           style={[styles.commentContainer, {backgroundColor: commentBgColor}]}
         >
@@ -130,10 +136,10 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
             {
               is_deleted ? <View style={styles.deltedContainer}><Text style={styles.deletedText}>Comment deleted</Text></View> : 
               <>
-                <Text style={isLightTheme ? styles.authorNameLight : styles.authorNameDark}>{name}</Text>
+                <Text style={[styles.authorName, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>{name}</Text>
                 {
                   commentText ? 
-                  <Text style={isLightTheme ? styles.textLight : styles.textDark}>
+                  <Text style={[styles.text, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
                     {getHyperlinkInText(commentText)}
                   </Text> : null
                 }
@@ -154,6 +160,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
         postId={postId}
         ownerId={ownerId}
         isLightTheme={isLightTheme}
+        openCommentMenu={openCommentMenu}
       />
     </>
   )
@@ -169,6 +176,7 @@ const styles = StyleSheet.create({
     alignContent: 'flex-start',
     paddingLeft: 5,
     paddingRight: 5,
+    borderRadius: 5
     // backgroundColor: COLORS.white
   },
   // commentContainerDark: {
@@ -191,26 +199,26 @@ const styles = StyleSheet.create({
   commentConentContainer: {
     width: '86%',
   },
-  textLight: {
+  text: {
     fontSize: 15,
-    color: COLORS.black,
+    // color: COLORS.black,
   },
-  textDark: {
-    fontSize: 15,
-    color: COLORS.primary_text
-  },
-  authorNameLight: {
+  // textDark: {
+  //   fontSize: 15,
+  //   color: COLORS.primary_text
+  // },
+  authorName: {
     fontWeight: '700', 
     fontStyle: 'normal', 
     fontSize: 14,
-    color: COLORS.black
+    // color: COLORS.black
   },
-  authorNameDark: {
-    fontWeight: '700', 
-    fontStyle: 'normal', 
-    fontSize: 14,
-    color: COLORS.primary_text
-  },
+  // authorNameDark: {
+  //   fontWeight: '700', 
+  //   fontStyle: 'normal', 
+  //   fontSize: 14,
+  //   color: COLORS.primary_text
+  // },
   likeIcon: {
     marginRight: 2,
   },

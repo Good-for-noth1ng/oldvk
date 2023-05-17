@@ -5,7 +5,7 @@ import CommentBottom from './CommentBottom'
 import { COLORS } from '../constants/theme'
 import { getHyperlinkInText } from '../utils/hyperlinks'
 
-const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme}) => {
+const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme, openCommentMenu}) => {
   const authorsGeneralInfo = useSelector(state => state.comments)
   const groups = authorsGeneralInfo.groups
   const profiles = authorsGeneralInfo.profiles
@@ -17,10 +17,11 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
 
   const onLongPressDelay = 500
   const colorTransitionAnimation = new Animated.Value(0)
+  const commentBgEndColor = isLightTheme ? COLORS.light_blue : COLORS.light_black
   const commentReplyBgInitColor = isLightTheme ? COLORS.white : COLORS.primary_dark
   const commentReplyBgColor = colorTransitionAnimation.interpolate({
     inputRange: [0, 1],
-    outputRange: [commentReplyBgInitColor, COLORS.primary_light]
+    outputRange: [commentReplyBgInitColor, commentBgEndColor]
   })
 
   profiles.forEach(item => {
@@ -69,8 +70,13 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
     }).start();
   }
 
+  const handleLongPress = () => {
+    fetchProfileInfo(from_id, name, photoUrl)
+    openCommentMenu()
+  }
+
   return (
-    <Pressable onPressIn={onPressIn} onPressOut={onPressOut} unstable_pressDelay={200}>
+    <Pressable onPressIn={onPressIn} onPressOut={onPressOut} unstable_pressDelay={300} onLongPress={handleLongPress}>
       <Animated.View 
         style={[styles.commentReplyContainer, {backgroundColor: commentReplyBgColor}]}
       >
@@ -96,7 +102,7 @@ const styles = StyleSheet.create({
     alignContent: 'flex-start',
     paddingLeft: 5,
     paddingRight: 5,
-    backgroundColor: COLORS.white
+    borderRadius: 5,
   },
   imageContainer: {
     marginRight: 7
@@ -113,16 +119,8 @@ const styles = StyleSheet.create({
     width: '95%',
     paddingLeft: 5,
     paddingRight: 5,
+    borderRadius: 5,
   },
-  // commentReplyContainerDark: {
-  //   display: 'flex',
-  //   flexDirection: 'row',
-  //   alignContent: 'flex-start',
-  //   width: '95%',
-  //   paddingLeft: 5,
-  //   paddingRight: 5,
-  //   backgroundColor: COLORS.primary_dark
-  // },
   commentConentContainer: {
     width: '86%',
   },

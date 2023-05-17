@@ -1,13 +1,15 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ActivityIndicator, Animated } from 'react-native'
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import uuid from 'react-native-uuid';
 import Entypo from 'react-native-vector-icons/Entypo'
 import CustomHeader from '../components/CustomHeader'
+import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
 import UserListItem from '../components/UserListItem'
 import DividerWithLine from '../components/DividerWithLine'
+import Overlay from '../components/Overlay';
+import { RadioOption } from '../components/Buttons';
 import { COLORS } from '../constants/theme'
-import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
 
 const Friends = ({navigation}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
@@ -22,10 +24,27 @@ const Friends = ({navigation}) => {
   const searchQuery = useRef('')
   const fetchFriendsUrl = `https://api.vk.com/method/friends.get?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}`
   
+  const slideAnimation = useRef(new Animated.Value(2000)).current
+  
+  const radioButtons = [
+    {
+      id: 389,
+      text: 'Any'
+    },
+    {
+      id: 390,
+      text: 'Female'
+    },
+    {
+      id: 391,
+      text: 'Male'
+    }
+  ]
+  const [chosenElementId, setChosenElementId] = useState(389)
+
   const handleDrawerOpening = () => {
     navigation.openDrawer()
   }
-
 
   const fetchFriends = async () => {
     const response = await fetch(fetchFriendsUrl)
@@ -171,6 +190,32 @@ const Friends = ({navigation}) => {
     return item.key
   }
 
+  const openFilterMenu = () => {
+    Animated.timing(slideAnimation, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: true
+    }).start()
+  }
+
+  const closeFilterMenu = () => {
+    Animated.timing(slideAnimation, {
+      toValue: 2000,
+      duration: 500,
+      useNativeDriver: true
+    }).start()
+  }
+  
+  const overlayContentComponent = () => (
+    <>
+      <RadioOption 
+          headerText={'Gender'}
+          buttonsData={radioButtons}
+          chosenElementId={chosenElementId}
+          changeColor={setChosenElementId}
+      />
+    </>
+  )
   return (
     <SafeAreaView style={isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
@@ -184,6 +229,7 @@ const Friends = ({navigation}) => {
          gapForSearchIcon={'45%'}
          handleInputChange={handleInputChange}
          onCleaningInput={initFriendsList}
+         onOptionsButton={openFilterMenu}
       />
       {
         isLoading ?
@@ -206,6 +252,24 @@ const Friends = ({navigation}) => {
           onEndReached={fetchMoreUsers}
         />
       }
+      <Overlay 
+        slideAnimation={slideAnimation}
+        handleShadowTouch={closeFilterMenu}
+        isLightTheme={isLightTheme}
+        headerText={'Filters'}
+        actionButtonText={'Show Results'}
+        overlayContentComponent={
+          <>
+            <RadioOption 
+              headerText={'Gender'}
+              buttonsData={radioButtons}
+              chosenElementId={chosenElementId}
+              changeColor={setChosenElementId}
+            />
+          </>
+        }
+        
+      />
     </SafeAreaView>
   )
 }

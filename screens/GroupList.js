@@ -23,22 +23,6 @@ const GroupList = ({navigation}) => {
   const count = 5
   const [groupsCounterName, setGroupsCounterName] = useState('All communities')
   const slideAnimation = useRef(new Animated.Value(2000)).current
-  
-  const closeFilterMenu = () => {
-    Animated.timing(slideAnimation, {
-      toValue: 2000,
-      duration: 500,
-      useNativeDriver: true
-    }).start()
-  }
-
-  const handleTouch = () => {
-    Animated.timing(slideAnimation, {
-      toValue: 0,
-      duration: 500,
-      useNativeDriver: true
-    }).start()
-  }
 
   useEffect(() => {
     initGroupList()
@@ -198,9 +182,22 @@ const GroupList = ({navigation}) => {
     return item.key
   }
 
-  const openFilters = () => {
-    handleTouch()
+  const closeFilterMenu = () => {
+    Animated.timing(slideAnimation, {
+      toValue: 2000,
+      duration: 500,
+      useNativeDriver: true
+    }).start()
   }
+
+  const openFilters = () => {
+    Animated.timing(slideAnimation, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: true
+    }).start()
+  }
+
   return (
     <SafeAreaView style={isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>

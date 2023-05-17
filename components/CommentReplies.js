@@ -7,7 +7,7 @@ import { setDataForFetchingCommentThread } from '../redux/commentsSlice'
 import { COLORS } from '../constants/theme'
 import DividerWithLine from './DividerWithLine'
 
-const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfThreadId, navigation, ownerId, postId, isLightTheme}) => {
+const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfThreadId, navigation, ownerId, postId, isLightTheme, openCommentMenu}) => {
   const dispatch = useDispatch()
   const navigateToCommentThread = () => {
     console.log(ownerId, postId, startOfThreadId)
@@ -31,6 +31,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
                 likes={threadComments[0].likes.count}
                 fetchProfileInfo={fetchProfileInfo}
                 isLightTheme={isLightTheme}
+                openCommentMenu={openCommentMenu}
               />
               <DividerWithLine dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={5}/>
               <CommentReply
@@ -40,6 +41,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
                 likes={threadComments[1].likes.count}
                 fetchProfileInfo={fetchProfileInfo}
                 isLightTheme={isLightTheme} 
+                openCommentMenu={openCommentMenu}
               />
               <DividerWithLine dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={7}/>
               {

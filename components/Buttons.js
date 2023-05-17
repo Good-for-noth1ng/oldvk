@@ -1,9 +1,62 @@
-
 import React from 'react'
-import { Text, View, TouchableOpacity, useWindowDimensions, Dimensions, StyleSheet, TouchableHighlight } from 'react-native'
+import { Text, View, TouchableOpacity, useWindowDimensions, Dimensions, StyleSheet, TouchableHighlight, } from 'react-native'
 import { SIZES, COLORS } from '../constants/theme'
 import Entypo from 'react-native-vector-icons/Entypo'
 
+
+export const RadioButton = ({id, text, changeColor, chosenElementId, data}) => {
+  const onPress = () => {
+    changeColor(id)
+  }
+  return (
+    <TouchableOpacity
+      activeOpacity={0.8}
+      onPress={onPress} 
+      style={[styles.radioButtonContainer, id === chosenElementId ? {backgroundColor: COLORS.primary} : {backgroundColor: COLORS.light_smoke}]}
+    >
+      <Text 
+        style={[styles.radioButtonText, id === chosenElementId ? {color: COLORS.white} : {color: COLORS.secondary}]}
+      >
+        {text}
+      </Text>
+    </TouchableOpacity>
+  )
+}
+
+export const RadioOption = ({headerText, buttonsData, changeColor, chosenElementId}) => {
+  return (
+    <View style={{marginTop: 5, marginBottom: 5}}>
+      <Text style={{fontSize: 16, color: COLORS.secondary}}>{headerText}</Text>
+      <View
+        style={[styles.radioButtonsContainer]}
+      >
+        {buttonsData.map(item => (
+        <RadioButton 
+          key={item.id} 
+          id={item.id} 
+          text={item.text}
+          changeColor={changeColor} 
+          chosenElementId={chosenElementId}
+        />
+      ))}
+      </View>
+    </View>
+  )
+}
+
+export const CommentMenuButton = ({icon, buttonText, pressHandler, isLightTheme}) => {
+  const onPress = () => {
+
+  }
+  return (
+    <TouchableHighlight style={styles.commentMenuButton} underlayColor={COLORS.light_blue} onPress={onPress}>
+      <>
+        {icon}
+        <Text style={[styles.commentMenuButtonText, {color: COLORS.white}]}>{buttonText}</Text>
+      </>
+    </TouchableHighlight>
+  )
+}
 
 export const CustomDrawerButton = ({ buttonIcon, buttonText, pressHandler }) => {
   return (
@@ -16,11 +69,16 @@ export const CustomDrawerButton = ({ buttonIcon, buttonText, pressHandler }) => 
 
 export const LoginButton = ({buttonText, navigation, isLightTheme }) => {  
   return (
-    <TouchableOpacity style={isLightTheme ? styles.buttonContainerLight : styles.buttonContainerDark} onPress={() => navigation.navigate('WebViewLogin')}>
+    <TouchableHighlight 
+      style={[styles.loginButtonContainer, isLightTheme ? {backgroundColor: COLORS.primary} : {backgroundColor: COLORS.primary_dark}]} 
+      underlayColor={COLORS.primary_light}
+      activeOpacity={0.6}
+      onPress={() => navigation.navigate('WebViewLogin')}
+    >
       <Text style={isLightTheme ? styles.textLight : styles.textDark}>
         {buttonText}
       </Text>
-    </TouchableOpacity>
+    </TouchableHighlight>
   )
 }
 
@@ -52,21 +110,45 @@ export const WallHeaderButton = ({ isActiveState, activeStateText, inactiveState
 }
 
 const styles = StyleSheet.create({
-  buttonContainerLight: {
+  radioButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 5,
+    marginBottom: 5
+  },
+  radioButtonContainer: {
+    width: 100,
+    height: 35,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+  },
+  radioButtonText: {
+    fontSize: 17
+  },
+  loginButtonContainer: {
     width: 170,
     height: 45,
-    backgroundColor: COLORS.primary,
     borderRadius: 5,
     padding: 5,
     alignContent: 'center'
   },
-  buttonContainerDark: {
-    width: 170,
-    height: 45,
-    backgroundColor: COLORS.primary_dark,
+  commentMenuButton: {
+    height: '12%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 2,
+    marginBottom: 2,
+    paddingLeft: 15,
+    backgroundColor: COLORS.primary,
     borderRadius: 5,
-    padding: 5,
-    alignContent: 'center'
+  },
+  commentMenuButtonText: {
+    fontSize: 16,
+    marginLeft: 10,
+    fontWeight: 'bold'
   },
   textLight: {
     fontFamily: 'sans-serif',
@@ -80,7 +162,6 @@ const styles = StyleSheet.create({
     color: COLORS.primary_text,
     textAlign: 'center'
   },
-
   optionsIcon: {
     marginLeft: 5,
     marginRight: 10

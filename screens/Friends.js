@@ -8,7 +8,7 @@ import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
 import UserListItem from '../components/UserListItem'
 import DividerWithLine from '../components/DividerWithLine'
 import Overlay from '../components/Overlay';
-import { RadioOption } from '../components/Buttons';
+import { RadioOption, CollapsibleOption } from '../components/Buttons';
 import { COLORS } from '../constants/theme'
 
 const Friends = ({navigation}) => {
@@ -26,6 +26,12 @@ const Friends = ({navigation}) => {
   
   const slideAnimation = useRef(new Animated.Value(2000)).current
   
+  const collapsibleButtons = [
+    {
+      key: 12345678,
+      text: 'Not selected'
+    },
+  ]
   const radioButtons = [
     {
       id: 389,
@@ -265,6 +271,10 @@ const Friends = ({navigation}) => {
               buttonsData={radioButtons}
               chosenElementId={chosenElementId}
               changeColor={setChosenElementId}
+            />
+            <CollapsibleOption 
+              headerText={'Relationship status'}
+              buttonsData={collapsibleButtons}
             />
           </>
         }

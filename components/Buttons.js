@@ -1,8 +1,120 @@
-import React from 'react'
-import { Text, View, TouchableOpacity, useWindowDimensions, Dimensions, StyleSheet, TouchableHighlight, } from 'react-native'
+import React, { useRef } from 'react'
+import { Text, View, TouchableOpacity, useWindowDimensions, Dimensions, StyleSheet, TouchableHighlight, Animated, } from 'react-native'
 import { SIZES, COLORS } from '../constants/theme'
 import Entypo from 'react-native-vector-icons/Entypo'
 
+export const CollapsibleButton = ({buttonText, buttonListItems}) => {
+  const scaleShadow = useRef(new Animated.Value(0)).current
+  const collapsibleMenuWidthAnimation = useRef(new Animated.Value(0)).current
+  const collapsibleMenuHeightAnimation = useRef(new Animated.Value(0)).current
+  
+  const shadow = scaleShadow.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 2000]    
+  })
+  const menuWidth = collapsibleMenuWidthAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 200]    
+  })
+  const menuHeight = collapsibleMenuHeightAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 300]    
+  })
+
+  const closeCollapsibleMenu = () => {
+    Animated.sequence([
+      Animated.timing(collapsibleMenuHeightAnimation, {
+        toValue: 0,
+        duration: 500,
+        useNativeDriver: false,
+      }),
+      Animated.parallel([
+        Animated.timing(scaleShadow, {
+          toValue: 0,
+          duration: 10,
+          useNativeDriver: false,
+        }),
+        Animated.timing(collapsibleMenuWidthAnimation, {
+          toValue: 0,
+          duration: 10,
+          useNativeDriver: false,
+        })
+      ]),
+    ]).start()
+  }
+
+  const openCollapsibleMenu = () => {
+    Animated.sequence([
+      Animated.parallel([
+        Animated.timing(scaleShadow, {
+          toValue: 1,
+          duration: 10,
+          useNativeDriver: false,
+        }),
+        Animated.timing(collapsibleMenuWidthAnimation, {
+          toValue: 1,
+          duration: 10,
+          useNativeDriver: false,
+        })
+      ]),
+      Animated.timing(collapsibleMenuHeightAnimation, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: false,
+      })
+    ]).start()
+  }
+
+  return (
+    <TouchableOpacity style={styles.collapsibleButtonContainer} onPress={openCollapsibleMenu} activeOpacity={1}>
+      <Text
+        style={[styles.radioButtonText, {color: COLORS.secondary}]}
+      >
+        {buttonText}
+      </Text>
+      <Animated.View
+        style={[{width: shadow, height: shadow, position: 'absolute', zIndex: 3}]}
+      >
+        <TouchableOpacity 
+          style={{backgroundColor: COLORS.black, opacity: 0, width: '100%', height: '100%', position: 'absolute', zIndex: 3,}} 
+          onPress={closeCollapsibleMenu}
+          activeOpacity={0}
+        />
+      </Animated.View>
+      <Animated.View
+        style={{
+          width: menuWidth, 
+          height: menuHeight,
+          backgroundColor: COLORS.light_smoke,
+          position: 'absolute', 
+          zIndex: 3,
+          borderRadius: 5,
+        }}
+      >
+      </Animated.View>
+      <Entypo name='chevron-down' color={COLORS.secondary} size={22}/>
+    </TouchableOpacity>
+  )
+}
+
+export const CollapsibleOption = ({headerText, buttonsData}) => {
+  return (
+    <View style={{marginTop: 5, marginBottom: 5}}>
+      <Text style={{fontSize: 16, color: COLORS.secondary}}>{headerText}</Text>
+      <View
+        style={[styles.radioButtonsContainer]}
+      >
+        {buttonsData.map(item => (
+          <CollapsibleButton 
+            key={item.key} 
+            buttonText={item.text}
+          />
+          ))
+        }
+      </View>
+    </View>
+  )
+}
 
 export const RadioButton = ({id, text, changeColor, chosenElementId, data}) => {
   const onPress = () => {
@@ -110,6 +222,15 @@ export const WallHeaderButton = ({ isActiveState, activeStateText, inactiveState
 }
 
 const styles = StyleSheet.create({
+  collapsibleButtonContainer: {
+    width: 200,
+    height: 35,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    backgroundColor: COLORS.light_smoke
+  },
   radioButtonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',

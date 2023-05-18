@@ -70,16 +70,18 @@ const styles = StyleSheet.create({
   },
   actionButtonContainer: {
     flexDirection: 'row',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    position: 'relative',
+    zIndex: -1,
   },
   actionButton: {
-    borderRadius: 5,
-    backgroundColor: COLORS.primary,
     width: '100%',
     height: 45,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    borderRadius: 5,
+    backgroundColor: COLORS.primary,
   },
   actionButtonText: {
     fontSize: 16,

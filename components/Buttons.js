@@ -1,12 +1,14 @@
-import React, { useRef } from 'react'
-import { Text, View, TouchableOpacity, useWindowDimensions, Dimensions, StyleSheet, TouchableHighlight, Animated, } from 'react-native'
+import React, { useRef, useState } from 'react'
+import { Text, View, TouchableOpacity, StyleSheet, TouchableHighlight, Animated, } from 'react-native'
 import { SIZES, COLORS } from '../constants/theme'
 import Entypo from 'react-native-vector-icons/Entypo'
-
-export const CollapsibleButton = ({buttonText, buttonListItems}) => {
+import { FlatList } from 'react-native-gesture-handler'
+export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth,}) => {
   const scaleShadow = useRef(new Animated.Value(0)).current
   const collapsibleMenuWidthAnimation = useRef(new Animated.Value(0)).current
   const collapsibleMenuHeightAnimation = useRef(new Animated.Value(0)).current
+  const [selectedListItem, setSelectedListItem] = useState(buttonListItems[0].text)
+  const listItemHeight = 35
   
   const shadow = scaleShadow.interpolate({
     inputRange: [0, 1],
@@ -18,8 +20,38 @@ export const CollapsibleButton = ({buttonText, buttonListItems}) => {
   })
   const menuHeight = collapsibleMenuHeightAnimation.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 300]    
+    outputRange: [0, listItemHeight * 9]    
   })
+
+  const renderItem = ({item}) => {
+    const onPress = () => {
+      setSelectedListItem(item.text); 
+      setTimeout(closeCollapsibleMenu, 60);
+    }
+    return (
+      <View
+        style={{
+          width: 200,
+          height: listItemHeight,
+          flexDirection: 'row',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
+          paddingLeft: 10,
+          // backgroundColor: COLORS.light_blue
+        }}
+        // activeOpacity={0.5}
+        // onPress={onPress}
+      >
+        <Text
+          style={{
+            fontSize: 16
+          }}
+        >
+          {item.text}
+        </Text>
+      </View>
+    )
+  }
 
   const closeCollapsibleMenu = () => {
     Animated.sequence([
@@ -66,49 +98,61 @@ export const CollapsibleButton = ({buttonText, buttonListItems}) => {
   }
 
   return (
-    <TouchableOpacity style={styles.collapsibleButtonContainer} onPress={openCollapsibleMenu} activeOpacity={1}>
+    <TouchableOpacity style={[styles.collapsibleButtonContainer, {width: buttonWidth}]} onPress={openCollapsibleMenu} activeOpacity={1}>
       <Text
         style={[styles.radioButtonText, {color: COLORS.secondary}]}
       >
-        {buttonText}
+        {selectedListItem}
       </Text>
       <Animated.View
         style={[{width: shadow, height: shadow, position: 'absolute', zIndex: 3}]}
       >
         <TouchableOpacity 
-          style={{backgroundColor: COLORS.black, opacity: 0, width: '100%', height: '100%', position: 'absolute', zIndex: 3,}} 
+          style={{ width: '100%', height: '100%', position: 'absolute', zIndex: 3}} 
           onPress={closeCollapsibleMenu}
           activeOpacity={0}
         />
       </Animated.View>
       <Animated.View
-        style={{
-          width: menuWidth, 
-          height: menuHeight,
-          backgroundColor: COLORS.light_smoke,
-          position: 'absolute', 
-          zIndex: 3,
-          borderRadius: 5,
-        }}
+        style={[
+          styles.collapsibleButtonMenu,
+          {
+            width: 100, 
+            height: menuHeight,
+            backgroundColor: COLORS.white,
+            flex: 1
+          }
+        ]}
       >
+        <FlatList 
+          style={{}}
+          data={buttonListItems}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+          // scrollEventThrottle={16}
+        />
       </Animated.View>
+      
       <Entypo name='chevron-down' color={COLORS.secondary} size={22}/>
     </TouchableOpacity>
   )
 }
 
-export const CollapsibleOption = ({headerText, buttonsData}) => {
+export const CollapsibleOption = ({headerText, buttons, isLightTheme}) => {
+  const buttonWidth =  buttons.length === 1 ? '100%' : `${Math.floor(100 / buttons.length) - 3}%` 
   return (
     <View style={{marginTop: 5, marginBottom: 5}}>
       <Text style={{fontSize: 16, color: COLORS.secondary}}>{headerText}</Text>
       <View
         style={[styles.radioButtonsContainer]}
       >
-        {buttonsData.map(item => (
-          <CollapsibleButton 
-            key={item.key} 
-            buttonText={item.text}
-          />
+        {
+          buttons.map(item => (
+            <CollapsibleButton 
+              key={item.id} 
+              buttonListItems={item.buttonListItems}
+              buttonWidth={buttonWidth}
+            />
           ))
         }
       </View>
@@ -222,14 +266,22 @@ export const WallHeaderButton = ({ isActiveState, activeStateText, inactiveState
 }
 
 const styles = StyleSheet.create({
+  collapsibleButtonMenu: {
+    position: 'absolute', 
+    zIndex: 4,
+    borderRadius: 5,
+    elevation: 30,
+    shadowColor: COLORS.black,
+  },
   collapsibleButtonContainer: {
-    width: 200,
     height: 35,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
-    backgroundColor: COLORS.light_smoke
+    backgroundColor: COLORS.light_smoke,
+    position: 'relative',
+    zIndex: 2
   },
   radioButtonsContainer: {
     flexDirection: 'row',

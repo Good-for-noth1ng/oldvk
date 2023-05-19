@@ -26,12 +26,82 @@ const Friends = ({navigation}) => {
   
   const slideAnimation = useRef(new Animated.Value(2000)).current
   
-  const collapsibleButtons = [
+
+  const fromButtonData = [
     {
-      key: 12345678,
-      text: 'Not selected'
+      id: 64738292,
+      text: 'From'
+    }
+  ]
+
+  const toButtonData = [
+    {
+      id: 64008292,
+      text: 'To'
+    }
+  ]
+
+  const relationshipStatusButtonText = [
+    {
+      text: "Not selected"
+    },
+    {
+      text: "Single"
+    },
+    {
+      text: "In a relationship"
+    },
+    {
+      text: "Engaged"
+    },
+    {
+      text: "Married"
+    },
+    {
+      text: "In a civil union"
+    },
+    {
+      text: "It's complicated"
+    },
+    {
+      text: 'Actively searching'
+    },
+    {
+      text: 'In love'
     },
   ]
+
+  for (let i = 14; i < 30; i++) {
+    const fromId = uuid.v4()
+    const toId = uuid.v4()
+    fromButtonData.push({id: fromId, text: `from ${i}`})
+    toButtonData.push({id: toId, text: `to ${i}`})
+  }
+  
+  const relationshipStatusButtonData = relationshipStatusButtonText.map(item => {
+    const id = uuid.v4()
+    return {
+      ...item,
+      id: id,
+      data: 'there is data for search query'
+    }
+  })
+
+  const relationShipButton = {
+    id: 137049352,
+    buttonListItems: relationshipStatusButtonData
+  }
+
+  const fromButton = {
+    id: 137049350,
+    buttonListItems: fromButtonData
+  }
+
+  const toButton = {
+    id: 137049353,
+    buttonListItems: toButtonData
+  }
+
   const radioButtons = [
     {
       id: 389,
@@ -274,7 +344,11 @@ const Friends = ({navigation}) => {
             />
             <CollapsibleOption 
               headerText={'Relationship status'}
-              buttonsData={collapsibleButtons}
+              buttons={[relationShipButton]}
+            />
+            <CollapsibleOption 
+              headerText={'Age'}
+              buttons={[fromButton, toButton]}
             />
           </>
         }

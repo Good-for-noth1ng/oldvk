@@ -48,6 +48,7 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
   }
 
   const openOptions = () => {
+    inputField.current.blur()
     onOptionsButton()
   }
 

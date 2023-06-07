@@ -25,11 +25,18 @@ const OverlayWithButtons = ({slideAnimation, isLightTheme, headerComponent, butt
           <View style={styles.registredContainer}>
             <Text style={styles.registredText}>Registred: {getTimeDate(registrationDate)}</Text>
           </View>
-          {
-            buttons.map(item => (
-              <CommentMenuButton icon={item.icon} buttonText={item.text} key={item.key} isLightTheme={isLightTheme}/>
-            ))
-          }
+          <View style={{flexDirection: 'row', justifyContent: 'center', }}>
+            {
+              buttons.map(column => (
+                <View style={{height: 200, alignItems: 'flex-start', paddingLeft: 30, paddingRight: 30}}>
+                  {column.map(item => (
+                    <CommentMenuButton icon={item.icon} buttonText={item.text} key={item.key} isLightTheme={isLightTheme}/>
+                  ))
+                  }
+                </View>
+              ))
+            }
+          </View>
         </View>
         <TouchableOpacity style={styles.sideShadow} onPress={onShadowPress} activeOpacity={0}>
         </TouchableOpacity>
@@ -68,7 +75,10 @@ const styles = StyleSheet.create({
     elevation: 30,
     shadowColor: COLORS.black,
     borderRadius: 5,
-    padding: 15
+    paddingTop: 35,
+    paddingRight: 15,
+    paddingBottom: 15,
+    paddingLeft: 15,
   },
   sideShadow: {
     height: '100%',
@@ -98,7 +108,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   nameInfo: {
-    fontSize: 16, 
+    fontSize: 17, 
     fontWeight: '700',  
     marginLeft: 5,
   },

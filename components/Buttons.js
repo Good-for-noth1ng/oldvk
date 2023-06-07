@@ -3,10 +3,12 @@ import { Text, View, TouchableOpacity, StyleSheet, TouchableHighlight, Animated,
 import { SIZES, COLORS } from '../constants/theme'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { FlatList } from 'react-native-gesture-handler'
+
 export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth,}) => {
   const scaleShadow = useRef(new Animated.Value(0)).current
   const collapsibleMenuWidthAnimation = useRef(new Animated.Value(0)).current
   const collapsibleMenuHeightAnimation = useRef(new Animated.Value(0)).current
+  const zIndexMenu = useRef(new Animated.Value(4)).current
   const [selectedListItem, setSelectedListItem] = useState(buttonListItems[0].text)
   const listItemHeight = 35
   
@@ -29,9 +31,9 @@ export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth,}
       setTimeout(closeCollapsibleMenu, 60);
     }
     return (
-      <View
+      <TouchableOpacity
         style={{
-          width: 200,
+          width: '100%',
           height: listItemHeight,
           flexDirection: 'row',
           justifyContent: 'flex-start',
@@ -39,8 +41,8 @@ export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth,}
           paddingLeft: 10,
           // backgroundColor: COLORS.light_blue
         }}
-        // activeOpacity={0.5}
-        // onPress={onPress}
+        activeOpacity={0.5}
+        onPress={onPress}
       >
         <Text
           style={{
@@ -49,7 +51,7 @@ export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth,}
         >
           {item.text}
         </Text>
-      </View>
+      </TouchableOpacity>
     )
   }
 
@@ -57,7 +59,7 @@ export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth,}
     Animated.sequence([
       Animated.timing(collapsibleMenuHeightAnimation, {
         toValue: 0,
-        duration: 500,
+        duration: 300,
         useNativeDriver: false,
       }),
       Animated.parallel([
@@ -70,13 +72,23 @@ export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth,}
           toValue: 0,
           duration: 10,
           useNativeDriver: false,
-        })
+        }),
       ]),
+      Animated.timing(zIndexMenu, {
+        toValue: 4,
+        duration: 300,
+        useNativeDriver: false,
+      }),
     ]).start()
   }
 
   const openCollapsibleMenu = () => {
     Animated.sequence([
+      Animated.timing(zIndexMenu, {
+        toValue: 6,
+        duration: 300,
+        useNativeDriver: false,
+      }),
       Animated.parallel([
         Animated.timing(scaleShadow, {
           toValue: 1,
@@ -117,19 +129,18 @@ export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth,}
         style={[
           styles.collapsibleButtonMenu,
           {
-            width: 100, 
+            width: '100%', 
             height: menuHeight,
             backgroundColor: COLORS.white,
-            flex: 1
+            flex: 1,
+            // zIndex: zIndexMenu
           }
         ]}
       >
         <FlatList 
-          style={{}}
           data={buttonListItems}
           renderItem={renderItem}
           keyExtractor={item => item.id}
-          // scrollEventThrottle={16}
         />
       </Animated.View>
       
@@ -205,12 +216,12 @@ export const CommentMenuButton = ({icon, buttonText, pressHandler, isLightTheme}
 
   }
   return (
-    <TouchableHighlight style={styles.commentMenuButton} underlayColor={COLORS.light_blue} onPress={onPress}>
+    <TouchableOpacity style={styles.commentMenuButton} onPress={onPress}>
       <>
         {icon}
-        <Text style={[styles.commentMenuButtonText, {color: COLORS.white}]}>{buttonText}</Text>
+        <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>{buttonText}</Text>
       </>
-    </TouchableHighlight>
+    </TouchableOpacity>
   )
 }
 
@@ -268,7 +279,7 @@ export const WallHeaderButton = ({ isActiveState, activeStateText, inactiveState
 const styles = StyleSheet.create({
   collapsibleButtonMenu: {
     position: 'absolute', 
-    zIndex: 4,
+    // zIndex: 4,
     borderRadius: 5,
     elevation: 30,
     shadowColor: COLORS.black,
@@ -312,14 +323,13 @@ const styles = StyleSheet.create({
     height: '12%',
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 2,
-    marginBottom: 2,
-    paddingLeft: 15,
-    backgroundColor: COLORS.primary,
+    marginTop: 10,
+    marginBottom: 10,
+    // paddingLeft: 15,
     borderRadius: 5,
   },
   commentMenuButtonText: {
-    fontSize: 16,
+    fontSize: 18,
     marginLeft: 10,
     fontWeight: 'bold'
   },

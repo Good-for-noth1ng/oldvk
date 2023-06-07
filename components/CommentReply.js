@@ -57,7 +57,7 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
   const onPressIn = () => {
     Animated.timing(colorTransitionAnimation, {
       toValue: 1,
-      duration: onLongPressDelay,
+      duration: 400,
       useNativeDriver: false
     }).start();
   }
@@ -65,7 +65,7 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
   const onPressOut = () => {
     Animated.timing(colorTransitionAnimation, {
       toValue: 0,
-      duration: onLongPressDelay,
+      duration: 400,
       useNativeDriver: false
     }).start();
   }
@@ -76,7 +76,13 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
   }
 
   return (
-    <Pressable onPressIn={onPressIn} onPressOut={onPressOut} unstable_pressDelay={300} onLongPress={handleLongPress}>
+    <Pressable 
+      onPressIn={onPressIn} 
+      onPressOut={onPressOut} 
+      unstable_pressDelay={100} 
+      onLongPress={handleLongPress}
+      delayLongPress={1000}
+    >
       <Animated.View 
         style={[styles.commentReplyContainer, {backgroundColor: commentReplyBgColor}]}
       >
@@ -84,8 +90,15 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
           <Image source={{uri: photoUrl}} style={styles.image}/>
         </TouchableOpacity>
         <View style={styles.commentConentContainer}>
-          <Text style={isLightTheme ? styles.authorNameLight : styles.authorNameDark}>{name}</Text>
-          <Text style={isLightTheme ? styles.replyTextLight : styles.replyTextDark}>{getHyperlinkInText(commentText)}</Text>
+          <Text 
+            style={[
+              styles.authorName, 
+              isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}
+            ]}
+          >
+            {name}
+          </Text>
+          <Text style={[styles.replyText, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>{getHyperlinkInText(commentText)}</Text>
           <CommentBottom likesCount={likesCount} handleLikePress={handleLikePress} date={commentDate} isLiked={isLiked}/>
         </View>
       </Animated.View>
@@ -124,25 +137,13 @@ const styles = StyleSheet.create({
   commentConentContainer: {
     width: '86%',
   },
-  authorNameLight: {
+  authorName: {
     fontWeight: '700', 
     fontStyle: 'normal', 
     fontSize: 14,
-    color: COLORS.black,
   },
-  authorNameDark: {
-    fontWeight: '700', 
-    fontStyle: 'normal', 
-    fontSize: 14,
-    color: COLORS.primary_text,
-  },
-  replyTextLight: {
+  replyText: {
     fontSize: 15,
-    color: COLORS.black
-  },
-  replyTextDark: {
-    fontSize: 15,
-    color: COLORS.primary_text
   },
   likeIcon: {
     marginRight: 2,

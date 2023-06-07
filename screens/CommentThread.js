@@ -25,6 +25,7 @@ const CommentThread = ({navigation}) => {
   const offset = useRef(10)
   const currentLevelCommentsCount = useRef()
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
+
   const fetchThreadComments = async () => {
     const threadCommentsResponse = await fetch(getThreadUrl)
     const threadMainCommentResponse = await fetch(getThreadMainCommentUrl)
@@ -40,6 +41,7 @@ const CommentThread = ({navigation}) => {
     dispatch(pushProfiles([...threadCommentsData.response.profiles, threadMainCommentData.response.profiles[0]]))
     setIsLoading(false)
   }
+
   useEffect(() => {
     fetchThreadComments()
   }, [])
@@ -72,6 +74,7 @@ const CommentThread = ({navigation}) => {
       commentText={item.text}
       isLightTheme={isLightTheme}
       threadComments={[]}
+      //add openCOmmentMenu function
     />
   )
   
@@ -112,10 +115,10 @@ const CommentThread = ({navigation}) => {
     if (currentLevelCommentsCount.current > 0) {
       return (
         <>
-          <View style={isLightTheme ? styles.bottomSpinnerContainerLight : styles.bottomSpinnerContainerDark}>
+          <View style={[styles.bottomSpinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
             <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
           </View>
-          <DividerWithLine dividerHeight={5} marginB={5} borderBL={4} borderBR={4}/>
+          <DividerWithLine dividerHeight={5} marginB={5} borderBL={5} borderBR={5}/>
         </>
       )
     } else {
@@ -124,8 +127,8 @@ const CommentThread = ({navigation}) => {
           dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} 
           marginB={10} 
           dividerHeight={10} 
-          borderBL={4} 
-          borderBR={4}
+          borderBL={5} 
+          borderBR={5}
         />
       )
     }
@@ -140,7 +143,11 @@ const CommentThread = ({navigation}) => {
   }
 
   return (
-    <SafeAreaView style={isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
+    <SafeAreaView 
+      style={[
+        styles.mainContainer, 
+        isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}
+      ]}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
       <CustomHeader
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
@@ -160,7 +167,7 @@ const CommentThread = ({navigation}) => {
             data={comments}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
-            style={styles.list}
+            style={[styles.list, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}
             ItemSeparatorComponent={commentSeparator}
             ListHeaderComponent={listHeader}
             ListFooterComponent={listBottom}
@@ -182,23 +189,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  mainContainerLight: {
+  mainContainer: {
     flex: 1,
-    backgroundColor: COLORS.light_smoke
-  },
-  mainContainerDark: {
-    flex: 1,
-    backgroundColor: COLORS.background_dark
   },
   list: {
     marginRight: 5,
     marginLeft: 5
   },
-  bottomSpinnerContainerLight:{
+  bottomSpinnerContainer:{
     justifyContent: 'center',
     backgroundColor: COLORS.white
   },
-  bottomSpinnerContainerDark: {
-    backgroundColor: COLORS.primary_dark
-  }
 })

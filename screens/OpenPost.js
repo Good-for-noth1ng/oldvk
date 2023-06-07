@@ -59,34 +59,43 @@ const OpenPost = ({navigation}) => {
   }
 
   //TODO: replace icons to buttons
-  const commentMenuButtonIconSize = 20
+  const commentMenuButtonIconSize = 22
+  const commentMenuButtonColor = isLightTheme ? COLORS.primary : COLORS.white
   const commentMenuButtons = [
-    {
-      icon: <Ionicons name='arrow-undo-outline' color={COLORS.white} size={commentMenuButtonIconSize} />,
-      text: 'Reply',
-      key: uuid.v4()
-    },
-    {
-      icon: <Feather name='users' color={COLORS.white} size={commentMenuButtonIconSize}/>,
-      text: 'Liked',
-      key: uuid.v4()
-    },
-    {
-      icon: <MaterialCommunityIcons name='content-copy' color={COLORS.white} size={commentMenuButtonIconSize}/>,
-      text: 'Copy',
-      key: uuid.v4()
-    },
-    {
-      icon: <Ionicons name='arrow-redo-outline' color={COLORS.white} size={commentMenuButtonIconSize}/>,
-      text: 'Share',
-      key: uuid.v4()
-    },
-    {
-      icon: <Octicons name='report' color={COLORS.white} size={commentMenuButtonIconSize}/>,
-      text: 'Report',
-      key: uuid.v4(),
-    },
-    
+    [
+      {
+        icon: <Feather name='user' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
+        text: 'Profile',
+        key: uuid.v4()
+      },
+      {
+        icon: <Ionicons name='arrow-undo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize} />,
+        text: 'Reply',
+        key: uuid.v4()
+      },
+      {
+        icon: <Feather name='users' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
+        text: 'Liked',
+        key: uuid.v4()
+      },
+    ],
+    [
+      {
+        icon: <MaterialCommunityIcons name='content-copy' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
+        text: 'Copy',
+        key: uuid.v4()
+      },
+      {
+        icon: <Ionicons name='arrow-redo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
+        text: 'Share',
+        key: uuid.v4()
+      },
+      {
+        icon: <Octicons name='report' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
+        text: 'Report',
+        key: uuid.v4(),
+      },
+    ]
   ]
   let commentsUrl
   if (data.source_id !== undefined && data.post_id !== undefined) {
@@ -229,7 +238,12 @@ const OpenPost = ({navigation}) => {
     return item.key
   }
   return (
-    <SafeAreaView style={isLightTheme ? styles.openPostContainerLight : styles.openPostContainerDark}>
+    <SafeAreaView 
+      style={[
+        styles.openPostContainer, 
+        isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}
+      ]}
+    >
       <StatusBar barStyle={COLORS.white} backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark}/>
       <CustomHeader 
         headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>Post</Text>}
@@ -243,41 +257,6 @@ const OpenPost = ({navigation}) => {
           <ActivityIndicator size={50} color={isLightTheme ? COLORS.primary : COLORS.white}/>
         </View> :
         <>
-          {/* <View style={styles.modalContainer}>
-            <Modal  
-              style={styles.modal} 
-              animationType='slide' 
-              transparent={true} 
-              visible={isAuthorInfoOpen} 
-              onRequestClose={() => {dispatch(closeAuthorInfo())}}
-              useNativeDriver={true}
-            >
-              <View style={styles.modalViewContainer}>
-                <View style={isLightTheme ? styles.modalViewLight : styles.modalViewDark}>
-                  {
-                    registrationDateIsFetching ? 
-                      <View style={styles.activityContainer}>
-                        <ActivityIndicator size={50} color={isLightTheme ? COLORS.primary : COLORS.white}/>
-                      </View> :
-                      <>
-                        <View style={styles.commentInfoHeader}>
-                          <TouchableOpacity style={styles.crossButton} activeOpacity={1} onPress={handleClosingCommentAuthorInfo}>
-                            <AntDesign name='close' size={20} color={isLightTheme ? COLORS.primary : COLORS.white}/>
-                          </TouchableOpacity>
-                        </View>
-                        <View style={styles.nameAvatarContainer}>
-                          <Image style={styles.avatarInfo} source={{uri: authorImgUrl}}/>
-                          <Text style={isLightTheme ? styles.nameInfoLight : styles.nameInfoDark}>{authorName}</Text>
-                        </View>
-                        <View style={styles.registredContainer}>
-                          <Text style={styles.registredText}>Registred: {getTimeDate(regestrationDate)}</Text>
-                        </View>
-                      </>
-                  }  
-                </View>
-              </View>
-            </Modal>
-          </View> */}
           <FlatList
             onLayout={scrollingToComments}
             ref={commentsList}
@@ -419,14 +398,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: COLORS.secondary
   },
-  openPostContainerLight: {
+  openPostContainer: {
     flex: 1,
-    backgroundColor: COLORS.light_smoke,
+    // backgroundColor: COLORS.light_smoke,
   },
-  openPostContainerDark: {
-    flex: 1,
-    backgroundColor: COLORS.background_dark,
-  },
+  // openPostContainerDark: {
+  //   flex: 1,
+  //   backgroundColor: COLORS.background_dark,
+  // },
   bottomSpinnerContainerLight: {
     justifyContent: 'center',
     backgroundColor: COLORS.white,

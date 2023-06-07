@@ -29,7 +29,6 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
   const [isLiked, setIsLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(likes)
 
-  const onLongPressDelay = 500
   const colorTransitionAnimation = new Animated.Value(0)
   const commentBgEndColor = isLightTheme ? COLORS.light_blue : COLORS.light_black
   const commentBgInitColor = isLightTheme ? COLORS.white : COLORS.primary_dark
@@ -97,15 +96,11 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
         }
       })
   }
-
-  const handleProfilePress = () => {  
-    fetchProfileInfo(from_id, name, photoUrl)
-  }
   
   const onPressIn = () => {
     Animated.timing(colorTransitionAnimation, {
       toValue: 1,
-      duration: onLongPressDelay,
+      duration: 400,
       useNativeDriver: false,
     }).start();
   }
@@ -113,23 +108,29 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
   const onPressOut = () => {
     Animated.timing(colorTransitionAnimation, {
       toValue: 0,
-      duration: onLongPressDelay,
+      duration: 400,
       useNativeDriver: false,
     }).start();
   }
 
-  const handleLongPress = () => {
+  const onLongPress = () => {
     fetchProfileInfo(from_id, name, photoUrl)
     openCommentMenu()
   }
 
   return (
     <>
-      <Pressable onPressIn={onPressIn} onPressOut={onPressOut} onLongPress={handleLongPress} unstable_pressDelay={300}>
+      <Pressable 
+        onPressIn={onPressIn} 
+        onPressOut={onPressOut} 
+        onLongPress={onLongPress} 
+        delayLongPress={1000} 
+        unstable_pressDelay={100}
+      >
         <Animated.View 
           style={[styles.commentContainer, {backgroundColor: commentBgColor}]}
         >
-          <TouchableOpacity activeOpacity={1} style={styles.imageContainer} onPress={handleProfilePress}>
+          <TouchableOpacity activeOpacity={1} style={styles.imageContainer}>
             <Image source={is_deleted ? require('../assets/avatars/banned-light.jpg') : {uri: photoUrl}} style={styles.image}/>
           </TouchableOpacity>
           <View style={styles.commentConentContainer}>

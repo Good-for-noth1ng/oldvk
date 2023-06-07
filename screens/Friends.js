@@ -71,7 +71,7 @@ const Friends = ({navigation}) => {
     },
   ]
 
-  for (let i = 14; i < 30; i++) {
+  for (let i = 14; i < 81; i++) {
     const fromId = uuid.v4()
     const toId = uuid.v4()
     fromButtonData.push({id: fromId, text: `from ${i}`})

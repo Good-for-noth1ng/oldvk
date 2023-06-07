@@ -19,7 +19,12 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
     navigation.navigate('CommentThread')
   }
   return (
-    <View style={isLightTheme ? styles.repliesListContainerLight : styles.repliesListContainerDark}>
+    <View 
+      style={[
+        styles.repliesListContainer, 
+        isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}
+      ]}
+    >
       {
         threadComments.length > 0 ? 
           threadComments.length === 2 ?
@@ -61,6 +66,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
               likes={threadComments[0].likes.count}
               fetchProfileInfo={fetchProfileInfo}
               isLightTheme={isLightTheme}
+              openCommentMenu={openCommentMenu}
             /> 
         : null
       }
@@ -71,23 +77,13 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
 export default CommentReplies
 
 const styles = StyleSheet.create({
-  repliesListContainerLight: {
+  repliesListContainer: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-end',
     width: '100%',
     paddingLeft: 5,
     paddingRight: 5,
-    backgroundColor: COLORS.white
-  },
-  repliesListContainerDark: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-end',
-    width: '100%',
-    paddingLeft: 5,
-    paddingRight: 5,
-    backgroundColor: COLORS.primary_dark
   },
   showMoreContainer: {
     width: '92%',

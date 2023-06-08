@@ -1,21 +1,33 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, FlatList } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, FlatList, Animated } from 'react-native'
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import uuid from 'react-native-uuid';
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import Feather from 'react-native-vector-icons/Feather'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Octicons from 'react-native-vector-icons/Octicons'
 import CustomHeader from '../components/CustomHeader'
 import Comment from '../components/Comment';
 import { COLORS } from '../constants/theme'
 import { setProfiles, pushProfiles } from '../redux/commentsSlice';
 import DividerWithLine from '../components/DividerWithLine';
 import TextInputField from '../components/TextInputField';
+import OverlayWithButtons from '../components/OverlayWithButtons';
 
 const CommentThread = ({navigation}) => {
   const dispatch = useDispatch()
   const accessToken = useSelector(state => state.user.accessToken)
-  const threadMainCommentId = useSelector(state => state.comments.threadMainCommentId)
-  const ownerId = useSelector(state => state.comments.ownerId)
-  const postId = useSelector(state => state.comments.postId)
+  const commentsGeneralData = useSelector(state => state.comments)
+  const threadMainCommentId = commentsGeneralData.threadMainCommentId
+  const ownerId = commentsGeneralData.ownerId
+  const postId = commentsGeneralData.postId
+  let isAuthorInfoOpen = commentsGeneralData.isAuthorInfoOpen;
+  const authorName = commentsGeneralData.authorName;
+  const authorImgUrl = commentsGeneralData.authorImgUrl;
+  const registrationDate = commentsGeneralData.registrationDate;
+  const registrationDateIsFetching = commentsGeneralData.authorInfoIsFetching;
+
   let getThreadUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&count=10&comment_id=${threadMainCommentId}&extended=1&fields=photo_100&need_likes=1&owner_id=${ownerId}&post_id=${postId}&sort=asc`
   let getThreadMainCommentUrl = `https://api.vk.com/method/wall.getComment?access_token=${accessToken}&v=5.131&comment_id=${threadMainCommentId}&extended=1&fields=photo_100&owner_id=${ownerId}`
   const [isLoading, setIsLoading] = useState(true)
@@ -24,7 +36,65 @@ const CommentThread = ({navigation}) => {
   const threadList = useRef(null)
   const offset = useRef(10)
   const currentLevelCommentsCount = useRef()
+  
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
+
+  const slideAnimation = useRef(new Animated.Value(2000)).current
+
+  //TODO: replace icons to buttons, purge duplicate in CommentThread screen
+  const commentMenuButtonIconSize = 22
+  const commentMenuButtonColor = isLightTheme ? COLORS.primary : COLORS.white
+  const commentMenuButtons = [
+    [
+      {
+        icon: <Feather name='user' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
+        text: 'Profile',
+        key: uuid.v4()
+      },
+      {
+        icon: <Ionicons name='arrow-undo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize} />,
+        text: 'Reply',
+        key: uuid.v4()
+      },
+      {
+        icon: <Feather name='users' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
+        text: 'Liked',
+        key: uuid.v4()
+      },
+    ],
+    [
+      {
+        icon: <MaterialCommunityIcons name='content-copy' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
+        text: 'Copy',
+        key: uuid.v4()
+      },
+      {
+        icon: <Ionicons name='arrow-redo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
+        text: 'Share',
+        key: uuid.v4()
+      },
+      {
+        icon: <Octicons name='report' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
+        text: 'Report',
+        key: uuid.v4(),
+      },
+    ]
+  ]
+  const closeCommentMenu = () => {
+    Animated.timing(slideAnimation, {
+      toValue: 2000,
+      duration: 500,
+      useNativeDriver: true
+    }).start()
+  }
+
+  const openCommentMenu = () => {
+    Animated.timing(slideAnimation, {
+      toValue: 0,
+      duration: 500,
+      useNativeDriver: true
+    }).start()
+  }
 
   const fetchThreadComments = async () => {
     const threadCommentsResponse = await fetch(getThreadUrl)
@@ -47,7 +117,7 @@ const CommentThread = ({navigation}) => {
   }, [])
 
   const goBack = () => {
-    navigation.pop()
+    navigation.goBack()
   }
 
   const fetchMoreComments = async () => {
@@ -72,9 +142,14 @@ const CommentThread = ({navigation}) => {
       likes={item.likes.count} 
       from_id={item.from_id} 
       commentText={item.text}
-      isLightTheme={isLightTheme}
       threadComments={[]}
-      //add openCOmmentMenu function
+      navigation={navigation}
+      //postId ownerID
+      attachments={item?.attachments}
+      is_deleted={item.deleted}
+      isLightTheme={isLightTheme}
+      openCommentMenu={openCommentMenu}
+      //add openCommentMenu function
     />
   )
   
@@ -175,6 +250,15 @@ const CommentThread = ({navigation}) => {
             onEndReachedThreshold={1}
           />
           <TextInputField isLightTheme={isLightTheme}/>
+          <OverlayWithButtons 
+            slideAnimation={slideAnimation}
+            handleShadowTouch={closeCommentMenu}
+            isLightTheme={isLightTheme}
+            buttons={commentMenuButtons}
+            registrationDate={registrationDate}
+            authorImgUrl={authorImgUrl}
+            authorName={authorName}
+          />
         </>
       }
     </SafeAreaView>

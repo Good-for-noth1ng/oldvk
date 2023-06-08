@@ -1,4 +1,4 @@
-import { StyleSheet, FlatList, View, ActivityIndicator, Text, Modal, StatusBar, Image, TouchableOpacity, SafeAreaView, Animated } from 'react-native'
+import { StyleSheet, FlatList, View, ActivityIndicator, Text, StatusBar, TouchableOpacity, SafeAreaView, Animated } from 'react-native'
 import React, { useState, useEffect, useCallback, memo, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import uuid from 'react-native-uuid'
@@ -58,7 +58,7 @@ const OpenPost = ({navigation}) => {
     }).start()
   }
 
-  //TODO: replace icons to buttons
+  //TODO: replace icons to buttons, purge duplicate in CommentThread screen
   const commentMenuButtonIconSize = 22
   const commentMenuButtonColor = isLightTheme ? COLORS.primary : COLORS.white
   const commentMenuButtons = [
@@ -97,6 +97,7 @@ const OpenPost = ({navigation}) => {
       },
     ]
   ]
+
   let commentsUrl
   if (data.source_id !== undefined && data.post_id !== undefined) {
     commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.source_id}&count=10&post_id=${data.post_id}&sort=asc&offset=${offset.current}&thread_items_count=2&fields=photo_100&extended=1`;

@@ -124,7 +124,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
         onPressIn={onPressIn} 
         onPressOut={onPressOut} 
         onLongPress={onLongPress} 
-        delayLongPress={1000} 
+        delayLongPress={800} 
         unstable_pressDelay={100}
       >
         <Animated.View 

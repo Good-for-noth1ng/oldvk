@@ -4,7 +4,7 @@ import { COLORS } from '../constants/theme'
 import { CommentMenuButton } from './Buttons'
 import { getTimeDate } from '../utils/date'
 
-const OverlayWithButtons = ({slideAnimation, isLightTheme, headerComponent, buttons, handleShadowTouch, registrationDate, registrationDateIsFetching, authorImgUrl, authorName}) => {
+const OverlayWithButtons = ({slideAnimation, isLightTheme, headerComponent, buttons, handleShadowTouch, registrationDate, registrationDateIsFetching, authorImgUrl, authorName, navigation}) => {
   
   const onShadowPress = () => {
     handleShadowTouch()
@@ -30,7 +30,13 @@ const OverlayWithButtons = ({slideAnimation, isLightTheme, headerComponent, butt
               buttons.map(column => (
                 <View style={{height: 200, alignItems: 'flex-start', paddingLeft: 30, paddingRight: 30}}>
                   {column.map(item => (
-                    <CommentMenuButton icon={item.icon} buttonText={item.text} key={item.key} isLightTheme={isLightTheme}/>
+                    <CommentMenuButton 
+                      icon={item.icon} 
+                      buttonText={item.text} 
+                      key={item.key} 
+                      pressHandler={item.handleTouch}
+                      isLightTheme={isLightTheme}
+                    />
                   ))
                   }
                 </View>

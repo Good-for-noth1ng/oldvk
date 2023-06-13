@@ -6,9 +6,11 @@ export const commentsSlice = createSlice({
     profiles: [],
     groups: [],
     isAuthorInfoOpen: false,
+    authorId: null,
     authorName: '',
     authorImgUrl: '',
     registrationDate: '',
+    authorCommentId: 0,
     authorInfoIsFetching: false,
     threadReplies: [], 
     threadMainCommentId: 0,
@@ -67,9 +69,11 @@ export const commentsSlice = createSlice({
     setRegistrationData: (state, action) => {
       return {
         ...state,
+        authorId: action.payload.authorId,
         authorName: action.payload.authorName,
         authorImgUrl: action.payload.authorImgUrl,
         registrationDate: action.payload.registrationDate,
+        authorCommentId: action.payload.authorCommentId,
         authorInfoIsFetching: false
       }
     },

@@ -5,7 +5,7 @@ import CommentBottom from './CommentBottom'
 import { COLORS } from '../constants/theme'
 import { getHyperlinkInText } from '../utils/hyperlinks'
 
-const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme, openCommentMenu}) => {
+const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme, openCommentMenu, commentId}) => {
   const authorsGeneralInfo = useSelector(state => state.comments)
   const groups = authorsGeneralInfo.groups
   const profiles = authorsGeneralInfo.profiles
@@ -71,7 +71,7 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
   }
 
   const handleLongPress = () => {
-    fetchProfileInfo(from_id, name, photoUrl)
+    fetchProfileInfo(from_id, name, photoUrl, commentId)
     openCommentMenu()
   }
 

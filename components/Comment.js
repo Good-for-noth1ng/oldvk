@@ -72,7 +72,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
   }
 
   //TODO: refact dispatch calls num
-  const fetchProfileInfo = (vkId, name, photoUrl) => {
+  const fetchProfileInfo = (vkId, name, photoUrl, commentId) => {
     let profileDataRegUrl = `https://vkdia.com/pages/fake-vk-profile/registration-date?vkId=${vkId}`;
     const re = /^\d*$/g; 
     dispatch(startLoadingRegistrationDate())
@@ -86,7 +86,9 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
             setRegistrationData({
               registrationDate: regDate,
               authorName: name,
-              authorImgUrl: photoUrl
+              authorImgUrl: photoUrl,
+              authorId: vkId,
+              authorCommentId: commentId
             })
           )
           // dispatch(setRegistrationDate(regDate))
@@ -114,7 +116,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
   }
 
   const onLongPress = () => {
-    fetchProfileInfo(from_id, name, photoUrl)
+    fetchProfileInfo(from_id, name, photoUrl, commentId)
     openCommentMenu()
   }
 

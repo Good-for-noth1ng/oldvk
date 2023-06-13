@@ -3,6 +3,7 @@ import { Text, View, TouchableOpacity, StyleSheet, TouchableHighlight, Animated,
 import { SIZES, COLORS } from '../constants/theme'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { FlatList } from 'react-native-gesture-handler'
+import { useSelector } from 'react-redux'
 
 export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth,}) => {
   const scaleShadow = useRef(new Animated.Value(0)).current
@@ -211,9 +212,12 @@ export const RadioOption = ({headerText, buttonsData, changeColor, chosenElement
   )
 }
 
-export const CommentMenuButton = ({icon, buttonText, pressHandler, isLightTheme}) => {
+export const CommentMenuButton = ({icon, buttonText, pressHandler, isLightTheme, }) => {
+  const userId = useSelector(state => state.comments.authorId)
   const onPress = () => {
-
+    if (pressHandler !== undefined) {
+      pressHandler(userId)
+    }
   }
   return (
     <TouchableOpacity style={styles.commentMenuButton} onPress={onPress}>

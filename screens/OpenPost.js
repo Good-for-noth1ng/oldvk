@@ -8,6 +8,7 @@ import Feather from 'react-native-vector-icons/Feather'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Octicons from 'react-native-vector-icons/Octicons'
 import { setProfiles, closeAuthorInfo, pushProfiles, setGroups, pushGroups } from '../redux/commentsSlice'
+import { setID } from '../redux/userWallSlice'
 import Post from '../components/Post'
 import Comment from '../components/Comment'
 import OpenedPostBottom from '../components/OpenedPostBottom'
@@ -61,12 +62,22 @@ const OpenPost = ({navigation}) => {
   //TODO: replace icons to buttons, purge duplicate in CommentThread screen
   const commentMenuButtonIconSize = 22
   const commentMenuButtonColor = isLightTheme ? COLORS.primary : COLORS.white
+  
+  const navigateToUserProfile = (userId) => {
+    dispatch(setID(userId))
+    navigation.push('UserProfile')
+  }
+  const navigateToUserList = () => {
+    navigation.push('UserList')
+  }
+
   const commentMenuButtons = [
     [
       {
         icon: <Feather name='user' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
         text: 'Profile',
-        key: uuid.v4()
+        key: uuid.v4(),
+        handleTouch: (...args) => navigateToUserProfile(...args)
       },
       {
         icon: <Ionicons name='arrow-undo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize} />,
@@ -76,7 +87,8 @@ const OpenPost = ({navigation}) => {
       {
         icon: <Feather name='users' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
         text: 'Liked',
-        key: uuid.v4()
+        key: uuid.v4(),
+        handleTouch: (...args) => navigateToUserList(...args)
       },
     ],
     [
@@ -280,6 +292,7 @@ const OpenPost = ({navigation}) => {
             registrationDate={registrationDate}
             authorImgUrl={authorImgUrl}
             authorName={authorName}
+            navigation={navigation}
           />
         </>
       }

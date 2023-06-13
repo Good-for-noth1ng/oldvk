@@ -14,7 +14,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
     dispatch(setDataForFetchingCommentThread({
       threadMainCommentId: startOfThreadId,
       ownerId: ownerId,
-      postId: postId
+      postId: postId,      
     }))
     navigation.navigate('CommentThread')
   }
@@ -34,6 +34,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
                 from_id={threadComments[0].from_id} 
                 commentText={threadComments[0].text}
                 likes={threadComments[0].likes.count}
+                commentId={threadComments[0].id}
                 fetchProfileInfo={fetchProfileInfo}
                 isLightTheme={isLightTheme}
                 openCommentMenu={openCommentMenu}
@@ -44,6 +45,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
                 from_id={threadComments[1].from_id} 
                 commentText={threadComments[1].text}
                 likes={threadComments[1].likes.count}
+                commentId={threadComments[1].id}
                 fetchProfileInfo={fetchProfileInfo}
                 isLightTheme={isLightTheme} 
                 openCommentMenu={openCommentMenu}

@@ -282,16 +282,6 @@ const Friends = ({navigation}) => {
     }).start()
   }
   
-  const overlayContentComponent = () => (
-    <>
-      <RadioOption 
-          headerText={'Gender'}
-          buttonsData={radioButtons}
-          chosenElementId={chosenElementId}
-          changeColor={setChosenElementId}
-      />
-    </>
-  )
   return (
     <SafeAreaView style={isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>

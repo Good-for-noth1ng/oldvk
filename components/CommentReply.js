@@ -5,7 +5,7 @@ import CommentBottom from './CommentBottom'
 import { COLORS } from '../constants/theme'
 import { getHyperlinkInText } from '../utils/hyperlinks'
 
-const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme, openCommentMenu, commentId}) => {
+const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme, openCommentMenu, commentId, ownerId}) => {
   const authorsGeneralInfo = useSelector(state => state.comments)
   const groups = authorsGeneralInfo.groups
   const profiles = authorsGeneralInfo.profiles
@@ -15,7 +15,6 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
   const [isLiked, setIsLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(likes)
 
-  const onLongPressDelay = 500
   const colorTransitionAnimation = new Animated.Value(0)
   const commentBgEndColor = isLightTheme ? COLORS.light_blue : COLORS.light_black
   const commentReplyBgInitColor = isLightTheme ? COLORS.white : COLORS.primary_dark
@@ -41,7 +40,7 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
   }
 
   const handleProfilePress = () => {
-    fetchProfileInfo(from_id, name, photoUrl)
+    fetchProfileInfo(from_id, name, photoUrl, commentId)
   }
 
   const handleLikePress = () => {

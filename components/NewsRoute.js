@@ -7,6 +7,7 @@ import OpenPost from '../screens/OpenPost';
 import Group from '../screens/Group';
 import CommentThread from '../screens/CommentThread';
 import UserProfile from '../screens/UserProfile';
+import UserList from '../screens/UserList';
 
 const PostStack = createNativeStackNavigator();
 
@@ -36,6 +37,11 @@ const NewsRoute = () => {
       <PostStack.Screen 
         name='UserProfile'
         component={UserProfile}
+        options={{headerShown: false, animation: 'slide_from_right'}}
+      />
+      <PostStack.Screen 
+        name='UserList'
+        component={UserList}
         options={{headerShown: false, animation: 'slide_from_right'}}
       />
     </PostStack.Navigator>

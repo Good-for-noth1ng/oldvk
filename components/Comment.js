@@ -88,7 +88,8 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
               authorName: name,
               authorImgUrl: photoUrl,
               authorId: vkId,
-              authorCommentId: commentId
+              authorCommentId: commentId,
+              ownerId: ownerId
             })
           )
           // dispatch(setRegistrationDate(regDate))

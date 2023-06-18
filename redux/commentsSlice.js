@@ -74,7 +74,8 @@ export const commentsSlice = createSlice({
         authorImgUrl: action.payload.authorImgUrl,
         registrationDate: action.payload.registrationDate,
         authorCommentId: action.payload.authorCommentId,
-        authorInfoIsFetching: false
+        authorInfoIsFetching: false,
+        ownerId: action.payload.ownerId
       }
     },
     // setAuthorName: (state, action) => {

@@ -38,6 +38,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
                 fetchProfileInfo={fetchProfileInfo}
                 isLightTheme={isLightTheme}
                 openCommentMenu={openCommentMenu}
+                ownerId={ownerId}
               />
               <DividerWithLine dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={5}/>
               <CommentReply
@@ -49,6 +50,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
                 fetchProfileInfo={fetchProfileInfo}
                 isLightTheme={isLightTheme} 
                 openCommentMenu={openCommentMenu}
+                ownerId={ownerId}
               />
               <DividerWithLine dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={7}/>
               {

@@ -1,25 +1,111 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, FlatList } from 'react-native'
 import React, { useRef, useState, useEffect } from 'react'
 import uuid from 'react-native-uuid'
-import { FlatList } from 'react-native-gesture-handler'
 import { useSelector } from 'react-redux'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomHeader from '../components/CustomHeader'
+import UserListItem from '../components/UserListItem'
+import DividerWithLine from '../components/DividerWithLine'
 import { COLORS } from '../constants/theme'
+//add react-native-snap-carousel: on one page all users on another related
 
 const UserList = ({navigation}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const [isLoading, setIsLoading] = useState(true)
+  const [usersList, setUsersList] = useState(null)
+  const count = 10
+  const offset = useRef(0)
+  const remainToFetchNum = useRef(0)
+  const commentsData = useSelector(state => state.comments)
+  const ownerId = commentsData.ownerId
+  const authorCommentId = commentsData.authorCommentId
+  // console.log(ownerId, authorCommentId)
+  const likesListUrl = `https://api.vk.com/method/likes.getList?access_token=${accessToken}&v=5.131&type=comment&count=${count}&offset=${offset.current}&owner_id=${ownerId}&item_id=${authorCommentId}`
+
+  const fetchLikes = async () => {
+    setIsLoading(true)
+    const likesListResponse = await fetch(likesListUrl)
+    const likesListData = await likesListResponse.json()
+    remainToFetchNum.current = likesListData.response.count - count
+    const fetchUsersUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&fields=photo_100&user_ids=${likesListData.response.items}`
+    const response = await fetch(fetchUsersUrl)
+    const data = await response.json()
+    setUsersList(data.response)
+    setIsLoading(false)
+    console.log(data.response)
+  }
+
+  useEffect(() => {
+    fetchLikes()
+  }, [])
+
   const navigateBack = () => {
     navigation.goBack()
   }
+
+  const listSeparator = () => (
+    <DividerWithLine dividerHeight={10} dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}/>
+  )
+
+  const renderItem = ({item}) => {
+    return (
+      <UserListItem 
+        imgUrl={item.photo_100}
+        firstName={item.first_name}
+        lastName={item.last_name}
+        id={item.id}
+        navigation={navigation}
+        isLightTheme={isLightTheme}
+        bdate={undefined}
+        city={undefined}
+      />
+    )
+  }
+
+  const listHeader = () => {
+    return (
+      <DividerWithLine 
+        dividerHeight={10} 
+        marginT={10} 
+        borderTL={5} 
+        borderTR={5} 
+        dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+      />  
+    )
+  }
+  const footer = () => {
+      if (remainToFetchNum.current > 0) {
+      return (
+        <>
+          <View style={[{justifyContent: 'center'}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColorL: COLORS.primary_dark}]}>
+            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={40}/>
+          </View>
+          <DividerWithLine 
+            dividerHeight={5} 
+            marginB={10} 
+            borderBL={5} 
+            borderBR={5} 
+            dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+          />
+        </>
+      )
+    }
+    <DividerWithLine 
+      dividerHeight={10} 
+      marginB={10} 
+      borderBL={5} 
+      borderBR={5} 
+      dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+    />
+  }
+
   return (
-    <SafeAreaView>
+    <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
       <CustomHeader 
         isLightTheme={isLightTheme}
-        headerName={<Text style={styles.headerTextStyle}>UserList</Text>}
+        headerName={<Text style={styles.headerTextStyle}>Reactions</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={navigateBack}
       />
@@ -29,7 +115,13 @@ const UserList = ({navigation}) => {
           <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50} />
         </View> :
         <FlatList
-          style={styles.list} 
+          style={styles.list}
+          data={usersList}
+          renderItem={renderItem}
+          ItemSeparatorComponent={listSeparator}
+          showsVerticalScrollIndicator={false}
+          ListHeaderComponent={listHeader}
+          ListFooterComponent={footer}
         />
       }
       
@@ -47,10 +139,12 @@ const styles = StyleSheet.create({
   },
   spinnerContainer: {
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
+    height: '100%'
   },
   list: {
     marginLeft: 5,
-    marginRight: 5
+    marginRight: 5,
+    borderRadius: 5
   },
 })

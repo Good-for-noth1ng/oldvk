@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Animated, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, Text, View, Animated, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { COLORS } from '../constants/theme'
 import { CommentMenuButton } from './Buttons'
@@ -18,13 +18,23 @@ const OverlayWithButtons = ({slideAnimation, isLightTheme, headerComponent, butt
         <TouchableOpacity style={styles.sideShadow} onPress={onShadowPress} activeOpacity={0}>
         </TouchableOpacity>
         <View style={[styles.menu, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.very_dark_gray}]}>
-          <View style={styles.nameAvatarContainer}>
-            <Image style={styles.avatarInfo} source={{uri: authorImgUrl}}/>
-            <Text style={[styles.nameInfo, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>{authorName}</Text>
-          </View>
-          <View style={styles.registredContainer}>
-            <Text style={styles.registredText}>Registred: {getTimeDate(registrationDate)}</Text>
-          </View>
+          {
+            registrationDateIsFetching ? 
+            <View>
+              <ActivityIndicator size={40} color={isLightTheme ? COLORS.primary : COLORS.white}/>
+            </View> :
+            <>
+              <View style={styles.nameAvatarContainer}>
+                <Image style={styles.avatarInfo} source={{uri: authorImgUrl}}/>
+                <Text style={[styles.nameInfo, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>{authorName}</Text>
+              </View>
+              <View style={styles.registredContainer}>
+                <Text style={styles.registredText}>Registred: {getTimeDate(registrationDate)}</Text>
+              </View>
+            </>
+          }
+          
+          
           <View style={{flexDirection: 'row', justifyContent: 'center', }}>
             {
               buttons.map(column => (

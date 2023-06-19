@@ -2,15 +2,8 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, Animated, Pressable } 
 import React, { useEffect, useState, memo, } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
-import { 
-  openAuthorInfo, 
-  setAuthorName, 
-  setAuthorImgUrl, 
-  setRegistrationDate, 
-  startLoadingRegistrationDate,
-  stopLoadingRegistrationDate,
-  setRegistrationData  
-} from '../redux/commentsSlice'
+import { startLoadingRegistrationDate, setRegistrationData } from '../redux/commentsSlice'
+import { setID } from '../redux/userWallSlice'
 import CommentBottom from './CommentBottom'
 import CommentReplies from './CommentReplies'
 import DividerWithLine from './DividerWithLine'
@@ -21,7 +14,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
   const dispatch = useDispatch()
   const authorsGeneralInfo = useSelector(state => state.comments)
   const profiles = authorsGeneralInfo.profiles
-  const groups = authorsGeneralInfo.groups
+  const groups = authorsGeneralInfo.groups 
   let name = undefined
   let photoUrl = undefined
   // const [name, setName] = useState('')
@@ -100,6 +93,11 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
       })
   }
   
+  const navigateToUserProfile = () => {
+    dispatch(setID(from_id))
+    navigation.navigate('UserProfile')
+  }
+
   const onPressIn = () => {
     Animated.timing(colorTransitionAnimation, {
       toValue: 1,
@@ -133,7 +131,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
         <Animated.View 
           style={[styles.commentContainer, {backgroundColor: commentBgColor}]}
         >
-          <TouchableOpacity activeOpacity={1} style={styles.imageContainer}>
+          <TouchableOpacity activeOpacity={1} style={styles.imageContainer} onPress={navigateToUserProfile}>
             <Image source={is_deleted ? require('../assets/avatars/banned-light.jpg') : {uri: photoUrl}} style={styles.image}/>
           </TouchableOpacity>
           <View style={styles.commentConentContainer}>

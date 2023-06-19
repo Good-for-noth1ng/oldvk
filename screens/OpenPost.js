@@ -293,6 +293,7 @@ const OpenPost = ({navigation}) => {
             authorImgUrl={authorImgUrl}
             authorName={authorName}
             navigation={navigation}
+            registrationDateIsFetching={registrationDateIsFetching}
           />
         </>
       }

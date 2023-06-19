@@ -124,11 +124,12 @@ const GroupList = ({navigation}) => {
     if (searchQuery.current === '') {
       const fetchedUsersGroups = await fetchUsersGroups()
       remainToFetchNum.current -= count
-      setGroupsData(prevState => [...prevState, ...fetchedUsersGroups.items])
+      setGroupsData(prevState => prevState.concat(fetchedUsersGroups.items))
     } else {
       const fetchedByQueryGroups = await getGroupsByQuery()
       remainToFetchNum.current -= count
-      setGroupsData(prevState => [...prevState, ...fetchedByQueryGroups.items])
+      setGroupsData(prevState => prevState.concat(fetchedByQueryGroups.items))
+      // setGroupsData(prevState => [...prevState, ...fetchedByQueryGroups.items])
     }
   }
 

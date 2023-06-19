@@ -124,13 +124,13 @@ const styles = StyleSheet.create({
   postContainerLight: {
     padding: 10,
     marginTop: 5,
-    borderRadius: 3,
+    borderRadius: 5,
     backgroundColor: COLORS.white,
   },
   postContainerDark: {
     padding: 10,
     marginTop: 5,
-    borderRadius: 3,
+    borderRadius: 5,
     backgroundColor: COLORS.primary_dark,
   }
 })

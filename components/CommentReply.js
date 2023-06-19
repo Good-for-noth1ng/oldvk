@@ -1,11 +1,13 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Pressable, Animated } from 'react-native'
 import React, { useState, useEffect} from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { setID } from '../redux/userWallSlice'
 import CommentBottom from './CommentBottom'
 import { COLORS } from '../constants/theme'
 import { getHyperlinkInText } from '../utils/hyperlinks'
 
-const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme, openCommentMenu, commentId, ownerId}) => {
+const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme, openCommentMenu, commentId, ownerId, navigation}) => {
+  const dispatch = useDispatch()
   const authorsGeneralInfo = useSelector(state => state.comments)
   const groups = authorsGeneralInfo.groups
   const profiles = authorsGeneralInfo.profiles
@@ -40,7 +42,9 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
   }
 
   const handleProfilePress = () => {
-    fetchProfileInfo(from_id, name, photoUrl, commentId)
+    dispatch(setID(from_id))
+    navigation.navigate('UserProfile')
+    // fetchProfileInfo(from_id, name, photoUrl, commentId)
   }
 
   const handleLikePress = () => {

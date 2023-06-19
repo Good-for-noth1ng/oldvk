@@ -13,32 +13,42 @@ const UserList = ({navigation}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const [isLoading, setIsLoading] = useState(true)
-  const [usersList, setUsersList] = useState(null)
+  const [usersList, setUsersList] = useState([])
   const count = 10
   const offset = useRef(0)
-  const remainToFetchNum = useRef(0)
+  const remainToFetchNum = useRef(null)
   const commentsData = useSelector(state => state.comments)
   const ownerId = commentsData.ownerId
   const authorCommentId = commentsData.authorCommentId
   // console.log(ownerId, authorCommentId)
-  const likesListUrl = `https://api.vk.com/method/likes.getList?access_token=${accessToken}&v=5.131&type=comment&count=${count}&offset=${offset.current}&owner_id=${ownerId}&item_id=${authorCommentId}`
+  
 
-  const fetchLikes = async () => {
-    setIsLoading(true)
+  const fetchUsersWhoReacted = async () => {
+    const likesListUrl = `https://api.vk.com/method/likes.getList?access_token=${accessToken}&v=5.131&type=comment&count=${count}&offset=${offset.current}&owner_id=${ownerId}&item_id=${authorCommentId}`
     const likesListResponse = await fetch(likesListUrl)
     const likesListData = await likesListResponse.json()
-    remainToFetchNum.current = likesListData.response.count - count
+    if (remainToFetchNum.current === null) {
+      remainToFetchNum.current = likesListData.response.count - count
+    } else {
+      remainToFetchNum.current -= count 
+    }
+    offset.current += count
     const fetchUsersUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&fields=photo_100&user_ids=${likesListData.response.items}`
     const response = await fetch(fetchUsersUrl)
     const data = await response.json()
-    setUsersList(data.response)
-    setIsLoading(false)
     console.log(data.response)
+    setUsersList(prevState => prevState.concat(data.response))
   }
 
   useEffect(() => {
-    fetchLikes()
+    setIsLoading(true)
+    fetchUsersWhoReacted()
+    setIsLoading(false)
   }, [])
+
+  const fetchMoreUsersWhoReacted = () => {
+    fetchUsersWhoReacted()
+  }
 
   const navigateBack = () => {
     navigation.goBack()
@@ -75,7 +85,7 @@ const UserList = ({navigation}) => {
     )
   }
   const footer = () => {
-      if (remainToFetchNum.current > 0) {
+    if (remainToFetchNum.current > 0) {
       return (
         <>
           <View style={[{justifyContent: 'center'}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColorL: COLORS.primary_dark}]}>
@@ -91,14 +101,20 @@ const UserList = ({navigation}) => {
         </>
       )
     }
-    <DividerWithLine 
-      dividerHeight={10} 
-      marginB={10} 
-      borderBL={5} 
-      borderBR={5} 
-      dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
-    />
+    return (
+      <DividerWithLine 
+        dividerHeight={10} 
+        marginB={10} 
+        borderBL={5} 
+        borderBR={5} 
+        dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+      />
+    )
   }
+
+  // const keyExtractor = (item) => {
+  //   return item.id
+  // }
 
   return (
     <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
@@ -114,15 +130,22 @@ const UserList = ({navigation}) => {
         <View style={styles.spinnerContainer}>
           <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50} />
         </View> :
-        <FlatList
-          style={styles.list}
-          data={usersList}
-          renderItem={renderItem}
-          ItemSeparatorComponent={listSeparator}
-          showsVerticalScrollIndicator={false}
-          ListHeaderComponent={listHeader}
-          ListFooterComponent={footer}
-        />
+         usersList.length > 0 ?
+          <FlatList
+            style={styles.list}
+            data={usersList}
+            // keyExtractor={keyExtractor}
+            renderItem={renderItem}
+            ItemSeparatorComponent={listSeparator}
+            showsVerticalScrollIndicator={false}
+            ListHeaderComponent={listHeader}
+            ListFooterComponent={footer}
+            onEndReached={fetchMoreUsersWhoReacted}
+          />
+          : 
+          <View style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center'}}>
+            <Text style={{color: COLORS.secondary, fontSize: 17, fontWeight: 'bold',}}>No reactions</Text>
+          </View>
       }
       
     </SafeAreaView>

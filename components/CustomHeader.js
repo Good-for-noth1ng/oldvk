@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, BackHandler } from 'react-native'
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useCallback } from 'react'
+import { useFocusEffect } from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -7,19 +8,40 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import NewsTitleSwitcher from './NewsTitleSwitcher'
 import { COLORS } from '../constants/theme'
 
-const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIcon, handleInputChange, navigation, isLightTheme, gapForSearchIcon, rightsideIconComponent, rightsideIconComponentTouchHandler, onCleaningInput, onOptionsButton}) => {
+const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIcon, handleInputChange, navigation, isLightTheme, gapForSearchIcon, rightsideIconComponent, rightsideIconComponentTouchHandler, onCleaningInput, onOptionsButton, isScreenFromDrawerMenu}) => {
   const [showSearchInputField, setShowSearchInputField] = useState(false)
   const inputField = useRef()
   const [inputFieldText, setInputFieldText] = useState('')
 
-  // BackHandler.addEventListener('hardwareBackPress',  () => {
-  //   console.log(showSearchInputField)
-  //   if (showSearchInputField) {
-  //     setShowSearchInputField(false)
-  //     return true
-  //   }
-  //   return false
-  // })
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        if (inputField.current !== null && inputField.current !== undefined) {
+          if (inputField.current.isFocused() && inputFieldText !== '') {
+            inputField.current.clear()
+            setInputFieldText('')
+            return true
+          } else if (inputField.current.isFocused() && inputFieldText === '') {
+            inputField.current.blur()
+            onCleaningInput()
+            setShowSearchInputField(false)
+            return true
+          }
+        } else {
+          if (isScreenFromDrawerMenu) {
+            navigation.getParent().openDrawer()
+            return true
+          } else {
+            return false
+          }
+
+        }
+      }
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress)
+      return () => subscription.remove()
+      
+    }, [inputField.current, inputFieldText])
+  )
 
   const handleSearchIconPress = () => {
     setShowSearchInputField(true)

@@ -153,6 +153,8 @@ const News = ({navigation}) => {
         iconComponent={<Entypo name='menu' color={COLORS.white} size={30}/>}
         iconTouchHandler={handleDrawerOpening}
         isLightTheme={isLightTheme}
+        isScreenFromDrawerMenu={true}
+        navigation={navigation}
       />
         {isLoading ?
           <View style={styles.spinnerContainer}>

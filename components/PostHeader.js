@@ -5,6 +5,7 @@ import Feather from 'react-native-vector-icons/Feather'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 import { setID } from '../redux/groupSlice'
+
 const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfileContent, from_id, navigation, isLightTheme}) => {  
   // if (isRepost) {console.log(sourceId, from_id)}     
   const dispatch = useDispatch()
@@ -16,6 +17,7 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
   } else {
     wallId = sourceId
   }
+  // console.log(wallId)
   if (wallId < 0) {
     groupData = useSelector(state => state.news.groups.find(group => group.id === 0 - wallId))
     if (groupData === undefined) {
@@ -23,15 +25,16 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
     }
   } else if (wallId > 0) {
     profileData = useSelector(state => state.news.profiles.find(profile => profile.id === wallId))
-    if (groupData === undefined) {
-      profileData = useSelector(state => state.group.profiles.find(profile => profile.id === 0 - wallId))
+    if (profileData === undefined) { // groupData === undefined   // profile => profile.id === 0 - wallId
+      profileData = useSelector(state => state.group.profiles.find(profile => profile.id === wallId))
     }
-    if (!profileData) {
+    if (profileData === undefined) { // !profileData  // profile => profile.id === wallId
       profileData = useSelector(state => state.userWall.profiles.find(profile => profile.id === wallId))
     }
   }
   const [group, setGroup] = useState(groupData)
   const [profile, setProfile] = useState(profileData)
+  // console.log(profile.photo_100)
   const openGroup = () => {
     sourceId !== undefined ? dispatch(setID(sourceId)) : dispatch(setID(from_id))
     navigation.navigate('Group')

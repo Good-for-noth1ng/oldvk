@@ -5,9 +5,16 @@ import { COLORS } from '../constants/theme'
 import { getShortagedNumber } from '../utils/numShortage'
 import { getNameInGroupHeader } from '../utils/getNameByKey';
 
-const WallHeaderCountersGrid = ({ membersCount, counters }) => {
+const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation }) => {
   let countersGrid = []
   let row = []
+  
+  const navigateToMembersList = () => {
+    if (ownerId < 0) {
+      // navigation.navigate('')
+    }
+  }
+
   if (membersCount !== undefined) {
     row.push(
       <TouchableOpacity key={uuid.v4()} style={styles.counterButton}>

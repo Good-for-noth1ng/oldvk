@@ -80,8 +80,11 @@ const Group = ({navigation}) => {
       isMember={wallHeaderData.isMemberOfCommunity} 
       counters={wallHeaderData.counters}
       canWritePrivateMessage={wallHeaderData.canMessage}
+      ownerId={groupID}
+      navigation={navigation}
     />
   )
+
   const keyExtractor = (item) => {
     return item.key
   }

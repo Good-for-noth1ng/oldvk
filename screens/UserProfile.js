@@ -30,6 +30,15 @@ const UserProfile = ({navigation}) => {
   const userWallUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&v=5.131&owner_id=${userId}&extended=1&count=20`
   const [wallHeaderData , setWallHeaderData] = useState({})
 
+  //TODO:
+  //const allData = Promise.all([fetchReq1, fetchReq2, fetchReq3]);
+  //allData.then((res) => console.log(res));
+  // [
+  //   {title: "delectus aut autem"},
+  //   {title: "quis ut nam facilis et officia qui"},
+  //   {title: "fugiat veniam minus"}
+  // ]
+
   const fetchData = async () => {
     const userInfoResponse = await fetch(userInfoUrl)
     const userInfoData = await userInfoResponse.json()
@@ -74,7 +83,7 @@ const UserProfile = ({navigation}) => {
   }
 
   const goBack = () => {
-    navigation.pop()
+    navigation.goBack()
   }
 
   useEffect(() => {
@@ -110,7 +119,7 @@ const UserProfile = ({navigation}) => {
     if (item.copy_history !== undefined) {
       return <Repost isLightMode={isLightTheme} data={item} openedPost={true} navigation={navigation}/>
     }
-    return <Post data={item} navigation={navigation} openedPost={true} isLigthTheme={isLightTheme} isProfileContent/>
+    return <Post data={item} navigation={navigation} openedPost={true} isLigthTheme={isLightTheme} isProfileContent={true}/>
   }
 
   const listFooter = () => {

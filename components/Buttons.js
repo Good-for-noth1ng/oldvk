@@ -269,7 +269,7 @@ export const WallHeaderButton = ({ isActiveState, activeStateText, inactiveState
   return (
     <TouchableOpacity style={{
       backgroundColor: isActiveState ? COLORS.primary : COLORS.secondary,
-      height: 45,
+      height: 40,
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',

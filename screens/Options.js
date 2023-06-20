@@ -39,6 +39,8 @@ const Options = ({navigation}) => {
         iconComponent={<Entypo name='menu' color={COLORS.white} size={30}/>}
         iconTouchHandler={handleDrawerOpening}
         isLightTheme={isLightTheme}
+        navigation={navigation}
+        isScreenFromDrawerMenu={true}
       /> 
       <View style={isLightTheme ? styles.buttonsContainerLight : styles.buttonsContainerDark}>
         <OptionsButton 

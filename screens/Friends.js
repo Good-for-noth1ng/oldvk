@@ -296,6 +296,7 @@ const Friends = ({navigation}) => {
          handleInputChange={handleInputChange}
          onCleaningInput={initFriendsList}
          onOptionsButton={openFilterMenu}
+         isScreenFromDrawerMenu={true}
       />
       {
         isLoading ?

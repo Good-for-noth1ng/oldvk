@@ -22,6 +22,7 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
   let postVideos = []
   const signerID = data.signer_id
 
+  // console.log(data)
   const openPost = () => {
     if (openedPost) {
       dispatch(setOpenedPost(data))

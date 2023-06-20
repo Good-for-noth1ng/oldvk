@@ -217,6 +217,7 @@ const GroupList = ({navigation}) => {
         gapForSearchIcon={'35%'}
         onCleaningInput={initGroupList}
         onOptionsButton={openFilters}
+        isScreenFromDrawerMenu={true}
       />
       {
         isLoading ? 

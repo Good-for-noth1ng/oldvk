@@ -7,7 +7,7 @@ import WallHeaderCountersGrid from './WallHeaderCountersGrid';
 import WallHeaderButtons from './WallHeaderButtons';
 import WallHeaderPostSuggestButton from './WallHeaderPostSuggestButton';
 
-const WallHeader = ({name, membersCount, avatarUrl, status, isMember, counters, lastSeen, isOnlineUsingMobile, isOnlineUsingPC, canSendFriendRequest, canWritePrivateMessage, isUserWall }) => {
+const WallHeader = ({name, membersCount, avatarUrl, status, isMember, counters, lastSeen, isOnlineUsingMobile, isOnlineUsingPC, canSendFriendRequest, canWritePrivateMessage, isUserWall, ownerId, navigation }) => {
   return (
     <View style={styles.mainContainer}>
       <WallHeaderGeneralInfo 
@@ -25,7 +25,7 @@ const WallHeader = ({name, membersCount, avatarUrl, status, isMember, counters, 
         canWritePrivateMessage={canWritePrivateMessage}
       />
       <DividerWithLine dividerHeight={10}/>
-      <WallHeaderCountersGrid membersCount={membersCount} counters={counters}/>
+      <WallHeaderCountersGrid membersCount={membersCount} counters={counters} ownerId={ownerId} navigation={navigation}/>
       <DividerWithLine dividerHeight={10}/>
       <WallHeaderPostSuggestButton />
     </View>

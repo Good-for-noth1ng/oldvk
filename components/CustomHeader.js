@@ -17,11 +17,11 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
     useCallback(() => {
       const onBackPress = () => {
         if (inputField.current !== null && inputField.current !== undefined) {
-          if (inputField.current.isFocused() && inputFieldText !== '') {
+          if ((inputField.current.isFocused() || showSearchInputField) && inputFieldText !== '') {
             inputField.current.clear()
             setInputFieldText('')
             return true
-          } else if (inputField.current.isFocused() && inputFieldText === '') {
+          } else if ((inputField.current.isFocused() || showSearchInputField) && inputFieldText === '') {
             inputField.current.blur()
             onCleaningInput()
             setShowSearchInputField(false)

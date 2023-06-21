@@ -47,7 +47,7 @@ const Repost = ({ data, navigation, openedPost, isLightMode }) => {
   }
   return (
     <View style={isLightMode ? styles.postContainerLight : styles.postContainerDark}>
-      <PostHeader sourceId={data.owner_id} dataDate={data.date} isLightTheme={isLightMode} isRepost={false} navigation={navigation}/>
+      <PostHeader sourceId={data.owner_id} dataDate={data.date} isLightTheme={isLightMode} isRepost={false} navigation={navigation} from_id={data.from_id}/>
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12} />
         {

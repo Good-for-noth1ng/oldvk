@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
-import React, { useState, memo } from 'react'
+import React, { useState, memo, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Feather from 'react-native-vector-icons/Feather'
 import { COLORS } from '../constants/theme'
@@ -7,7 +7,8 @@ import { getTimeDate } from '../utils/date'
 import { setID } from '../redux/groupSlice'
 
 const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfileContent, from_id, navigation, isLightTheme}) => {  
-  // if (isRepost) {console.log(sourceId, from_id)}     
+  // if (isRepost) {console.log(sourceId, from_id)}
+  // const accessToken = useSelector(state => state.user.accessToken)     
   const dispatch = useDispatch()
   let groupData = {}
   let profileData = {}
@@ -17,24 +18,22 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
   } else {
     wallId = sourceId
   }
-  // console.log(wallId)
+  
   if (wallId < 0) {
-    groupData = useSelector(state => state.news.groups.find(group => group.id === 0 - wallId))
-    if (groupData === undefined) {
-      groupData = useSelector(state => state.group.groups.find(group => group.id === 0 - wallId))
-    }
+    groupData = useSelector(state => {
+      const groups = [...state.news.groups, ...state.group.groups, ...state.userWall.groups]
+      return groups.find(group => group.id === 0 - wallId)
+    })
   } else if (wallId > 0) {
-    profileData = useSelector(state => state.news.profiles.find(profile => profile.id === wallId))
-    if (profileData === undefined) { // groupData === undefined   // profile => profile.id === 0 - wallId
-      profileData = useSelector(state => state.group.profiles.find(profile => profile.id === wallId))
-    }
-    if (profileData === undefined) { // !profileData  // profile => profile.id === wallId
-      profileData = useSelector(state => state.userWall.profiles.find(profile => profile.id === wallId))
-    }
+    profileData = useSelector(state => {
+      const profiles = [...state.news.profiles, ...state.group.profiles, ...state.userWall.profiles]
+      return profiles.find(profile => profile.id === wallId)
+    })
   }
-  const [group, setGroup] = useState(groupData)
-  const [profile, setProfile] = useState(profileData)
-  // console.log(profile.photo_100)
+  
+  const imgUrl = groupData.photo_100 ? groupData.photo_100 : profileData.photo_100
+  const name = groupData.name ? groupData.name : profileData.first_name + ' ' + profileData.last_name  
+
   const openGroup = () => {
     sourceId !== undefined ? dispatch(setID(sourceId)) : dispatch(setID(from_id))
     navigation.navigate('Group')
@@ -55,12 +54,14 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
         {isRepost ? <Feather name='corner-up-right' size={20} style={styles.repostIcon} color={COLORS.secondary}/> : null}
         <Image 
           style={isRepost ? styles.postImageSourceRepost : styles.postImageSource} 
-          source={{uri: group ? group.photo_100 : profile.photo_100}}
+          source={{
+            uri: imgUrl 
+          }}
         />
         <View style={styles.sourceNameContainer}>
           <View style={isRepost ? styles.postNameContainerRepost : styles.postNameContainer}>
             <Text style={postNameTextStyle}>
-              {group ? group.name : profile.first_name + ' ' + profile.last_name}
+              {name}
             </Text>
           </View>
           <Text style={postTimeTextStyle}>
@@ -78,7 +79,7 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
   )
 }
 
-export default memo(PostHeader)
+export default PostHeader
 
 const styles = StyleSheet.create({
     postHeaderContainer: {

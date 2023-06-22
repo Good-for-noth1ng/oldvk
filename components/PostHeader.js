@@ -36,7 +36,7 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
 
   const openGroup = () => {
     sourceId !== undefined ? dispatch(setID(sourceId)) : dispatch(setID(from_id))
-    navigation.navigate('Group')
+    navigation.push('Group')
   }
   
   let postNameTextStyle;

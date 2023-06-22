@@ -42,7 +42,7 @@ const Repost = ({ data, navigation, openedPost, isLightMode }) => {
     if(openedPost) {
         dispatch(setOpenedPost(data));
         dispatch(setScrolling(false))
-        navigation.navigate('OpenPost')
+        navigation.push('OpenPost')
     }
   }
   return (
@@ -63,6 +63,7 @@ const Repost = ({ data, navigation, openedPost, isLightMode }) => {
         sourceId={data.copy_history[0].owner_id !== undefined && data.copy_history[0].owner_id } 
         dataDate={data.copy_history[0].date} 
         from_id={data.copy_history[0].from_id !== undefined && data.copy_history[0].from_id}
+        navigation={navigation}
         isRepost={true} 
         isLightTheme={isLightMode}
       />

@@ -18,7 +18,7 @@ const GroupListItem = ({data, navigation, isLightTheme}) => {
   }
   const handleOnPress = () => {
     dispatch(setID(data.id))
-    navigation.navigate('Group')
+    navigation.push('Group')
   }
   return (
     <TouchableOpacity 

@@ -27,7 +27,7 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
     if (openedPost) {
       dispatch(setOpenedPost(data))
       dispatch(setScrolling(false))
-      navigation.navigate('OpenPost')
+      navigation.push('OpenPost')
     }
   }
   // console.log(data.type)

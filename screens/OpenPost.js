@@ -1,6 +1,7 @@
-import { StyleSheet, FlatList, View, ActivityIndicator, Text, StatusBar, TouchableOpacity, SafeAreaView, Animated } from 'react-native'
+import { StyleSheet, FlatList, View, ActivityIndicator, Text, StatusBar, TouchableOpacity, SafeAreaView, Animated, BackHandler } from 'react-native'
 import React, { useState, useEffect, useCallback, memo, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useFocusEffect } from '@react-navigation/native';
 import uuid from 'react-native-uuid'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -29,11 +30,12 @@ const OpenPost = ({navigation}) => {
   const accessToken = useSelector(state => state.user.accessToken);
 
   const commentsGeneralData = useSelector(state => state.comments); 
-  let isAuthorInfoOpen = commentsGeneralData.isAuthorInfoOpen;
+  // let isAuthorInfoOpen = commentsGeneralData.isAuthorInfoOpen;
   const authorName = commentsGeneralData.authorName;
   const authorImgUrl = commentsGeneralData.authorImgUrl;
   const registrationDate = commentsGeneralData.registrationDate;
   const registrationDateIsFetching = commentsGeneralData.authorInfoIsFetching;
+  const authorInfoIsOpen = useRef(false)
   
   const shouldScroll = useSelector(state => state.news.scrollToComments)
   const [comments, setComments] = useState(null);
@@ -41,9 +43,24 @@ const OpenPost = ({navigation}) => {
   const currentLevelCommentsCount = useRef()
   const offset = useRef(0)
   
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        if (authorInfoIsOpen.current === true) {
+          closeCommentMenu()
+          return true
+        }
+        return false
+      }
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress)
+      return () => subscription.remove()
+    }, [authorInfoIsOpen.current])
+  )
+
   const slideAnimation = useRef(new Animated.Value(2000)).current
   
   const closeCommentMenu = () => {
+    authorInfoIsOpen.current = false
     Animated.timing(slideAnimation, {
       toValue: 2000,
       duration: 500,
@@ -52,6 +69,7 @@ const OpenPost = ({navigation}) => {
   }
 
   const openCommentMenu = () => {
+    authorInfoIsOpen.current = true
     Animated.timing(slideAnimation, {
       toValue: 0,
       duration: 500,
@@ -67,6 +85,7 @@ const OpenPost = ({navigation}) => {
     dispatch(setID(userId))
     navigation.push('UserProfile')
   }
+
   const navigateToUserList = () => {
     navigation.push('UserList')
   }
@@ -237,9 +256,9 @@ const OpenPost = ({navigation}) => {
     }
   }
 
-  const handleClosingCommentAuthorInfo = () => {
-    dispatch(closeAuthorInfo());
-  }
+  // const handleClosingCommentAuthorInfo = () => {
+  //   dispatch(closeAuthorInfo());
+  // }
 
   const scrollingToComments = () => {
     if(shouldScroll) {
@@ -250,6 +269,7 @@ const OpenPost = ({navigation}) => {
   const keyExtractor = (item) => {
     return item.key
   }
+  
   return (
     <SafeAreaView 
       style={[

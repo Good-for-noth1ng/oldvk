@@ -95,7 +95,8 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
   
   const navigateToUserProfile = () => {
     dispatch(setID(from_id))
-    navigation.navigate('UserProfile')
+    // navigation.navigate('UserProfile')
+    navigation.push('UserProfile')
   }
 
   const onPressIn = () => {
@@ -115,6 +116,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
   }
 
   const onLongPress = () => {
+    console.log('opening')
     fetchProfileInfo(from_id, name, photoUrl, commentId)
     openCommentMenu()
   }

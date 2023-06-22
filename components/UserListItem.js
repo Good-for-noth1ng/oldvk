@@ -12,7 +12,7 @@ const UserListItem = ({ imgUrl, firstName, lastName, id, navigation, isLightThem
   const gap = (cityName && age) ? ', ' : ''
   const handleOnPress = () => {
     dispatch(setID(id))
-    navigation.navigate('UserProfile')
+    navigation.push('UserProfile')
   }
   return (
     <TouchableOpacity 

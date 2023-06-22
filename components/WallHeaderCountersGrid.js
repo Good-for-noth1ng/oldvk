@@ -9,9 +9,11 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation })
   let countersGrid = []
   let row = []
   
-  const navigateToMembersList = () => {
+  const navigateToFollowersList = () => {
     if (ownerId < 0) {
       // navigation.navigate('')
+    } else {
+      
     }
   }
 

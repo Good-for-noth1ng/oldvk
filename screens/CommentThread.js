@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, FlatList, Animated } from 'react-native'
-import React, { useState, useEffect, useRef } from 'react'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, FlatList, Animated, BackHandler } from 'react-native'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useFocusEffect } from '@react-navigation/native';
 import uuid from 'react-native-uuid';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -11,6 +12,7 @@ import CustomHeader from '../components/CustomHeader'
 import Comment from '../components/Comment';
 import { COLORS } from '../constants/theme'
 import { setProfiles, pushProfiles } from '../redux/commentsSlice';
+import { setID } from '../redux/userWallSlice'
 import DividerWithLine from '../components/DividerWithLine';
 import TextInputField from '../components/TextInputField';
 import OverlayWithButtons from '../components/OverlayWithButtons';
@@ -22,11 +24,12 @@ const CommentThread = ({navigation}) => {
   const threadMainCommentId = commentsGeneralData.threadMainCommentId
   const ownerId = commentsGeneralData.ownerId
   const postId = commentsGeneralData.postId
-  let isAuthorInfoOpen = commentsGeneralData.isAuthorInfoOpen;
+  // let isAuthorInfoOpen = commentsGeneralData.isAuthorInfoOpen;
   const authorName = commentsGeneralData.authorName;
   const authorImgUrl = commentsGeneralData.authorImgUrl;
   const registrationDate = commentsGeneralData.registrationDate;
   const registrationDateIsFetching = commentsGeneralData.authorInfoIsFetching;
+  const authorInfoIsOpen = useRef(false)
 
   let getThreadUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&count=10&comment_id=${threadMainCommentId}&extended=1&fields=photo_100&need_likes=1&owner_id=${ownerId}&post_id=${postId}&sort=asc`
   let getThreadMainCommentUrl = `https://api.vk.com/method/wall.getComment?access_token=${accessToken}&v=5.131&comment_id=${threadMainCommentId}&extended=1&fields=photo_100&owner_id=${ownerId}`
@@ -44,12 +47,23 @@ const CommentThread = ({navigation}) => {
   //TODO: replace icons to buttons, purge duplicate in CommentThread screen
   const commentMenuButtonIconSize = 22
   const commentMenuButtonColor = isLightTheme ? COLORS.primary : COLORS.white
+  
+  const navigateToUserProfile = (userId) => {
+    dispatch(setID(userId))
+    navigation.push('UserProfile')
+  }
+
+  const navigateToUserList = () => {
+    navigation.push('UserList')
+  }
+
   const commentMenuButtons = [
     [
       {
         icon: <Feather name='user' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
         text: 'Profile',
-        key: uuid.v4()
+        key: uuid.v4(),
+        handleTouch: (...args) => navigateToUserProfile(...args)
       },
       {
         icon: <Ionicons name='arrow-undo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize} />,
@@ -59,7 +73,8 @@ const CommentThread = ({navigation}) => {
       {
         icon: <Feather name='users' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
         text: 'Liked',
-        key: uuid.v4()
+        key: uuid.v4(),
+        handleTouch: (...args) => navigateToUserList(...args)
       },
     ],
     [
@@ -80,7 +95,23 @@ const CommentThread = ({navigation}) => {
       },
     ]
   ]
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        if (authorInfoIsOpen.current === true) {
+          closeCommentMenu()
+          return true
+        }
+        return false
+      }
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress)
+      return () => subscription.remove()
+    }, [authorInfoIsOpen.current])
+  )
+
   const closeCommentMenu = () => {
+    authorInfoIsOpen.current = false
     Animated.timing(slideAnimation, {
       toValue: 2000,
       duration: 500,
@@ -89,6 +120,7 @@ const CommentThread = ({navigation}) => {
   }
 
   const openCommentMenu = () => {
+    authorInfoIsOpen.current = true
     Animated.timing(slideAnimation, {
       toValue: 0,
       duration: 500,
@@ -135,6 +167,7 @@ const CommentThread = ({navigation}) => {
     }
   }
 
+  //TODO
   const renderItem = ({item}) => (
     <Comment
       commentId={item.id}
@@ -144,7 +177,8 @@ const CommentThread = ({navigation}) => {
       commentText={item.text}
       threadComments={[]}
       navigation={navigation}
-      //postId ownerID
+      postId={item.post_id}
+      ownerId={item.owner_id}
       attachments={item?.attachments}
       is_deleted={item.deleted}
       isLightTheme={isLightTheme}
@@ -258,6 +292,8 @@ const CommentThread = ({navigation}) => {
             registrationDate={registrationDate}
             authorImgUrl={authorImgUrl}
             authorName={authorName}
+            navigation={navigation}
+            registrationDateIsFetching={registrationDateIsFetching}
           />
         </>
       }

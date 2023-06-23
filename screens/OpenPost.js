@@ -130,6 +130,7 @@ const OpenPost = ({navigation}) => {
   ]
 
   let commentsUrl
+  
   if (data.source_id !== undefined && data.post_id !== undefined) {
     commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.source_id}&count=10&post_id=${data.post_id}&sort=asc&offset=${offset.current}&thread_items_count=2&fields=photo_100&extended=1`;
   } else {
@@ -138,17 +139,28 @@ const OpenPost = ({navigation}) => {
   console.log(data.source_id, data.post_id, data.from_id, data.id) //data.from_id. data.id
   
   const fetchComments = async () => {
+    //check access to post comments 203977193 1555
     const commentsResponse = await fetch(commentsUrl)
     const commentsData = await commentsResponse.json()
-    const items = commentsData.response.items.map(item => {
-      return {...item, key: uuid.v4()}
-    }) 
-    setComments(items)
-    currentLevelCommentsCount.current = commentsData.response.current_level_count - 10
-    offset.current += 10
-    dispatch(setProfiles(commentsData.response.profiles))
-    dispatch(setGroups(commentsData.response.groups))
-    setIsLoading(false)
+    // console.log(commentsData)
+    if (commentsData.error !== undefined) {
+      //access to post comments denied
+      if (commentsData.error.error_code === 212) {
+        setComments(null)
+        currentLevelCommentsCount.current = -1
+        setIsLoading(false)
+      }
+    } else {
+      const items = commentsData.response.items.map(item => {
+        return {...item, key: uuid.v4()}
+      }) 
+      setComments(items)
+      currentLevelCommentsCount.current = commentsData.response.current_level_count - 10
+      offset.current += 10
+      dispatch(setProfiles(commentsData.response.profiles))
+      dispatch(setGroups(commentsData.response.groups))
+      setIsLoading(false)
+    }
   }
   
   const fetchMoreComments = async () => {
@@ -303,7 +315,7 @@ const OpenPost = ({navigation}) => {
             style={[styles.list, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}
             keyExtractor={keyExtractor}
           />
-          <TextInputField isLightTheme={isLightTheme}/>
+          { comments ? <TextInputField isLightTheme={isLightTheme}/> : null}
           <OverlayWithButtons 
             slideAnimation={slideAnimation}
             handleShadowTouch={closeCommentMenu}

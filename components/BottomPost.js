@@ -34,7 +34,7 @@ const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost, navigatio
         } else {
           dispatch(setScrolling(false))
         }
-        navigation.navigate('OpenPost')
+        navigation.push('OpenPost')
       }
     }
     const unactiveButtonColor = isLightTheme ? COLORS.secondary : COLORS.smoke;

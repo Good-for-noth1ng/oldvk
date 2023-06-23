@@ -34,9 +34,17 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
   const imgUrl = groupData.photo_100 ? groupData.photo_100 : profileData.photo_100
   const name = groupData.name ? groupData.name : profileData.first_name + ' ' + profileData.last_name  
 
+  //TODO: nav to user wall
   const openGroup = () => {
-    sourceId !== undefined ? dispatch(setID(sourceId)) : dispatch(setID(from_id))
-    navigation.push('Group')
+    if (sourceId !== undefined) {
+      dispatch(setID(sourceId))
+      navigation.push('Group')
+    } else {
+
+    }
+    // dispatch(setID(from_id))
+    // console.log('navigating')
+    
   }
   
   let postNameTextStyle;

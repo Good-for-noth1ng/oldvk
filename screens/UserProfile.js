@@ -23,6 +23,7 @@ const UserProfile = ({navigation}) => {
   const userId = userData.id
   const offset = userData.offset
   const postData = userData.items
+  
   console.log(userId)
   const [isLoading, setIsLoading] = useState(true) 
   const userInfoUrlFields = 'friend_status,followers_count,photo_200,online,last_seen,counters,status,can_send_friend_request,can_write_private_message,can_post'

@@ -11,7 +11,7 @@ export const userWallSlice = createSlice({
     profiles: []
   },
   reducers: {
-    setID: (state, action) => {
+    setUserID: (state, action) => {
       return {
         ...state,
         id: action.payload
@@ -48,5 +48,5 @@ export const userWallSlice = createSlice({
     }
   }
 })
-export const { setID, setData, pushData, clear } = userWallSlice.actions
+export const { setUserID, setData, pushData, clear } = userWallSlice.actions
 export default userWallSlice.reducer

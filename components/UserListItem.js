@@ -3,7 +3,7 @@ import React from 'react'
 import { useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
 import { getUserAge } from '../utils/date'
-import { setID } from '../redux/userWallSlice'
+import { setUserID } from '../redux/userWallSlice'
 
 const UserListItem = ({ imgUrl, firstName, lastName, id, navigation, isLightTheme, bdate, city }) => {
   const dispatch = useDispatch()
@@ -11,7 +11,7 @@ const UserListItem = ({ imgUrl, firstName, lastName, id, navigation, isLightThem
   const cityName = city !== undefined && city.title
   const gap = (cityName && age) ? ', ' : ''
   const handleOnPress = () => {
-    dispatch(setID(id))
+    dispatch(setUserID(id))
     navigation.push('UserProfile')
   }
   return (

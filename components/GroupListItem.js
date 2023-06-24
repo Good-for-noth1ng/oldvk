@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { COLORS } from '../constants/theme'
 import { useDispatch } from 'react-redux'
-import { setID } from '../redux/groupSlice'
+import { setGroupID } from '../redux/groupSlice'
 import { getShortagedNumber } from '../utils/numShortage'
 
 const GroupListItem = ({data, navigation, isLightTheme}) => {
@@ -17,7 +17,7 @@ const GroupListItem = ({data, navigation, isLightTheme}) => {
     communityInfo = communityInfo.slice(0,33) + '...'
   }
   const handleOnPress = () => {
-    dispatch(setID(data.id))
+    dispatch(setGroupID(data.id))
     navigation.push('Group')
   }
   return (

@@ -16,6 +16,7 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
+        // console.log(inputField.current)
         if (inputField.current !== null && inputField.current !== undefined) {
           if ((inputField.current.isFocused() || showSearchInputField) && inputFieldText !== '') {
             inputField.current.clear()

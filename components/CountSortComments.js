@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import React, { useState} from 'react'
 import FontAwesome from 'react-native-vector-icons/FontAwesome5'
 import { COLORS } from '../constants/theme'
+
 const CountSortComments = ({comments, isLightTheme}) => {
   const [commentsCount, setCommentsCount] = useState(comments !== undefined ? comments : 0)
   return (
@@ -10,7 +11,7 @@ const CountSortComments = ({comments, isLightTheme}) => {
           {commentsCount} {commentsCount > 1 || commentsCount == 0 ? 'COMMENTS' : 'COMMENT'}
         </Text>
         <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
-          <Text style={{color: COLORS.primary, fontSize: 15}}>Ascending</Text>
+          <Text style={{color: COLORS.primary, fontSize: 15}}>Old</Text> 
           <FontAwesome color={COLORS.primary} style={{marginLeft: 4}} name='chevron-down'/>
         </View>
     </View>

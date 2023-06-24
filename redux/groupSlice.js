@@ -11,7 +11,7 @@ export const groupSlice = createSlice({
     profiles: []
   },
   reducers: {
-    setID: (state, action) => {
+    setGroupID: (state, action) => {
       let id 
       if (action.payload > 0) {
         id = action.payload * (-1)
@@ -52,5 +52,5 @@ export const groupSlice = createSlice({
     }
   },
 })
-export const { setID, setData, pushData } = groupSlice.actions
+export const { setGroupID, setData, pushData } = groupSlice.actions
 export default groupSlice.reducer

@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Pressable, Animated } from 'react-native'
 import React, { useState, useEffect} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { setID } from '../redux/userWallSlice'
+import { setUserID } from '../redux/userWallSlice'
 import CommentBottom from './CommentBottom'
 import { COLORS } from '../constants/theme'
 import { getHyperlinkInText } from '../utils/hyperlinks'
@@ -42,7 +42,7 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
   }
 
   const handleProfilePress = () => {
-    dispatch(setID(from_id))
+    dispatch(setUserID(from_id))
     navigation.navigate('UserProfile')
     // fetchProfileInfo(from_id, name, photoUrl, commentId)
   }

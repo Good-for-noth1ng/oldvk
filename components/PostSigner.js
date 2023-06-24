@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import { useSelector, useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
-import { setID } from '../redux/userWallSlice'
+import { setUserID } from '../redux/userWallSlice'
 
 const PostSigner = ({ signerID, navigation }) => {
   let name = ''
@@ -23,7 +23,7 @@ const PostSigner = ({ signerID, navigation }) => {
     } 
   }
   const onPress = () => {
-    dispatch(setID(signerID))
+    dispatch(setUserID(signerID))
     navigation.push('UserProfile')
   }
 

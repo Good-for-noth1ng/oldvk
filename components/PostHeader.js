@@ -4,7 +4,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import Feather from 'react-native-vector-icons/Feather'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
-import { setID } from '../redux/groupSlice'
+import { setGroupID } from '../redux/groupSlice'
+import { setUserID } from '../redux/userWallSlice'
 
 const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfileContent, from_id, navigation, isLightTheme}) => {  
   // if (isRepost) {console.log(sourceId, from_id)}
@@ -36,11 +37,12 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
 
   //TODO: nav to user wall
   const openGroup = () => {
-    if (sourceId !== undefined) {
-      dispatch(setID(sourceId))
+    if (wallId < 0) {
+      dispatch(setGroupID(wallId))
       navigation.push('Group')
     } else {
-
+      dispatch(setUserID(wallId))
+      navigation.push('UserProfile')
     }
     // dispatch(setID(from_id))
     // console.log('navigating')

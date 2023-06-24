@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ActivityIndicator, RefreshControl, BackHandler, Animated } from 'react-native'
-import React, {useEffect, useState, useRef} from 'react'
+import React, {useEffect, useState, useRef, useCallback, } from 'react'
+import { useFocusEffect } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux'
 import uuid from 'react-native-uuid';
 import GroupListItem from '../components/GroupListItem';
@@ -23,6 +24,7 @@ const GroupList = ({navigation}) => {
   const count = 5
   const [groupsCounterName, setGroupsCounterName] = useState('All communities')
   const slideAnimation = useRef(new Animated.Value(2000)).current
+  const filterIsOpen = useRef(false)
 
   useEffect(() => {
     initGroupList()
@@ -183,7 +185,21 @@ const GroupList = ({navigation}) => {
     return item.key
   }
 
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        if (filterIsOpen.current) {
+          closeFilterMenu()
+          return true
+        }
+      }
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress)
+      return () => subscription.remove()
+    }, [filterIsOpen.current])
+  )
+
   const closeFilterMenu = () => {
+    filterIsOpen.current = false
     Animated.timing(slideAnimation, {
       toValue: 2000,
       duration: 500,
@@ -192,6 +208,7 @@ const GroupList = ({navigation}) => {
   }
 
   const openFilters = () => {
+    filterIsOpen.current = true
     Animated.timing(slideAnimation, {
       toValue: 0,
       duration: 500,

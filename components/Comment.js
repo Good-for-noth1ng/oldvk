@@ -3,7 +3,7 @@ import React, { useEffect, useState, memo, } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
 import { startLoadingRegistrationDate, setRegistrationData } from '../redux/commentsSlice'
-import { setID } from '../redux/userWallSlice'
+import { setUserID } from '../redux/userWallSlice'
 import CommentBottom from './CommentBottom'
 import CommentReplies from './CommentReplies'
 import DividerWithLine from './DividerWithLine'
@@ -94,7 +94,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
   }
   
   const navigateToUserProfile = () => {
-    dispatch(setID(from_id))
+    dispatch(setUserID(from_id))
     // navigation.navigate('UserProfile')
     navigation.push('UserProfile')
   }

@@ -7,8 +7,9 @@ import CustomHeader from '../components/CustomHeader'
 import UserListItem from '../components/UserListItem'
 import DividerWithLine from '../components/DividerWithLine'
 import { COLORS } from '../constants/theme'
+
 //TODO:
-//add react-native-snap-carousel: on one page all users on another related
+//add react-native-snap-carousel: on one page all users on another related only
 //rename to ReactedUsersList
 const UserList = ({ navigation, headerTitle, fetchUsersList, fetchMoreUsersList }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
@@ -85,6 +86,7 @@ const UserList = ({ navigation, headerTitle, fetchUsersList, fetchMoreUsersList 
       />  
     )
   }
+
   const footer = () => {
     if (remainToFetchNum.current > 0) {
       return (

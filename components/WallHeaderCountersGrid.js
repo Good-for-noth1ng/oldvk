@@ -10,16 +10,16 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation })
   let row = []
   
   const navigateToFollowersList = () => {
-    if (ownerId < 0) {
-      // navigation.navigate('')
-    } else {
-      
-    }
+    navigation.push('FollowersList', { userId: ownerId })
+  }
+
+  const navigateToMembersList = () => {
+    navigation.push('MembersList', { groupId: -1 * ownerId })
   }
 
   if (membersCount !== undefined) {
     row.push(
-      <TouchableOpacity key={uuid.v4()} style={styles.counterButton}>
+      <TouchableOpacity key={uuid.v4()} style={styles.counterButton} onPress={navigateToMembersList}>
         <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(membersCount)}</Text>
         <Text style={styles.counterName} key={uuid.v4()}>members</Text>
       </TouchableOpacity>
@@ -38,7 +38,14 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation })
       key !== 'clips_likes' && 
       key !== 'pages'
     ) {
-      if(counters[key] !== 0) {
+      if (counters[key] !== 0 && key === 'followers') {
+        row.push(
+          <TouchableOpacity key={uuid.v4()} style={styles.counterButton} onPress={navigateToFollowersList}>
+            <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
+          </TouchableOpacity>
+        )
+      } else if(counters[key] !== 0) {
         row.push(
           <TouchableOpacity key={uuid.v4()} style={styles.counterButton}>
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>

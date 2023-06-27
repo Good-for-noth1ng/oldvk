@@ -7,7 +7,7 @@ import OpenPost from '../screens/OpenPost';
 import Group from '../screens/Group';
 import CommentThread from '../screens/CommentThread';
 import UserProfile from '../screens/UserProfile';
-import UserList from '../screens/UserList';
+import ReactedUsersList from '../screens/ReactedUsersList';
 import MembersList from '../screens/MembersList';
 import FollowersList from '../screens/FollowersList';
 
@@ -21,7 +21,7 @@ const NewsRoute = () => {
       <PostStack.Screen name='Group' component={Group} options={{headerShown: false, animation: 'slide_from_right'}} />
       <PostStack.Screen name='CommentThread' component={CommentThread} options={{headerShown: false, animation: 'slide_from_right'}} />
       <PostStack.Screen name='UserProfile' component={UserProfile} options={{headerShown: false, animation: 'slide_from_right'}} />
-      <PostStack.Screen name='UserList' component={UserList} options={{headerShown: false, animation: 'slide_from_right'}} />
+      <PostStack.Screen name='ReactedUsersList' component={ReactedUsersList} options={{headerShown: false, animation: 'slide_from_right'}} />
       <PostStack.Screen name='MembersList' component={MembersList} options={{headerShown: false, animation: 'slide_from_right'}} />
       <PostStack.Screen name='FollowersList' component={FollowersList} options={{headerShown: false, animation: 'slide_from_right'}} />
     </PostStack.Navigator>

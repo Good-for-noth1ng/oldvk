@@ -3,7 +3,7 @@ import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Friends from '../screens/Friends';
 import Group from '../screens/Group';
-import UserList from '../screens/UserList';
+import ReactedUsersList from '../screens/ReactedUsersList';
 import UserProfile from '../screens/UserProfile';
 import OpenPost from '../screens/OpenPost';
 import CommentThread from '../screens/CommentThread';
@@ -20,7 +20,7 @@ const FriendsRoute = () => {
       <FriendsStack.Screen name='OpenPost' component={OpenPost} options={{headerShown: false, animation: 'slide_from_right'}} />
       <FriendsStack.Screen name='CommentThread' component={CommentThread} options={{headerShown: false, animation: 'slide_from_right'}} />
       <FriendsStack.Screen name='Group' component={Group} options={{headerShown: false, animation: 'slide_from_right'}}/>
-      <FriendsStack.Screen name='UserList' component={UserList} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <FriendsStack.Screen name='ReactedUsersList' component={ReactedUsersList} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <FriendsStack.Screen name='MembersList' component={MembersList} options={{headerShown: false, animation: 'slide_from_right'}} />
       <FriendsStack.Screen name='FollowersList' component={FollowersList} options={{headerShown: false, animation: 'slide_from_right'}} />
     </FriendsStack.Navigator>

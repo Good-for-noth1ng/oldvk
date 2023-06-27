@@ -10,8 +10,7 @@ import { COLORS } from '../constants/theme'
 
 //TODO:
 //add react-native-snap-carousel: on one page all users on another related only
-//rename to ReactedUsersList
-const UserList = ({ navigation, headerTitle, fetchUsersList, fetchMoreUsersList }) => {
+const ReactedUsersList = ({ navigation }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const [isLoading, setIsLoading] = useState(true)
@@ -155,7 +154,7 @@ const UserList = ({ navigation, headerTitle, fetchUsersList, fetchMoreUsersList 
   )
 }
 
-export default UserList
+export default ReactedUsersList
 
 const styles = StyleSheet.create({
   headerTextStyle: {

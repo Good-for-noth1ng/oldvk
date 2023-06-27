@@ -87,7 +87,7 @@ const OpenPost = ({navigation}) => {
   }
 
   const navigateToUserList = () => {
-    navigation.push('UserList')
+    navigation.push('ReactedUsersList')
   }
 
   const commentMenuButtons = [

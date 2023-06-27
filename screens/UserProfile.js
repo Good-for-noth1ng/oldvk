@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, FlatList } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import uuid from 'react-native-uuid';
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -21,14 +21,16 @@ const UserProfile = ({navigation}) => {
   const accessToken = useSelector(state => state.user.accessToken)
   const userData = useSelector(state => state.userWall)
   const userId = userData.id
-  const offset = userData.offset
+  const count = 15
+  const offset = useRef(0) 
+  const remainToFetch = useRef()
   const postData = userData.items
   
   console.log(userId)
   const [isLoading, setIsLoading] = useState(true) 
   const userInfoUrlFields = 'friend_status,followers_count,photo_200,online,last_seen,counters,status,can_send_friend_request,can_write_private_message,can_post'
   const userInfoUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${userId}&fields=${userInfoUrlFields}`
-  const userWallUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&v=5.131&owner_id=${userId}&extended=1&count=20`
+  const userWallUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&v=5.131&owner_id=${userId}&extended=1&count=${count}`
   const [wallHeaderData , setWallHeaderData] = useState({})
 
   //TODO:
@@ -77,10 +79,28 @@ const UserProfile = ({navigation}) => {
       })
       dispatch(clear())
       dispatch(setData(userWallContentData.response))
+      offset.current += count
+      remainToFetch.current = userWallContentData.response.count - count
     } else if (userWallContentData.error.error_code === 30) {
+      remainToFetch.current = 0
       dispatch(clear())
     }
     setIsLoading(false)
+  }
+
+  const fetchMore = async () => {
+    const fetchMoreWallContentUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&v=5.131&owner_id=${userId}&extended=1&count=${count}&offset=${offset.current}`
+    const wallContentResponse = await fetch(fetchMoreWallContentUrl)
+    const wallContent = await wallContentResponse.json()
+    if (wallContent.error === undefined) {
+      wallContent.response.items.forEach((item, index, array) => {
+        array[index] = {...item, key: uuid.v4()}
+      })
+      dispatch(pushData(wallContent.response))
+      offset.current += count
+      remainToFetch.current -= count
+    }
+
   }
 
   const goBack = () => {
@@ -124,8 +144,30 @@ const UserProfile = ({navigation}) => {
   }
 
   const listFooter = () => {
+    if (remainToFetch.current > 0) {
+      return (
+        <>
+          <View style={[{justifyContent: 'center'}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColorL: COLORS.primary_dark}]}>
+            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={40}/>
+          </View>
+          <DividerWithLine 
+            dividerHeight={5} 
+            marginB={10} 
+            borderBL={5} 
+            borderBR={5} 
+            dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+          />
+        </>
+      )
+    }
     return (
-      <DividerWithLine marginB={5}/>      
+      <DividerWithLine 
+        dividerHeight={10} 
+        marginB={10} 
+        borderBL={5} 
+        borderBR={5} 
+        dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+      />
     )
   }
 
@@ -149,6 +191,8 @@ const UserProfile = ({navigation}) => {
           ListHeaderComponent={listHeader}
           renderItem={renderItem}
           ListFooterComponent={listFooter}
+          onEndReached={fetchMore}
+          onEndReachedThreshold={0.5}
         />
       }
     </SafeAreaView>

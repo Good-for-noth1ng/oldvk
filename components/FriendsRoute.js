@@ -9,6 +9,7 @@ import OpenPost from '../screens/OpenPost';
 import CommentThread from '../screens/CommentThread';
 import MembersList from '../screens/MembersList';
 import FollowersList from '../screens/FollowersList';
+import SubscriptionsList from '../screens/SubscriptionsList';
 
 const FriendsStack = createNativeStackNavigator();
 
@@ -23,6 +24,7 @@ const FriendsRoute = () => {
       <FriendsStack.Screen name='ReactedUsersList' component={ReactedUsersList} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <FriendsStack.Screen name='MembersList' component={MembersList} options={{headerShown: false, animation: 'slide_from_right'}} />
       <FriendsStack.Screen name='FollowersList' component={FollowersList} options={{headerShown: false, animation: 'slide_from_right'}} />
+      <FriendsStack.Screen name='SubscriptionsList' component={SubscriptionsList} options={{headerShown: false, animation: 'slide_from_right'}} />
     </FriendsStack.Navigator>
   )
 }

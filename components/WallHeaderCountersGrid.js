@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 import uuid from 'react-native-uuid';
+import AntDesign from 'react-native-vector-icons/AntDesign'
 import { COLORS } from '../constants/theme'
 import { getShortagedNumber } from '../utils/numShortage'
 import { getNameInGroupHeader } from '../utils/getNameByKey';
@@ -9,6 +10,15 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation })
   let countersGrid = []
   let row = []
   
+  const navigateToGroupsList = () => {
+    console.log('nav')
+    // navigation.navigate('GroupList', { userId: ownerId})
+  }
+
+  const navigateToSubscriptions = () => {
+    navigation.push('SubscriptionsList', {userId: ownerId})
+  }
+
   const navigateToFollowersList = () => {
     navigation.push('FollowersList', { userId: ownerId })
   }
@@ -41,6 +51,20 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation })
       if (counters[key] !== 0 && key === 'followers') {
         row.push(
           <TouchableOpacity key={uuid.v4()} style={styles.counterButton} onPress={navigateToFollowersList}>
+            <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
+          </TouchableOpacity>
+        )
+      } else if (counters[key] !== 0 && key === 'subscriptions') {
+        row.push(
+          <TouchableOpacity key={uuid.v4()} style={styles.counterButton} onPress={navigateToSubscriptions}>
+            <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
+          </TouchableOpacity>
+        )
+      } else if (counters[key] !== 0 && key === 'groups') {
+        row.push(
+          <TouchableOpacity key={uuid.v4()} style={styles.counterButton} onPress={navigateToGroupsList}>
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
             <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
           </TouchableOpacity>

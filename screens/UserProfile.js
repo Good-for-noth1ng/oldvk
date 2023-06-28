@@ -14,7 +14,7 @@ import WallIsPrivateText from '../components/WallIsPrivateText';
 import { setData, pushData, clear } from '../redux/userWallSlice'
 import { COLORS } from '../constants/theme'
 
-
+// fix redux calls
 const UserProfile = ({navigation}) => {
   const dispatch = useDispatch()
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)

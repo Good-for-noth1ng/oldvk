@@ -10,6 +10,7 @@ import UserProfile from '../screens/UserProfile';
 import ReactedUsersList from '../screens/ReactedUsersList';
 import MembersList from '../screens/MembersList';
 import FollowersList from '../screens/FollowersList';
+import SubscriptionsList from '../screens/SubscriptionsList';
 
 const PostStack = createNativeStackNavigator();
 
@@ -24,6 +25,7 @@ const NewsRoute = () => {
       <PostStack.Screen name='ReactedUsersList' component={ReactedUsersList} options={{headerShown: false, animation: 'slide_from_right'}} />
       <PostStack.Screen name='MembersList' component={MembersList} options={{headerShown: false, animation: 'slide_from_right'}} />
       <PostStack.Screen name='FollowersList' component={FollowersList} options={{headerShown: false, animation: 'slide_from_right'}} />
+      <PostStack.Screen name='SubscriptionsList' component={SubscriptionsList} options={{headerShown: false, animation: 'slide_from_right'}} />
     </PostStack.Navigator>
   )
 }

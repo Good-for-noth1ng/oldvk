@@ -10,6 +10,7 @@ import ReactedUsersList from '../screens/ReactedUsersList';
 import MembersList from '../screens/MembersList';
 import FollowersList from '../screens/FollowersList';
 import SubscriptionsList from '../screens/SubscriptionsList';
+import UsersGroups from '../screens/UsersGroups';
 
 const GroupStack = createNativeStackNavigator();
 
@@ -25,6 +26,7 @@ const GropsRoute = () => {
       <GroupStack.Screen name='MembersList' component={MembersList} options={{headerShown: false, animation: 'slide_from_right'}} />
       <GroupStack.Screen name='FollowersList' component={FollowersList} options={{headerShown: false, animation: 'slide_from_right'}} />
       <GroupStack.Screen name='SubscriptionsList' component={SubscriptionsList} options={{headerShown: false, animation: 'slide_from_right'}} />
+      <GroupStack.Screen name='UsersGroups' component={UsersGroups} options={{headerShown: false, animation: 'slide_from_right'}}/>
     </GroupStack.Navigator>
   )
 }

@@ -11,8 +11,7 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation })
   let row = []
   
   const navigateToGroupsList = () => {
-    console.log('nav')
-    // navigation.navigate('GroupList', { userId: ownerId})
+    navigation.navigate('UsersGroups', { userId: ownerId})
   }
 
   const navigateToSubscriptions = () => {

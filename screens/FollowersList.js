@@ -33,7 +33,7 @@ const FollowersList = ({ navigation, route }) => {
   }
 
   useEffect(() => {
-    setIsLoading(true)
+    // setIsLoading(true)
     fetchFollowers()
     setIsLoading(false)
   }, [])
@@ -43,7 +43,10 @@ const FollowersList = ({ navigation, route }) => {
   }
 
   const fetchMoreFollowers = () => {
-    fetchFollowers()
+    console.log('more followers')
+    if (remainToFetchNum.current > 0) {
+      fetchFollowers()
+    }
   }
 
   const renderItem = ({item}) => {
@@ -113,27 +116,22 @@ const FollowersList = ({ navigation, route }) => {
         headerName={<Text style={styles.headerTextStyle}>Followers</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
-      />
-      {
-        isLoading ?
-        <View style={styles.spinnerContainer}>
-          <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
-        </View> : 
-          usersList.length > 0 ? 
-            <FlatList
-              style={styles.list} 
-              data={usersList}
-              renderItem={renderItem}
-              ListFooterComponent={footer}
-              ListHeaderComponent={listHeader}
-              ItemSeparatorComponent={listSeparator}
-              showsVerticalScrollIndicator={false}
-              onEndReached={fetchMoreFollowers}
-            /> :
-            <View style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center'}}>
-              <Text style={{color: COLORS.secondary, fontSize: 17, fontWeight: 'bold',}}>No Followers</Text>
-            </View>
-      }
+      /> 
+          <FlatList
+            style={styles.list} 
+            data={usersList}
+            renderItem={renderItem}
+            ListFooterComponent={footer}
+            ListHeaderComponent={listHeader}
+            ItemSeparatorComponent={listSeparator}
+            showsVerticalScrollIndicator={false}
+            onEndReached={fetchMoreFollowers}
+            ListEmptyComponent={
+              <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+                <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+              </View>
+            }
+          /> 
     </SafeAreaView>
   )
 }

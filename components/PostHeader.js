@@ -31,22 +31,25 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
       return profiles.find(profile => profile.id === wallId)
     })
   }
-  
-  const imgUrl = groupData.photo_100 ? groupData.photo_100 : profileData.photo_100
-  const name = groupData.name ? groupData.name : profileData.first_name + ' ' + profileData.last_name  
+  let imgUrl
+  let name
+  // console.log(groupData, profileData)
+  if (groupData !== undefined) {
+    imgUrl = groupData.photo_100 ? groupData.photo_100 : profileData.photo_100
+    name = groupData.name ? groupData.name : profileData.first_name + ' ' + profileData.last_name
+  } else {
+    console.log(wallId)
+  }
+    
 
-  //TODO: nav to user wall
   const openGroup = () => {
     if (wallId < 0) {
       dispatch(setGroupID(wallId))
-      navigation.push('Group')
+      navigation.push('Group', {groupId: -1 * wallId})
     } else {
       dispatch(setUserID(wallId))
-      navigation.push('UserProfile')
+      navigation.push('UserProfile', {userId: wallId})
     }
-    // dispatch(setID(from_id))
-    // console.log('navigating')
-    
   }
   
   let postNameTextStyle;

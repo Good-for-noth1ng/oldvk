@@ -24,7 +24,7 @@ const PostSigner = ({ signerID, navigation }) => {
   }
   const onPress = () => {
     dispatch(setUserID(signerID))
-    navigation.push('UserProfile')
+    navigation.push('UserProfile', {userId: signerID})
   }
 
   return (

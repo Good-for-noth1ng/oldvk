@@ -12,7 +12,7 @@ const UsersGroups = ({ navigation, route }) => {
   const accessToken = useSelector(state => state.user.accessToken)
   const [isLoading, setIsLoading] = useState(true)
   const [groups, setGroups] = useState([])
-  const count = 40
+  const count = 100
   const offset = useRef(0)
   const remainToFetchNum = useRef(null)
   const { userId } = route.params
@@ -37,7 +37,10 @@ const UsersGroups = ({ navigation, route }) => {
   }, [])
 
   const fetchMoreUsersGroups = () => {
-    console.log('end reached')
+    console.log('fetch more')
+    if(remainToFetchNum.current > 0) {
+      fetchUsersGroups()
+    }
     // fetchUsersGroups()
   }
 
@@ -108,23 +111,16 @@ const UsersGroups = ({ navigation, route }) => {
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />
-      {
-        isLoading ?
-          <View style={[styles.spinnerContainer]}>
-             <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
-          </View>:
-          <FlatList
-            style={styles.list}
-            data={groups}
-            renderItem={renderItem}
-            ListFooterComponent={footer}
-            ListHeaderComponent={listHeader}
-            ItemSeparatorComponent={listSeparator}
-            showsVerticalScrollIndicator={false}
-            onEndReachedThreshold={1}
-            onEndReached={fetchMoreUsersGroups}
-          />
-      }
+      <FlatList
+        style={styles.list}
+        data={groups}
+        renderItem={renderItem}
+        ListFooterComponent={footer}
+        ListHeaderComponent={listHeader}
+        ItemSeparatorComponent={listSeparator}
+        showsVerticalScrollIndicator={false}
+        onEndReached={fetchMoreUsersGroups}
+      />
     </SafeAreaView>
   )
 }

@@ -12,9 +12,8 @@ import { COLORS } from '../constants/theme'
 const SubscriptionsList = ({ navigation, route }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
-  const [isLoading, setIsLoading] = useState(true)
   const [subscriptions, setSubscriptions] = useState([])
-  const count = 10
+  const count = 30
   const offset = useRef(0)
   const remainToFetchNum = useRef(null)
   const { userId } = route.params
@@ -35,12 +34,13 @@ const SubscriptionsList = ({ navigation, route }) => {
 
   useEffect(() => {
     fetchSubscriptions()
-    setIsLoading(false)
   }, [])
 
   const fetchMoreSubscriptions = () => {
     console.log('mores subs')
-    fetchSubscriptions()
+    if (remainToFetchNum.current > 0) {
+      fetchSubscriptions()
+    }
   }
 
   const renderItem = ({item}) => {
@@ -121,12 +121,6 @@ const SubscriptionsList = ({ navigation, route }) => {
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />
-      {
-        isLoading ?
-        <View style={styles.spinnerContainer}>
-          <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
-        </View> :
-        subscriptions.length > 0 ?
           <FlatList
             style={styles.list} 
             data={subscriptions}
@@ -136,11 +130,12 @@ const SubscriptionsList = ({ navigation, route }) => {
             ListHeaderComponent={listHeader}
             ItemSeparatorComponent={listSeparator}
             onEndReached={fetchMoreSubscriptions}
-          /> :
-          <View style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center'}}>
-            <Text style={{color: COLORS.secondary, fontSize: 17, fontWeight: 'bold',}}>No Subscriptions</Text>
-          </View>
-      }
+            ListEmptyComponent={
+              <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+                <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+              </View>
+            }
+           />
     </SafeAreaView>
   )
 }

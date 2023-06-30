@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import uuid from 'react-native-uuid';
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import Entypo from 'react-native-vector-icons/Entypo'
 import CustomHeader from '../components/CustomHeader'
 import WallHeaderGeneralInfo from '../components/WallHeaderGeneralInfo';
 import WallHeaderCountersGrid from '../components/WallHeaderCountersGrid';
@@ -15,16 +16,20 @@ import { setData, pushData, clear } from '../redux/userWallSlice'
 import { COLORS } from '../constants/theme'
 
 // fix redux calls
-const UserProfile = ({navigation}) => {
+const UserProfile = ({navigation, route}) => {
   const dispatch = useDispatch()
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
-  const userData = useSelector(state => state.userWall)
-  const userId = userData.id
+  
+  const currentUserId = useSelector(state => state.user.userId)
+  const {userId} = route.params
+  
   const count = 15
   const offset = useRef(0) 
-  const remainToFetch = useRef()
-  const postData = userData.items
+  const remainToFetch = useRef(null)
+  const [userData, setUserData] = useState([])
+  // const userData = useSelector(state => state.userWall)
+  // const postData = userData.items
   
   console.log(userId)
   const [isLoading, setIsLoading] = useState(true) 
@@ -33,6 +38,7 @@ const UserProfile = ({navigation}) => {
   const userWallUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&v=5.131&owner_id=${userId}&extended=1&count=${count}`
   const [wallHeaderData , setWallHeaderData] = useState({})
 
+  
   //TODO:
   //const allData = Promise.all([fetchReq1, fetchReq2, fetchReq3]);
   //allData.then((res) => console.log(res));
@@ -79,6 +85,7 @@ const UserProfile = ({navigation}) => {
       })
       dispatch(clear())
       dispatch(setData(userWallContentData.response))
+      setUserData(userWallContentData.response.items)
       offset.current += count
       remainToFetch.current = userWallContentData.response.count - count
     } else if (userWallContentData.error.error_code === 30) {
@@ -97,10 +104,15 @@ const UserProfile = ({navigation}) => {
         array[index] = {...item, key: uuid.v4()}
       })
       dispatch(pushData(wallContent.response))
+      setUserData(prevState => prevState.concat(wallContent.response.items))
       offset.current += count
       remainToFetch.current -= count
     }
 
+  }
+
+  const openDrawer = () => {
+    navigation.openDrawer()
   }
 
   const goBack = () => {
@@ -147,38 +159,30 @@ const UserProfile = ({navigation}) => {
     if (remainToFetch.current > 0) {
       return (
         <>
-          <View style={[{justifyContent: 'center'}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColorL: COLORS.primary_dark}]}>
+          <View style={[{justifyContent: 'center'}]}>
             <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={40}/>
           </View>
-          <DividerWithLine 
-            dividerHeight={5} 
-            marginB={10} 
-            borderBL={5} 
-            borderBR={5} 
-            dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
-          />
         </>
       )
     }
-    return (
-      <DividerWithLine 
-        dividerHeight={10} 
-        marginB={10} 
-        borderBL={5} 
-        borderBR={5} 
-        dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
-      />
-    )
+    return null
   }
 
+  // console.log(navigation.getParent())
   return (
     <SafeAreaView style={isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
       <CustomHeader 
-        iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
+        iconComponent={
+          currentUserId === userId ?
+          <Entypo name='menu' color={COLORS.white} size={30}/> :
+          <AntDesign name='arrowleft' size={30} color={COLORS.white}/>
+        }
         isLightTheme={isLightTheme}
-        iconTouchHandler={goBack}
+        iconTouchHandler={currentUserId === userId ? openDrawer : goBack}
         headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>Profile</Text>}
+        isScreenFromDrawerMenu={userId === currentUserId}
+        navigation={navigation}
       />
       {
         isLoading ?
@@ -186,7 +190,7 @@ const UserProfile = ({navigation}) => {
           <ActivityIndicator size={50} color={isLightTheme ? COLORS.primary : COLORS.white}/>
         </View> : 
         <FlatList
-          data={postData}
+          data={userData}
           style={styles.list}
           ListHeaderComponent={listHeader}
           renderItem={renderItem}
@@ -217,7 +221,8 @@ const styles = StyleSheet.create({
   },
   list: {
     marginLeft: 5,
-    marginRight: 5
+    marginRight: 5,
+    marginBottom: 5
   },
   wallHeaderContainer: {
     padding: 10,

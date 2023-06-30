@@ -44,7 +44,7 @@ const Home = () => {
           drawerType: 'slide'
       }}
     >
-        <Drawer.Screen name={userName} component={UserProfile} options={{
+        <Drawer.Screen name={'CurrentUser'} component={UserProfile} options={{
           drawerIcon: () => (
             <Image source={{uri: urlDrawerPhoto}} style={{width: 80, height: 80, borderRadius: 5}}/>
           ),

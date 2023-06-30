@@ -1,10 +1,9 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React, {useEffect, useState} from 'react'
 import {DrawerContentScrollView, DrawerItemList} from '@react-navigation/drawer'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import {COLORS} from '../constants/theme'
 import DrawerSwitchersContainer from './DrawerSwitchersContainer'
-import { setID } from '../redux/userWallSlice'
 
 
 const CustomDrawer = (props) => {
@@ -13,11 +12,11 @@ const CustomDrawer = (props) => {
   const firstName = userData.firstName
   const lastName = userData.lastName
   const { navigation } = props
-  const dispatch = useDispatch()
+
   const goToUserProfilePage = () => {
-    dispatch(setID(userData.userId))
-    navigation.navigate('UserProfile')
+    navigation.navigate('CurrentUser', {userId: userData.userId})
   }
+
   return (
     <View style={{flex: 1, backgroundColor: COLORS.very_dark_gray}}>
       <DrawerContentScrollView>

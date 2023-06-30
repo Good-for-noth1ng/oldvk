@@ -96,7 +96,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
   const navigateToUserProfile = () => {
     dispatch(setUserID(from_id))
     // navigation.navigate('UserProfile')
-    navigation.push('UserProfile')
+    navigation.push('UserProfile', {userId: from_id})
   }
 
   const onPressIn = () => {

@@ -18,6 +18,7 @@ import CustomDrawer from './CustomDrawer';
 import NewsRoute from './NewsRoute';
 import GropsRoute from './GropsRoute';
 import FriendsRoute from './FriendsRoute';
+import UserPageRoute from './UserPageRoute';
 import UserProfile from '../screens/UserProfile';
 import { COLORS } from '../constants/theme';
 
@@ -44,7 +45,7 @@ const Home = () => {
           drawerType: 'slide'
       }}
     >
-        <Drawer.Screen name={'CurrentUser'} component={UserProfile} options={{
+        <Drawer.Screen name={'CurrentUser'} component={UserPageRoute} options={{
           drawerIcon: () => (
             <Image source={{uri: urlDrawerPhoto}} style={{width: 80, height: 80, borderRadius: 5}}/>
           ),

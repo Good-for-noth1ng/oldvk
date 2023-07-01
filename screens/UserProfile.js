@@ -12,6 +12,7 @@ import DividerWithLine from '../components/DividerWithLine'
 import Post from '../components/Post';
 import Repost from '../components/Repost';
 import WallIsPrivateText from '../components/WallIsPrivateText';
+import WallHeaderPostSuggestButton from '../components/WallHeaderPostSuggestButton';
 import { setData, pushData, clear } from '../redux/userWallSlice'
 import { COLORS } from '../constants/theme'
 
@@ -22,8 +23,9 @@ const UserProfile = ({navigation, route}) => {
   const accessToken = useSelector(state => state.user.accessToken)
   
   const currentUserId = useSelector(state => state.user.userId)
-  const {userId} = route.params
-  
+
+  const userId = route.params !== undefined ? route.params.userId : currentUserId
+  console.log(currentUserId, userId)
   const count = 15
   const offset = useRef(0) 
   const remainToFetch = useRef(null)
@@ -31,7 +33,6 @@ const UserProfile = ({navigation, route}) => {
   // const userData = useSelector(state => state.userWall)
   // const postData = userData.items
   
-  console.log(userId)
   const [isLoading, setIsLoading] = useState(true) 
   const userInfoUrlFields = 'friend_status,followers_count,photo_200,online,last_seen,counters,status,can_send_friend_request,can_write_private_message,can_post'
   const userInfoUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${userId}&fields=${userInfoUrlFields}`
@@ -65,6 +66,7 @@ const UserProfile = ({navigation, route}) => {
       isOnlineUsingMobile = false
       isOnlineUsingPC = false
     }
+    console.log(userInfoData.response[0].can_post)
     setWallHeaderData({
       userName: `${userInfoData.response[0].first_name} ${userInfoData.response[0].last_name}`,
       canAccessClosed: userInfoData.response[0].can_access_closed, 
@@ -77,7 +79,8 @@ const UserProfile = ({navigation, route}) => {
       counters: userInfoData.response[0].counters,
       lastSeen: userInfoData.response[0].last_seen,
       canSendFriendRequest: userInfoData.response[0].can_send_friend_request,
-      canWritePrivateMessage: userInfoData.response[0].can_write_private_message
+      canWritePrivateMessage: userInfoData.response[0].can_write_private_message,
+      canPost: userInfoData.response[0].can_post === 1 ? true : false
     })
     if (userWallContentData.error === undefined) {
       userWallContentData.response.items.forEach((item, index, array) => {
@@ -144,6 +147,9 @@ const UserProfile = ({navigation, route}) => {
       {
         wallHeaderData.canAccessClosed === false && wallHeaderData.isClosed === true ?
         <WallIsPrivateText isPrivateText={'Profile is private'}/> : null
+      }
+      {
+        wallHeaderData.canPost ? <WallHeaderPostSuggestButton canPost={wallHeaderData.canPost}/> : null
       }
     </View>
   )

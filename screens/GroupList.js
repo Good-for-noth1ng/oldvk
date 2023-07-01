@@ -25,6 +25,7 @@ const GroupList = ({navigation}) => {
   const [groupsCounterName, setGroupsCounterName] = useState('All communities')
   const slideAnimation = useRef(new Animated.Value(2000)).current
   const filterIsOpen = useRef(false)
+  let connectionController
 
   useEffect(() => {
     initGroupList()
@@ -124,20 +125,31 @@ const GroupList = ({navigation}) => {
 
   const fetchMoreGroups = async () => {
     if (searchQuery.current === '') {
-      const fetchedUsersGroups = await fetchUsersGroups()
-      remainToFetchNum.current -= count
-      setGroupsData(prevState => prevState.concat(fetchedUsersGroups.items))
+      if (remainToFetchNum.current > 0) {
+        const fetchedUsersGroups = await fetchUsersGroups()
+        remainToFetchNum.current -= count
+        setGroupsData(prevState => prevState.concat(fetchedUsersGroups.items))
+      }
     } else {
-      const fetchedByQueryGroups = await getGroupsByQuery()
-      remainToFetchNum.current -= count
-      setGroupsData(prevState => prevState.concat(fetchedByQueryGroups.items))
-      // setGroupsData(prevState => [...prevState, ...fetchedByQueryGroups.items])
+      if (remainToFetchNum.current > 0) {
+        const fetchedByQueryGroups = await getGroupsByQuery()
+        remainToFetchNum.current -= count
+        setGroupsData(prevState => prevState.concat(fetchedByQueryGroups.items))
+      }
     }
   }
 
+  //TODO: add AbortController()
   const getGroupsByQuery = async () => {
+    if (connectionController === undefined) {
+      connectionController = new AbortController()
+    } else {
+      connectionController.abort()
+      connectionController = new AbortController()
+    }
+    const signal = connectionController.signal
     const groupSearchUrl = `https://api.vk.com/method/groups.search?q=${searchQuery.current}&access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}`
-    const searchResponse = await fetch(groupSearchUrl)
+    const searchResponse = await fetch(groupSearchUrl, { signal })
     const searchData = await searchResponse.json()
     const groupsNum = searchData.response.count
     const groupsItems = searchData.response.items
@@ -146,7 +158,7 @@ const GroupList = ({navigation}) => {
       return item.id
     }).join()
     const getGroupUrl = `https://api.vk.com/method/groups.getById?group_ids=${ids}&access_token=${accessToken}&fields=members_count,activity&v=5.131`
-    const groupsListResponse = await fetch(getGroupUrl)
+    const groupsListResponse = await fetch(getGroupUrl, { signal })
     const data = await groupsListResponse.json()
     const items = data.response.map(item => {return {...item, key: uuid.v4()}})
     return {

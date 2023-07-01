@@ -83,7 +83,7 @@ const OpenPost = ({navigation}) => {
   
   const navigateToUserProfile = (userId) => {
     dispatch(setID(userId))
-    navigation.push('UserProfile')
+    navigation.push('UserProfile', {userId})
   }
 
   const navigateToUserList = () => {

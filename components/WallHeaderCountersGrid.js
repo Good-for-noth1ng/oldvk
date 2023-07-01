@@ -11,11 +11,11 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation })
   let row = []
   
   const navigateToGroupsList = () => {
-    navigation.navigate('UsersGroups', { userId: ownerId})
+    navigation.push('UsersGroups', { userId: ownerId })
   }
 
   const navigateToSubscriptions = () => {
-    navigation.push('SubscriptionsList', {userId: ownerId})
+    navigation.push('SubscriptionsList', { userId: ownerId })
   }
 
   const navigateToFollowersList = () => {
@@ -45,7 +45,10 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation })
       key !== 'clips_views' && 
       key !== 'clips' && 
       key !== 'clips_likes' && 
-      key !== 'pages'
+      key !== 'pages' &&
+      key !== 'audio_playlists' &&
+      key !== 'clips_followers' &&
+      key !== 'market_services'
     ) {
       if (counters[key] !== 0 && key === 'followers') {
         row.push(

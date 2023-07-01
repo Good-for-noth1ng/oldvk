@@ -30,11 +30,7 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
           }
         } else {
           if (isScreenFromDrawerMenu) {
-            if (navigation.getParent().openDrawer === undefined) {
-              navigation.openDrawer()
-            } else {
-              navigation.getParent().openDrawer()
-            }
+            navigation.openDrawer()
             return true
           } else {
             return false

@@ -117,21 +117,21 @@ const FollowersList = ({ navigation, route }) => {
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       /> 
-          <FlatList
-            style={styles.list} 
-            data={usersList}
-            renderItem={renderItem}
-            ListFooterComponent={footer}
-            ListHeaderComponent={listHeader}
-            ItemSeparatorComponent={listSeparator}
-            showsVerticalScrollIndicator={false}
-            onEndReached={fetchMoreFollowers}
-            ListEmptyComponent={
-              <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
-                <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
-              </View>
-            }
-          /> 
+        <FlatList
+          style={styles.list} 
+          data={usersList}
+          renderItem={renderItem}
+          ListFooterComponent={footer}
+          ListHeaderComponent={listHeader}
+          ItemSeparatorComponent={listSeparator}
+          showsVerticalScrollIndicator={false}
+          onEndReached={fetchMoreFollowers}
+          ListEmptyComponent={
+            <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+              <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+            </View>
+          }
+        /> 
     </SafeAreaView>
   )
 }

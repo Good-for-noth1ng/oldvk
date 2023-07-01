@@ -120,6 +120,11 @@ const UsersGroups = ({ navigation, route }) => {
         ItemSeparatorComponent={listSeparator}
         showsVerticalScrollIndicator={false}
         onEndReached={fetchMoreUsersGroups}
+        ListEmptyComponent={
+          <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+          </View>
+        }
       />
     </SafeAreaView>
   )

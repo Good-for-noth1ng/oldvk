@@ -48,7 +48,12 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation })
       key !== 'pages' &&
       key !== 'audio_playlists' &&
       key !== 'clips_followers' &&
-      key !== 'market_services'
+      key !== 'market_services' &&
+      key !== 'market' &&
+      key !== 'video_playlists' &&
+      key !== 'audios' &&
+      key !== 'narratives' &&
+      key !== 'podcasts'
     ) {
       if (counters[key] !== 0 && key === 'followers') {
         row.push(
@@ -85,7 +90,7 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation })
     countersGrid.push(<View key={uuid.v4()} style={styles.counterRow}>{row}</View>)
   }
   return (
-    <View>
+    <View style={{paddingLeft: 4, paddingRight: 4}}>
       {countersGrid}
     </View>
   )
@@ -97,7 +102,9 @@ const styles = StyleSheet.create({
   counterRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-evenly',
+    justifyContent: 'flex-start',
+    gap: 4,
+    // justifyContent: 'space-evenly',
     marginTop: 5,
     marginBottom: 5,
   },
@@ -108,6 +115,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',    
+    // marginLeft: 3,
+    // marginRight: 3
   },
   counterNumber: {
     fontSize: 17,

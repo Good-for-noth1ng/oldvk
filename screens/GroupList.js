@@ -25,7 +25,7 @@ const GroupList = ({navigation}) => {
   const [groupsCounterName, setGroupsCounterName] = useState('All communities')
   const slideAnimation = useRef(new Animated.Value(2000)).current
   const filterIsOpen = useRef(false)
-  let connectionController
+  const connectionController = useRef(undefined)
 
   useEffect(() => {
     initGroupList()
@@ -141,15 +141,13 @@ const GroupList = ({navigation}) => {
 
   //TODO: add AbortController()
   const getGroupsByQuery = async () => {
-    if (connectionController === undefined) {
-      connectionController = new AbortController()
-    } else {
-      connectionController.abort()
-      connectionController = new AbortController()
-    }
-    const signal = connectionController.signal
+    if (connectionController.current) {
+      connectionController.current.abort()
+    } 
+    connectionController.current = new AbortController()
+    const signal = connectionController.current.signal
     const groupSearchUrl = `https://api.vk.com/method/groups.search?q=${searchQuery.current}&access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}`
-    const searchResponse = await fetch(groupSearchUrl, { signal })
+    const searchResponse = await fetch(groupSearchUrl, { signal: signal })
     const searchData = await searchResponse.json()
     const groupsNum = searchData.response.count
     const groupsItems = searchData.response.items

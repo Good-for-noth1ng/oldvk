@@ -10,6 +10,7 @@ import MembersList from '../screens/MembersList';
 import FollowersList from '../screens/FollowersList';
 import SubscriptionsList from '../screens/SubscriptionsList';
 import UsersGroups from '../screens/UsersGroups';
+import VideosList from '../screens/VideosList';
 
 const UserPageStack = createNativeStackNavigator();
 
@@ -25,6 +26,7 @@ const UserPageRoute = () => {
       <UserPageStack.Screen name='FollowersList' component={FollowersList} options={{headerShown:false, animation: 'slide_from_right'}} />
       <UserPageStack.Screen name='SubscriptionsList' component={SubscriptionsList} options={{headerShown:false, animation: 'slide_from_right'}} />
       <UserPageStack.Screen name='UsersGroups' component={UsersGroups} options={{headerShown:false, animation: 'slide_from_right'}} />
+      <UserPageStack.Screen name='VideosList' component={VideosList} options={{headerShown:false, animation: 'slide_from_right'}} />
     </UserPageStack.Navigator>
   )
 }

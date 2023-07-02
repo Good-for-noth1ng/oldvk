@@ -176,7 +176,7 @@ const UserProfile = ({navigation, route}) => {
 
   // console.log(navigation.getParent())
   return (
-    <SafeAreaView style={isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
+    <SafeAreaView style={[styles.mainContainer, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
       <CustomHeader 
         iconComponent={
@@ -202,7 +202,7 @@ const UserProfile = ({navigation, route}) => {
           renderItem={renderItem}
           ListFooterComponent={listFooter}
           onEndReached={fetchMore}
-          onEndReachedThreshold={0.5}
+          onEndReachedThreshold={0.8}
         />
       }
     </SafeAreaView>
@@ -212,14 +212,14 @@ const UserProfile = ({navigation, route}) => {
 export default UserProfile
 
 const styles = StyleSheet.create({
-  mainContainerLight: {
+  mainContainer: {
     flex: 1,
-    backgroundColor: COLORS.light_smoke
+    // backgroundColor: COLORS.light_smoke
   },
-  mainContainerDark: {
-    flex: 1,
-    backgroundColor: COLORS.background_dark
-  },
+  // mainContainerDark: {
+  //   flex: 1,
+  //   backgroundColor: COLORS.background_dark
+  // },
   spinnerContainer: {
     flex: 1,
     justifyContent: 'center',

@@ -260,8 +260,8 @@ const OpenPost = ({navigation}) => {
       return (
         <DividerWithLine 
           dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} 
-          dividerHeight={10} 
-          marginB={10} 
+          dividerHeight={5} 
+          marginB={5} 
           borderBL={5} 
           borderBR={5}/>
         )
@@ -311,7 +311,7 @@ const OpenPost = ({navigation}) => {
             ItemSeparatorComponent={commentSeparator}
             onEndReached={fetchMoreComments}
             ListFooterComponent={listFooter}
-            onEndReachedThreshold={1}
+            onEndReachedThreshold={0.8}
             style={[styles.list, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}
             keyExtractor={keyExtractor}
           />

@@ -50,11 +50,11 @@ const CommentThread = ({navigation}) => {
   
   const navigateToUserProfile = (userId) => {
     dispatch(setID(userId))
-    navigation.push('UserProfile')
+    navigation.push('UserProfile', { userId: userId })
   }
 
   const navigateToUserList = () => {
-    navigation.push('UserList')
+    navigation.push('ReactedUsersList')
   }
 
   const commentMenuButtons = [

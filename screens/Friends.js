@@ -23,7 +23,8 @@ const Friends = ({navigation}) => {
   const remainToFetchNum = useRef()
   const searchQuery = useRef('')
   const fetchFriendsUrl = `https://api.vk.com/method/friends.get?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}`
-  
+  const connectionController = useRef(undefined)
+
   const slideAnimation = useRef(new Animated.Value(2000)).current
   
 
@@ -226,8 +227,13 @@ const Friends = ({navigation}) => {
   }
 
   const getFriendsByQuery = async () => {
+    if (connectionController.current) {
+      connectionController.current.abort()
+    }
+    connectionController.current = new AbortController()
+    const signal = connectionController.current.signal
     const usersSearchUrl = `https://api.vk.com/method/users.search?q=${searchQuery.current}&access_token=${accessToken}&v=5.131&fields=bdate,city,photo_100&offset=${offset.current}&count=${count}`
-    const searchResults = await fetch(usersSearchUrl)
+    const searchResults = await fetch(usersSearchUrl, { signal: signal })
     const searchData = await searchResults.json()
     offset.current += count
     const items = searchData.response.items.map(item => {return {...item, key: uuid.v4()}})

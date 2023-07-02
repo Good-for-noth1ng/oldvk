@@ -43,7 +43,7 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
 
   const handleProfilePress = () => {
     dispatch(setUserID(from_id))
-    navigation.navigate('UserProfile')
+    navigation.push('UserProfile')
     // fetchProfileInfo(from_id, name, photoUrl, commentId)
   }
 

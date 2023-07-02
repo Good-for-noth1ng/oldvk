@@ -131,6 +131,7 @@ const FollowersList = ({ navigation, route }) => {
               <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
             </View>
           }
+          maxToRenderPerBatch={20}
         /> 
     </SafeAreaView>
   )

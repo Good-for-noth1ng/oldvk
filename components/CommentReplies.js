@@ -9,6 +9,8 @@ import DividerWithLine from './DividerWithLine'
 
 const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfThreadId, navigation, ownerId, postId, isLightTheme, openCommentMenu}) => {
   const dispatch = useDispatch()
+
+  //TODO: pass props directly to screen
   const navigateToCommentThread = () => {
     console.log(ownerId, postId, startOfThreadId)
     dispatch(setDataForFetchingCommentThread({
@@ -16,7 +18,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
       ownerId: ownerId,
       postId: postId,      
     }))
-    navigation.navigate('CommentThread')
+    navigation.push('CommentThread')
   }
   return (
     <View 
@@ -70,9 +72,12 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
               from_id={threadComments[0].from_id} 
               commentText={threadComments[0].text}
               likes={threadComments[0].likes.count}
+              commentId={threadComments[0].id}
               fetchProfileInfo={fetchProfileInfo}
               isLightTheme={isLightTheme}
               openCommentMenu={openCommentMenu}
+              ownerId={ownerId}
+              navigation={navigation}
             /> 
         : null
       }

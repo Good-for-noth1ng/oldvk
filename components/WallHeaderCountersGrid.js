@@ -10,6 +10,10 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation })
   let countersGrid = []
   let row = []
   
+  const navigateToVideosList = () => {
+    navigation.push('VideosList', { ownerId: ownerId })
+  }
+
   const navigateToGroupsList = () => {
     navigation.push('UsersGroups', { userId: ownerId })
   }
@@ -53,7 +57,8 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation })
       key !== 'video_playlists' &&
       key !== 'audios' &&
       key !== 'narratives' &&
-      key !== 'podcasts'
+      key !== 'podcasts' &&
+      key !== 'posts'
     ) {
       if (counters[key] !== 0 && key === 'followers') {
         row.push(
@@ -72,6 +77,13 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation })
       } else if (counters[key] !== 0 && key === 'groups') {
         row.push(
           <TouchableOpacity key={uuid.v4()} style={styles.counterButton} onPress={navigateToGroupsList}>
+            <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
+          </TouchableOpacity>
+        )
+      } else if (counters[key] !== 0 && key === 'videos') {
+        row.push(
+          <TouchableOpacity key={uuid.v4()} style={styles.counterButton} onPress={navigateToVideosList}>
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
             <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
           </TouchableOpacity>

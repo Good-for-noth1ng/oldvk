@@ -76,6 +76,8 @@ const VideosList = ({ navigation, route }) => {
         views={item.views}
         date={item.date}
         isLightTheme={isLightTheme}
+        navigation={navigation}
+        playerUrl={item.player}
       />
     )
   }

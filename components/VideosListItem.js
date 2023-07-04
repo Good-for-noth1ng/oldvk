@@ -7,14 +7,18 @@ import { getTimeDate } from '../utils/date'
 import { COLORS } from '../constants/theme'
 
 
-const VideosListItem = ({title, duration, imageUrl, views, date, isLightTheme}) => {
+const VideosListItem = ({title, duration, imageUrl, views, date, isLightTheme, navigation, playerUrl}) => {
   // let shortagedTitle = title.slice(0, 40).split(' ').slice(0, -1).join(' ')
   let shortagedTitle = title.slice(0, 40)
   if (shortagedTitle !== title) {
     shortagedTitle += '...'
   }
+  const navigateToVideo = () => {
+    navigation.push('Video', {playerUrl: playerUrl})
+  }
+
   return (
-    <TouchableOpacity activeOpacity={1} style={[styles.mainContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+    <TouchableOpacity onPress={navigateToVideo} activeOpacity={1} style={[styles.mainContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
       <View style={styles.imageContainer}>
         <Image source={{uri: imageUrl}} style={{width: '100%', height: '100%', borderRadius: 5}}/>
         <Text style={styles.timeDuration}>{getDuration(duration)}</Text>

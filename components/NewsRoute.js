@@ -13,6 +13,7 @@ import FollowersList from '../screens/FollowersList';
 import SubscriptionsList from '../screens/SubscriptionsList';
 import UsersGroups from '../screens/UsersGroups';
 import VideosList from '../screens/VideosList';
+import VideoScreen from '../screens/VideoScreen';
 
 const PostStack = createNativeStackNavigator();
 
@@ -30,6 +31,7 @@ const NewsRoute = () => {
       <PostStack.Screen name='SubscriptionsList' component={SubscriptionsList} options={{headerShown: false, animation: 'slide_from_right'}} />
       <PostStack.Screen name='UsersGroups' component={UsersGroups} options={{headerShown: false, animation: 'slide_from_right'}}/>    
       <PostStack.Screen name='VideosList' component={VideosList} options={{headerShown:false, animation: 'slide_from_right'}} />
+      <PostStack.Screen name='Video' component={VideoScreen} options={{headerShown:false, animation: 'slide_from_right'}}/>
     </PostStack.Navigator>
   )
 }

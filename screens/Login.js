@@ -9,23 +9,28 @@ import Header from '../components/Header'
 import { LoginButton } from '../components/Buttons'
 import { SIZES, COLORS } from '../constants/theme'
 import { toggleCurrentColorScheme } from '../redux/colorSchemeSlice'
+import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native'
 
 const Login = ({navigation}) => {
   const dispatch = useDispatch() 
-  let colorScheme = useColorScheme()
+  const colorScheme = useColorScheme()
   if (colorScheme === 'dark') {
     dispatch(toggleCurrentColorScheme())
   }
-  const isLightTheme = colorScheme === 'light';
+
+  const isLightTheme = colorScheme === 'light'
+
   return (
     // <View>
-    <SafeAreaView style={isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
+    <SafeAreaView style={[styles.mainContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.background_dark}]}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
         <Header screenName={'Авторизация'} isLight={isLightTheme}/>
         <View style={styles.heroButtonContainer}>
           <View style={styles.textContainer}>
-            <Text style={isLightTheme ? styles.textHeaderLight : styles.textHeaderDark}>Добро пожаловать!</Text>
-            <Text style={isLightTheme ? styles.subtitleLight : styles.subtitleDark}>
+            <Text style={[styles.textHeader, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
+              Добро пожаловать!
+            </Text>
+            <Text style={[styles.subtitle, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
               oldvk - мобильное приложение для соцсети вконтакте
             </Text>
           </View>
@@ -36,13 +41,8 @@ const Login = ({navigation}) => {
 }
 
 const styles = StyleSheet.create({
-  mainContainerLight: {
+  mainContainer: {
     flex: 1,
-    backgroundColor: COLORS.white
-  },
-  mainContainerDark: {
-    flex: 1,
-    backgroundColor: COLORS.background_dark
   },
   heroButtonContainer: {
     display: 'flex',
@@ -58,28 +58,28 @@ const styles = StyleSheet.create({
     height: '45%',
     justifyContent: 'space-between',
   },
-  textHeaderLight: {
+  textHeader: {
     fontSize: SIZES.extraLarge,
     fontWeight: '700',
     textAlign: 'center',
-    color: COLORS.black
+    // color: COLORS.black
   },
-  textHeaderDark: {
-    fontSize: SIZES.extraLarge,
-    fontWeight: '700',
-    textAlign: 'center',
-    color: COLORS.primary_text
-  },
-  subtitleLight: {
+  // textHeaderDark: {
+  //   fontSize: SIZES.extraLarge,
+  //   fontWeight: '700',
+  //   textAlign: 'center',
+  //   color: COLORS.primary_text
+  // },
+  subtitle: {
     fontSize: SIZES.medium,
     textAlign: 'center',
     color: COLORS.black,  
   },
-  subtitleDark: {
-    fontSize: SIZES.medium,
-    textAlign: 'center',
-    color: COLORS.primary_text,
-  }
+  // subtitle: {
+  //   fontSize: SIZES.medium,
+  //   textAlign: 'center',
+  //   color: COLORS.primary_text,
+  // }
 });
 
 export default Login

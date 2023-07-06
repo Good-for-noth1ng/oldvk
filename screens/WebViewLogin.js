@@ -1,8 +1,8 @@
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, SafeAreaView, StatusBar, Appearance } from 'react-native'
 import React from 'react'
 import { WebView } from 'react-native-webview'
 import { APP_ID, PERMISION_CODE, REDIRECT_URI } from '@env'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { 
   setAccessToken, 
   setExpiresIn, 
@@ -13,8 +13,10 @@ import {
   setLastName,
   initUserData 
 } from '../redux/userSlice'
+import { COLORS } from '../constants/theme'
 
 const WebViewLogin = () => {
+  const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const dispatch = useDispatch();
   const onNavChange = (navigationState) => {
     const regex = /^https:\/\/oauth\.vk\.com\/blank\.html.*$/g
@@ -63,14 +65,15 @@ const WebViewLogin = () => {
   }
   
   return (
-    <View style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
+      <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
       <WebView 
         source={{
           uri: `https://oauth.vk.com/authorize?client_id=${51613222}&display=mobile&redirect_uri=${REDIRECT_URI}&scope=${402582}&response_type=token&v=5.131&revoke=1`
         }}
         onNavigationStateChange={onNavChange}
       />      
-    </View>
+    </SafeAreaView>
   )
 }
 

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { WebView } from 'react-native-webview'
 import { useSelector } from 'react-redux'
 import CustomHeader from '../components/CustomHeader'
@@ -12,6 +12,19 @@ import { COLORS } from '../constants/theme'
 const VideoScreen = ({navigation, route}) => {
   const { playerUrl } = route.params
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
+
+  const getVideoUrl = async () => {
+    const response = await fetch(playerUrl)
+    const htmlPage = await response.text()
+    const regex = /\"url720\":.*\"https.*\"\,/g
+    const result = htmlPage.match(regex)[0]
+    console.log(result)
+  }
+
+  useEffect(() => {
+    getVideoUrl()
+    // fetch(playerUrl).then(res => res.text()).then(data => console.log(data.split(' ')[0]))
+  }, [])
 
   const goBack = () => {
     navigation.goBack()
@@ -34,7 +47,7 @@ const VideoScreen = ({navigation, route}) => {
         borderTL={5} 
         borderTR={5}
       /> */}
-      <WebView
+      {/* <WebView
         source={{uri: playerUrl}}
         style={{maxHeight: 320, marginLeft: 5, marginRight: 5}}
         allowsFullscreenVideo={true}
@@ -43,7 +56,7 @@ const VideoScreen = ({navigation, route}) => {
             <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
           </View>
         }
-      />
+      /> */}
     </SafeAreaView>
   )
 }

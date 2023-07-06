@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet,  Appearance } from 'react-native'
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleCurrentColorScheme } from '../redux/colorSchemeSlice'
@@ -27,6 +27,12 @@ const DrawerSwitchersContainer = () => {
   }
   const changeTheme = () => {
     dispatch(toggleCurrentColorScheme())
+    // if (Appearance.getColorScheme() === 'light') {
+    //   Appearance.setColorScheme('dark')
+    // } else {
+    //   Appearance.setColorScheme('light')
+    // }
+    
   }
   
   return (

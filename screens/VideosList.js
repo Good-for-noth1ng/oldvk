@@ -78,6 +78,11 @@ const VideosList = ({ navigation, route }) => {
         isLightTheme={isLightTheme}
         navigation={navigation}
         playerUrl={item.player}
+        ownerId={item.owner_id}
+        likes={item.likes.count}
+        reposts={item.reposts.count}
+        isLiked={item.likes.user_likes}
+        isReposted={item.reposts.user_reposted}
       />
     )
   }

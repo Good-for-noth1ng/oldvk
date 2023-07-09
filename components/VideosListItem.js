@@ -7,14 +7,27 @@ import { getTimeDate } from '../utils/date'
 import { COLORS } from '../constants/theme'
 
 
-const VideosListItem = ({title, duration, imageUrl, views, date, isLightTheme, navigation, playerUrl}) => {
+const VideosListItem = ({title, duration, imageUrl, views, date, isLightTheme, navigation, playerUrl, ownerId, likes, reposts, isLiked, isReposted}) => {
   // let shortagedTitle = title.slice(0, 40).split(' ').slice(0, -1).join(' ')
   let shortagedTitle = title.slice(0, 40)
   if (shortagedTitle !== title) {
     shortagedTitle += '...'
   }
   const navigateToVideo = () => {
-    navigation.push('Video', {playerUrl: playerUrl})
+    navigation.push(
+      'Video', 
+      {
+        playerUrl: playerUrl, 
+        title: title, 
+        views: views, 
+        ownerId: ownerId, 
+        likes: likes, 
+        reposts: reposts, 
+        isLiked: isLiked, 
+        isReposted: isReposted, 
+        date: date,
+      }
+    )
   }
 
   return (

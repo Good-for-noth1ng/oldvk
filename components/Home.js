@@ -7,7 +7,6 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Messages from '../screens/Messages';
 import Friends from '../screens/Friends';
 import Photos from '../screens/Photos';
-import Videos from '../screens/Videos';
 import Audio from '../screens/Audio';
 import GroupList from '../screens/GroupList';
 import Answers from '../screens/Answers';

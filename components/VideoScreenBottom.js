@@ -4,11 +4,13 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import Fontisto from 'react-native-vector-icons/Fontisto'
 import { getShortagedNumber } from '../utils/numShortage'
 import { COLORS } from '../constants/theme'
-const VideoScreenBottom = ({likes, reposts, isLiked, isLightTheme}) => {
-  
+const VideoScreenBottom = ({likes, reposts, isLiked, isLightTheme, likePressHandler, repostPresshandler}) => {
+  const onLikePress = () => {
+    likePressHandler(isLiked)
+  }
   return (
     <View style={styles.iconsContainer}>
-      <TouchableOpacity style={styles.iconContainer}>
+      <TouchableOpacity style={styles.iconContainer} onPress={onLikePress}>
         {
           isLiked ?
           <AntDesign name='heart' size={23} color={COLORS.primary}/> :

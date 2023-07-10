@@ -58,7 +58,8 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation })
       key !== 'audios' &&
       key !== 'narratives' &&
       key !== 'podcasts' &&
-      key !== 'posts'
+      key !== 'posts' &&
+      key !== 'user_photos'
     ) {
       if (counters[key] !== 0 && key === 'followers') {
         row.push(

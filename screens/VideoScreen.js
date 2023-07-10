@@ -15,12 +15,40 @@ import VideoHeader from '../components/VideoHeader'
 
 const VideoScreen = ({navigation, route}) => {
   const { playerUrl, title, views, ownerId, likes, reposts, isLiked, isReposted, date } = route.params
-  // console.log(playerUrl)
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const video = useRef(null)
   const [videoUrl, setVideoUrl] = useState(undefined)
-  
+  const [isLoading, setIsLoading] = useState(true)
+  const [name, setName] = useState('')
+  const [imgUrl, setImgUrl] = useState('')
+  const [likesCount, setLikesCount] = useState(likes)
+  const [liked, setLiked] = useState(isLiked === 1 ? true : false)
+
+  const webViewJsScript = `
+  const meta = document.createElement('meta'); 
+  meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'); 
+  meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);
+  `
+  const fetchAuthroInfo = async () => {
+    if (ownerId > 0) {
+      const url = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&fields=photo_100&user_ids=${ownerId}`
+      const response = await fetch(url)
+      const data = await response.json()
+    //   console.log(data)
+      setName(`${data.response[0].first_name} ${data.response[0].last_name}`)
+      setImgUrl(data.response[0].photo_100)
+      setIsLoading(false)
+    } else {
+      const url = `https://api.vk.com/method/groups.getById?access_token=${accessToken}&v=5.131&fields=photo_100&group_id=${-1 * ownerId}`
+      const response = await fetch(url)
+      const data = await response.json()
+    //   console.log(data)
+      setName(data.response[0].name)
+      setImgUrl(data.response[0].photo_100)
+      setIsLoading(false)
+    }
+  }
 
   const getVideoUrl = async () => {
     const response = await fetch(playerUrl)
@@ -49,11 +77,17 @@ const VideoScreen = ({navigation, route}) => {
     // return urls[3].split('":"')[1].slice(0, -1)
   }
 
+  const likePressHandler = (isPressed) => {
+    if (isPressed) {
+      setLikesCount(prevState => prevState - 1)
+      setLiked(false)
+    } else {
+      setLikesCount(prevState => prevState + 1)
+      setLiked(true)
+    }
+  }
   useEffect(() => {
-    // getVideoUrl()
-    // setVideoUrl(url)
-    // console.log(url)
-    // fetch(url).then(res => res.text()).then(data => console.log(data))
+    fetchAuthroInfo()
   }, [])
 
   const goBack = () => {
@@ -68,65 +102,61 @@ const VideoScreen = ({navigation, route}) => {
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />
-       {/* <WebView
-        source={{html: videoUrl}}
-        style={{maxHeight: 320, marginLeft: 5, marginRight: 5}}
-        allowsFullscreenVideo={true}
-        renderLoading={
-          <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
-            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
-          </View>
-        }
-        onError={(error) => console.log(error.type)}
-        onHttpError={error => console.log(error.type)}
-      /> */}
-            
-      {/* <DividerWithLine 
-        dividerHeight={10} 
-        dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} 
-        marginL={5} 
-        marginR={5} 
-        marginT={5} 
-        borderTL={5} 
-        borderTR={5}
-      /> */}
       <View style={[styles.contentContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
-        <VideoHeader 
-          ownerId={ownerId}
-          date={date}
-          accessToken={accessToken}
-          isLightTheme={isLightTheme}
-        />
-        <WebView
-          source={{uri: playerUrl}}
-          style={[{maxHeight: 300}]}
-          allowsFullscreenVideo={true}
-          renderLoading={() => (
-            <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
-              <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+        {
+          isLoading ? 
+          <View style={{width: '100%', height: '100%', justifyContent: 'center'}}>
+            <ActivityIndicator size={50} color={isLightTheme ? COLORS.primary : COLORS.white}/>
+          </View> :
+          <>
+            <VideoHeader 
+              ownerId={ownerId}
+              date={date}
+              accessToken={accessToken}
+              isLightTheme={isLightTheme}
+              navigation={navigation}
+              name={name}
+              imgUrl={imgUrl}
+            />
+            <WebView
+              source={{uri: playerUrl}}
+              allowsFullscreenVideo={true}
+              startInLoadingState={true}
+              renderLoading={() => {
+                  return (
+                    <View 
+                      style={[
+                        {width: '100%', height: '100%', justifyContent: 'center'}, 
+                        isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}
+                      ]}
+                    >
+                      <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+                    </View>
+                  )
+                }
+              }
+              scalesPageToFit={true}
+              injectedJavaScript={webViewJsScript}
+            />
+            <View style={{marginLeft: 5}}>
+              <Text style={[styles.title, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+                {title}
+              </Text>
+              <Text style={styles.views}>
+                {getShortagedNumber(views)} views
+              </Text>
+              <DividerWithLine 
+                linePosition={'center'} 
+                dividerLineWidth={'97%'} 
+                dividerLineHeight={1} 
+                dividerLineColor={isLightTheme ? COLORS.light_smoke : COLORS.secondary} 
+                dividerHeight={20}
+              />
+              <VideoScreenBottom likes={likesCount} isLiked={liked} reposts={reposts} likePressHandler={likePressHandler}/>
+              <DividerWithLine dividerHeight={10} dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}/>
             </View>
-            )
-          }
-          scalesPageToFit={true}
-          
-        />
-        <View style={{marginLeft: 5}}>
-          <Text style={styles.title}>
-            {title}
-          </Text>
-          <Text style={styles.views}>
-            {getShortagedNumber(views)} views
-          </Text>
-          <DividerWithLine 
-            linePosition={'center'} 
-            dividerLineWidth={'97%'} 
-            dividerLineHeight={1} 
-            dividerLineColor={COLORS.light_smoke} 
-            dividerHeight={20}
-          />
-          <VideoScreenBottom likes={likes} reposts={reposts}/>
-          <DividerWithLine dividerHeight={10} dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}/>
-        </View>
+          </>
+        }
       </View>
     </SafeAreaView>
   )
@@ -146,9 +176,10 @@ const styles = StyleSheet.create({
     // height: '100%'
   },
   contentContainer: {
-    flex: 0.8, 
+    flex: 0.75, 
     marginLeft: 5, 
     marginRight: 5, 
+    marginTop: 10,
     paddingLeft: 5,
     paddingRight: 5,
     borderRadius: 5

@@ -4,33 +4,19 @@ import Feather from 'react-native-vector-icons/Feather'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 
-const VideoHeader = ({ ownerId, date, isLightTheme, accessToken }) => {
-  const [name, setName] = useState('')
-  const [imgUrl, setImgUrl] = useState('')
-  
-  const fetchAuthroInfo = async () => {
+const VideoHeader = ({ ownerId, date, isLightTheme, navigation, name, imgUrl }) => {
+
+  const onProfilePress = () => {
     if (ownerId > 0) {
-      const url = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&fields=photo_100&user_ids=${ownerId}`
-      const response = await fetch(url)
-      const data = await response.json()
-    //   console.log(data)
-      setName(`${data.response[0].first_name} ${data.response[0].last_name}`)
-      setImgUrl(data.response[0].photo_100)
+      navigation.push('UserProfile', { userId: ownerId })
     } else {
-      const url = `https://api.vk.com/method/groups.getById?access_token=${accessToken}&v=5.131&fields=photo_100&group_id=${-1 * ownerId}`
-      const response = await fetch(url)
-      const data = await response.json()
-    //   console.log(data)
-      setName(data.response[0].name)
-      setImgUrl(data.response[0].photo_100)
+      navigation.push('Group', { groupId: -1 * ownerId })
     }
   }
-  useEffect(() => {
-    fetchAuthroInfo()
-  }, [])
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.vidPubContainer}>
+      <TouchableOpacity style={styles.vidPubContainer} onPress={onProfilePress}>
         <Image source={{uri: imgUrl}} style={styles.image}/>
         <View>
           <Text style={[styles.name, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>{name}</Text>

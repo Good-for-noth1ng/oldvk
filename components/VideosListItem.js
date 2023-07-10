@@ -31,7 +31,7 @@ const VideosListItem = ({title, duration, imageUrl, views, date, isLightTheme, n
   }
 
   return (
-    <TouchableOpacity onPress={navigateToVideo} activeOpacity={1} style={[styles.mainContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+    <TouchableOpacity onPress={navigateToVideo} activeOpacity={0.8} style={[styles.mainContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
       <View style={styles.imageContainer}>
         <Image source={{uri: imageUrl}} style={{width: '100%', height: '100%', borderRadius: 5}}/>
         <Text style={styles.timeDuration}>{getDuration(duration)}</Text>
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     color: COLORS.white, 
     backgroundColor: COLORS.light_black, 
     borderBottomRightRadius: 5,
-    opacity: 0.8
+    opacity: 0.8,
   },
   imageContainer: {
     width: 150, 

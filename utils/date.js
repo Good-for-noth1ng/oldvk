@@ -28,6 +28,35 @@ const getShortMonth = (date) => {
     }
 }
 
+const getMonthByNumber = (num) => {
+  switch(num) {
+    case 1:
+      return 'January'
+    case 2:
+      return 'February'
+    case 3:
+      return 'March'
+    case 4:
+      return 'April'
+    case 5:
+      return 'May'
+    case 6:
+      return 'June'
+    case 7:
+      return 'Jule'
+    case 8:
+      return 'August'
+    case 9:
+      return 'September'
+    case 10:
+      return 'October'
+    case 11:
+      return 'November'
+    case 12:
+      return 'December' 
+    }
+}
+
 const getFullMonth = (date) => {
     const monthNumber = date.getMonth();
     switch(monthNumber) {
@@ -115,5 +144,18 @@ export const getUserAge = (str) => {
   }
   } else {
     return null
+  }
+}
+
+//Number return undefined
+export const getUserBdate = (str) => {
+//   console.log(Number(str.split('.')[1]) - 1)
+  const pattern = /d*\.d*/g
+  if (pattern.test(str)) {
+    const month = getMonthByNumber(Number(str.split('.')[1]))
+    return `${str.split('.')[0]} ${month}`
+  } else {
+    const month = getMonthByNumber(Number(str.split('.')[1]))
+    return `${str.split('.')[0]} ${month} ${str.split('.')[2]}`
   }
 }

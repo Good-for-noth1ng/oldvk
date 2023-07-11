@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, FlatList } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, FlatList, Animated } from 'react-native'
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import uuid from 'react-native-uuid';
@@ -13,6 +13,7 @@ import Post from '../components/Post';
 import Repost from '../components/Repost';
 import WallIsPrivateText from '../components/WallIsPrivateText';
 import WallHeaderPostSuggestButton from '../components/WallHeaderPostSuggestButton';
+import WallHeaderPersonalContainer from '../components/WallHeaderPersonalContainer';
 import { setData, pushData, clear } from '../redux/userWallSlice'
 import { COLORS } from '../constants/theme'
 
@@ -34,7 +35,7 @@ const UserProfile = ({navigation, route}) => {
   // const postData = userData.items
   
   const [isLoading, setIsLoading] = useState(true) 
-  const userInfoUrlFields = 'friend_status,followers_count,photo_200,online,last_seen,counters,status,can_send_friend_request,can_write_private_message,can_post'
+  const userInfoUrlFields = 'friend_status,followers_count,photo_200,online,last_seen,counters,status,can_send_friend_request,can_write_private_message,can_post,relation,bdate,city,interests,home_town,personal,education,universities'
   const userInfoUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${userId}&fields=${userInfoUrlFields}`
   const userWallUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&v=5.131&owner_id=${userId}&extended=1&count=${count}`
   const [wallHeaderData , setWallHeaderData] = useState({})
@@ -51,8 +52,8 @@ const UserProfile = ({navigation, route}) => {
 
   const fetchData = async () => {
     const userInfoResponse = await fetch(userInfoUrl)
-    const userInfoData = await userInfoResponse.json()
     const userWallContentResponse = await fetch(userWallUrl)
+    const userInfoData = await userInfoResponse.json()
     const userWallContentData = await userWallContentResponse.json()
     let isOnlineUsingMobile
     let isOnlineUsingPC
@@ -80,7 +81,15 @@ const UserProfile = ({navigation, route}) => {
       lastSeen: userInfoData.response[0].last_seen,
       canSendFriendRequest: userInfoData.response[0].can_send_friend_request,
       canWritePrivateMessage: userInfoData.response[0].can_write_private_message,
-      canPost: userInfoData.response[0].can_post === 1 ? true : false
+      canPost: userInfoData.response[0].can_post === 1 ? true : false,
+      personal: userInfoData.response[0].personal,
+      relation: userInfoData.response[0].relation,
+      bdate: userInfoData.response[0].bdate,
+      city: userInfoData.response[0].city,
+      interests: userInfoData.response[0].interests,
+      homeTown: userInfoData.response[0].home_town,
+      education: userInfoData.response[0].education,
+      universities: userInfoData.response[0].universities
     })
     if (userWallContentData.error === undefined) {
       userWallContentData.response.items.forEach((item, index, array) => {
@@ -135,6 +144,17 @@ const UserProfile = ({navigation, route}) => {
         lastSeen={wallHeaderData.lastSeen}
         isOnlineUsingMobile={wallHeaderData.isOnlineUsingMobile}
         isOnlineUsingPC={wallHeaderData.isOnlineUsingPC}
+      />
+      <WallHeaderPersonalContainer 
+        personal={wallHeaderData.personal}
+        relation={wallHeaderData.relation}
+        bdate={wallHeaderData.bdate}
+        city={wallHeaderData.city}
+        interests={wallHeaderData.interests}
+        homeTown={wallHeaderData.homeTown}
+        education={wallHeaderData.education}
+        universities={wallHeaderData.universities}
+        isLightTheme={isLightTheme}        
       />
       <WallHeaderButtons
         isUserWall={true}  
@@ -228,13 +248,14 @@ const styles = StyleSheet.create({
   list: {
     marginLeft: 5,
     marginRight: 5,
-    marginBottom: 5
   },
   wallHeaderContainer: {
     padding: 10,
     backgroundColor: COLORS.very_dark_gray,
     borderRadius: 5,
-    marginTop: 5
+    marginTop: 5,
+    flexGrow: 1,
+    flex:1
   },
   privateProfileContainer: {
     flexDirection: 'row',

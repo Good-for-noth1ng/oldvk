@@ -1,11 +1,18 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Animated } from 'react-native'
 import React from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import Entypo from 'react-native-vector-icons/Entypo'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 
-const WallHeaderGeneralInfo = ({ name, avatarUrl, lastSeen, status, isOnlineUsingMobile, isOnlineUsingPC }) => {
+const WallHeaderGeneralInfo = ({ name, avatarUrl, lastSeen, status, isOnlineUsingMobile, isOnlineUsingPC, chevronPressHandler }) => {
+  const isPersonalInfoOpen = React.useRef(false)
+  const chevronRotationAnim = React.useRef(new Animated.Value(0 )).current
+  const spin = chevronRotationAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '180deg']
+  })
   let onlineStatus
   if (lastSeen !== undefined && !isOnlineUsingMobile && !isOnlineUsingPC) {
     if (lastSeen.platform > 5) {
@@ -42,6 +49,22 @@ const WallHeaderGeneralInfo = ({ name, avatarUrl, lastSeen, status, isOnlineUsin
   } else {
     onlineStatus = null
   }
+  const onChevronPress = () => {
+    if (isPersonalInfoOpen.current) {
+      Animated.timing(chevronRotationAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true
+      }).start()
+    } else {
+      Animated.timing(chevronRotationAnim, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true
+      }).start()
+    }
+    isPersonalInfoOpen.current = !isPersonalInfoOpen.current
+  }
   return (
     <View style={styles.imageNameContainer}>
       <Image source={{uri: avatarUrl}} style={styles.image}/>
@@ -50,6 +73,11 @@ const WallHeaderGeneralInfo = ({ name, avatarUrl, lastSeen, status, isOnlineUsin
           <Text style={styles.wallName}>{name}</Text>
         </View>
         {onlineStatus}
+        <TouchableOpacity style={styles.chevron} onPress={onChevronPress}>
+          <Animated.View style={{transform: [{rotateZ: spin}]}}>
+            <Entypo name='chevron-down' color={COLORS.secondary} size={23} />
+          </Animated.View>
+        </TouchableOpacity>
         <View style={styles.statusContainer}>
           <Text style={styles.statusText}>{status}</Text>
         </View>
@@ -95,5 +123,12 @@ const styles = StyleSheet.create({
   onlineStatusText: {
     color: COLORS.secondary,
     fontSize: 14
+  },
+  chevron: {
+    width: '100%',
+    height: 17,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-start',
   }
 })

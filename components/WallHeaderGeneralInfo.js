@@ -63,6 +63,7 @@ const WallHeaderGeneralInfo = ({ name, avatarUrl, lastSeen, status, isOnlineUsin
         useNativeDriver: true
       }).start()
     }
+    // chevronPressHandler(prevState => !prevState)
     isPersonalInfoOpen.current = !isPersonalInfoOpen.current
   }
   return (

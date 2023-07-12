@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, Animated } from 'react-native'
 import React from 'react'
 import Entypo from 'react-native-vector-icons/Entypo'
 import PersonalListItem from './PersonalListItem'
@@ -8,11 +8,14 @@ import { getRelationStatusByNum, getPoliticalViewsByNum, getLifeMainByNum, getAl
 
 const WallHeaderPersonalContainer = ({personal, relation, bdate, city, interests, homeTown, education, universities, isLightTheme}) => {
   // console.log(personal)
+  const anim = React.useRef(new Animated.Value(0)).current
   let universitiesList
-  if (universities.length > 0) {
-    universitiesList = universities.map(univer => {
-      return `${univer.name}, ${univer.graduation}, ${univer.chair_name}`
-    })
+  if (universities) {
+    if (universities.length > 0) {
+      universitiesList = universities.map(univer => {
+        return `${univer.name}, ${univer.graduation}, ${univer.chair_name}`
+      })
+    }
   }
   let political, langs, lifeMain, peopleMain, smoking, alcohol, inspiredBy
   if (personal !== undefined) {
@@ -38,8 +41,9 @@ const WallHeaderPersonalContainer = ({personal, relation, bdate, city, interests
       inspiredBy = personal.inspired_by
     }
   }
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]} >
       {
         bdate && <PersonalListItem title={'Birth Date'} info={getUserBdate(bdate)} isLightTheme={isLightTheme}/> 
       }
@@ -54,7 +58,7 @@ const WallHeaderPersonalContainer = ({personal, relation, bdate, city, interests
         interests && <PersonalListItem title={'Interests'} info={interests}/>
       }
       {
-        universities.length > 0 && <PersonalListItem title={'University'} info={universitiesList}/>
+        universitiesList && <PersonalListItem title={'University'} info={universitiesList}/>
       }
       {
         city !== undefined && city.title ?
@@ -83,6 +87,7 @@ const WallHeaderPersonalContainer = ({personal, relation, bdate, city, interests
         alcohol ? <PersonalListItem title={'Alcohol'} info={getAlcoholSmokingRelByNum(alcohol)}/> : null
       }
     </View>
+  
   )
 }
 
@@ -93,6 +98,10 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background_dark,
     borderRadius: 5,
     marginBottom: 10,
+    overflow: 'hidden',
     flex: 0,
+    //
+    // maxHeight: 'content-fit',
+    // flex: 0,
   }
 })

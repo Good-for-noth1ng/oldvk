@@ -22,7 +22,7 @@ const UserProfile = ({navigation, route}) => {
   const dispatch = useDispatch()
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
-  
+  const [isUserInfoExpanded, setIsUserInfoExpanded] = useState(false)
   const currentUserId = useSelector(state => state.user.userId)
 
   const userId = route.params !== undefined ? route.params.userId : currentUserId
@@ -144,18 +144,19 @@ const UserProfile = ({navigation, route}) => {
         lastSeen={wallHeaderData.lastSeen}
         isOnlineUsingMobile={wallHeaderData.isOnlineUsingMobile}
         isOnlineUsingPC={wallHeaderData.isOnlineUsingPC}
+        chevronPressHandler={setIsUserInfoExpanded}
       />
       <WallHeaderPersonalContainer 
-        personal={wallHeaderData.personal}
-        relation={wallHeaderData.relation}
-        bdate={wallHeaderData.bdate}
-        city={wallHeaderData.city}
-        interests={wallHeaderData.interests}
-        homeTown={wallHeaderData.homeTown}
-        education={wallHeaderData.education}
-        universities={wallHeaderData.universities}
-        isLightTheme={isLightTheme}        
-      />
+          personal={wallHeaderData.personal}
+          relation={wallHeaderData.relation}
+          bdate={wallHeaderData.bdate}
+          city={wallHeaderData.city}
+          interests={wallHeaderData.interests}
+          homeTown={wallHeaderData.homeTown}
+          education={wallHeaderData.education}
+          universities={wallHeaderData.universities}
+          isLightTheme={isLightTheme}        
+        />  
       <WallHeaderButtons
         isUserWall={true}  
         friendStatus={wallHeaderData.friendStatus}
@@ -254,8 +255,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.very_dark_gray,
     borderRadius: 5,
     marginTop: 5,
-    flexGrow: 1,
-    flex:1
+    // flexGrow: 1,
+    // flex:1
   },
   privateProfileContainer: {
     flexDirection: 'row',

@@ -24,7 +24,11 @@ const UserProfile = ({navigation, route}) => {
   const accessToken = useSelector(state => state.user.accessToken)
   const [isUserInfoExpanded, setIsUserInfoExpanded] = useState(false)
   const currentUserId = useSelector(state => state.user.userId)
-
+  const chevronRotationAnim = React.useRef(new Animated.Value(0 )).current
+  const spin = chevronRotationAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '180deg']
+  })
   const userId = route.params !== undefined ? route.params.userId : currentUserId
   console.log(currentUserId, userId)
   const count = 15
@@ -39,7 +43,6 @@ const UserProfile = ({navigation, route}) => {
   const userInfoUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${userId}&fields=${userInfoUrlFields}`
   const userWallUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&v=5.131&owner_id=${userId}&extended=1&count=${count}`
   const [wallHeaderData , setWallHeaderData] = useState({})
-
   
   //TODO:
   //const allData = Promise.all([fetchReq1, fetchReq2, fetchReq3]);
@@ -145,8 +148,11 @@ const UserProfile = ({navigation, route}) => {
         isOnlineUsingMobile={wallHeaderData.isOnlineUsingMobile}
         isOnlineUsingPC={wallHeaderData.isOnlineUsingPC}
         chevronPressHandler={setIsUserInfoExpanded}
+        expanded={isUserInfoExpanded}
       />
-      <WallHeaderPersonalContainer 
+      {
+        isUserInfoExpanded ? 
+        <WallHeaderPersonalContainer 
           personal={wallHeaderData.personal}
           relation={wallHeaderData.relation}
           bdate={wallHeaderData.bdate}
@@ -156,7 +162,8 @@ const UserProfile = ({navigation, route}) => {
           education={wallHeaderData.education}
           universities={wallHeaderData.universities}
           isLightTheme={isLightTheme}        
-        />  
+        /> : null
+      } 
       <WallHeaderButtons
         isUserWall={true}  
         friendStatus={wallHeaderData.friendStatus}

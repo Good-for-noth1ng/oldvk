@@ -6,7 +6,7 @@ import { COLORS } from '../constants/theme'
 import { getUserBdate } from '../utils/date'
 import { getRelationStatusByNum, getPoliticalViewsByNum, getLifeMainByNum, getAlcoholSmokingRelByNum, getPeopleMainByNum } from '../utils/getNameByKey'
 
-const WallHeaderPersonalContainer = ({personal, relation, bdate, city, interests, homeTown, education, universities, isLightTheme}) => {
+const WallHeaderPersonalContainer = ({personal, relation, bdate, city, interests, homeTown, education, universities, isLightTheme, expanded}) => {
   // console.log(personal)
   const anim = React.useRef(new Animated.Value(0)).current
   let universitiesList
@@ -99,7 +99,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginBottom: 10,
     overflow: 'hidden',
-    flex: 0,
     //
     // maxHeight: 'content-fit',
     // flex: 0,

@@ -10,7 +10,11 @@ import { setData, pushData } from '../redux/groupSlice'
 import Repost from '../components/Repost'
 import WallHeader from '../components/WallHeader'
 import DividerWithLine from '../components/DividerWithLine'
-
+import WallHeaderGeneralInfo from '../components/WallHeaderGeneralInfo';
+import WallHeaderCountersGrid from '../components/WallHeaderCountersGrid';
+import WallHeaderButtons from '../components/WallHeaderButtons';
+import WallHeaderPostSuggestButton from '../components/WallHeaderPostSuggestButton';
+import WallHeaderAdditionalInfo from '../components/WallHeaderAdditionalInfo'
 //TODO: replace selectors on usestate
 const Group = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -22,15 +26,15 @@ const Group = ({navigation, route}) => {
   const remainToFetchNum = useRef(null)
   const count = 20
   const { groupId } = route.params
-
+  const [isAdditionalInfoExpanded, setIsAdditionalInfoExpanded] = useState(false)
   // const groupData = useSelector(state => state.group)
   // const groupID = groupData.id  
   // const offset = groupData.offset  
   // const postData = groupData.items 
   // const totalPostCount = groupData.totalPostCount
-  
+  const fields = 'members_count,counters,description,status,can_message,description,contacts,addresses,screen_name' 
   const fetchGroupWallContentUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&count=${count}&v=5.131&extended=1&owner_id=${-1 * groupId}`
-  const fetchGroupInfoUrl = `https://api.vk.com/method/groups.getById?access_token=${accessToken}&v=5.131&group_id=${groupId}&fields=members_count,counters,description,status,can_message`
+  const fetchGroupInfoUrl = `https://api.vk.com/method/groups.getById?access_token=${accessToken}&v=5.131&group_id=${groupId}&fields=${fields}`
   const [isLoading, setIsLoading] = useState(true)  
   
   console.log(groupId)
@@ -52,9 +56,10 @@ const Group = ({navigation, route}) => {
       communityStatus: groupHeaderData.response[0].status,
       isMemberOfCommunity: groupHeaderData.response[0].is_member === 1 ? true : false,
       counters: groupHeaderData.response[0].counters,
-      canMessage: groupHeaderData.response[0].can_message
+      canMessage: groupHeaderData.response[0].can_message,
+      description: groupHeaderData.response[0].description
     }))
-    
+    console.log(groupHeaderData.response[0].addresses)
     
     data.response.items.forEach((item, index, array) => {
       array[index] = {...item, key: uuid.v4()}
@@ -87,17 +92,37 @@ const Group = ({navigation, route}) => {
   }
 
   const listHeader = () => (
-    <WallHeader
-      name={wallHeaderData.communityName}
-      membersCount={wallHeaderData.communityMembersCount}
-      avatarUrl={wallHeaderData.communityAvatarUrl}
-      status={wallHeaderData.communityStatus}
-      isMember={wallHeaderData.isMemberOfCommunity} 
-      counters={wallHeaderData.counters}
-      canWritePrivateMessage={wallHeaderData.canMessage}
-      ownerId={-1 * groupId}
-      navigation={navigation}
-    />
+    <View style={styles.headerContainer}>
+      <WallHeaderGeneralInfo 
+        name={wallHeaderData.communityName}
+        avatarUrl={wallHeaderData.communityAvatarUrl}
+        status={wallHeaderData.communityStatus}
+        chevronPressHandler={setIsAdditionalInfoExpanded}
+        expanded={isAdditionalInfoExpanded}
+        // isOnlineUsingMobile={wallHeaderData.isOnlineUsingMobile}
+        // isOnlineUsingPC={wallHeaderData.isOnlineUsingPC}
+      />
+      {
+        isAdditionalInfoExpanded ?
+        <WallHeaderAdditionalInfo 
+          description={wallHeaderData.description}
+        /> : null
+      }
+      <WallHeaderButtons
+        isUserWall={wallHeaderData.isUserWall} 
+        isMember={wallHeaderData.isMemberOfCommunity} 
+        canWritePrivateMessage={wallHeaderData.canMessage}
+      />
+      <DividerWithLine dividerHeight={10}/>
+      <WallHeaderCountersGrid 
+        membersCount={wallHeaderData.membersCount} 
+        counters={wallHeaderData.counters} 
+        ownerId={-1 * groupId} 
+        navigation={navigation}
+      />
+      <DividerWithLine dividerHeight={10}/>
+      <WallHeaderPostSuggestButton />
+    </View>
   )
 
   const keyExtractor = (item) => {
@@ -201,5 +226,11 @@ const styles = StyleSheet.create({
   },
   bottomSpinnerContainer: {
     justifyContent: 'center'
-  }
+  },
+  headerContainer: {
+    padding: 10,
+    backgroundColor: COLORS.very_dark_gray,
+    borderRadius: 5,
+    marginTop: 5
+  },
 })

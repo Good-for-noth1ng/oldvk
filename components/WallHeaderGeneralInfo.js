@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, Animated } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, LayoutAnimation, Platform, UIManager } from 'react-native'
 import React from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
@@ -6,13 +6,15 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 
-const WallHeaderGeneralInfo = ({ name, avatarUrl, lastSeen, status, isOnlineUsingMobile, isOnlineUsingPC, chevronPressHandler }) => {
-  const isPersonalInfoOpen = React.useRef(false)
-  const chevronRotationAnim = React.useRef(new Animated.Value(0 )).current
-  const spin = chevronRotationAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '180deg']
-  })
+if (Platform.OS === 'android') {
+  if (UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+}
+
+const WallHeaderGeneralInfo = ({ name, avatarUrl, lastSeen, status, isOnlineUsingMobile, isOnlineUsingPC, chevronPressHandler, expanded }) => {
+  // const isPersonalInfoOpen = React.useRef(false)
+  
   let onlineStatus
   if (lastSeen !== undefined && !isOnlineUsingMobile && !isOnlineUsingPC) {
     if (lastSeen.platform > 5) {
@@ -50,21 +52,8 @@ const WallHeaderGeneralInfo = ({ name, avatarUrl, lastSeen, status, isOnlineUsin
     onlineStatus = null
   }
   const onChevronPress = () => {
-    if (isPersonalInfoOpen.current) {
-      Animated.timing(chevronRotationAnim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true
-      }).start()
-    } else {
-      Animated.timing(chevronRotationAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true
-      }).start()
-    }
-    // chevronPressHandler(prevState => !prevState)
-    isPersonalInfoOpen.current = !isPersonalInfoOpen.current
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    chevronPressHandler(prevState => !prevState)
   }
   return (
     <View style={styles.imageNameContainer}>
@@ -74,14 +63,12 @@ const WallHeaderGeneralInfo = ({ name, avatarUrl, lastSeen, status, isOnlineUsin
           <Text style={styles.wallName}>{name}</Text>
         </View>
         {onlineStatus}
-        <TouchableOpacity style={styles.chevron} onPress={onChevronPress}>
-          <Animated.View style={{transform: [{rotateZ: spin}]}}>
-            <Entypo name='chevron-down' color={COLORS.secondary} size={23} />
-          </Animated.View>
+        <TouchableOpacity style={styles.chevron} activeOpacity={1} onPress={onChevronPress}>
+          <View style={styles.statusContainer}>
+            <Text style={styles.statusText}>{status}</Text>
+          </View>
+          <Entypo name={expanded ? 'chevron-up' : 'chevron-down'} color={COLORS.secondary} size={23} />
         </TouchableOpacity>
-        <View style={styles.statusContainer}>
-          <Text style={styles.statusText}>{status}</Text>
-        </View>
       </View>
     </View>
   )
@@ -127,9 +114,9 @@ const styles = StyleSheet.create({
   },
   chevron: {
     width: '100%',
-    height: 17,
+    // height: 17,
     flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-start',
+    // justifyContent: 'flex-end',
+    // alignItems: 'flex-start',
   }
 })

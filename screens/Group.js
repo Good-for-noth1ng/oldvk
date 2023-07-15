@@ -32,7 +32,7 @@ const Group = ({navigation, route}) => {
   // const offset = groupData.offset  
   // const postData = groupData.items 
   // const totalPostCount = groupData.totalPostCount
-  const fields = 'members_count,counters,description,status,can_message,description,contacts,addresses,screen_name' 
+  const fields = 'members_count,counters,description,status,can_message,description,contacts,addresses,screen_name,links' 
   const fetchGroupWallContentUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&count=${count}&v=5.131&extended=1&owner_id=${-1 * groupId}`
   const fetchGroupInfoUrl = `https://api.vk.com/method/groups.getById?access_token=${accessToken}&v=5.131&group_id=${groupId}&fields=${fields}`
   const [isLoading, setIsLoading] = useState(true)  
@@ -48,8 +48,11 @@ const Group = ({navigation, route}) => {
     const groupHeaderResponse = await fetch(fetchGroupInfoUrl)
     const data = await response.json()
     const groupHeaderData = await groupHeaderResponse.json()
-    setWallHeaderData(prevState => ({
-      ...prevState,
+    const contactsIds = groupHeaderData.response[0].contacts.map(item => item.user_id)
+    const contacts = await fetch(`https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${contactsIds}&fields=photo_100`)
+    const contactsDetailedRes = await contacts.json()
+    const contactsDetailed = contactsDetailedRes.response
+    setWallHeaderData({
       communityName: groupHeaderData.response[0].name,
       communityMembersCount: groupHeaderData.response[0].members_count,
       communityAvatarUrl: groupHeaderData.response[0].photo_200,
@@ -57,9 +60,12 @@ const Group = ({navigation, route}) => {
       isMemberOfCommunity: groupHeaderData.response[0].is_member === 1 ? true : false,
       counters: groupHeaderData.response[0].counters,
       canMessage: groupHeaderData.response[0].can_message,
-      description: groupHeaderData.response[0].description
-    }))
-    console.log(groupHeaderData.response[0].addresses)
+      description: groupHeaderData.response[0].description,
+      contacts: groupHeaderData.response[0].contacts,
+      contactsDetailed: contactsDetailed,
+      links: groupHeaderData.response[0].links
+    })
+    // console.log(groupHeaderData.response[0].contacts)
     
     data.response.items.forEach((item, index, array) => {
       array[index] = {...item, key: uuid.v4()}
@@ -99,13 +105,15 @@ const Group = ({navigation, route}) => {
         status={wallHeaderData.communityStatus}
         chevronPressHandler={setIsAdditionalInfoExpanded}
         expanded={isAdditionalInfoExpanded}
-        // isOnlineUsingMobile={wallHeaderData.isOnlineUsingMobile}
-        // isOnlineUsingPC={wallHeaderData.isOnlineUsingPC}
       />
       {
         isAdditionalInfoExpanded ?
         <WallHeaderAdditionalInfo 
           description={wallHeaderData.description}
+          contacts={wallHeaderData.contacts}
+          contactsDetailed={wallHeaderData.contactsDetailed}
+          links={wallHeaderData.links}
+          navigation={navigation}
         /> : null
       }
       <WallHeaderButtons

@@ -15,6 +15,7 @@ import WallHeaderCountersGrid from '../components/WallHeaderCountersGrid';
 import WallHeaderButtons from '../components/WallHeaderButtons';
 import WallHeaderPostSuggestButton from '../components/WallHeaderPostSuggestButton';
 import WallHeaderAdditionalInfo from '../components/WallHeaderAdditionalInfo'
+import { cleanAdditionalInfoLinksAndUsers } from '../utils/dataPreparationForComponents'
 //TODO: replace selectors on usestate
 const Group = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -48,10 +49,11 @@ const Group = ({navigation, route}) => {
     const groupHeaderResponse = await fetch(fetchGroupInfoUrl)
     const data = await response.json()
     const groupHeaderData = await groupHeaderResponse.json()
-    const contactsIds = groupHeaderData.response[0].contacts.map(item => item.user_id)
+    const contactsIds = groupHeaderData.response[0].contacts?.map(item => item.user_id)
     const contacts = await fetch(`https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${contactsIds}&fields=photo_100`)
     const contactsDetailedRes = await contacts.json()
     const contactsDetailed = contactsDetailedRes.response
+    const {cleanedLinks, cleanedUsers} = cleanAdditionalInfoLinksAndUsers(groupHeaderData.response[0].links, groupHeaderData.response[0].contacts, contactsDetailed)
     setWallHeaderData({
       communityName: groupHeaderData.response[0].name,
       communityMembersCount: groupHeaderData.response[0].members_count,
@@ -61,9 +63,11 @@ const Group = ({navigation, route}) => {
       counters: groupHeaderData.response[0].counters,
       canMessage: groupHeaderData.response[0].can_message,
       description: groupHeaderData.response[0].description,
-      contacts: groupHeaderData.response[0].contacts,
-      contactsDetailed: contactsDetailed,
-      links: groupHeaderData.response[0].links
+      cleanedLinks,
+      cleanedUsers,
+      // contacts: groupHeaderData.response[0].contacts,
+      // contactsDetailed: contactsDetailed,
+      // links: groupHeaderData.response[0].links
     })
     // console.log(groupHeaderData.response[0].contacts)
     
@@ -108,9 +112,8 @@ const Group = ({navigation, route}) => {
       />
       <WallHeaderAdditionalInfo 
           description={wallHeaderData.description}
-          contacts={wallHeaderData.contacts}
-          contactsDetailed={wallHeaderData.contactsDetailed}
-          links={wallHeaderData.links}
+          cleanedLinks={wallHeaderData.cleanedLinks}
+          cleanedUsers={wallHeaderData.cleanedUsers}
           navigation={navigation}
           expanded={isAdditionalInfoExpanded}
       /> 
@@ -145,18 +148,9 @@ const Group = ({navigation, route}) => {
   const listFooter = () => {
     if (remainToFetchNum.current > 0) {
       return (
-        <>
-          <View style={[{justifyContent: 'center'}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColorL: COLORS.primary_dark}]}>
-            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={40}/>
-          </View>
-          <DividerWithLine 
-            dividerHeight={5} 
-            marginB={10} 
-            borderBL={5} 
-            borderBR={5} 
-            dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
-          />
-        </>
+        <View style={[{justifyContent: 'center'}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColorL: COLORS.background_dark}]}>
+          <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={40}/>
+        </View>
       )
     }
     return (
@@ -220,7 +214,7 @@ const styles = StyleSheet.create({
   },
   feed: {
     marginLeft: 5,
-    marginRight: 5
+    marginRight: 5,
   },
   feedContainerLight: {
     flex: 1,

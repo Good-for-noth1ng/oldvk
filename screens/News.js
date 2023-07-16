@@ -11,7 +11,7 @@ import CustomHeader from '../components/CustomHeader';
 import NewsTitleSwitcher from '../components/NewsTitleSwitcher';
 import DividerWithLine from '../components/DividerWithLine';
 import Repost from '../components/Repost';
-
+//TODO npx expo install @shopify/flash-list expo-dev-client
 //TODO fix comments, likes etc. being undefined
 //TODO make news upload from redux directly
 const News = ({navigation}) => {
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     marginLeft: 5,
-    marginRight: 5
+    marginRight: 5,
   },
   bottomSpinnerContainer: {
     justifyContentL: 'center',

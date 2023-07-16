@@ -5,26 +5,27 @@ import PersonalListItem from './PersonalListItem'
 import { COLORS } from '../constants/theme'
 import PersonalContactItem from './PersonalContactItem'
 
-const WallHeaderAdditionalInfo = ({description, contacts, contactsDetailed, navigation, links, expanded}) => {
+const WallHeaderAdditionalInfo = ({description, navigation, cleanedLinks, cleanedUsers, expanded}) => {
   // console.log(links)
-  const cleanedLinks = React.useRef(undefined)
-  const cleanedUsers = React.useRef(undefined)
+  // const cleanedLinks = React.useRef(undefined)
+  // const cleanedUsers = React.useRef(undefined)
   
-  React.useLayoutEffect(() => {
-    if (links) {
-      cleanedLinks.current = links.map(link => ({...link, key: uuid.v4()}))
-    }
-    if (contacts && contactsDetailed) {
-      cleanedUsers.current = contacts.map(contact => (
-        {
-          ...contactsDetailed.find(contactDetailed => contactDetailed.id === contact.user_id), 
-          desc: contact.desc,
-          key: uuid.v4()
-        }
-      ))
-    }
-    console.log(cleanedLinks.current.length, cleanedUsers.current.length)
-  }, [])
+  // React.useLayoutEffect(() => {
+  //   if (links) {
+  //     cleanedLinks.current = links.map(link => ({...link, key: uuid.v4()}))
+  //     // console.log(cleanedLinks)
+  //   }
+  //   if (contacts && contactsDetailed) {
+  //     cleanedUsers.current = contacts.map(contact => (
+  //       {
+  //         ...contactsDetailed.find(contactDetailed => contactDetailed.id === contact.user_id), 
+  //         desc: contact.desc,
+  //         key: uuid.v4()
+  //       }
+  //     ))
+  //   }
+  //   console.log(cleanedLinks.current.length, cleanedUsers.current.length)
+  // }, [cleanedLinks.current, cleanedUsers.current])
   
   if (!expanded) {
     return null
@@ -37,14 +38,14 @@ const WallHeaderAdditionalInfo = ({description, contacts, contactsDetailed, navi
         <PersonalListItem title={'description'} info={description}/> : null 
       }
       {
-        links ?
+        cleanedLinks ?
         <Text style={{color: COLORS.secondary, fontSize: 16, textTransform: 'uppercase', margin: 10}}>
-          {`Links ${links.length}`}
+          {`Links ${cleanedLinks.length}`}
         </Text> : null
       }
       {
-        cleanedLinks.current ? 
-        cleanedLinks.current.map(link => 
+        cleanedLinks ? 
+        cleanedLinks.map(link => 
           <PersonalContactItem 
             name={link.name}
             photo={link.photo_100}
@@ -56,15 +57,15 @@ const WallHeaderAdditionalInfo = ({description, contacts, contactsDetailed, navi
         ) : null
       }
       {
-        cleanedUsers.current ?
+        cleanedUsers ?
         <Text style={{color: COLORS.secondary, fontSize: 16, textTransform: 'uppercase', margin: 10}}>
-          {`Contacts ${cleanedUsers.current.length}`}
+          {`Contacts ${cleanedUsers.length}`}
         </Text> : null
       }
       
       {
-        cleanedUsers.current ? 
-        cleanedUsers.current.map(user => 
+        cleanedUsers ? 
+        cleanedUsers.map(user => 
           <PersonalContactItem 
             name={`${user.first_name} ${user.last_name}`}
             photo={user.photo_100}

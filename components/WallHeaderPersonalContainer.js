@@ -23,7 +23,7 @@ const WallHeaderPersonalContainer = ({personal, relation, bdate, city, interests
       political = personal.political
     }
     if (personal.langs) {
-      langs = personal.langs
+      langs = personal.langs.join(', ')
     }
     if (personal.life_main !== undefined) {
       lifeMain = personal.lifeMain
@@ -41,7 +41,9 @@ const WallHeaderPersonalContainer = ({personal, relation, bdate, city, interests
       inspiredBy = personal.inspired_by
     }
   }
-
+  if(!expanded) {
+    return null
+  }
   return (
     <View style={[styles.container]} >
       {

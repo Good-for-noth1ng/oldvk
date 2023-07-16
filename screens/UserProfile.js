@@ -149,21 +149,19 @@ const UserProfile = ({navigation, route}) => {
         isOnlineUsingPC={wallHeaderData.isOnlineUsingPC}
         chevronPressHandler={setIsUserInfoExpanded}
         expanded={isUserInfoExpanded}
-      />
-      {
-        isUserInfoExpanded ? 
-        <WallHeaderPersonalContainer 
-          personal={wallHeaderData.personal}
-          relation={wallHeaderData.relation}
-          bdate={wallHeaderData.bdate}
-          city={wallHeaderData.city}
-          interests={wallHeaderData.interests}
-          homeTown={wallHeaderData.homeTown}
-          education={wallHeaderData.education}
-          universities={wallHeaderData.universities}
-          isLightTheme={isLightTheme}        
-        /> : null
-      } 
+      /> 
+      <WallHeaderPersonalContainer 
+        personal={wallHeaderData.personal}
+        relation={wallHeaderData.relation}
+        bdate={wallHeaderData.bdate}
+        city={wallHeaderData.city}
+        interests={wallHeaderData.interests}
+        homeTown={wallHeaderData.homeTown}
+        education={wallHeaderData.education}
+        universities={wallHeaderData.universities}
+        isLightTheme={isLightTheme}
+        expanded={isUserInfoExpanded}    
+      /> 
       <WallHeaderButtons
         isUserWall={true}  
         friendStatus={wallHeaderData.friendStatus}

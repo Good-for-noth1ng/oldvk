@@ -32,7 +32,7 @@ const Group = ({navigation, route}) => {
   // const offset = groupData.offset  
   // const postData = groupData.items 
   // const totalPostCount = groupData.totalPostCount
-  const fields = 'members_count,counters,description,status,can_message,description,contacts,addresses,screen_name,links' 
+  const fields = 'members_count,counters,description,status,can_message,description,contacts,addresses,screen_name,links,main_section' 
   const fetchGroupWallContentUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&count=${count}&v=5.131&extended=1&owner_id=${-1 * groupId}`
   const fetchGroupInfoUrl = `https://api.vk.com/method/groups.getById?access_token=${accessToken}&v=5.131&group_id=${groupId}&fields=${fields}`
   const [isLoading, setIsLoading] = useState(true)  
@@ -106,16 +106,14 @@ const Group = ({navigation, route}) => {
         chevronPressHandler={setIsAdditionalInfoExpanded}
         expanded={isAdditionalInfoExpanded}
       />
-      {
-        isAdditionalInfoExpanded ?
-        <WallHeaderAdditionalInfo 
+      <WallHeaderAdditionalInfo 
           description={wallHeaderData.description}
           contacts={wallHeaderData.contacts}
           contactsDetailed={wallHeaderData.contactsDetailed}
           links={wallHeaderData.links}
           navigation={navigation}
-        /> : null
-      }
+          expanded={isAdditionalInfoExpanded}
+      /> 
       <WallHeaderButtons
         isUserWall={wallHeaderData.isUserWall} 
         isMember={wallHeaderData.isMemberOfCommunity} 

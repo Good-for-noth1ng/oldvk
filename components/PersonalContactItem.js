@@ -5,13 +5,13 @@ import { COLORS } from '../constants/theme'
 const PersonalContactItem = ({ navigation, photo, name, descritption, ownerId }) => {
   const navToWall = () => {
     if (ownerId > 0) {
-      navigation.push('UserProfile', {userid: ownerId})
+      navigation.push('UserProfile', {userId: ownerId})
     } else {
-      navigation.push('Group', {id: ownerId})
+      navigation.push('Group', {groupId: -1 * ownerId})
     }
   }
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={navToWall}>
       <Image source={{uri: photo}} style={{width: 50, height: 50, borderRadius: 5}}/>
       <View>
         <Text style={styles.title}>{name}</Text>

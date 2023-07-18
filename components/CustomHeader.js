@@ -145,6 +145,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'center',
+    position: 'relative',
+    zIndex: 3
   },
   inputFieldContainer: {
     width: '100%',
@@ -180,5 +182,6 @@ const styles = StyleSheet.create({
   },
   rightsideIcon: {
     marginLeft: '48%'
-  }
+  }, 
+
 })

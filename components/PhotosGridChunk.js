@@ -11,7 +11,7 @@ const PhotosGridChunk = ({photos}) => {
           return (
             <Image 
             //   style={[styles.image, {width: photo.sizes[sizesLastIndex].width, height: photo.sizes[sizesLastIndex].height}]}
-              style={{width: '32%', height: 150}}
+              style={{width: '32%', height: 140}}
               source={{uri: photo.sizes[sizesLastIndex].url}}
             />
           )

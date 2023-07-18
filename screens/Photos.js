@@ -1,24 +1,27 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, FlatList } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native'
 import React, { useState, useRef, useEffect } from 'react'
+import { FlatList } from "react-native-gesture-handler";
 import { useSelector } from 'react-redux'
 import uuid from 'react-native-uuid';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomHeader from '../components/CustomHeader'
-import VideosListItem from '../components/VideosListItem'
 import DividerWithLine from '../components/DividerWithLine'
 import PhotosGridChunk from '../components/PhotosGridChunk'
+import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
+import Carousel from '../components/Carousel';
 import { COLORS } from '../constants/theme'
 
 const Photos = ({ navigation, route }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
-  const [isLoading, setIsLoading] = useState(true)
   const [photosList, setPhotosList] = useState([])
-  const index = useRef(0)
-  const count = 12
+  const [albumsList, setAlbumsList] = useState([])
+  const count = 39
   const offset = useRef(0)
   const remainToFetchNum = useRef(null)
   const canRequestMore = useRef(true)
+  const numOfPhotos = useRef(0)
+  const numOfAlbums = useRef(0)
   const { ownerId } = route.params
   
   const fetchPhotos = async () => {
@@ -26,7 +29,13 @@ const Photos = ({ navigation, route }) => {
     const response = await fetch(fetchPhotosUrl)
     const data = await response.json()
     if (remainToFetchNum.current === null) {
+      numOfPhotos.current = data.response.count
       remainToFetchNum.current = data.response.count - count
+      const fetchAlbumsUrl = `https://api.vk.com/method/photos.getAlbums?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&owner_id=${ownerId}&need_covers=1&photo_sizes=1`
+      const albumsRes= await fetch(fetchAlbumsUrl)
+      const albums = await albumsRes.json()
+      numOfAlbums.current = albums.response.count
+      setAlbumsList(albums.response.items)
     } else {
       remainToFetchNum.current -= count 
     }
@@ -45,13 +54,30 @@ const Photos = ({ navigation, route }) => {
 
   const listHeader = () => {
     return (
-      <DividerWithLine 
-        dividerHeight={10} 
-        marginT={10} 
-        borderTL={5} 
-        borderTR={5} 
-        dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
-      />  
+      <>
+        <DividerWithLine 
+          dividerHeight={10} 
+          marginT={10} 
+          borderTL={5} 
+          borderTR={5} 
+          dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+        />
+        <Carousel 
+          data={albumsList}
+          dataLength={numOfAlbums.current}
+          type={'photos'}
+          isLightTheme={isLightTheme}
+        />
+        <SearchResultHeaderCounter 
+          isLightTheme={isLightTheme}
+          counterName={'All photos'}
+          counterNum={numOfPhotos.current}
+        />
+        <DividerWithLine 
+          dividerHeight={10}  
+          dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+        />
+      </>  
     )
   }
 
@@ -119,6 +145,7 @@ const Photos = ({ navigation, route }) => {
           </View>
         }
         keyExtractor={keyExtractor}
+        onEndReached={fetchPhotos}
       />  
     </SafeAreaView>
   )

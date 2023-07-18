@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, FlatList, RefreshControl } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, RefreshControl } from 'react-native'
 import React, { useEffect, useState, useLayoutEffect, useRef } from 'react'
+import { FlatList } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
 import CustomHeader from '../components/CustomHeader'

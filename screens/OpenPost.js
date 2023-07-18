@@ -1,5 +1,6 @@
-import { StyleSheet, FlatList, View, ActivityIndicator, Text, StatusBar, TouchableOpacity, SafeAreaView, Animated, BackHandler } from 'react-native'
+import { StyleSheet, View, ActivityIndicator, Text, StatusBar, TouchableOpacity, SafeAreaView, Animated, BackHandler } from 'react-native'
 import React, { useState, useEffect, useCallback, memo, useRef } from 'react'
+import { FlatList } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from 'react-redux'
 import { useFocusEffect } from '@react-navigation/native';
 import uuid from 'react-native-uuid'

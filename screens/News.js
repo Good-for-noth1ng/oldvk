@@ -1,4 +1,4 @@
-import { View, Text, RefreshControl, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet, FlatList, useColorScheme, Appearance } from 'react-native'
+import { View, Text, RefreshControl, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet, useColorScheme, Appearance } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
 import uuid from 'react-native-uuid';
 import { useSelector, useDispatch, } from 'react-redux';
@@ -11,6 +11,8 @@ import CustomHeader from '../components/CustomHeader';
 import NewsTitleSwitcher from '../components/NewsTitleSwitcher';
 import DividerWithLine from '../components/DividerWithLine';
 import Repost from '../components/Repost';
+import { FlashList } from "@shopify/flash-list";
+import { FlatList } from "react-native-gesture-handler";
 //TODO npx expo install @shopify/flash-list expo-dev-client
 //TODO fix comments, likes etc. being undefined
 //TODO make news upload from redux directly

@@ -41,7 +41,9 @@
     "react-redux": "^8.0.2",
     "expo-av": "~13.2.1",
     "expo-file-system": "~15.2.2",
-    "expo-media-library": "~15.2.3"
+    "expo-media-library": "~15.2.3",
+    "@shopify/flash-list": "1.4.0",
+    "expo-dev-client": "~2.2.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

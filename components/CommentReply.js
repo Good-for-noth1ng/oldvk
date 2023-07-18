@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignContent: 'flex-start',
-    width: '95%',
+    width: '90%',
     paddingLeft: 5,
     paddingRight: 5,
     borderRadius: 5,

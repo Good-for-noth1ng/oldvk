@@ -2,9 +2,9 @@ import { StyleSheet, Text, View, Image } from 'react-native'
 import React from 'react'
 import { COLORS } from '../constants/theme'
 
-const PhotosGridChunk = ({photos}) => {
+const PhotosGridChunk = ({photos, isLightTheme}) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
       {
         photos.data.map(photo => {
           const sizesLastIndex = photo.sizes.length - 1
@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
     gap: 2,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.white
   },
   image: {
     maxWidth: '33%'

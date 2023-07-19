@@ -6,14 +6,24 @@ const CarouselItem = ({ cover, title, type, num, handlePress, isLightTheme }) =>
   if (titleText !== title) {
     titleText += '...'
   }
+  const onPress = () => {
+    handlePress()
+  }
   return (
-    <TouchableOpacity style={[styles.container, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+    <TouchableOpacity 
+      style={[styles.container, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}
+      onPress={onPress}
+    >
       <Image 
         style={{width: 160, height: 110, borderRadius: 5}}
         source={{uri: cover}}
       />
-      <Text style={styles.title}>{titleText}</Text>
-      <Text style={styles.quantity}>{num} {type === 'photos' ? 'photos' : 'videos'}</Text>
+      <Text style={[styles.title, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
+        {titleText}
+      </Text>
+      <Text style={styles.quantity}>
+        {num} {type === 'photos' ? 'photos' : 'videos'}
+      </Text>
     </TouchableOpacity>
   )
 }

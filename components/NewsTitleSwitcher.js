@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
   dropdown: {
     backgroundColor: COLORS.light_smoke, 
     zIndex: 3,
-    elevation: 4,
+    elevation: 15,
     position: 'relative',
     width: 150,
     borderRadius: 5,

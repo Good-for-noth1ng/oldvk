@@ -1,8 +1,14 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, UIManager, Platform, LayoutAnimation } from 'react-native'
 import React, { useState, useCallback, memo } from 'react'
 import { COLORS } from '../constants/theme'
 import { getHyperlinkInText } from '../utils/hyperlinks'
 //dataText
+if (Platform.OS === 'android') {
+  if (UIManager.setLayoutAnimationEnabledExperimental) {
+    UIManager.setLayoutAnimationEnabledExperimental(true);
+  }
+}
+
 const PostText = ({dataText, toOpen, isLightTheme}) => {
   let postText = ''
   let readMoreText
@@ -20,10 +26,11 @@ const PostText = ({dataText, toOpen, isLightTheme}) => {
   }
   const [text, setText] = useState(postText)
   const [readMore, setReadMore] = useState(readMoreText)
-  const handleReadMore = useCallback(() => {
+  const handleReadMore = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setText(dataText)
     setReadMore(false)
-  }, [])
+  }
    
   return (
     <View style={styles.textContainer}>

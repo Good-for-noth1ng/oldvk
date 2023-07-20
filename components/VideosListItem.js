@@ -7,7 +7,7 @@ import { getTimeDate } from '../utils/date'
 import { COLORS } from '../constants/theme'
 
 
-const VideosListItem = ({title, duration, imageUrl, views, date, isLightTheme, navigation, playerUrl, ownerId, likes, reposts, isLiked, isReposted}) => {
+const VideosListItem = ({title, duration, imageUrl, views, date, isLightTheme, navigation, playerUrl, ownerId, likes, reposts, isLiked, isReposted, id}) => {
   // let shortagedTitle = title.slice(0, 40).split(' ').slice(0, -1).join(' ')
   let shortagedTitle = title.slice(0, 40)
   if (shortagedTitle !== title) {
@@ -50,7 +50,9 @@ const VideosListItem = ({title, duration, imageUrl, views, date, isLightTheme, n
   )
 }
 
-export default memo(VideosListItem)
+export default memo(VideosListItem, (prevProps, nextProps) => {
+  return prevProps.id === nextProps.id;
+})
 
 const styles = StyleSheet.create({
   mainContainer: {

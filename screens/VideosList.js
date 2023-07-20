@@ -1,11 +1,14 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native'
 import { FlatList } from "react-native-gesture-handler";
 import React, { useEffect, useState, useRef } from 'react'
+import uuid from 'react-native-uuid';
 import { useSelector } from 'react-redux'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomHeader from '../components/CustomHeader'
 import VideosListItem from '../components/VideosListItem'
 import DividerWithLine from '../components/DividerWithLine'
+import Carousel from '../components/Carousel';
+import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
 import { COLORS } from '../constants/theme'
 
 const VideosList = ({ navigation, route }) => {
@@ -13,27 +16,38 @@ const VideosList = ({ navigation, route }) => {
   const accessToken = useSelector(state => state.user.accessToken)
   const [isLoading, setIsLoading] = useState(true)
   const [videosList, setVideosList] = useState([])
+  const [albumsList, setAlbumsList] = useState([])
   const count = 10
   const offset = useRef(0)
   const remainToFetchNum = useRef(null)
-  const canRequestMore = useRef(true)
+  const numOfVideos = useRef(0)
+  const numOfAlbums = useRef(0)
   const { ownerId } = route.params
 
   const fetchVideos = async () => {
     const fetchVideosUrl = `https://api.vk.com/method/video.get?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&owner_id=${ownerId}&extended=1`
     const response = await fetch(fetchVideosUrl)
     const data = await response.json()
-    // console.log(data)
-    // if (data.response.items.length < count) {
-    //   canRequestMore.current = false
-    // }
     if (remainToFetchNum.current === null) {
+      numOfVideos.current = data.response.count
       remainToFetchNum.current = data.response.count - count
+      const fetchVideoAlbumsUrl = `https://api.vk.com/method/video.getAlbums?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&owner_id=${ownerId}&extended=1`
+      const albumsRes = await fetch(fetchVideoAlbumsUrl)
+      const albums = await albumsRes.json()
+      numOfAlbums.current = albums.response.count
+      offset.current += count
+      setAlbumsList(albums.response.items)
     } else {
+      offset.current += count 
       remainToFetchNum.current -= count 
     }
-    offset.current += count
-    setVideosList(prevState => prevState.concat(data.response.items))
+    
+    const videos = data.response.items.map(item => {
+      const key = uuid.v4()
+      return {...item, key: key}
+    })
+    setVideosList(prevState => prevState.concat(videos))
+    setIsLoading(false)
   }
 
   useEffect(() => {
@@ -58,13 +72,36 @@ const VideosList = ({ navigation, route }) => {
 
   const listHeader = () => {
     return (
-      <DividerWithLine 
-        dividerHeight={10} 
-        marginT={10} 
-        borderTL={5} 
-        borderTR={5} 
-        dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
-      />  
+      <>
+        <DividerWithLine 
+          dividerHeight={10} 
+          marginT={10} 
+          borderTL={5} 
+          borderTR={5} 
+          dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+        />
+        {
+          numOfAlbums.current > 0 ?
+          <Carousel 
+            data={albumsList}
+            dataLength={numOfAlbums.current}
+            type={'videos'}
+            isLightTheme={isLightTheme}
+            navigation={navigation}
+            ownerId={ownerId}
+            dataLengthFetched={count}
+          /> : null
+        }
+        <SearchResultHeaderCounter 
+          isLightTheme={isLightTheme}
+          counterName={'All videos'}
+          counterNum={numOfVideos.current}
+        />
+        <DividerWithLine 
+          dividerHeight={10}  
+          dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+        />
+      </>
     )
   }
 
@@ -84,12 +121,13 @@ const VideosList = ({ navigation, route }) => {
         reposts={item.reposts.count}
         isLiked={item.likes.user_likes}
         isReposted={item.reposts.user_reposted}
+        id={item.key}
       />
     )
   }
 
   const footer = () => {
-    if (remainToFetchNum.current > 0 && canRequestMore.current) {
+    if (remainToFetchNum.current > 0) {
       return (
         <>
           <View style={[{justifyContent: 'center'}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
@@ -117,8 +155,9 @@ const VideosList = ({ navigation, route }) => {
   }
 
   const keyExtractor = (item) => {
-    return item.id
+    return item.key
   }
+
   return (
     <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
       <StatusBar barStyle={COLORS.white} backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} />
@@ -128,22 +167,28 @@ const VideosList = ({ navigation, route }) => {
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />
-      <FlatList
-        style={styles.list} 
-        data={videosList}
-        renderItem={renderItem}
-        ListFooterComponent={footer}
-        ListHeaderComponent={listHeader}
-        ItemSeparatorComponent={listSeparator}
-        showsVerticalScrollIndicator={false}
-        onEndReached={fetchMoreVideos}
-        ListEmptyComponent={
-          <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
-            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
-          </View>
-        }
-        keyExtractor={keyExtractor}
-      />
+      {
+        isLoading ?
+        <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+          <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+        </View> :
+        <FlatList
+          style={styles.list} 
+          data={videosList}
+          renderItem={renderItem}
+          ListFooterComponent={footer}
+          ListHeaderComponent={listHeader}
+          ItemSeparatorComponent={listSeparator}
+          showsVerticalScrollIndicator={false}
+          onEndReached={fetchMoreVideos}
+        // ListEmptyComponent={
+        //   <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+        //     <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+        //   </View>
+        // }
+          keyExtractor={keyExtractor}
+        />
+      }
     </SafeAreaView>
   )
 }

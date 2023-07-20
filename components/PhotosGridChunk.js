@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image } from 'react-native'
 import React from 'react'
 import { COLORS } from '../constants/theme'
-
+//TODO: delete component
 const PhotosGridChunk = ({photos, isLightTheme}) => {
   return (
     <View style={[styles.container, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>

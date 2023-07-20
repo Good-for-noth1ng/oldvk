@@ -1,13 +1,21 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { getShortagedNumber } from '../utils/numShortage'
 import { COLORS } from '../constants/theme'
 
-const SearchResultHeaderCounter = ({ counterNum, isLightTheme, counterName }) => {
+const SearchResultHeaderCounter = ({ counterNum, isLightTheme, counterName, handleShowMorePress }) => {
   return (
-    <View style={isLightTheme ? styles.containerLight : styles.containerDark}>
-      <Text style={isLightTheme ? styles.textNameLight : styles.textNameDark}>{counterName}   </Text>
-      <Text style={styles.textNum}>{getShortagedNumber(counterNum)}</Text>
+    <View style={[styles.container, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+      <View style={{flexDirection: 'row'}}>
+        <Text style={[styles.textName, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>{counterName}   </Text>
+        <Text style={styles.textNum}>{getShortagedNumber(counterNum)}</Text>
+      </View>
+      {
+        handleShowMorePress ?
+        <TouchableOpacity>
+          <Text style={styles.showMore}>Show more</Text>
+        </TouchableOpacity> : null
+      }
     </View>
   )
 }
@@ -15,28 +23,24 @@ const SearchResultHeaderCounter = ({ counterNum, isLightTheme, counterName }) =>
 export default SearchResultHeaderCounter
 
 const styles = StyleSheet.create({
-  containerLight: {
-    backgroundColor: COLORS.white,
+  container: {
     flexDirection: 'row',
-    paddingLeft: 10
+    paddingLeft: 10,
+    paddingRight: 10,
+    justifyContent: 'space-between',
+    alignItems: 'flex-start'
   },
-  containerDark: {
-    backgroundColor: COLORS.primary_dark,
-    flexDirection: 'row',
-    paddingLeft: 10
-  },
-  textNameLight: {
+  textName: {
     fontSize: 15,
     fontWeight: 'bold',
-    color: COLORS.black,
-  },
-  textNameDark: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: COLORS.primary_text,
   },
   textNum: {
     color: COLORS.secondary,
     fontSize: 14
+  },
+  showMore: {
+    color: COLORS.primary,
+    fontSize: 15,
+    fontWeight: 'bold',
   }
 })

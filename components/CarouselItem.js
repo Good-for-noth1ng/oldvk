@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { COLORS } from '../constants/theme'
-const CarouselItem = ({ cover, title, type, num, handlePress, isLightTheme }) => {
+
+const CarouselItem = ({ cover, title, type, num, handlePress, isLightTheme, id }) => {
   let titleText = title.slice(0, 15)
   if (titleText !== title) {
     titleText += '...'
@@ -28,7 +29,9 @@ const CarouselItem = ({ cover, title, type, num, handlePress, isLightTheme }) =>
   )
 }
 
-export default CarouselItem
+export default React.memo(CarouselItem, (prevProps, nextProps) => {
+  return prevProps.id === nextProps.id
+})
 
 const styles = StyleSheet.create({
   container: {

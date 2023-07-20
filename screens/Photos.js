@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Image } from 'react-native'
 import React, { useState, useRef, useEffect } from 'react'
 import { FlatList } from "react-native-gesture-handler";
 import { useSelector } from 'react-redux'
@@ -6,20 +6,20 @@ import uuid from 'react-native-uuid';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomHeader from '../components/CustomHeader'
 import DividerWithLine from '../components/DividerWithLine'
-import PhotosGridChunk from '../components/PhotosGridChunk'
 import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
 import Carousel from '../components/Carousel';
+import PhotoGridItem from '../components/PhotoGridItem';
 import { COLORS } from '../constants/theme'
 
 const Photos = ({ navigation, route }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
+  const [isLoading, setIsLoading] = useState(true)
   const [photosList, setPhotosList] = useState([])
   const [albumsList, setAlbumsList] = useState([])
-  const count = 24
+  const count = 36
   const offset = useRef(0)
   const remainToFetchNum = useRef(null)
-  const canRequestMore = useRef(true)
   const numOfPhotos = useRef(0)
   const numOfAlbums = useRef(0)
   const { ownerId } = route.params
@@ -35,18 +35,28 @@ const Photos = ({ navigation, route }) => {
       const albumsRes= await fetch(fetchAlbumsUrl)
       const albums = await albumsRes.json()
       numOfAlbums.current = albums.response.count
+      offset.current += count
       setAlbumsList(albums.response.items)
     } else {
+      offset.current += count
       remainToFetchNum.current -= count 
     }
-    offset.current += count
-    setPhotosList(prevState => [...prevState, {data: data.response.items}])
+    const photos = data.response.items.map(item => {
+      const key = uuid.v4()
+      return {...item, key: key}
+    })
+    setPhotosList(prevState => prevState.concat(photos))
+    setIsLoading(false)
   }
 
   useEffect(() => {
     fetchPhotos()
   }, [])
 
+  const fetchMore = ( ) => {
+    // console.log('fetch more')
+    fetchPhotos()
+  }
 
   const goBack = () => {
     navigation.goBack()
@@ -62,14 +72,18 @@ const Photos = ({ navigation, route }) => {
           borderTR={5} 
           dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
         />
-        <Carousel 
-          data={albumsList}
-          dataLength={numOfAlbums.current}
-          type={'photos'}
-          isLightTheme={isLightTheme}
-          navigation={navigation}
-          ownerId={ownerId}
-        />
+        {
+          numOfAlbums.current > 0 ?
+          <Carousel 
+            data={albumsList}
+            dataLength={numOfAlbums.current}
+            dataLengthFetched={count}
+            type={'photos'}
+            isLightTheme={isLightTheme}
+            navigation={navigation}
+            ownerId={ownerId}
+          /> : null
+        }
         <SearchResultHeaderCounter 
           isLightTheme={isLightTheme}
           counterName={'All photos'}
@@ -84,21 +98,17 @@ const Photos = ({ navigation, route }) => {
   }
 
   const renderItem = ({item}) => {
-    // console.log(item)
     return (
-      <PhotosGridChunk
-        isLightTheme={isLightTheme}
-        photos={item}
-      />
+      <PhotoGridItem item={item} isLightTheme={isLightTheme}/>     
     )
   }
 
   const keyExtractor = (item) => {
-    return item.id
+    return item.key
   }
 
   const footer = () => {
-    if (remainToFetchNum.current > 0 && canRequestMore.current) {
+    if (remainToFetchNum.current > 0) {
       return (
         <>
           <View style={[{justifyContent: 'center'}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
@@ -134,22 +144,29 @@ const Photos = ({ navigation, route }) => {
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />
-      <FlatList
-        style={styles.list} 
-        data={photosList}
-        renderItem={renderItem}
-        ListFooterComponent={footer}
-        ListHeaderComponent={listHeader}
-        showsVerticalScrollIndicator={false}
-        // onEndReached={fetchMoreVideos}
-        ListEmptyComponent={
-          <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
-            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
-          </View>
-        }
-        keyExtractor={keyExtractor}
-        onEndReached={fetchPhotos}
-      />  
+      {
+        isLoading ?
+        <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+          <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+        </View> :
+        <FlatList
+          style={[styles.list, ]} 
+          data={photosList}
+          renderItem={renderItem}
+          ListFooterComponent={footer}
+          ListHeaderComponent={listHeader}
+          showsVerticalScrollIndicator={false}
+          numColumns={3}
+        // ListEmptyComponent={
+        //   <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+        //     <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+        //   </View>
+        // }
+          keyExtractor={keyExtractor}
+          onEndReached={fetchMore}
+        />
+      }
+        
     </SafeAreaView>
   )
 }
@@ -165,7 +182,6 @@ const styles = StyleSheet.create({
   list: {
     marginLeft: 5,
     marginRight: 5,
-    borderRadius: 5
   },
   spinnerContainer: {
     flex: 1,

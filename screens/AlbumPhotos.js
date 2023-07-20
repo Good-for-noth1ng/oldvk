@@ -7,8 +7,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomHeader from '../components/CustomHeader'
 import DividerWithLine from '../components/DividerWithLine'
 import PhotosGridChunk from '../components/PhotosGridChunk'
+import PhotoGridItem from '../components/PhotoGridItem';
 import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
-import Carousel from '../components/Carousel';
 import { COLORS } from '../constants/theme'
 
 const AlbumPhotos = ({ navigation, route }) => {
@@ -21,9 +21,14 @@ const AlbumPhotos = ({ navigation, route }) => {
   const canRequestMore = React.useRef(true)
   const numOfPhotos = React.useRef(0)
   const { albumId, headerName, ownerId } = route.params
+  console.log(albumId)
+  let headerTitle = headerName.slice(0, 24)
+  if (headerTitle !== headerName) {
+    headerTitle += '...'
+  }
 
   const fetchAlbumPhotos = async () => {
-    const fetchAlbumPhotosUrl = `https://api.vk.com/method/photos.get?access_token=${accessToken}&v=5.131&count=${count}&album_id=${albumId}&offset=${offset.current}&owner_id=${ownerId}&extended=1`
+    const fetchAlbumPhotosUrl = `https://api.vk.com/method/photos.get?access_token=${accessToken}&v=5.131&count=${count}&album_id=${albumId}&offset=${offset.current}&owner_id=${ownerId}&extended=1&photo_sizes=1`
     const response = await fetch(fetchAlbumPhotosUrl)
     const data = await response.json()
     if (remainToFetchNum.current === null) {
@@ -33,7 +38,15 @@ const AlbumPhotos = ({ navigation, route }) => {
       remainToFetchNum.current -= count 
     }
     offset.current += count
-    setPhotosList(prevState => [...prevState, {data: data.response.items}])
+    const photos = data.response.items.map((item) => {
+      const key = uuid.v4()
+      // if (item === undefined) {
+      //   console.log('undef')
+      // }
+      return {...item, key: key}
+    })
+
+    setPhotosList(prevState => prevState.concat(photos))
   }
 
   React.useEffect(() => {
@@ -42,15 +55,15 @@ const AlbumPhotos = ({ navigation, route }) => {
 
   const renderItem = ({item}) => {
     return (
-      <PhotosGridChunk
+      <PhotoGridItem
+        item={item}
         isLightTheme={isLightTheme}
-        photos={item}
       />
     )
   }
 
   const keyExtractor = (item) => {
-    return item.id
+    return item.key
   }
 
   const goBack = () => {
@@ -101,14 +114,14 @@ const AlbumPhotos = ({ navigation, route }) => {
       <StatusBar barStyle={COLORS.white} backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} />
       <CustomHeader 
         isLightTheme={isLightTheme}
-        headerName={<Text style={styles.headerTextStyle}>{headerName}</Text>}
+        headerName={<Text style={styles.headerTextStyle}>{headerTitle}</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />
       <FlatList
-        style={styles.list} 
-        data={photosList}
+        data={photosList} 
         renderItem={renderItem}
+        style={styles.list}
         keyExtractor={keyExtractor}
         ListFooterComponent={footer}
         ListEmptyComponent={
@@ -118,6 +131,8 @@ const AlbumPhotos = ({ navigation, route }) => {
         }   
         onEndReached={fetchAlbumPhotos}
         ListHeaderComponent={listHeader}
+        numColumns={3}
+        showsVerticalScrollIndicator={false}
       />
     </SafeAreaView>
   )

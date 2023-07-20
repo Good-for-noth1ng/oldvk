@@ -17,12 +17,13 @@ import WallHeaderButtons from '../components/WallHeaderButtons';
 import WallHeaderPostSuggestButton from '../components/WallHeaderPostSuggestButton';
 import WallHeaderAdditionalInfo from '../components/WallHeaderAdditionalInfo'
 import { cleanAdditionalInfoLinksAndUsers } from '../utils/dataPreparationForComponents'
+import ProfileHeaderName from '../components/ProfileHeaderName';
 //TODO: replace selectors on usestate
 const Group = ({navigation, route}) => {
   const dispatch = useDispatch();
   const accessToken = useSelector(state => state.user.accessToken)
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
-  const [wallHeaderData, setWallHeaderData] = useState({})
+  const [wallHeaderData, setWallHeaderData] = useState({screenName: 'Community'})
   const [groupData, setGroupData] = useState([])
   const offset = useRef(0)
   const remainToFetchNum = useRef(null)
@@ -66,6 +67,7 @@ const Group = ({navigation, route}) => {
       description: groupHeaderData.response[0].description,
       cleanedLinks,
       cleanedUsers,
+      screenName: groupHeaderData.response[0].screen_name,
       // contacts: groupHeaderData.response[0].contacts,
       // contactsDetailed: contactsDetailed,
       // links: groupHeaderData.response[0].links
@@ -171,7 +173,7 @@ const Group = ({navigation, route}) => {
       <CustomHeader 
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
-        headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>Community</Text>}
+        headerName={<ProfileHeaderName userShortName={wallHeaderData.screenName}/>}
         isLightTheme={isLightTheme}
       />
       {

@@ -4,6 +4,9 @@ import { getShortagedNumber } from '../utils/numShortage'
 import { COLORS } from '../constants/theme'
 
 const SearchResultHeaderCounter = ({ counterNum, isLightTheme, counterName, handleShowMorePress }) => {
+  const onShowMore = () => {
+    handleShowMorePress()
+  }
   return (
     <View style={[styles.container, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
       <View style={{flexDirection: 'row'}}>
@@ -12,7 +15,7 @@ const SearchResultHeaderCounter = ({ counterNum, isLightTheme, counterName, hand
       </View>
       {
         handleShowMorePress ?
-        <TouchableOpacity>
+        <TouchableOpacity onPress={onShowMore}>
           <Text style={styles.showMore}>Show more</Text>
         </TouchableOpacity> : null
       }

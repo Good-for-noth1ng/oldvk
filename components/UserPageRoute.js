@@ -12,6 +12,12 @@ import SubscriptionsList from '../screens/SubscriptionsList';
 import UsersGroups from '../screens/UsersGroups';
 import VideosList from '../screens/VideosList';
 import VideoScreen from '../screens/VideoScreen';
+import Photos from '../screens/Photos';
+import AlbumPhotos from '../screens/AlbumPhotos';
+import AlbumVideos from '../screens/AlbumVideos';
+import PhotoAlbumsList from '../screens/PhotoAlbumsList';
+import VideoAlbumsList from '../screens/VideoAlbumsList';
+
 
 const UserPageStack = createNativeStackNavigator();
 
@@ -29,6 +35,11 @@ const UserPageRoute = () => {
       <UserPageStack.Screen name='UsersGroups' component={UsersGroups} options={{headerShown:false, animation: 'slide_from_right'}} />
       <UserPageStack.Screen name='VideosList' component={VideosList} options={{headerShown:false, animation: 'slide_from_right'}} />
       <UserPageStack.Screen name='Video' component={VideoScreen} options={{headerShown:false, animation: 'slide_from_right'}}/>
+      <UserPageStack.Screen name='Photos' component={Photos} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <UserPageStack.Screen name='AlbumPhotos' component={AlbumPhotos} options={{headerShown:false, animation: 'slide_from_right'}} />
+      <UserPageStack.Screen name='AlbumVideos' component={AlbumVideos}options={{headerShown:false, animation: 'slide_from_right'}} />
+      <UserPageStack.Screen name='PhotoAlbumsList' component={PhotoAlbumsList}options={{headerShown:false, animation: 'slide_from_right'}} />
+      <UserPageStack.Screen name='VideoAlbumsList' component={VideoAlbumsList}options={{headerShown:false, animation: 'slide_from_right'}} />
     </UserPageStack.Navigator>
   )
 }

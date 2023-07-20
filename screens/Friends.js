@@ -192,13 +192,15 @@ const Friends = ({navigation}) => {
         </>
       )
     }
-    <DividerWithLine 
-      dividerHeight={10} 
-      marginB={10} 
-      borderBL={5} 
-      borderBR={5} 
-      dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
-    />
+    return (
+      <DividerWithLine 
+        dividerHeight={10} 
+        marginB={10} 
+        borderBL={5} 
+        borderBR={5} 
+       dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+      />
+    )
   }
 
   const renderItem = ({item}) => (

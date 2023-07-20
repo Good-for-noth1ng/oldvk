@@ -17,6 +17,8 @@ import VideoScreen from '../screens/VideoScreen';
 import Photos from '../screens/Photos';
 import AlbumPhotos from '../screens/AlbumPhotos';
 import AlbumVideos from '../screens/AlbumVideos';
+import PhotoAlbumsList from '../screens/PhotoAlbumsList';
+import VideoAlbumsList from '../screens/VideoAlbumsList';
 
 const PostStack = createNativeStackNavigator();
 
@@ -38,6 +40,8 @@ const NewsRoute = () => {
       <PostStack.Screen name='Photos' component={Photos} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <PostStack.Screen name='AlbumPhotos' component={AlbumPhotos} options={{headerShown:false, animation: 'slide_from_right'}} />
       <PostStack.Screen name='AlbumVideos' component={AlbumVideos}options={{headerShown:false, animation: 'slide_from_right'}} />
+      <PostStack.Screen name='PhotoAlbumsList' component={PhotoAlbumsList}options={{headerShown:false, animation: 'slide_from_right'}} />
+      <PostStack.Screen name='VideoAlbumsList' component={VideoAlbumsList}options={{headerShown:false, animation: 'slide_from_right'}} />
     </PostStack.Navigator>
   )
 }

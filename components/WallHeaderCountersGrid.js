@@ -5,11 +5,14 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import { COLORS } from '../constants/theme'
 import { getShortagedNumber } from '../utils/numShortage'
 import { getNameInGroupHeader } from '../utils/getNameByKey';
-
+//TODO: add topic screen
 const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation }) => {
   let countersGrid = []
   let row = []
   
+  const navigateToAlbums = () => {
+    navigation.push('PhotoAlbumsList', {ownerId})
+  }
   const navigateToPhotos = () => {
     navigation.push('Photos', { ownerId: ownerId })
   }
@@ -97,6 +100,13 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation })
       } else if (counters[key] !== 0 && key === 'photos') {
         row.push(
           <TouchableOpacity key={uuid.v4()} style={styles.counterButton} onPress={navigateToPhotos}>
+            <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
+          </TouchableOpacity>
+        )
+      } else if (counters[key] !== 0 && key === 'albums') {
+        row.push(
+          <TouchableOpacity key={uuid.v4()} style={styles.counterButton} onPress={navigateToAlbums}>
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
             <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
           </TouchableOpacity>

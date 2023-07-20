@@ -17,7 +17,7 @@ const Photos = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [photosList, setPhotosList] = useState([])
   const [albumsList, setAlbumsList] = useState([])
-  const count = 36
+  const count = 10
   const offset = useRef(0)
   const remainToFetchNum = useRef(null)
   const numOfPhotos = useRef(0)
@@ -31,10 +31,18 @@ const Photos = ({ navigation, route }) => {
     if (remainToFetchNum.current === null) {
       numOfPhotos.current = data.response.count
       remainToFetchNum.current = data.response.count - count
+      let fetchAlbumsCountUrl
+      if (ownerId < 0) {
+        fetchAlbumsCountUrl = `https://api.vk.com/method/photos.getAlbumsCount?access_token=${accessToken}&v=5.131&group_id=${-1 * ownerId}`
+      } else {
+        fetchAlbumsCountUrl = `https://api.vk.com/method/photos.getAlbumsCount?access_token=${accessToken}&v=5.131&user_id=${ownerId}`
+      }
       const fetchAlbumsUrl = `https://api.vk.com/method/photos.getAlbums?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&owner_id=${ownerId}&need_covers=1&photo_sizes=1`
       const albumsRes= await fetch(fetchAlbumsUrl)
+      const albumsCountRes = await fetch(fetchAlbumsCountUrl)
       const albums = await albumsRes.json()
-      numOfAlbums.current = albums.response.count
+      const albumsCount = await albumsCountRes.json()
+      numOfAlbums.current = albumsCount.response
       offset.current += count
       setAlbumsList(albums.response.items)
     } else {

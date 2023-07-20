@@ -9,19 +9,29 @@ import { COLORS } from '../constants/theme';
 const Carousel = ({navigation, data, dataLength, type, isLightTheme, ownerId, dataLengthFetched}) => {
   
   const renderItem = ({item}) => {
-    let handlePress
+    let handlePress, cover
     if (type === 'photos') {
       handlePress = () => {
         navigation.push('AlbumPhotos', {albumId: item.id, headerName: item.title, ownerId: ownerId})
+      }
+      if (item.sizes !== undefined) {
+        cover = ''
+      } else {
+        cover = item.sizes[item.sizes.length - 1].url
       }
     } else if (type === 'videos') {
       handlePress = () => {
         navigation.push('AlbumVideos', {albumId: item.id, headerName: item.title, ownerId: ownerId})
       }
+      if (item.image === undefined) {
+        cover = ''
+      } else {
+        cover = item.image[item.image.length - 1].url
+      }
     }
     return (
       <CarouselItem 
-        cover={type === 'photos' ? item.sizes[item.sizes.length - 1].url : item.image[item.image.length - 1].url}
+        cover={cover}
         title={item.title}
         type={type}
         num={type === 'photos' ? item.size : item.count}
@@ -44,9 +54,9 @@ const Carousel = ({navigation, data, dataLength, type, isLightTheme, ownerId, da
 
   const handleShowMorePress = () => {
     if (type === 'photos') {
-      navigation.push('PhotoAlbumsList')
+      navigation.push('PhotoAlbumsList', {ownerId})
     } else  if (type === 'videos'){
-      navigation.push('VideoAlbumsList')
+      navigation.push('VideoAlbumsList', {ownerId})
     }
   }
 

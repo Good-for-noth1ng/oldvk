@@ -16,6 +16,8 @@ import VideoScreen from '../screens/VideoScreen';
 import Photos from '../screens/Photos';
 import AlbumPhotos from '../screens/AlbumPhotos';
 import AlbumVideos from '../screens/AlbumVideos';
+import PhotoAlbumsList from '../screens/PhotoAlbumsList';
+import VideoAlbumsList from '../screens/VideoAlbumsList';
 
 const GroupStack = createNativeStackNavigator();
 
@@ -37,6 +39,8 @@ const GropsRoute = () => {
       <GroupStack.Screen name='Photos' component={Photos} options={{headerShown:false, animation: 'slide_from_right'}}/>
       <GroupStack.Screen name='AlbumPhotos' component={AlbumPhotos} options={{headerShown:false, animation: 'slide_from_right'}} />
       <GroupStack.Screen name='AlbumVideos' component={AlbumVideos}options={{headerShown:false, animation: 'slide_from_right'}} />
+      <GroupStack.Screen name='PhotoAlbumsList' component={PhotoAlbumsList}options={{headerShown:false, animation: 'slide_from_right'}} />
+      <GroupStack.Screen name='VideoAlbumsList' component={VideoAlbumsList}options={{headerShown:false, animation: 'slide_from_right'}} />
     </GroupStack.Navigator>
   )
 }

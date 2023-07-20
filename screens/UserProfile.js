@@ -17,7 +17,7 @@ import WallHeaderPostSuggestButton from '../components/WallHeaderPostSuggestButt
 import WallHeaderPersonalContainer from '../components/WallHeaderPersonalContainer';
 import { setData, pushData, clear } from '../redux/userWallSlice'
 import { COLORS } from '../constants/theme'
-
+import ProfileHeaderName from '../components/ProfileHeaderName';
 // fix redux calls
 const UserProfile = ({navigation, route}) => {
   const dispatch = useDispatch()
@@ -40,10 +40,10 @@ const UserProfile = ({navigation, route}) => {
   // const postData = userData.items
   
   const [isLoading, setIsLoading] = useState(true) 
-  const userInfoUrlFields = 'friend_status,followers_count,photo_200,online,last_seen,counters,status,can_send_friend_request,can_write_private_message,can_post,relation,bdate,city,interests,home_town,personal,education,universities'
+  const userInfoUrlFields = 'friend_status,followers_count,photo_200,online,last_seen,counters,status,can_send_friend_request,can_write_private_message,can_post,relation,bdate,city,interests,home_town,personal,education,universities,screen_name'
   const userInfoUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${userId}&fields=${userInfoUrlFields}`
   const userWallUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&v=5.131&owner_id=${userId}&extended=1&count=${count}`
-  const [wallHeaderData , setWallHeaderData] = useState({})
+  const [wallHeaderData , setWallHeaderData] = useState({screenName: 'Profile'})
   
   //TODO:
   //const allData = Promise.all([fetchReq1, fetchReq2, fetchReq3]);
@@ -93,7 +93,8 @@ const UserProfile = ({navigation, route}) => {
       interests: userInfoData.response[0].interests,
       homeTown: userInfoData.response[0].home_town,
       education: userInfoData.response[0].education,
-      universities: userInfoData.response[0].universities
+      universities: userInfoData.response[0].universities,
+      screenName: userInfoData.response[0].screen_name
     })
     if (userWallContentData.error === undefined) {
       userWallContentData.response.items.forEach((item, index, array) => {
@@ -213,7 +214,7 @@ const UserProfile = ({navigation, route}) => {
         }
         isLightTheme={isLightTheme}
         iconTouchHandler={currentUserId === userId ? openDrawer : goBack}
-        headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>Profile</Text>}
+        headerName={<ProfileHeaderName userShortName={wallHeaderData.screenName}/>}
         isScreenFromDrawerMenu={userId === currentUserId}
         navigation={navigation}
       />
@@ -221,16 +222,18 @@ const UserProfile = ({navigation, route}) => {
         isLoading ?
         <View style={styles.spinnerContainer}>
           <ActivityIndicator size={50} color={isLightTheme ? COLORS.primary : COLORS.white}/>
-        </View> : 
-        <FlatList
-          data={userData}
-          style={styles.list}
-          ListHeaderComponent={listHeader}
-          renderItem={renderItem}
-          ListFooterComponent={listFooter}
-          onEndReached={fetchMore}
-          onEndReachedThreshold={0.8}
-        />
+        </View> :
+        <> 
+          <FlatList
+            data={userData}
+            style={styles.list}
+            ListHeaderComponent={listHeader}
+            renderItem={renderItem}
+            ListFooterComponent={listFooter}
+            onEndReached={fetchMore}
+            onEndReachedThreshold={0.8}
+          />
+        </>
       }
     </SafeAreaView>
   )

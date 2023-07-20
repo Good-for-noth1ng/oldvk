@@ -20,6 +20,6 @@ const styles = StyleSheet.create({
   container: {
     width: '33.33%', 
     height: 140,  
-    padding: 1,
+    padding: 0,
   }
 })

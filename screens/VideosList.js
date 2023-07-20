@@ -34,6 +34,7 @@ const VideosList = ({ navigation, route }) => {
       const fetchVideoAlbumsUrl = `https://api.vk.com/method/video.getAlbums?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&owner_id=${ownerId}&extended=1`
       const albumsRes = await fetch(fetchVideoAlbumsUrl)
       const albums = await albumsRes.json()
+      console.log(albums)
       numOfAlbums.current = albums.response.count
       offset.current += count
       setAlbumsList(albums.response.items)

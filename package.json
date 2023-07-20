@@ -43,7 +43,8 @@
     "expo-file-system": "~15.2.2",
     "expo-media-library": "~15.2.3",
     "@shopify/flash-list": "1.4.0",
-    "expo-dev-client": "~2.2.1"
+    "expo-dev-client": "~2.2.1",
+    "expo-clipboard": "~4.1.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0"

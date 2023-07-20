@@ -2,10 +2,21 @@ export const getShortagedNumber = (num) => {
     if (num < 1000) {
         return `${num}`
     } else if (num < 1000000) {
-        return `${Math.ceil(num / 1000)}k`
-    } else if (num < 1000000000) {
-        return `${Math.ceil(num / 1000000)}k`
+      const mainPart = (num - num % 1000) / 1000
+      const addPart = Math.round(num % 1000 / 100)
+      if (addPart > 0) {
+        return `${mainPart}.${addPart}k`
+      } else {
+        return `${mainPart}k`
+      }
     }
+    // if (num < 1000) {
+    //   return `${num}`
+    // } else if (num < 1000000) {
+    //   return `${Math.round(num / 1000)}k`
+    // } else if (num < 1000000000) {
+    //   return `${Math.round(num / 1000000)}k`
+    // }
 }
 
 export const getDuration = (num) => {

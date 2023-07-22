@@ -151,7 +151,7 @@ const News = ({navigation}) => {
     <SafeAreaView style={isLightTheme ? styles.newsBackgroundLight : styles.newsBackgroundDark}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white} animated={true}/>
       <CustomHeader 
-        headerName={<NewsTitleSwitcher />} 
+        headerName={<NewsTitleSwitcher isLightTheme={isLightTheme}/>} 
         iconComponent={<Entypo name='menu' color={COLORS.white} size={30}/>}
         iconTouchHandler={handleDrawerOpening}
         isLightTheme={isLightTheme}

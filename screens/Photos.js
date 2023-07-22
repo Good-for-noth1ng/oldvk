@@ -4,6 +4,7 @@ import { FlatList } from "react-native-gesture-handler";
 import { useSelector } from 'react-redux'
 import uuid from 'react-native-uuid';
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import Entypo from 'react-native-vector-icons/Entypo'
 import CustomHeader from '../components/CustomHeader'
 import DividerWithLine from '../components/DividerWithLine'
 import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
@@ -14,6 +15,7 @@ import { COLORS } from '../constants/theme'
 const Photos = ({ navigation, route }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
+  const currentUserId = useSelector(state => state.user.userId)
   const [isLoading, setIsLoading] = useState(true)
   const [photosList, setPhotosList] = useState([])
   const [albumsList, setAlbumsList] = useState([])
@@ -22,7 +24,7 @@ const Photos = ({ navigation, route }) => {
   const remainToFetchNum = useRef(null)
   const numOfPhotos = useRef(0)
   const numOfAlbums = useRef(0)
-  const { ownerId } = route.params
+  const ownerId = route.params === undefined ? currentUserId : route.params.ownerId
   
   const fetchPhotos = async () => {
     const fetchPhotosUrl = `https://api.vk.com/method/photos.getAll?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&owner_id=${ownerId}&extended=1`
@@ -64,6 +66,10 @@ const Photos = ({ navigation, route }) => {
   const fetchMore = ( ) => {
     // console.log('fetch more')
     fetchPhotos()
+  }
+
+  const openDrawer = () => {
+    navigation.openDrawer()
   }
 
   const goBack = () => {
@@ -149,8 +155,14 @@ const Photos = ({ navigation, route }) => {
       <CustomHeader 
         isLightTheme={isLightTheme}
         headerName={<Text style={styles.headerTextStyle}>Photos</Text>}
-        iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
-        iconTouchHandler={goBack}
+        iconComponent={
+          currentUserId === ownerId ?
+          <Entypo name='menu' color={COLORS.white} size={30}/> :
+          <AntDesign name='arrowleft' size={30} color={COLORS.white}/>
+        }
+        iconTouchHandler={currentUserId === ownerId ? openDrawer : goBack}
+        isScreenFromDrawerMenu={ownerId === currentUserId}
+        navigation={navigation}
       />
       {
         isLoading ?
@@ -165,11 +177,11 @@ const Photos = ({ navigation, route }) => {
           ListHeaderComponent={listHeader}
           showsVerticalScrollIndicator={false}
           numColumns={3}
-        // ListEmptyComponent={
-        //   <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
-        //     <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
-        //   </View>
-        // }
+          // ListEmptyComponent={
+          //   <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+          //     <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+          //   </View>
+          // }
           keyExtractor={keyExtractor}
           onEndReached={fetchMore}
         />

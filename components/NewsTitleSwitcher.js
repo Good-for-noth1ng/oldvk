@@ -6,7 +6,7 @@ import { COLORS } from '../constants/theme';
 import { setCurrentPage } from '../redux/newsSlice';
 import { useSelector, useDispatch } from 'react-redux';
 
-const NewsTitleSwitcher = () => {
+const NewsTitleSwitcher = ({ isLightTheme }) => {
   const dispatch = useDispatch()
   const currentPage = useSelector(state => state.news.currentPage)
   const anim = React.useRef(new Animated.Value(0)).current
@@ -42,7 +42,6 @@ const NewsTitleSwitcher = () => {
   }
 
   const onNewsOptionPress = () => {
-
     Animated.timing(anim, {
       toValue: 0,
       duration: 1,
@@ -68,19 +67,33 @@ const NewsTitleSwitcher = () => {
         </Animated.View>
       </TouchableOpacity>
       <Animated.View 
-        style={[styles.dropdown, {height: listHeight}]}
+        style={[
+          styles.dropdown, 
+          {height: listHeight}, 
+          isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor : COLORS.secondary}
+        ]}
       >
         <TouchableOpacity 
-          style={[styles.optionContainer, currentPage === 'News' && {backgroundColor: COLORS.white}]} 
+          style={[
+            styles.optionContainer, 
+            currentPage === 'News' ? 
+              isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
+            : isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.secondary}
+          ]} 
           onPress={onNewsOptionPress}
         >
-          <Text style={styles.option}>News</Text>
+          <Text style={[styles.option, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>News</Text>
         </TouchableOpacity>
         <TouchableOpacity 
-          style={[styles.optionContainer, currentPage === 'Recommended' && {backgroundColor: COLORS.white}]} 
+          style={[
+            styles.optionContainer, 
+            currentPage === 'Recommended' ? 
+            isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
+            : isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.secondary}
+          ]} 
           onPress={onRecommendedOptionPress}
         >
-          <Text style={styles.option}>Recommended</Text>
+          <Text style={[styles.option, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Recommended</Text>
         </TouchableOpacity>
       </Animated.View>
     </View>

@@ -19,6 +19,8 @@ import GropsRoute from './GropsRoute';
 import FriendsRoute from './FriendsRoute';
 import UserPageRoute from './UserPageRoute';
 import UserProfile from '../screens/UserProfile';
+import PhotosRoute from './PhotosRoute';
+import VideosRoute from './VideosRoute';
 import { COLORS } from '../constants/theme';
 
 const Drawer = createDrawerNavigator()
@@ -58,19 +60,24 @@ const Home = () => {
           drawerIcon: ({color}) => (
             <FontAwesome name='user' color={color} size={20}/>
           ),
-          headerShown: false
+          headerShown: false,
+          drawer: 'Friends'
         }}/>
-        {/* <Drawer.Screen name='Photos' component={Photos} options={{
+        <Drawer.Screen name='PhotosRoute' component={PhotosRoute} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='camera' size={20} color={color}/>
-          )
+          ),
+          headerShown: false,
+          drawerLabel: 'Photos',
         }}/>
-        <Drawer.Screen name='Videos' component={Videos} options={{
+        <Drawer.Screen name='VideosRoute' component={VideosRoute} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='film' size={20} color={color}/>
-          )
+          ),
+          headerShown: false,
+          drawerLabel: 'Videos'
         }}/>
-        <Drawer.Screen name='Audio' component={Audio} options={{
+        {/* <Drawer.Screen name='Audio' component={Audio} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='music' size={20} color={color}/>
           )

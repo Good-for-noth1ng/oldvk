@@ -3,17 +3,18 @@ import React, { useState, useEffect} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { setUserID } from '../redux/userWallSlice'
 import CommentBottom from './CommentBottom'
+import CommentPhotos from './CommentPhotos'
 import { COLORS } from '../constants/theme'
 import { getHyperlinkInText } from '../utils/hyperlinks'
 
-const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme, openCommentMenu, commentId, ownerId, navigation}) => {
+const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme, openCommentMenu, commentId, ownerId, navigation, attachments}) => {
   const dispatch = useDispatch()
   const authorsGeneralInfo = useSelector(state => state.comments)
   const groups = authorsGeneralInfo.groups
   const profiles = authorsGeneralInfo.profiles
   const authors = [...groups, ...profiles]
-  let name
-  let photoUrl
+  let name, photoUrl
+  let commentPhotos = []
   const [isLiked, setIsLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(likes)
 
@@ -25,12 +26,20 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
     outputRange: [commentReplyBgInitColor, commentBgEndColor]
   })
 
+  if (attachments) {
+    for (let i = 0; i < attachments.length; i++) {
+      if (attachments[i].type === 'photo') {
+        commentPhotos.push(attachments[i].photo)
+      }
+    }
+  }
   profiles.forEach(item => {
     if (item.id === from_id) {
       name = `${item.first_name} ${item.last_name}`;
       photoUrl = item.photo_100; 
     }
   })
+
 
   if (name === undefined) {
     groups.forEach(item => {
@@ -101,7 +110,10 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
           >
             {name}
           </Text>
-          <Text style={[styles.replyText, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>{getHyperlinkInText(commentText)}</Text>
+          <Text style={[styles.replyText, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
+            {getHyperlinkInText(commentText)}
+          </Text>
+          {commentPhotos.length > 0 ? <CommentPhotos commentPhotos={commentPhotos}/> : null}
           <CommentBottom likesCount={likesCount} handleLikePress={handleLikePress} date={commentDate} isLiked={isLiked}/>
         </View>
       </Animated.View>

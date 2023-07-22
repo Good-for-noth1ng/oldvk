@@ -13,12 +13,12 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
   //TODO: pass props directly to screen
   const navigateToCommentThread = () => {
     console.log(ownerId, postId, startOfThreadId)
-    dispatch(setDataForFetchingCommentThread({
-      threadMainCommentId: startOfThreadId,
-      ownerId: ownerId,
-      postId: postId,      
-    }))
-    navigation.push('CommentThread')
+    // dispatch(setDataForFetchingCommentThread({
+    //   threadMainCommentId: startOfThreadId,
+    //   ownerId: ownerId,
+    //   postId: postId,      
+    // }))
+    navigation.push('CommentThread', {threadMainCommentId: startOfThreadId, ownerId: ownerId, postId: postId,})
   }
   return (
     <View 
@@ -42,6 +42,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
                 openCommentMenu={openCommentMenu}
                 ownerId={ownerId}
                 navigation={navigation}
+                attachments={threadComments[0].attachments}
               />
               <DividerWithLine dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={5}/>
               <CommentReply
@@ -55,6 +56,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
                 openCommentMenu={openCommentMenu}
                 ownerId={ownerId}
                 navigation={navigation}
+                attachments={threadComments[1].attachments}
               />
               <DividerWithLine dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={7}/>
               {
@@ -78,6 +80,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
               openCommentMenu={openCommentMenu}
               ownerId={ownerId}
               navigation={navigation}
+              attachments={threadComments[0].attachments}
             /> 
         : null
       }
@@ -97,10 +100,12 @@ const styles = StyleSheet.create({
     paddingRight: 5,
   },
   showMoreContainer: {
-    width: '92%',
+    width: '100%',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    // backgroundColor: COLORS.secondary,
+    paddingLeft: '15%'
   },
   showMoreCommentsButton: {
     width: '30%',

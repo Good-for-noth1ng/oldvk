@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import uuid from 'react-native-uuid';
 import { useSelector } from 'react-redux'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import Entypo from 'react-native-vector-icons/Entypo'
 import CustomHeader from '../components/CustomHeader'
 import VideosListItem from '../components/VideosListItem'
 import DividerWithLine from '../components/DividerWithLine'
@@ -14,6 +15,7 @@ import { COLORS } from '../constants/theme'
 const VideosList = ({ navigation, route }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
+  const currentUserId = useSelector(state => state.user.userId)
   const [isLoading, setIsLoading] = useState(true)
   const [videosList, setVideosList] = useState([])
   const [albumsList, setAlbumsList] = useState([])
@@ -22,7 +24,7 @@ const VideosList = ({ navigation, route }) => {
   const remainToFetchNum = useRef(null)
   const numOfVideos = useRef(0)
   const numOfAlbums = useRef(0)
-  const { ownerId } = route.params
+  const ownerId = route.params === undefined ? currentUserId : route.params.ownerId
 
   const fetchVideos = async () => {
     const fetchVideosUrl = `https://api.vk.com/method/video.get?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&owner_id=${ownerId}&extended=1`
@@ -34,7 +36,7 @@ const VideosList = ({ navigation, route }) => {
       const fetchVideoAlbumsUrl = `https://api.vk.com/method/video.getAlbums?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&owner_id=${ownerId}&extended=1`
       const albumsRes = await fetch(fetchVideoAlbumsUrl)
       const albums = await albumsRes.json()
-      console.log(albums)
+      // console.log(albums)
       numOfAlbums.current = albums.response.count
       offset.current += count
       setAlbumsList(albums.response.items)
@@ -54,6 +56,10 @@ const VideosList = ({ navigation, route }) => {
   useEffect(() => {
     fetchVideos()
   }, [])
+  
+  const openDrawer = () => {
+    navigation.openDrawer()
+  }
   
   const goBack = () => {
     navigation.goBack()
@@ -165,8 +171,14 @@ const VideosList = ({ navigation, route }) => {
       <CustomHeader 
         isLightTheme={isLightTheme}
         headerName={<Text style={styles.headerTextStyle}>Videos</Text>}
-        iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
-        iconTouchHandler={goBack}
+        iconComponent={
+          currentUserId === ownerId ?
+          <Entypo name='menu' color={COLORS.white} size={30}/> :
+          <AntDesign name='arrowleft' size={30} color={COLORS.white}/>
+        }
+        iconTouchHandler={currentUserId === ownerId ? openDrawer : goBack}
+        isScreenFromDrawerMenu={ownerId === currentUserId}
+        navigation={navigation}
       />
       {
         isLoading ?

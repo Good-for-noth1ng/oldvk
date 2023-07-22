@@ -171,7 +171,9 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
 }
 
 // export default memo(Comment)
-export default memo(Comment)
+export default memo(Comment, (prevProps, nextProps) => {
+  return prevProps.commentId === nextProps.commentId
+})
 
 const styles = StyleSheet.create({
   commentContainer: {

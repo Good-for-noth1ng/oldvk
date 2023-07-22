@@ -18,13 +18,14 @@ import DividerWithLine from '../components/DividerWithLine';
 import TextInputField from '../components/TextInputField';
 import OverlayWithButtons from '../components/OverlayWithButtons';
 
-const CommentThread = ({navigation}) => {
+const CommentThread = ({navigation, route}) => {
   const dispatch = useDispatch()
   const accessToken = useSelector(state => state.user.accessToken)
   const commentsGeneralData = useSelector(state => state.comments)
-  const threadMainCommentId = commentsGeneralData.threadMainCommentId
-  const ownerId = commentsGeneralData.ownerId
-  const postId = commentsGeneralData.postId
+  const {threadMainCommentId, ownerId, postId} = route.params
+  // const threadMainCommentId = commentsGeneralData.threadMainCommentId
+  // const ownerId = commentsGeneralData.ownerId
+  // const postId = commentsGeneralData.postId
   // let isAuthorInfoOpen = commentsGeneralData.isAuthorInfoOpen;
   const authorName = commentsGeneralData.authorName;
   const authorImgUrl = commentsGeneralData.authorImgUrl;
@@ -283,6 +284,7 @@ const CommentThread = ({navigation}) => {
             ListFooterComponent={listBottom}
             onEndReached={fetchMoreComments}
             onEndReachedThreshold={1}
+            showsVerticalScrollIndicator={false}
           />
           <TextInputField isLightTheme={isLightTheme}/>
           <OverlayWithButtons 

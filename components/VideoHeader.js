@@ -4,7 +4,7 @@ import Feather from 'react-native-vector-icons/Feather'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 
-const VideoHeader = ({ ownerId, date, isLightTheme, navigation, name, imgUrl }) => {
+const VideoHeader = ({ ownerId, date, isLightTheme, navigation, name, imgUrl, isMember, isFriend }) => {
 
   const onProfilePress = () => {
     if (ownerId > 0) {
@@ -24,8 +24,12 @@ const VideoHeader = ({ ownerId, date, isLightTheme, navigation, name, imgUrl }) 
         </View>
       </TouchableOpacity>
       <View style={styles.actionsContainer}>
-        <TouchableOpacity>
-          <Feather name='user-plus' size={23} color={COLORS.secondary}/>  
+        <TouchableOpacity activeOpacity={0.8}>
+          {
+            isFriend || isMember ? 
+            <Feather name='user-check' size={23} color={COLORS.secondary}/> :
+            <Feather name='user-plus' size={23} color={COLORS.primary}/> 
+          }  
         </TouchableOpacity>
         <TouchableOpacity>
           <Feather name='more-vertical' size={23} color={COLORS.secondary}/>

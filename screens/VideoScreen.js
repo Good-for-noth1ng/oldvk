@@ -17,11 +17,14 @@ const VideoScreen = ({navigation, route}) => {
   const { playerUrl, title, views, ownerId, likes, reposts, isLiked, isReposted, date } = route.params
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
+  // console.log(accessToken)
   const video = useRef(null)
   const [videoUrl, setVideoUrl] = useState(undefined)
   const [isLoading, setIsLoading] = useState(true)
   const [name, setName] = useState('')
   const [imgUrl, setImgUrl] = useState('')
+  const [isFriend, setIsFriend] = useState(0)
+  const [isMember, setIsMember] = useState(0)
   const [likesCount, setLikesCount] = useState(likes)
   const [liked, setLiked] = useState(isLiked === 1 ? true : false)
 
@@ -32,12 +35,13 @@ const VideoScreen = ({navigation, route}) => {
   `
   const fetchAuthroInfo = async () => {
     if (ownerId > 0) {
-      const url = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&fields=photo_100&user_ids=${ownerId}`
+      const url = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&fields=photo_100,is_friend&user_ids=${ownerId}`
       const response = await fetch(url)
       const data = await response.json()
     //   console.log(data)
       setName(`${data.response[0].first_name} ${data.response[0].last_name}`)
       setImgUrl(data.response[0].photo_100)
+      setIsFriend(data.response[0].is_friend)
       setIsLoading(false)
     } else {
       const url = `https://api.vk.com/method/groups.getById?access_token=${accessToken}&v=5.131&fields=photo_100&group_id=${-1 * ownerId}`
@@ -46,6 +50,7 @@ const VideoScreen = ({navigation, route}) => {
     //   console.log(data)
       setName(data.response[0].name)
       setImgUrl(data.response[0].photo_100)
+      setIsFriend(data.response[0].is_member)
       setIsLoading(false)
     }
   }
@@ -117,6 +122,8 @@ const VideoScreen = ({navigation, route}) => {
               navigation={navigation}
               name={name}
               imgUrl={imgUrl}
+              isFriend={isFriend}
+              isMember={isMember}
             />
             <WebView
               source={{uri: playerUrl}}

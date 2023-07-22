@@ -25,11 +25,6 @@ const UserProfile = ({navigation, route}) => {
   const accessToken = useSelector(state => state.user.accessToken)
   const [isUserInfoExpanded, setIsUserInfoExpanded] = useState(false)
   const currentUserId = useSelector(state => state.user.userId)
-  const chevronRotationAnim = React.useRef(new Animated.Value(0 )).current
-  const spin = chevronRotationAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ['0deg', '180deg']
-  })
   const userId = route.params !== undefined ? route.params.userId : currentUserId
   console.log(currentUserId, userId)
   const count = 15

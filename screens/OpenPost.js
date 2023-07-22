@@ -315,6 +315,7 @@ const OpenPost = ({navigation}) => {
             onEndReachedThreshold={0.8}
             style={[styles.list, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}
             keyExtractor={keyExtractor}
+            showsVerticalScrollIndicator={false}
           />
           { comments ? <TextInputField isLightTheme={isLightTheme}/> : null}
           <OverlayWithButtons 

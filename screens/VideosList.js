@@ -129,6 +129,11 @@ const VideosList = ({ navigation, route }) => {
         isLiked={item.likes.user_likes}
         isReposted={item.reposts.user_reposted}
         id={item.key}
+        canLike={item.can_like}
+        canAdd={item.can_add}
+        canAddToFavs={item.can_add_to_faves}
+        commentsCount={item.comments}
+        canComment={item.can_comment}
       />
     )
   }

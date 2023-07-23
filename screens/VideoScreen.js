@@ -14,7 +14,7 @@ import VideoScreenBottom from '../components/VideoScreenBottom'
 import VideoHeader from '../components/VideoHeader'
 
 const VideoScreen = ({navigation, route}) => {
-  const { playerUrl, title, views, ownerId, likes, reposts, isLiked, isReposted, date } = route.params
+  const { playerUrl, title, views, ownerId, likes, reposts, isLiked, isReposted, date, canLike, canAdd, canAddToFavs, commentsCount, canComment } = route.params
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   // console.log(accessToken)
@@ -159,7 +159,14 @@ const VideoScreen = ({navigation, route}) => {
                 dividerLineColor={isLightTheme ? COLORS.light_smoke : COLORS.secondary} 
                 dividerHeight={20}
               />
-              <VideoScreenBottom likes={likesCount} isLiked={liked} reposts={reposts} likePressHandler={likePressHandler}/>
+              <VideoScreenBottom 
+                canComment={canComment} 
+                comments={commentsCount} 
+                likes={likesCount} 
+                isLiked={liked} 
+                reposts={reposts} 
+                likePressHandler={likePressHandler}
+              />
               <DividerWithLine dividerHeight={10} dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}/>
             </View>
           </>

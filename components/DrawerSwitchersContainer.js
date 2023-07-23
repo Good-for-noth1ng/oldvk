@@ -14,9 +14,29 @@ const DrawerSwitchersContainer = () => {
   const [isOnline, setIsOnline] = useState(false)
   const [allowMarkAsRead, setAllowMarkAsRead] = useState(false)
   const [allowSeeTyping, setAllowSeeTyping] = useState(false)
+  const onlineStatusIntervalId = React.useRef()
+  const accessToken = useSelector(state => state.user.accessToken)
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
 
   const changeOnlineStatus = () => {
+    if (isOnline === false) {
+      const setOnlineStatus = () => {
+        const url = `https://api.vk.com/method/account.setOnline?access_token=${accessToken}&v=5.131`
+        fetch(url)
+        .then(res => res.json())
+        .then(data => console.log('now online status is shown'))
+      }
+      setOnlineStatus()
+      onlineStatusIntervalId.current = setInterval(() => {
+        setOnlineStatus()
+      }, 300000)
+    } else {
+      clearInterval(onlineStatusIntervalId.current)
+      const url = `https://api.vk.com/method/account.setOffline?access_token=${accessToken}&v=5.131`
+      fetch(url)
+        .then(res => res.json())
+        .then(data => console.log('now offline status is shown'))
+    }
     setIsOnline(prevState => !prevState)
   }
   const changeReadStatus = () => {

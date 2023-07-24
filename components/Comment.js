@@ -10,13 +10,13 @@ import DividerWithLine from './DividerWithLine'
 import CommentPhotos from './CommentPhotos'
 import { getHyperlinkInText } from '../utils/hyperlinks'
 
-const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, likes, threadCount, threadComments, commentId, navigation, postId, ownerId, isLightTheme, openCommentMenu}) => {
+const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, likes, threadCount, threadComments, commentId, navigation, postId, ownerId, isLightTheme, openCommentMenu, author}) => {
   const dispatch = useDispatch()
-  const authorsGeneralInfo = useSelector(state => state.comments)
-  const profiles = authorsGeneralInfo.profiles
-  const groups = authorsGeneralInfo.groups 
-  let name = undefined
-  let photoUrl = undefined
+  // const authorsGeneralInfo = useSelector(state => state.comments)
+  // const profiles = authorsGeneralInfo.profiles
+  // const groups = authorsGeneralInfo.groups 
+  const name = author.name ? author.name : `${author.first_name} ${author.last_name}`
+  const photoUrl = author.photo_100
   // const [name, setName] = useState('')
   // const [photoUrl, setPhotoUrl] = useState(null)
   const [isLiked, setIsLiked] = useState(false)
@@ -39,21 +39,21 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
     }
   }
 
-  profiles.forEach(item => {
-    if (item.id === from_id) {
-      name = `${item.first_name} ${item.last_name}`;
-      photoUrl = item.photo_100;
-    }
-  })
+  // profiles.forEach(item => {
+  //   if (item.id === from_id) {
+  //     name = `${item.first_name} ${item.last_name}`;
+  //     photoUrl = item.photo_100;
+  //   }
+  // })
 
-  if (name === undefined) {
-    groups.forEach(item => {
-      if (item.id === (from_id * (-1))) {
-        name = item.name
-        photoUrl = item.photo_100
-      }
-    })
-  }
+  // if (name === undefined) {
+  //   groups.forEach(item => {
+  //     if (item.id === (from_id * (-1))) {
+  //       name = item.name
+  //       photoUrl = item.photo_100
+  //     }
+  //   })
+  // }
   const handleLikePress = () => {
     if(!isLiked) {
       setLikesCount(prevState => prevState + 1);

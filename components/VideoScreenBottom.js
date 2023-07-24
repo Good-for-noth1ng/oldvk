@@ -5,10 +5,15 @@ import Fontisto from 'react-native-vector-icons/Fontisto'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { getShortagedNumber } from '../utils/numShortage'
 import { COLORS } from '../constants/theme'
-const VideoScreenBottom = ({likes, reposts, isLiked, isLightTheme, likePressHandler, repostPresshandler, comments, canComment}) => {
+
+const VideoScreenBottom = ({likes, reposts, isLiked, isLightTheme, likePressHandler, repostPresshandler, comments, canComment, navigation, ownerId, videoId}) => {
   const onLikePress = () => {
     likePressHandler(isLiked)
   }
+  const navigateToComments = () => {
+    navigation.push('VideoComments', {ownerId, videoId})
+  }
+
   return (
     <View style={styles.iconsContainer}>
       <View style={{flexDirection: 'row', gap: 20}}>
@@ -27,7 +32,7 @@ const VideoScreenBottom = ({likes, reposts, isLiked, isLightTheme, likePressHand
           <Text style={styles.iconText}>{reposts}</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.iconContainer} activeOpacity={canComment === 1 ? 0.8 : 1}>
+      <TouchableOpacity style={styles.iconContainer} activeOpacity={canComment === 1 ? 0.8 : 1} onPress={navigateToComments}>
         <MaterialCommunityIcons name='comment' size={23} color={COLORS.secondary}/>
         <Text style={styles.iconText}>{comments}</Text>
       </TouchableOpacity>

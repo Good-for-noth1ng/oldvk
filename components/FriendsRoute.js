@@ -18,6 +18,7 @@ import AlbumPhotos from '../screens/AlbumPhotos';
 import AlbumVideos from '../screens/AlbumVideos';
 import PhotoAlbumsList from '../screens/PhotoAlbumsList';
 import VideoAlbumsList from '../screens/VideoAlbumsList';
+import VideoComments from '../screens/VideoComments';
 
 const FriendsStack = createNativeStackNavigator();
 
@@ -38,9 +39,10 @@ const FriendsRoute = () => {
       <FriendsStack.Screen name='Video' component={VideoScreen} options={{headerShown:false, animation: 'slide_from_right'}}/>
       <FriendsStack.Screen name='Photos' component={Photos} options={{headerShown:false, animation: 'slide_from_right'}} />
       <FriendsStack.Screen name='AlbumPhotos' component={AlbumPhotos} options={{headerShown:false, animation: 'slide_from_right'}} />
-      <FriendsStack.Screen name='AlbumVideos' component={AlbumVideos}options={{headerShown:false, animation: 'slide_from_right'}} />
-      <FriendsStack.Screen name='PhotoAlbumsList' component={PhotoAlbumsList}options={{headerShown:false, animation: 'slide_from_right'}} />
-      <FriendsStack.Screen name='VideoAlbumsList' component={VideoAlbumsList}options={{headerShown:false, animation: 'slide_from_right'}} />
+      <FriendsStack.Screen name='AlbumVideos' component={AlbumVideos} options={{headerShown:false, animation: 'slide_from_right'}} />
+      <FriendsStack.Screen name='PhotoAlbumsList' component={PhotoAlbumsList} options={{headerShown:false, animation: 'slide_from_right'}} />
+      <FriendsStack.Screen name='VideoAlbumsList' component={VideoAlbumsList} options={{headerShown:false, animation: 'slide_from_right'}} />
+      <FriendsStack.Screen name='VideoComments' component={VideoComments} options={{headerShown:false, animation: 'slide_from_right'}} />
     </FriendsStack.Navigator>
   )
 }

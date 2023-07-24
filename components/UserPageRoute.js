@@ -17,7 +17,7 @@ import AlbumPhotos from '../screens/AlbumPhotos';
 import AlbumVideos from '../screens/AlbumVideos';
 import PhotoAlbumsList from '../screens/PhotoAlbumsList';
 import VideoAlbumsList from '../screens/VideoAlbumsList';
-
+import VideoComments from '../screens/VideoComments';
 
 const UserPageStack = createNativeStackNavigator();
 
@@ -40,6 +40,7 @@ const UserPageRoute = () => {
       <UserPageStack.Screen name='AlbumVideos' component={AlbumVideos}options={{headerShown:false, animation: 'slide_from_right'}} />
       <UserPageStack.Screen name='PhotoAlbumsList' component={PhotoAlbumsList}options={{headerShown:false, animation: 'slide_from_right'}} />
       <UserPageStack.Screen name='VideoAlbumsList' component={VideoAlbumsList}options={{headerShown:false, animation: 'slide_from_right'}} />
+      <UserPageStack.Screen name='VideoComments' component={VideoComments}options={{headerShown:false, animation: 'slide_from_right'}} />
     </UserPageStack.Navigator>
   )
 }

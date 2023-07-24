@@ -321,7 +321,8 @@ const styles = StyleSheet.create({
     height: 45,
     borderRadius: 5,
     padding: 5,
-    alignContent: 'center'
+    alignContent: 'center',
+    justifyContent: 'center',
   },
   commentMenuButton: {
     height: '12%',

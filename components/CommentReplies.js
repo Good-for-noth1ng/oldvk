@@ -8,7 +8,7 @@ import { COLORS } from '../constants/theme'
 import DividerWithLine from './DividerWithLine'
 
 const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfThreadId, navigation, ownerId, postId, isLightTheme, openCommentMenu}) => {
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
 
   //TODO: pass props directly to screen
   const navigateToCommentThread = () => {
@@ -37,6 +37,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
                 commentText={threadComments[0].text}
                 likes={threadComments[0].likes.count}
                 commentId={threadComments[0].id}
+                author={threadComments[0].author}
                 fetchProfileInfo={fetchProfileInfo}
                 isLightTheme={isLightTheme}
                 openCommentMenu={openCommentMenu}
@@ -51,6 +52,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
                 commentText={threadComments[1].text}
                 likes={threadComments[1].likes.count}
                 commentId={threadComments[1].id}
+                author={threadComments[1].author}
                 fetchProfileInfo={fetchProfileInfo}
                 isLightTheme={isLightTheme} 
                 openCommentMenu={openCommentMenu}
@@ -75,6 +77,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
               commentText={threadComments[0].text}
               likes={threadComments[0].likes.count}
               commentId={threadComments[0].id}
+              author={threadComments[0].author}
               fetchProfileInfo={fetchProfileInfo}
               isLightTheme={isLightTheme}
               openCommentMenu={openCommentMenu}

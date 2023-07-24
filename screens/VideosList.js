@@ -134,6 +134,7 @@ const VideosList = ({ navigation, route }) => {
         canAddToFavs={item.can_add_to_faves}
         commentsCount={item.comments}
         canComment={item.can_comment}
+        videoId={item.id}
       />
     )
   }

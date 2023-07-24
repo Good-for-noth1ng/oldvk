@@ -34,7 +34,7 @@ const Login = ({navigation}) => {
               oldvk - мобильное приложение для соцсети вконтакте
             </Text>
           </View>
-          <LoginButton buttonText={'Авторизоваться через vk.com'} isLightTheme={isLightTheme}  navigation={navigation}/>
+          <LoginButton buttonText={'Войти через vk.com'} isLightTheme={isLightTheme}  navigation={navigation}/>
         </View>
     </SafeAreaView>
   )

@@ -7,13 +7,14 @@ import CommentPhotos from './CommentPhotos'
 import { COLORS } from '../constants/theme'
 import { getHyperlinkInText } from '../utils/hyperlinks'
 
-const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme, openCommentMenu, commentId, ownerId, navigation, attachments}) => {
+const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme, openCommentMenu, commentId, ownerId, navigation, attachments, author}) => {
   const dispatch = useDispatch()
   const authorsGeneralInfo = useSelector(state => state.comments)
   const groups = authorsGeneralInfo.groups
   const profiles = authorsGeneralInfo.profiles
   const authors = [...groups, ...profiles]
-  let name, photoUrl
+  const name = author.name ? author.name : `${author.first_name} ${author.last_name}` 
+  const photoUrl = author.photo_100
   let commentPhotos = []
   const [isLiked, setIsLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(likes)

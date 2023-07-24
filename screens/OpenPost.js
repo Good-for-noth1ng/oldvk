@@ -83,7 +83,7 @@ const OpenPost = ({navigation}) => {
   const commentMenuButtonColor = isLightTheme ? COLORS.primary : COLORS.white
   
   const navigateToUserProfile = (userId) => {
-    dispatch(setID(userId))
+    // dispatch(setID(userId))
     navigation.push('UserProfile', {userId})
   }
 
@@ -153,13 +153,42 @@ const OpenPost = ({navigation}) => {
       }
     } else {
       const items = commentsData.response.items.map(item => {
-        return {...item, key: uuid.v4()}
+        const key = uuid.v4()
+        let threadItems = []
+        if (item.thread.count > 0) {
+          threadItems = item.thread.items.map(item => {
+            const key = uuid.v4()
+            let author = commentsData.response.profiles.find(profile => profile.id === item.from_id)
+            if (author === undefined) {
+              author = commentsData.response.groups.find(group => group.id === item.from_id)
+            }
+            return {
+              ...item,
+              key,
+              author,
+            }
+          })
+        }
+        const thread = {
+          ...item.thread,
+          items: threadItems
+        }
+        let author = commentsData.response.profiles.find(profile => profile.id === item.from_id)
+        if (author === undefined) {
+          author = commentsData.response.groups.find(group => group.id === (-1 * item.from_id))
+        }
+        return {
+          ...item, 
+          key,
+          author,
+          thread,
+        }
       }) 
       setComments(items)
       currentLevelCommentsCount.current = commentsData.response.current_level_count - 10
       offset.current += 10
-      dispatch(setProfiles(commentsData.response.profiles))
-      dispatch(setGroups(commentsData.response.groups))
+      // dispatch(setProfiles(commentsData.response.profiles))
+      // dispatch(setGroups(commentsData.response.groups))
       setIsLoading(false)
     }
   }
@@ -169,12 +198,41 @@ const OpenPost = ({navigation}) => {
       const fetchMoreCommentsResponse = await fetch(commentsUrl)
       const fetchMoreCommentsData = await fetchMoreCommentsResponse.json()
       const items = await fetchMoreCommentsData.response.items.map(item => {
-        return {...item, key: uuid.v4()}
+        const key = uuid.v4()
+        let threadItems = []
+        if (item.thread.count > 0) {
+          threadItems = item.thread.items.map(item => {
+            const key = uuid.v4()
+            let author = commentsData.response.profiles.find(profile => profile.id === item.from_id)
+            if (author === undefined) {
+              author = commentsData.response.groups.find(group => group.id === (-1 * item.from_id))
+            }
+            return {
+              ...item,
+              key,
+              author,
+            }
+          })
+        }
+        const thread = {
+          ...item.thread,
+          items: threadItems
+        }
+        let author = fetchMoreCommentsData.response.profiles.find(profile => profile.id === item.from_id)
+        if (author === undefined) {
+          author = fetchMoreCommentsData.response.groups.find(group => group.id === item.from_id)
+        }
+        return {
+          ...item,
+          key,
+          author,
+          thread
+        }
       }) 
       currentLevelCommentsCount.current -= 10
       offset.current += 10
-      dispatch(pushProfiles(fetchMoreCommentsData.response.profiles))
-      dispatch(pushGroups(fetchMoreCommentsData.response.groups))
+      // dispatch(pushProfiles(fetchMoreCommentsData.response.profiles))
+      // dispatch(pushGroups(fetchMoreCommentsData.response.groups))
       setComments(prevState => prevState.concat(items))
     }
   }
@@ -199,6 +257,7 @@ const OpenPost = ({navigation}) => {
       is_deleted={item.deleted}
       isLightTheme={isLightTheme}
       openCommentMenu={openCommentMenu}
+      author={item.author}
     />
   )
 

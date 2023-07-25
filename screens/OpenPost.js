@@ -160,7 +160,7 @@ const OpenPost = ({navigation}) => {
             const key = uuid.v4()
             let author = commentsData.response.profiles.find(profile => profile.id === item.from_id)
             if (author === undefined) {
-              author = commentsData.response.groups.find(group => group.id === item.from_id)
+              author = commentsData.response.groups.find(group => group.id === (-1 * item.from_id))
             }
             return {
               ...item,
@@ -197,15 +197,15 @@ const OpenPost = ({navigation}) => {
     if(currentLevelCommentsCount.current > 0) {
       const fetchMoreCommentsResponse = await fetch(commentsUrl)
       const fetchMoreCommentsData = await fetchMoreCommentsResponse.json()
-      const items = await fetchMoreCommentsData.response.items.map(item => {
+      const items = fetchMoreCommentsData.response.items.map(item => {
         const key = uuid.v4()
         let threadItems = []
         if (item.thread.count > 0) {
           threadItems = item.thread.items.map(item => {
             const key = uuid.v4()
-            let author = commentsData.response.profiles.find(profile => profile.id === item.from_id)
+            let author = fetchMoreCommentsData.response.profiles.find(profile => profile.id === item.from_id)
             if (author === undefined) {
-              author = commentsData.response.groups.find(group => group.id === (-1 * item.from_id))
+              author = fetchMoreCommentsData.response.groups.find(group => group.id === (-1 * item.from_id))
             }
             return {
               ...item,
@@ -220,7 +220,7 @@ const OpenPost = ({navigation}) => {
         }
         let author = fetchMoreCommentsData.response.profiles.find(profile => profile.id === item.from_id)
         if (author === undefined) {
-          author = fetchMoreCommentsData.response.groups.find(group => group.id === item.from_id)
+          author = fetchMoreCommentsData.response.groups.find(group => group.id === (-1 * item.from_id))
         }
         return {
           ...item,

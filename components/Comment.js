@@ -12,11 +12,12 @@ import { getHyperlinkInText } from '../utils/hyperlinks'
 
 const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, likes, threadCount, threadComments, commentId, navigation, postId, ownerId, isLightTheme, openCommentMenu, author}) => {
   const dispatch = useDispatch()
+  // console.log(author)
   // const authorsGeneralInfo = useSelector(state => state.comments)
   // const profiles = authorsGeneralInfo.profiles
   // const groups = authorsGeneralInfo.groups 
-  const name = author.name ? author.name : `${author.first_name} ${author.last_name}`
-  const photoUrl = author.photo_100
+  const name = author?.name ? author?.name : `${author?.first_name} ${author?.last_name}`
+  const photoUrl = author?.photo_100
   // const [name, setName] = useState('')
   // const [photoUrl, setPhotoUrl] = useState(null)
   const [isLiked, setIsLiked] = useState(false)

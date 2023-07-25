@@ -136,13 +136,23 @@ const CommentThread = ({navigation, route}) => {
     const threadCommentsData = await threadCommentsResponse.json() 
     const threadMainCommentData = await threadMainCommentResponse.json()
     const items = threadCommentsData.response.items.map(item => {
-      return {...item, key: uuid.v4()}
+      const key = uuid.v4()
+      let author = threadCommentsData.response.profiles.find(profile => profile.id === item.from_id)
+      if (author === undefined) {
+        author = threadCommentsData.response.groups.find(group => group.id === (-1 * item.from_id))
+      }
+      return {
+        ...item,
+        key,
+        author,
+      }
     }) 
-    setMainComment(threadMainCommentData)
+    console.log(threadMainCommentData.response)
+    setMainComment({...threadMainCommentData})
     currentLevelCommentsCount.current = threadCommentsData.response.count - 10
     // console.log(threadMainCommentData.response)
     setComments(items)
-    dispatch(pushProfiles([...threadCommentsData.response.profiles, threadMainCommentData.response.profiles[0]]))
+    // dispatch(pushProfiles([...threadCommentsData.response.profiles, threadMainCommentData.response.profiles[0]]))
     setIsLoading(false)
   }
 
@@ -160,10 +170,19 @@ const CommentThread = ({navigation, route}) => {
       const fetchMoreCommentsResponse = await fetch(fetchMoreCommentsUrl)
       const fetchMoreCommentsData = await fetchMoreCommentsResponse.json()
       const items = fetchMoreCommentsData.response.items.map(item => {
-        return {...item, key: uuid.v4()}
+        const key = uuid.v4()
+        let author = fetchMoreCommentsData.response.profiles.find(profile => profile.id === item.from_id)
+        if (author === undefined) {
+          author = fetchMoreCommentsData.response.groups.find(group => group.id === (-1 * item.from_id))
+        }
+        return {
+          ...item,
+          key,
+          author,
+        }
       })
-      setComments(prevState => [...prevState, ...items])
-      dispatch(pushProfiles(fetchMoreCommentsData.response.profiles))
+      setComments(prevState => prevState.concat(items))
+      // dispatch(pushProfiles(fetchMoreCommentsData.response.profiles))
       offset.current += 10
       currentLevelCommentsCount.current -= 10
     }
@@ -185,6 +204,7 @@ const CommentThread = ({navigation, route}) => {
       is_deleted={item.deleted}
       isLightTheme={isLightTheme}
       openCommentMenu={openCommentMenu}
+      author={item.author}
       //add openCommentMenu function
     />
   )
@@ -204,6 +224,7 @@ const CommentThread = ({navigation, route}) => {
         likes={mainComment.response.items[0].likes.count}
         from_id={mainComment.response.items[0].from_id}
         commentText={mainComment.response.items[0].text}
+        author={mainComment.response.profiles.length > 0 ? mainComment.response.profiles[0] : mainComment.response.groups[0]}
         threadComments={[]}
         isLightTheme={isLightTheme}
       />

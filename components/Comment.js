@@ -11,15 +11,9 @@ import CommentPhotos from './CommentPhotos'
 import { getHyperlinkInText } from '../utils/hyperlinks'
 
 const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, likes, threadCount, threadComments, commentId, navigation, postId, ownerId, isLightTheme, openCommentMenu, author}) => {
-  const dispatch = useDispatch()
-  // console.log(author)
-  // const authorsGeneralInfo = useSelector(state => state.comments)
-  // const profiles = authorsGeneralInfo.profiles
-  // const groups = authorsGeneralInfo.groups 
+  const dispatch = useDispatch() 
   const name = author?.name ? author?.name : `${author?.first_name} ${author?.last_name}`
   const photoUrl = author?.photo_100
-  // const [name, setName] = useState('')
-  // const [photoUrl, setPhotoUrl] = useState(null)
   const [isLiked, setIsLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(likes)
 
@@ -40,21 +34,6 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
     }
   }
 
-  // profiles.forEach(item => {
-  //   if (item.id === from_id) {
-  //     name = `${item.first_name} ${item.last_name}`;
-  //     photoUrl = item.photo_100;
-  //   }
-  // })
-
-  // if (name === undefined) {
-  //   groups.forEach(item => {
-  //     if (item.id === (from_id * (-1))) {
-  //       name = item.name
-  //       photoUrl = item.photo_100
-  //     }
-  //   })
-  // }
   const handleLikePress = () => {
     if(!isLiked) {
       setLikesCount(prevState => prevState + 1);
@@ -83,7 +62,8 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
               authorImgUrl: photoUrl,
               authorId: vkId,
               authorCommentId: commentId,
-              ownerId: ownerId
+              ownerId: ownerId,
+              commentText
             })
           )
           // dispatch(setRegistrationDate(regDate))
@@ -94,10 +74,12 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
       })
   }
   
-  const navigateToUserProfile = () => {
-    dispatch(setUserID(from_id))
-    // navigation.navigate('UserProfile')
-    navigation.push('UserProfile', {userId: from_id})
+  const navigateToCommentAuthor = () => {
+    if (from_id > 0) {
+      navigation.push('UserProfile', {userId: from_id})
+    } else {
+      navigation.push('Group', {groupId: (-1 * from_id)})
+    }
   }
 
   const onPressIn = () => {
@@ -134,7 +116,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
         <Animated.View 
           style={[styles.commentContainer, {backgroundColor: commentBgColor}]}
         >
-          <TouchableOpacity activeOpacity={1} style={styles.imageContainer} onPress={navigateToUserProfile}>
+          <TouchableOpacity activeOpacity={1} style={styles.imageContainer} onPress={navigateToCommentAuthor}>
             <Image source={is_deleted ? require('../assets/avatars/banned-light.jpg') : {uri: photoUrl}} style={styles.image}/>
           </TouchableOpacity>
           <View style={styles.commentConentContainer}>

@@ -1,13 +1,14 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, InteractionManager } from 'react-native'
 import React, { useState, memo, useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Feather from 'react-native-vector-icons/Feather'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 import { setGroupID } from '../redux/groupSlice'
 import { setUserID } from '../redux/userWallSlice'
 
-const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfileContent, from_id, navigation, isLightTheme}) => {  
+const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfileContent, from_id, navigation, isLightTheme, onMorePress, isPinned}) => {  
   // if (isRepost) {console.log(sourceId, from_id)}
   // const accessToken = useSelector(state => state.user.accessToken)     
   const dispatch = useDispatch()
@@ -19,7 +20,7 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
   } else {
     wallId = sourceId
   }
-  
+
   if (wallId < 0) {
     groupData = useSelector(state => {
       const groups = [...state.news.groups, ...state.group.groups, ...state.userWall.groups]
@@ -61,6 +62,8 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
     postNameTextStyle = isLightTheme ? styles.postNameTextLight : styles.postNameTextDark;
     postTimeTextStyle = isLightTheme ? styles.postTimeTextLight : styles.postNameTextDark;
   }
+  
+
   return (
     <View style={styles.postHeaderContainer}>
       <TouchableOpacity onPress={openGroup} style={isRepost ? styles.postHeaderLeftsideContainerRepost : styles.postHeaderLeftsideContainer}>
@@ -76,6 +79,12 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
             <Text style={postNameTextStyle}>
               {name}
             </Text>
+            {
+              isPinned &&
+              <View style={{transform: [{rotateY: '180deg'}]}}>
+                <AntDesign name='pushpin' color={COLORS.secondary} size={15}/>
+              </View>
+            }
           </View>
           <Text style={postTimeTextStyle}>
             {getTimeDate(dataDate)}
@@ -84,9 +93,11 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
       </TouchableOpacity>
       {
         !isRepost &&
-        <View style={styles.postHeaderRightsideContainer}>
-          <Feather name='more-vertical' size={20} color={COLORS.secondary}/>
-        </View>
+        <>
+          <TouchableOpacity style={styles.postHeaderRightsideContainer} onPress={() => onMorePress()}>
+            <Feather name='more-vertical' size={20} color={COLORS.secondary}/>
+          </TouchableOpacity>
+        </>
       }    
     </View>
   )
@@ -99,6 +110,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
+        width: '100%'
       },
       postHeaderLeftsideContainer: {
         display: 'flex',
@@ -119,12 +131,18 @@ const styles = StyleSheet.create({
       },
       postNameContainer: {
         width: 230,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10
         // width: '150%',
         // backgroundColor: COLORS.secondary
       },
       postNameContainerRepost: {
         // width: 230,
         width: 255,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
         // backgroundColor: COLORS.secondary
       },
       postImageSource: {

@@ -135,6 +135,7 @@ const CommentThread = ({navigation, route}) => {
     const threadMainCommentResponse = await fetch(getThreadMainCommentUrl)
     const threadCommentsData = await threadCommentsResponse.json() 
     const threadMainCommentData = await threadMainCommentResponse.json()
+    // console.log(threadCommentsData)
     const items = threadCommentsData.response.items.map(item => {
       const key = uuid.v4()
       let author = threadCommentsData.response.profiles.find(profile => profile.id === item.from_id)
@@ -147,7 +148,7 @@ const CommentThread = ({navigation, route}) => {
         author,
       }
     }) 
-    console.log(threadMainCommentData.response)
+    // console.log(threadMainCommentData.response)
     setMainComment({...threadMainCommentData})
     currentLevelCommentsCount.current = threadCommentsData.response.count - 10
     // console.log(threadMainCommentData.response)
@@ -221,11 +222,13 @@ const CommentThread = ({navigation, route}) => {
       <Comment
         commentId={mainComment.response.items[0].id}
         commentDate={mainComment.response.items[0].date}
-        likes={mainComment.response.items[0].likes.count}
+        likes={mainComment.response.items[0].likes?.count}
         from_id={mainComment.response.items[0].from_id}
         commentText={mainComment.response.items[0].text}
         author={mainComment.response.profiles.length > 0 ? mainComment.response.profiles[0] : mainComment.response.groups[0]}
         threadComments={[]}
+        attachments={mainComment.response.items[0]?.attachments}
+        is_deleted={mainComment.response.items[0].deleted}
         isLightTheme={isLightTheme}
       />
       <DividerWithLine 

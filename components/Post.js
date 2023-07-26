@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, InteractionManager, Animated, ToastAndroid } from 'react-native'
 import React, { useCallback, memo } from 'react'
+import * as Clipboard from 'expo-clipboard'
 import { COLORS } from '../constants/theme'
 import { useSelector, useDispatch } from 'react-redux'
 import BottomPost from './BottomPost'
@@ -14,14 +15,40 @@ import { setOpenedPost } from '../redux/newsSlice'
 import { setScrolling } from '../redux/newsSlice'
 import PostSigner from './PostSigner' 
 
-const Post = ({data, navigation, openedPost, isCommunityContent, isProfileContent, isLigthTheme}) => {
+const Post = ({data, navigation, openedPost, isCommunityContent, isProfileContent, isLigthTheme, id}) => {
   const dispatch = useDispatch();
   let postPhotos = []
   let postDocs = []
   let postLinks = []
   let postVideos = []
   const signerID = data.signer_id
+  
 
+  const dropdownCollapseAnim = React.useRef(new Animated.Value(0)).current
+  const shadow = dropdownCollapseAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 500]
+  })
+  const dropdownMenuHeight = dropdownCollapseAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 160]
+  })
+
+  const onMorePress = () => {
+    Animated.timing(dropdownCollapseAnim, {
+      toValue: 1,
+      duration: 200, 
+      useNativeDriver: false
+    }).start()
+  }
+
+  const onShadowPress = () => {
+    Animated.timing(dropdownCollapseAnim, {
+      toValue: 0,
+      duration: 200, 
+      useNativeDriver: false
+    }).start()
+  }
   // console.log(data)
   const openPost = () => {
     if (openedPost) {
@@ -56,6 +83,12 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
 
   initPostData()
   
+  const copyPostLink = async () => {
+    await Clipboard.setStringAsync(`https://vk.com/wall${data.owner_id}_${data.id}`)
+    ToastAndroid.show('Copied!', ToastAndroid.SHORT)
+    onShadowPress()
+  }
+  // InteractionManager.addListener('')
   return (
     <View style={isLigthTheme ? styles.postContainerLight : styles.postContainerDark}>
       <PostHeader 
@@ -66,7 +99,43 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
         isProfileContent={isProfileContent}
         navigation={navigation}
         isLightTheme={isLigthTheme}
+        onMorePress={onMorePress}
+        isPinned={data.is_pinned}
       />
+      <Animated.View style={{width: shadow, height: shadow, position: 'absolute', zIndex: 4,}}>
+        <TouchableOpacity
+          activeOpacity={1} 
+          onPress={onShadowPress}
+          style={{width: '100%', height: '100%'}} 
+        />
+      </Animated.View>
+      <Animated.View 
+        style={{
+          backgroundColor: COLORS.white, 
+          elevation: 4, 
+          position: 'absolute', 
+          zIndex: 5, 
+          width: 170,
+          height: dropdownMenuHeight, // 160 
+          left: '50%', 
+          top: 10,
+          borderRadius: 5
+        }}>
+          <TouchableOpacity style={{position: 'relative', zIndex: 4, flex: 1, alignItems: 'flex-start', justifyContent: 'center', paddingLeft: 5}}>
+            <Text style={{fontSize: 17}}>Add to Bookmarks</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{position: 'relative', zIndex: 4, flex: 1, alignItems: 'flex-start', justifyContent: 'center', paddingLeft: 5}}>
+            <Text style={{fontSize: 17}}>Not interested</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={copyPostLink}
+           style={{position: 'relative', zIndex: 4, flex: 1,  alignItems: 'flex-start', justifyContent: 'center', paddingLeft: 5}}>
+            <Text style={{fontSize: 17}}>Copy Link</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{position: 'relative', zIndex: 4, flex: 1, alignItems: 'flex-start', justifyContent: 'center', paddingLeft: 5}}>
+            <Text style={{fontSize: 17}}>Report</Text>
+          </TouchableOpacity>
+      </Animated.View>
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12}/>
         {
@@ -119,7 +188,9 @@ const compareStates = (prevState, nextState) => {
   return prevState.key === nextState.key && prevState.isLightTheme === nextState.isLightTheme
 }
 // export default memo(Post, compareStates)
-export default memo(Post)
+export default memo(Post, (prevProps, nextProps) => {
+  return prevProps.id === nextProps.id && prevProps.isLigthTheme === nextProps.isLigthTheme
+})
 
 const styles = StyleSheet.create({
   postContainerLight: {

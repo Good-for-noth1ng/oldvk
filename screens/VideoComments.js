@@ -44,15 +44,32 @@ const VideoComments = ({ navigation, route }) => {
         author,
       }
     })
-    console.log(preparedComments)
+    // console.log(preparedComments)
     setComments(prevState => prevState.concat(preparedComments))
     setIsLoading(false)
   }
   
+  const fetchMore = () => {
+    if (remainToFetchNum.current > 0) {
+      fetchComments()
+    }
+  }
+
   React.useEffect(() => {
     fetchComments()
   }, [])
 
+  const listHeader = () => {
+    return (
+      <DividerWithLine 
+        dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+        dividerHeight={5}
+        borderTL={5}
+        borderTR={5}
+        marginT={5}
+      />
+    )
+  }
   const renderItem = ({item}) => {
     return (
       <Comment 
@@ -70,6 +87,40 @@ const VideoComments = ({ navigation, route }) => {
         isLightTheme={isLightTheme}
        // openCommentMenu={openCommentMenu}
         author={item.author}
+      />
+    )
+  }
+
+  const listSeparator = () => {
+    return (
+      <DividerWithLine dividerHeight={10} dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}/>
+    )
+  }
+
+  const footer = () => {
+    if (remainToFetchNum.current > 0) {
+      return (
+        <>
+          <View style={[{justifyContent: 'center'}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={40}/>
+          </View>
+          <DividerWithLine 
+            dividerHeight={5} 
+            marginB={10} 
+            borderBL={5} 
+            borderBR={5} 
+            dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+          />
+        </>
+      )
+    }
+    return (
+      <DividerWithLine 
+        dividerHeight={10} 
+        marginB={10} 
+        borderBL={5} 
+        borderBR={5} 
+        dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
       />
     )
   }
@@ -96,11 +147,15 @@ const VideoComments = ({ navigation, route }) => {
         <FlatList 
           data={comments}
           renderItem={renderItem}
+          ListHeaderComponent={listHeader}
           style={[
             {marginLeft: 5, marginRight: 5}, 
             isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}
           ]}
           showsVerticalScrollIndicator={false}
+          ListFooterComponent={footer}
+          onEndReached={fetchMore}
+          ItemSeparatorComponent={listSeparator}
         />
       }
     </SafeAreaView>

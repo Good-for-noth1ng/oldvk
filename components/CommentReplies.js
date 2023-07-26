@@ -13,11 +13,6 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
   //TODO: pass props directly to screen
   const navigateToCommentThread = () => {
     console.log(ownerId, postId, startOfThreadId)
-    // dispatch(setDataForFetchingCommentThread({
-    //   threadMainCommentId: startOfThreadId,
-    //   ownerId: ownerId,
-    //   postId: postId,      
-    // }))
     navigation.push('CommentThread', {threadMainCommentId: startOfThreadId, ownerId: ownerId, postId: postId,})
   }
   return (

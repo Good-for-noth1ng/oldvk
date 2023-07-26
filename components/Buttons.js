@@ -212,11 +212,17 @@ export const RadioOption = ({headerText, buttonsData, changeColor, chosenElement
   )
 }
 
-export const CommentMenuButton = ({icon, buttonText, pressHandler, isLightTheme, }) => {
-  const userId = useSelector(state => state.comments.authorId)
+export const CommentMenuButton = ({icon, buttonText, pressHandler, isLightTheme, type}) => {
+  const commentsData = useSelector(state => state.comments)
+  const userId = commentsData.authorId
+  const commentText = commentsData.commentText
   const onPress = () => {
-    if (pressHandler !== undefined) {
+    if (type === 'profile') {
       pressHandler(userId)
+    } else if (type === 'liked') {
+      pressHandler()
+    } else if (type === 'copy') {
+      pressHandler(commentText)
     }
   }
   return (

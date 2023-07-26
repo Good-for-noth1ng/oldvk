@@ -66,7 +66,7 @@ const UserProfile = ({navigation, route}) => {
       isOnlineUsingMobile = false
       isOnlineUsingPC = false
     }
-    console.log(userInfoData.response[0].can_post)
+    // console.log(userInfoData.response[0].can_post)
     setWallHeaderData({
       userName: `${userInfoData.response[0].first_name} ${userInfoData.response[0].last_name}`,
       canAccessClosed: userInfoData.response[0].can_access_closed, 
@@ -93,7 +93,8 @@ const UserProfile = ({navigation, route}) => {
     })
     if (userWallContentData.error === undefined) {
       userWallContentData.response.items.forEach((item, index, array) => {
-        array[index] = {...item, key: uuid.v4()}
+        const key = uuid.v4()
+        array[index] = {...item, key}
       })
       dispatch(clear())
       dispatch(setData(userWallContentData.response))
@@ -113,7 +114,8 @@ const UserProfile = ({navigation, route}) => {
     const wallContent = await wallContentResponse.json()
     if (wallContent.error === undefined) {
       wallContent.response.items.forEach((item, index, array) => {
-        array[index] = {...item, key: uuid.v4()}
+        const key = uuid.v4()
+        array[index] = {...item, key}
       })
       dispatch(pushData(wallContent.response))
       setUserData(prevState => prevState.concat(wallContent.response.items))
@@ -179,9 +181,26 @@ const UserProfile = ({navigation, route}) => {
 
   const renderItem = ({item}) => {
     if (item.copy_history !== undefined) {
-      return <Repost isLightMode={isLightTheme} data={item} openedPost={true} navigation={navigation}/>
+      return (
+        <Repost 
+          isLightMode={isLightTheme} 
+          data={item} 
+          openedPost={true} 
+          navigation={navigation} 
+          id={item.key}
+        />
+      )
     }
-    return <Post data={item} navigation={navigation} openedPost={true} isLigthTheme={isLightTheme} isProfileContent={true}/>
+    return (
+      <Post 
+        data={item} 
+        navigation={navigation} 
+        openedPost={true} 
+        isLigthTheme={isLightTheme} 
+        isProfileContent={true}
+        id={item.key}
+      />
+    )
   }
 
   const listFooter = () => {

@@ -45,6 +45,7 @@ const OverlayWithButtons = ({slideAnimation, isLightTheme, headerComponent, butt
                       buttonText={item.text} 
                       key={item.key} 
                       pressHandler={item.handleTouch}
+                      type={item.type}
                       isLightTheme={isLightTheme}
                     />
                   ))

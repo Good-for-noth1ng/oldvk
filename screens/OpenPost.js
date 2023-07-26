@@ -1,9 +1,10 @@
-import { StyleSheet, View, ActivityIndicator, Text, StatusBar, TouchableOpacity, SafeAreaView, Animated, BackHandler } from 'react-native'
+import { StyleSheet, View, ActivityIndicator, Text, StatusBar, TouchableOpacity, SafeAreaView, Animated, BackHandler, ToastAndroid } from 'react-native'
 import React, { useState, useEffect, useCallback, memo, useRef } from 'react'
 import { FlatList } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from 'react-redux'
 import { useFocusEffect } from '@react-navigation/native';
 import uuid from 'react-native-uuid'
+import * as Clipboard from 'expo-clipboard'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
@@ -29,7 +30,8 @@ const OpenPost = ({navigation}) => {
   const dispatch = useDispatch()
   const data = useSelector(state => state.news.openedPost) 
   const accessToken = useSelector(state => state.user.accessToken);
-
+  const ownerId = data.source_id ? data.source_id : data.owner_id
+  const postId = data.post_id ? data.post_id : data.id
   const commentsGeneralData = useSelector(state => state.comments); 
   // let isAuthorInfoOpen = commentsGeneralData.isAuthorInfoOpen;
   const authorName = commentsGeneralData.authorName;
@@ -82,6 +84,11 @@ const OpenPost = ({navigation}) => {
   const commentMenuButtonIconSize = 22
   const commentMenuButtonColor = isLightTheme ? COLORS.primary : COLORS.white
   
+  const copyCommentText = async (commentText) => {
+    await Clipboard.setStringAsync(commentText)
+    ToastAndroid.show('Copied!', ToastAndroid.SHORT)
+  }
+
   const navigateToUserProfile = (userId) => {
     // dispatch(setID(userId))
     navigation.push('UserProfile', {userId})
@@ -97,17 +104,20 @@ const OpenPost = ({navigation}) => {
         icon: <Feather name='user' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
         text: 'Profile',
         key: uuid.v4(),
+        type: 'profile',
         handleTouch: (...args) => navigateToUserProfile(...args)
       },
       {
         icon: <Ionicons name='arrow-undo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize} />,
         text: 'Reply',
-        key: uuid.v4()
+        key: uuid.v4(),
+        type: 'reply'
       },
       {
         icon: <Feather name='users' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
         text: 'Liked',
         key: uuid.v4(),
+        type: 'liked',
         handleTouch: (...args) => navigateToUserList(...args)
       },
     ],
@@ -115,27 +125,36 @@ const OpenPost = ({navigation}) => {
       {
         icon: <MaterialCommunityIcons name='content-copy' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
         text: 'Copy',
-        key: uuid.v4()
+        key: uuid.v4(),
+        type: 'copy',
+        handleTouch: (...args) => copyCommentText(...args)
       },
       {
         icon: <Ionicons name='arrow-redo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
         text: 'Share',
-        key: uuid.v4()
+        key: uuid.v4(),
+        type: 'share',
       },
       {
         icon: <Octicons name='report' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
         text: 'Report',
         key: uuid.v4(),
+        type: 'report'
       },
     ]
   ]
 
   let commentsUrl
   
+  // if (data.source_id !== undefined && data.post_id !== undefined) {
+  //   commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.source_id}&count=10&post_id=${data.post_id}&sort=asc&offset=${offset.current}&thread_items_count=2&fields=photo_100&extended=1`;
+  // } else {
+  //   commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.owner_id}&count=10&post_id=${data.id}&sort=asc&thread_items_count=2&offset=${offset.current}&thread_items_count=2&fields=photo_100&extended=1`;
+  // }
   if (data.source_id !== undefined && data.post_id !== undefined) {
-    commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.source_id}&count=10&post_id=${data.post_id}&sort=asc&offset=${offset.current}&thread_items_count=2&fields=photo_100&extended=1`;
+    commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${ownerId}&count=10&post_id=${postId}&sort=asc&offset=${offset.current}&thread_items_count=2&fields=photo_100&extended=1`;
   } else {
-    commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.owner_id}&count=10&post_id=${data.id}&sort=asc&thread_items_count=2&offset=${offset.current}&thread_items_count=2&fields=photo_100&extended=1`;
+    commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${ownerId}&count=10&post_id=${postId}&sort=asc&thread_items_count=2&offset=${offset.current}&thread_items_count=2&fields=photo_100&extended=1`;
   }
   console.log(data.source_id, data.post_id, data.from_id, data.id) //data.from_id. data.id
   
@@ -143,7 +162,6 @@ const OpenPost = ({navigation}) => {
     //check access to post comments 203977193 1555
     const commentsResponse = await fetch(commentsUrl)
     const commentsData = await commentsResponse.json()
-    // console.log(commentsData)
     if (commentsData.error !== undefined) {
       //access to post comments denied
       if (commentsData.error.error_code === 212) {
@@ -251,8 +269,8 @@ const OpenPost = ({navigation}) => {
       threadComments={item.thread.items}
       threadCount={item.thread.count}
       navigation={navigation}
-      postId={item.post_id}
-      ownerId={item.owner_id}
+      postId={postId}
+      ownerId={ownerId}
       attachments={item?.attachments}
       is_deleted={item.deleted}
       isLightTheme={isLightTheme}
@@ -305,7 +323,7 @@ const OpenPost = ({navigation}) => {
       return (
         <>
           <View style={isLightTheme ? styles.bottomSpinnerContainerLight : styles.bottomSpinnerContainerDark}>
-            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={40}/>
           </View>
           <DividerWithLine 
             dividerHeight={5} 

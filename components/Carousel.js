@@ -14,7 +14,7 @@ const Carousel = ({navigation, data, dataLength, type, isLightTheme, ownerId, da
       handlePress = () => {
         navigation.push('AlbumPhotos', {albumId: item.id, headerName: item.title, ownerId: ownerId})
       }
-      if (item.sizes !== undefined) {
+      if (item.sizes === undefined) {
         cover = ''
       } else {
         cover = item.sizes[item.sizes.length - 1].url

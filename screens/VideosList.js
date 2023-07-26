@@ -11,6 +11,7 @@ import DividerWithLine from '../components/DividerWithLine'
 import Carousel from '../components/Carousel';
 import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
 import { COLORS } from '../constants/theme'
+import { FlashList } from "@shopify/flash-list";
 
 const VideosList = ({ navigation, route }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
@@ -172,7 +173,10 @@ const VideosList = ({ navigation, route }) => {
   }
 
   return (
-    <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
+    <SafeAreaView style={[
+        {flex: 1}, 
+        isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}
+      ]}>
       <StatusBar barStyle={COLORS.white} backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} />
       <CustomHeader 
         isLightTheme={isLightTheme}
@@ -191,22 +195,35 @@ const VideosList = ({ navigation, route }) => {
         <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
           <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
         </View> :
-        <FlatList
-          style={styles.list} 
+        <View style={{width: '100%', height: '100%', paddingLeft: 5, paddingRight: 5, flex: 1}}>
+        <FlashList
           data={videosList}
           renderItem={renderItem}
-          ListFooterComponent={footer}
+          estimatedItemSize={93}
+          onEndReached={fetchMoreVideos}
           ListHeaderComponent={listHeader}
+          ListFooterComponent={footer}
           ItemSeparatorComponent={listSeparator}
           showsVerticalScrollIndicator={false}
-          onEndReached={fetchMoreVideos}
+          keyExtractor={keyExtractor} 
+        />
+        </View>
+        // <FlatList
+        //   style={styles.list} 
+        //   data={videosList}
+        //   renderItem={renderItem}
+        //   ListFooterComponent={footer}
+        //   ListHeaderComponent={listHeader}
+        //   ItemSeparatorComponent={listSeparator}
+        //   showsVerticalScrollIndicator={false}
+        //   onEndReached={fetchMoreVideos}
         // ListEmptyComponent={
         //   <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
         //     <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
         //   </View>
         // }
-          keyExtractor={keyExtractor}
-        />
+        //   keyExtractor={keyExtractor}
+        // />
       }
     </SafeAreaView>
   )

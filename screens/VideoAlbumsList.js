@@ -65,11 +65,17 @@ const VideoAlbumsList = ({navigation, route}) => {
   }
 
   const renderItem = ({item}) => {
+    let cover
+    if (item.image === undefined) {
+      cover = ''
+    } else {
+      cover = item.image[item.image.length - 1].url
+    }
     return (
       <AlbumListItem
         albumTitle={item.title}
         albumItemsCount={item.count}
-        imageUrl={item.image[item.image.length - 1].url}
+        imageUrl={cover}
         isLightTheme={isLightTheme}
         navigation={navigation}
         ownerId={item.owner_id}

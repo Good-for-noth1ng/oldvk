@@ -75,7 +75,8 @@ export const commentsSlice = createSlice({
         registrationDate: action.payload.registrationDate,
         authorCommentId: action.payload.authorCommentId,
         authorInfoIsFetching: false,
-        ownerId: action.payload.ownerId
+        ownerId: action.payload.ownerId,
+        commentText: action.payload.commentText
       }
     },
     // setAuthorName: (state, action) => {

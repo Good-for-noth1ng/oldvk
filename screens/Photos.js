@@ -11,7 +11,7 @@ import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
 import Carousel from '../components/Carousel';
 import PhotoGridItem from '../components/PhotoGridItem';
 import { COLORS } from '../constants/theme'
-
+import { FlashList } from "@shopify/flash-list";
 const Photos = ({ navigation, route }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
@@ -19,13 +19,13 @@ const Photos = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [photosList, setPhotosList] = useState([])
   const [albumsList, setAlbumsList] = useState([])
-  const count = 10
+  const count = 24
   const offset = useRef(0)
   const remainToFetchNum = useRef(null)
   const numOfPhotos = useRef(0)
   const numOfAlbums = useRef(0)
   const ownerId = route.params === undefined ? currentUserId : route.params.ownerId
-  
+  // console.log('rerender')
   const fetchPhotos = async () => {
     const fetchPhotosUrl = `https://api.vk.com/method/photos.getAll?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&owner_id=${ownerId}&extended=1`
     const response = await fetch(fetchPhotosUrl)
@@ -113,7 +113,7 @@ const Photos = ({ navigation, route }) => {
 
   const renderItem = ({item}) => {
     return (
-      <PhotoGridItem item={item} isLightTheme={isLightTheme}/>     
+      <PhotoGridItem item={item} isLightTheme={isLightTheme} id={item.key}/>     
     )
   }
 
@@ -169,6 +169,19 @@ const Photos = ({ navigation, route }) => {
         <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
           <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
         </View> :
+        // <View style={{width: '100%', height: '100%', paddingLeft: 5, paddingRight: 5, flex: 1}}>
+        //   <FlashList 
+        //     data={photosList}
+        //     renderItem={renderItem}
+        //     ListFooterComponent={footer}
+        //     ListHeaderComponent={listHeader}
+        //     showsVerticalScrollIndicator={false}
+        //     numColumns={3}
+        //     keyExtractor={keyExtractor}
+        //     onEndReached={fetchMore}
+        //     estimatedItemSize={140}
+        //   />
+        // </View>
         <FlatList
           style={[styles.list, ]} 
           data={photosList}

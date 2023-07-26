@@ -75,7 +75,8 @@ const Group = ({navigation, route}) => {
     // console.log(groupHeaderData.response[0].contacts)
     
     data.response.items.forEach((item, index, array) => {
-      array[index] = {...item, key: uuid.v4()}
+      const key = uuid.v4()
+      array[index] = {...item, key}
     })
     
     remainToFetchNum.current = data.response.count - count
@@ -95,7 +96,8 @@ const Group = ({navigation, route}) => {
     .then(response => response.json())
     .then(data => {
       data.response.items.forEach((item, index, array) => {
-        array[index] = {...item, key: uuid.v4()}
+        const key = uuid.v4()
+        array[index] = {...item, key}
       })
       offset.current += count
       remainToFetchNum.current -= count
@@ -143,9 +145,27 @@ const Group = ({navigation, route}) => {
 
   const renderItem = ({item}) => {
     if(item.copy_history !== undefined) {
-      return <Repost isLightMode={isLightTheme} data={item} openedPost={true} navigation={navigation} isCommunityContent={true}/>
+      return (
+        <Repost 
+          isLightMode={isLightTheme} 
+          data={item} 
+          openedPost={true} 
+          navigation={navigation} 
+          isCommunityContent={true}
+          id={item.id}
+        />
+      )
     } 
-    return <Post data={item} navigation={navigation} openedPost={true} isCommunityContent={true} isLigthTheme={isLightTheme}/>
+    return (
+      <Post 
+        data={item} 
+        navigation={navigation} 
+        openedPost={true} 
+        isCommunityContent={true} 
+        isLigthTheme={isLightTheme}
+        id={item.id}
+      />
+    )
   }
 
   const listFooter = () => {

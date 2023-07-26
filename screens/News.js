@@ -1,4 +1,4 @@
-import { View, Text, RefreshControl, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet, useColorScheme, Appearance } from 'react-native'
+import { View, Text, RefreshControl, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet, useColorScheme, Appearance, PanResponder, } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
 import uuid from 'react-native-uuid';
 import { useSelector, useDispatch, } from 'react-redux';
@@ -19,20 +19,25 @@ import { FlatList } from "react-native-gesture-handler";
 const News = ({navigation}) => {
   const drawerNavigator = navigation.getParent()
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
-  
-  const subscribeOnBlur = () => {
-    const hideHeader = navigation.addListener('blur', () => {
-      drawerNavigator.setOptions({headerShown: false, swipeEnabled: false})
-    })
-    return hideHeader
-  }
+  const count = 20
+  // const panResponder = React.useRef(PanResponder.create({
+  //   onStartShouldSetPanResponder: () => true,
+  //   onPanResponderGrant: () => console.log('screen touched')
+  // })).current
 
-  const subscribeOnFocus = () => {
-    const showHeader = navigation.addListener('focus', () => {
-      drawerNavigator.setOptions({headerShown: false, swipeEnabled: true})
-    })
-    return showHeader
-  }
+  // const subscribeOnBlur = () => {
+  //   const hideHeader = navigation.addListener('blur', () => {
+  //     drawerNavigator.setOptions({headerShown: false, swipeEnabled: false})
+  //   })
+  //   return hideHeader
+  // }
+
+  // const subscribeOnFocus = () => {
+  //   const showHeader = navigation.addListener('focus', () => {
+  //     drawerNavigator.setOptions({headerShown: false, swipeEnabled: true})
+  //   })
+  //   return showHeader
+  // }
          
   const accessToken = useSelector(state => state.user.accessToken)
   const dispatch = useDispatch()
@@ -46,9 +51,9 @@ const News = ({navigation}) => {
 
   let newsUrl
   if (currentNewsPage === 'News') {
-    newsUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&count=20&v=5.131`
+    newsUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&count=${count}&v=5.131`
   } else {
-    newsUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=20&v=5.131`
+    newsUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=${count}&v=5.131`
   }
 
   const fetchNews = () => {
@@ -56,8 +61,9 @@ const News = ({navigation}) => {
     fetch(newsUrl)
       .then((response) => response.json())
       .then((data) => {
-        const items = data.response.items.map(item => {  
-          return {...item, key: uuid.v4()}
+        const items = data.response.items.map(item => { 
+          const key = uuid.v4() 
+          return {...item, key}
         })
         dispatch(setItems(items));
         dispatch(setGroups(data.response.groups));
@@ -69,9 +75,14 @@ const News = ({navigation}) => {
   }
 
   useEffect(()=> {
-    subscribeOnBlur();
-    subscribeOnFocus();
     fetchNews();
+    const hideHeader = navigation.addListener('blur', () => {
+      drawerNavigator.setOptions({headerShown: false, swipeEnabled: false})
+    })
+    const showHeader = navigation.addListener('focus', () => {
+      drawerNavigator.setOptions({headerShown: false, swipeEnabled: true})
+    })
+    return hideHeader, showHeader
   }, [currentNewsPage])
   
   const fetchRefreshData = () => {
@@ -108,7 +119,8 @@ const News = ({navigation}) => {
       .then((response) => response.json())
       .then((data) => {
         const items = data.response.items.map(item => {  
-          return {...item, key: uuid.v4()}
+          const key = uuid.v4()
+          return {...item, key}
       })
         dispatch(pushItems(items));
         dispatch(pushGroups(data.response.groups));
@@ -125,20 +137,34 @@ const News = ({navigation}) => {
 
   const renderItem = ({item}) => {
     if(item.copy_history !== undefined) {
-      return <Repost data={item} openedPost={true} navigation={navigation} isLightMode={isLightTheme}/>
+      return (
+        <Repost 
+          data={item} 
+          openedPost={true} 
+          navigation={navigation} 
+          isLightMode={isLightTheme}
+        />
+      )
     } else if (item.type === 'wall_photo') {
       return null
     }
-    return <Post data={item} navigation={navigation} openedPost={true} isLigthTheme={isLightTheme}/>
+    return (
+      <Post 
+        data={item} 
+        navigation={navigation} 
+        openedPost={true} 
+        isLigthTheme={isLightTheme} 
+        id={item.key}
+      />
+    )
   }
 
   const listFooterComponent = () => {
     return (
       <>
         <View style={styles.bottomSpinnerContainer}>
-          <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+          <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={40}/>
         </View>
-        <DividerWithLine dividerHeight={5} marginB={60}/>
       </>
     )
   }
@@ -148,7 +174,7 @@ const News = ({navigation}) => {
   }
   
   return(
-    <SafeAreaView style={isLightTheme ? styles.newsBackgroundLight : styles.newsBackgroundDark}>
+    <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white} animated={true}/>
       <CustomHeader 
         headerName={<NewsTitleSwitcher isLightTheme={isLightTheme}/>} 
@@ -158,7 +184,8 @@ const News = ({navigation}) => {
         isScreenFromDrawerMenu={true}
         navigation={navigation}
       />
-        {isLoading ?
+        {
+          isLoading ?
           <View style={styles.spinnerContainer}>
             <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
           </View> :
@@ -170,7 +197,10 @@ const News = ({navigation}) => {
             onEndReached={fetchMoreData}
             style={styles.listContainer}
             keyExtractor={keyExtractor}
-            onEndReachedThreshold={1}
+            onEndReachedThreshold={0.8}
+            // disableScrollViewPanResponder={true}
+            // {...panResponder.panHandlers}
+            // onMomentumScrollBegin={() => console.log('mamamammamamamamam')}
             refreshControl={
               <RefreshControl 
                 refreshing={isLoading} 

@@ -14,7 +14,7 @@ const ProfileHeaderName = ({userShortName}) => {
   }
   const copyShortName = async  () => {
     await Clipboard.setStringAsync(userShortName)
-    ToastAndroid.show('Copied!', ToastAndroid.show)
+    ToastAndroid.show('Copied!', ToastAndroid.SHORT)
   }
   return (
     <TouchableOpacity onPress={copyShortName} >

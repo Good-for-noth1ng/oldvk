@@ -94,7 +94,11 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
       {
         !isRepost &&
         <>
-          <TouchableOpacity style={styles.postHeaderRightsideContainer} onPress={() => onMorePress()}>
+          <TouchableOpacity 
+            pressRetentionOffset={10} 
+            style={styles.postHeaderRightsideContainer} 
+            onPress={() => onMorePress()}
+          >
             <Feather name='more-vertical' size={20} color={COLORS.secondary}/>
           </TouchableOpacity>
         </>

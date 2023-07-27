@@ -6,6 +6,18 @@ import { postWidth } from '../constants/theme';
 import ImageViewer from 'react-native-image-zoom-viewer'
 
 const PostPhotos = ({postPhotos}) => {
+  const [modalVisible, setModalVisible] = useState(false)
+  const imgNum = postPhotos.length
+  const rowNum = Math.ceil(imgNum / 3)
+  const columnNum = 3
+  let grid = []
+  let imagesForSlides = []
+  let index = 0
+  let height
+  let resolution
+  let totalHeight = 0
+  let calcWidth
+  
   const initPhoto = (width, imageUrl, resizeMode) => {
     return (
     <TouchableOpacity  
@@ -21,18 +33,6 @@ const PostPhotos = ({postPhotos}) => {
         />
     </TouchableOpacity>)
   }
-  const [modalVisible, setModalVisible] = useState(false)
-  const imgNum = postPhotos.length
-  const rowNum = Math.ceil(imgNum / 3)
-  const columnNum = 3
-  let grid = []
-  let imagesForSlides = []
-  let index = 0
-  let height
-  let resolution
-  let totalHeight = 0
-  let calcWidth
-  
   for (let i = 0; i < rowNum; i++) {
     let row = []
     let calcImageHeights = []
@@ -54,7 +54,7 @@ const PostPhotos = ({postPhotos}) => {
       widthOfImages.push(width)
       let lastIndexUrl
       if (postPhotos[index]?.sizes.length > 9) {
-        lastIndexUrl = postPhotos[index]?.sizes.length - 2
+        lastIndexUrl = postPhotos[index]?.sizes.length - 1
       } else {
         lastIndexUrl = postPhotos[index]?.sizes.length - 1
       }
@@ -119,7 +119,7 @@ const PostPhotos = ({postPhotos}) => {
   )
 }
 
-export default memo(PostPhotos)
+export default PostPhotos
 
 const styles = StyleSheet.create({
   gridStyle: {

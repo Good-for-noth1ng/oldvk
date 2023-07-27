@@ -245,6 +245,7 @@ const UserProfile = ({navigation, route}) => {
             renderItem={renderItem}
             ListFooterComponent={listFooter}
             onEndReached={fetchMore}
+            showsVerticalScrollIndicator={false}
             onEndReachedThreshold={0.8}
           />
         </>

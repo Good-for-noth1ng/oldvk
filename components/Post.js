@@ -83,6 +83,11 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
 
   initPostData()
   
+  const addPostToFave = () => {
+    ToastAndroid.show('Added to Favorite!', ToastAndroid.SHORT)
+    onShadowPress()
+  }
+
   const copyPostLink = async () => {
     await Clipboard.setStringAsync(`https://vk.com/wall${data.owner_id}_${data.id}`)
     ToastAndroid.show('Copied!', ToastAndroid.SHORT)
@@ -110,30 +115,26 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
         />
       </Animated.View>
       <Animated.View 
-        style={{
-          backgroundColor: COLORS.white, 
-          elevation: 4, 
-          position: 'absolute', 
-          zIndex: 5, 
-          width: 170,
-          height: dropdownMenuHeight, // 160 
-          left: '50%', 
-          top: 10,
-          borderRadius: 5
-        }}>
-          <TouchableOpacity style={{position: 'relative', zIndex: 4, flex: 1, alignItems: 'flex-start', justifyContent: 'center', paddingLeft: 5}}>
-            <Text style={{fontSize: 17}}>Add to Bookmarks</Text>
+        style={[
+        styles.postDropdownMenu,
+        { 
+          height: dropdownMenuHeight, // 160   
+        },
+        isLigthTheme ? 
+        {backgroundColor: COLORS.white} :
+        {backgroundColor: COLORS.very_dark_gray}
+      ]}>
+          <TouchableOpacity onPress={addPostToFave} style={styles.postDropdownMenuButton}>
+            <Text style={[{fontSize: 17}, isLigthTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{position: 'relative', zIndex: 4, flex: 1, alignItems: 'flex-start', justifyContent: 'center', paddingLeft: 5}}>
-            <Text style={{fontSize: 17}}>Not interested</Text>
+          <TouchableOpacity style={styles.postDropdownMenuButton}>
+            <Text style={[{fontSize: 17}, isLigthTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Not interested</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={copyPostLink}
-           style={{position: 'relative', zIndex: 4, flex: 1,  alignItems: 'flex-start', justifyContent: 'center', paddingLeft: 5}}>
-            <Text style={{fontSize: 17}}>Copy Link</Text>
+          <TouchableOpacity onPress={copyPostLink} style={styles.postDropdownMenuButton}>
+            <Text style={[{fontSize: 17}, isLigthTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Copy Link</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{position: 'relative', zIndex: 4, flex: 1, alignItems: 'flex-start', justifyContent: 'center', paddingLeft: 5}}>
-            <Text style={{fontSize: 17}}>Report</Text>
+          <TouchableOpacity style={styles.postDropdownMenuButton}>
+            <Text style={[{fontSize: 17}, isLigthTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Report</Text>
           </TouchableOpacity>
       </Animated.View>
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
@@ -151,6 +152,14 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
         postPhotos ? (
           <>
             <PostPhotos postPhotos={postPhotos}/>
+            <PostDivider dividerHeight={5}/>  
+          </>
+        ) : null
+      }
+      {
+        postVideos ? (
+          <>
+            <PostVideos postVideos={postVideos} navigation={navigation}/>
             <PostDivider dividerHeight={5}/>  
           </>
         ) : null
@@ -183,10 +192,6 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
     </View>
   )
 }
-
-const compareStates = (prevState, nextState) => {
-  return prevState.key === nextState.key && prevState.isLightTheme === nextState.isLightTheme
-}
 // export default memo(Post, compareStates)
 export default memo(Post, (prevProps, nextProps) => {
   return prevProps.id === nextProps.id && prevProps.isLigthTheme === nextProps.isLigthTheme
@@ -204,5 +209,22 @@ const styles = StyleSheet.create({
     marginTop: 5,
     borderRadius: 5,
     backgroundColor: COLORS.primary_dark,
+  },
+  postDropdownMenu: {
+    left: '50%', 
+    top: 10,
+    borderRadius: 5,
+    elevation: 4, 
+    position: 'absolute', 
+    zIndex: 5, 
+    width: 170,
+  },
+  postDropdownMenuButton: {
+    position: 'relative', 
+    zIndex: 4, 
+    flex: 1, 
+    alignItems: 'flex-start', 
+    justifyContent: 'center', 
+    paddingLeft: 5  
   }
 })

@@ -3,17 +3,48 @@ import React from 'react'
 import Octicons from 'react-native-vector-icons/Octicons'
 import { COLORS } from '../constants/theme'
 
-const WallHeaderPostSuggestButton = ({canPost, canSuggest}) => {
-  return (
-    <View style={styles.buttonsContainer}>
-      <TouchableOpacity style={styles.suggestButton}>
-        <Text style={styles.suggestButtonText}>{canPost ? 'Write a post' : 'Suggest a post'}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.addPhotoButton}>
-        <Octicons color={COLORS.white} size={24} name={'device-camera'}/>
-      </TouchableOpacity>
-    </View>
-  )
+const WallHeaderPostSuggestButton = ({canPost, canSuggest, isCommunityWall}) => {
+  if (isCommunityWall) {
+    if (canPost) {
+      return(
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity style={styles.suggestButton}>
+          <Text style={styles.suggestButtonText}>{'Write a post'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.addPhotoButton}>
+          <Octicons color={COLORS.white} size={24} name={'device-camera'}/>
+        </TouchableOpacity>
+      </View>
+      )
+    } else if (canSuggest) {
+      return(
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity style={styles.suggestButton}>
+            <Text style={styles.suggestButtonText}>{'Suggest a post'}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.addPhotoButton}>
+            <Octicons color={COLORS.white} size={24} name={'device-camera'}/>
+          </TouchableOpacity>
+        </View>
+        )
+    } else {
+      return null
+    }
+  } else {
+    if (canPost) {
+      return (
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity style={styles.suggestButton}>
+          <Text style={styles.suggestButtonText}>{'Write a post'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.addPhotoButton}>
+          <Octicons color={COLORS.white} size={24} name={'device-camera'}/>
+        </TouchableOpacity>
+      </View>
+      )
+    }
+  }
+  return null
 }
 
 export default WallHeaderPostSuggestButton

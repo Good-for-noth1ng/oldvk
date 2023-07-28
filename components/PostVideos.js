@@ -18,6 +18,7 @@ const PostVideos = ({postVideos, navigation}) => {
   
   const initCover = (width, imageUrl, resizeMode, item) => {
     const navToVideo = () => {
+      console.log(item)
       navigation.push('Video', {
         // playerUrl: item.player, 
         // title: item.title, 
@@ -34,7 +35,7 @@ const PostVideos = ({postVideos, navigation}) => {
         // canLike: item.can_like,
         // commentsCount: item.comments,
         videoId: item.id,
-        //accessKey: item.access_key
+        accessKey: item.access_key
       })
     }
     return (
@@ -49,6 +50,11 @@ const PostVideos = ({postVideos, navigation}) => {
           style={{width: '100%', height: '100%'}}
           // resizeMode={resizeMode}
         />
+        <View style={{position: 'absolute', zIndex: 2, width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center',}}>
+          <View style={{backgroundColor: COLORS.light_black, opacity: 0.9, borderRadius: 5}}>
+            <Entypo name='triangle-right' color={COLORS.white} size={30}/>
+          </View>
+        </View>
         <Text style={styles.timeDuration}>{getDuration(item.duration)}</Text>
       </TouchableOpacity>
     )
@@ -128,5 +134,6 @@ const styles = StyleSheet.create({
     color: COLORS.white, 
     backgroundColor: COLORS.light_black, 
     opacity: 0.8,
+    fontSize: 15
   }
 })

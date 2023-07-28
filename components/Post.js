@@ -152,7 +152,7 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
         postPhotos ? (
           <>
             <PostPhotos postPhotos={postPhotos}/>
-            <PostDivider dividerHeight={5}/>  
+            {!postVideos && <PostDivider dividerHeight={5}/>}   
           </>
         ) : null
       }

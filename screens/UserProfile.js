@@ -173,9 +173,7 @@ const UserProfile = ({navigation, route}) => {
         wallHeaderData.canAccessClosed === false && wallHeaderData.isClosed === true ?
         <WallIsPrivateText isPrivateText={'Profile is private'}/> : null
       }
-      {
-        wallHeaderData.canPost ? <WallHeaderPostSuggestButton canPost={wallHeaderData.canPost}/> : null
-      }
+      <WallHeaderPostSuggestButton canPost={wallHeaderData.canPost}/>
     </View>
   )
 

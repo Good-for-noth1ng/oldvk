@@ -16,6 +16,7 @@ import WallHeaderCountersGrid from '../components/WallHeaderCountersGrid';
 import WallHeaderButtons from '../components/WallHeaderButtons';
 import WallHeaderPostSuggestButton from '../components/WallHeaderPostSuggestButton';
 import WallHeaderAdditionalInfo from '../components/WallHeaderAdditionalInfo'
+import WallIsPrivateText from '../components/WallIsPrivateText';
 import { cleanAdditionalInfoLinksAndUsers } from '../utils/dataPreparationForComponents'
 import ProfileHeaderName from '../components/ProfileHeaderName';
 //TODO: replace selectors on usestate
@@ -35,7 +36,7 @@ const Group = ({navigation, route}) => {
   // const offset = groupData.offset  
   // const postData = groupData.items 
   // const totalPostCount = groupData.totalPostCount
-  const fields = 'members_count,counters,description,status,can_message,description,contacts,addresses,screen_name,links,main_section' 
+  const fields = 'members_count,counters,description,status,can_message,description,contacts,addresses,screen_name,links,main_section,can_post,can_suggest' 
   const fetchGroupWallContentUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&count=${count}&v=5.131&extended=1&owner_id=${-1 * groupId}`
   const fetchGroupInfoUrl = `https://api.vk.com/method/groups.getById?access_token=${accessToken}&v=5.131&group_id=${groupId}&fields=${fields}`
   const [isLoading, setIsLoading] = useState(true)  
@@ -68,21 +69,31 @@ const Group = ({navigation, route}) => {
       cleanedLinks,
       cleanedUsers,
       screenName: groupHeaderData.response[0].screen_name,
+      canSuggest: groupHeaderData.response[0].can_suggest === 1 ? true : false,
+      canPost: groupHeaderData.response[0].can_post === 1 ? true : false
       // contacts: groupHeaderData.response[0].contacts,
       // contactsDetailed: contactsDetailed,
       // links: groupHeaderData.response[0].links
     })
     // console.log(groupHeaderData.response[0].contacts)
-    
-    data.response.items.forEach((item, index, array) => {
-      const key = uuid.v4()
-      array[index] = {...item, key}
-    })
-    
-    remainToFetchNum.current = data.response.count - count
+    // console.log(data)
+    if (data.error === undefined) {
+      data.response.items.forEach((item, index, array) => {
+        const key = uuid.v4()
+        array[index] = {...item, key}
+      })
+      remainToFetchNum.current = data.response.count - count
+      setGroupData(data.response.items)
+      setWallHeaderData(prevState => ({...prevState, canAccess: true}))
+      dispatch(setData(data.response))
+    } else {
+      setGroupData([])
+      setWallHeaderData(prevState => ({...prevState, canAccess: false}))
+      // dispatch(setData(data.response))
+    }
+
     offset.current += count 
-    setGroupData(data.response.items)
-    dispatch(setData(data.response))
+    
     setIsLoading(false)
   }
 
@@ -95,14 +106,16 @@ const Group = ({navigation, route}) => {
     fetch(url)
     .then(response => response.json())
     .then(data => {
-      data.response.items.forEach((item, index, array) => {
-        const key = uuid.v4()
-        array[index] = {...item, key}
-      })
-      offset.current += count
-      remainToFetchNum.current -= count
-      setGroupData(prevState => prevState.concat(data.response.items))
-      dispatch(pushData(data.response))
+      if (data.error === undefined) {
+        data.response.items.forEach((item, index, array) => {
+          const key = uuid.v4()
+          array[index] = {...item, key}
+        })
+        offset.current += count
+        remainToFetchNum.current -= count
+        setGroupData(prevState => prevState.concat(data.response.items))
+        dispatch(pushData(data.response))
+      }
     })
   }
 
@@ -134,8 +147,12 @@ const Group = ({navigation, route}) => {
         ownerId={-1 * groupId} 
         navigation={navigation}
       />
+      {
+        !wallHeaderData.canAccess ? 
+        <WallIsPrivateText isPrivateText={'Community is private'}/> : null 
+      }
       <DividerWithLine dividerHeight={10}/>
-      <WallHeaderPostSuggestButton />
+      <WallHeaderPostSuggestButton canPost={wallHeaderData.canPost} canSuggest={wallHeaderData.canSuggest} isCommunityWall={true}/>
     </View>
   )
 
@@ -176,15 +193,16 @@ const Group = ({navigation, route}) => {
         </View>
       )
     }
-    return (
-      <DividerWithLine 
-        dividerHeight={10} 
-        marginB={10} 
-        borderBL={5} 
-        borderBR={5} 
-        dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
-      />
-    )
+    return null
+    // return (
+    //   <DividerWithLine 
+    //     dividerHeight={10} 
+    //     marginB={10} 
+    //     borderBL={5} 
+    //     borderBR={5} 
+    //     dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+    //   />
+    // )
   }
   
   return (

@@ -11,9 +11,11 @@ import Overlay from '../components/Overlay';
 import { RadioOption, CollapsibleOption } from '../components/Buttons';
 import { COLORS } from '../constants/theme'
 
-const Friends = ({navigation}) => {
+const Friends = ({navigation, route}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
+  const currentUserId = useSelector(state => state.user.userId)
+  const userId = route.params === undefined ? currentUserId : route.params.userId 
   const [isLoading, setIsLoading] = useState(true)
   const [friendsData, setFriendsData] = useState(null)
   const [friendsCount, setFriendsCount] = useState(null)

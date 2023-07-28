@@ -14,12 +14,11 @@ import VideoScreenBottom from '../components/VideoScreenBottom'
 import VideoHeader from '../components/VideoHeader'
 
 const VideoScreen = ({navigation, route}) => {
-  const { playerUrl, title, views, ownerId, likes, reposts, isLiked, isReposted, date, canLike, canAdd, canAddToFavs, commentsCount, canComment, videoId } = route.params
+  const { playerUrl, title, views, ownerId, likes, reposts, isLiked, isReposted, date, canLike, canAdd, canAddToFavs, commentsCount, canComment, videoId, accessKey } = route.params
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
-  console.log(videoId)
-  const video = useRef(null)
-  const [videoUrl, setVideoUrl] = useState(undefined)
+  console.log(videoId, accessKey)
+  const [video, setVideo] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [name, setName] = useState('')
   const [imgUrl, setImgUrl] = useState('')
@@ -33,54 +32,69 @@ const VideoScreen = ({navigation, route}) => {
   meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'); 
   meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);
   `
-  const fetchAuthroInfo = async () => {
+  //TODO: add clips
+  const fetchVideoInfo = async () => {
+    if (accessKey !== undefined) {
+      const getVideoUrl = `https://api.vk.com/method/video.get?access_token=${accessToken}&v=5.131&owner_id=${ownerId}&videos=${ownerId}_${videoId}_${accessKey}`
+      const videoResponse = await fetch(getVideoUrl)
+      const videoData = await videoResponse.json()
+      // console.log(videoData)
+      setLikesCount(videoData.response.items[0].likes.count)
+      setLiked(videoData.response.items[0].likes.user_likes === 1 ? true : false)
+      setVideo({
+        playerUrl: videoData.response.items[0].player,
+        title: videoData.response.items[0].title,
+        views: videoData.response.items[0].views,
+        commentsCount: videoData.response.items[0].comments,
+        canComment: videoData.response.items[0].can_comment,
+        date: videoData.response.items[0].date
+      })
+    }
     if (ownerId > 0) {
-      const url = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&fields=photo_100,is_friend&user_ids=${ownerId}`
-      const response = await fetch(url)
-      const data = await response.json()
-    //   console.log(data)
-      setName(`${data.response[0].first_name} ${data.response[0].last_name}`)
-      setImgUrl(data.response[0].photo_100)
-      setIsFriend(data.response[0].is_friend)
+      const getVideoAuthorUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&fields=photo_100,is_friend&user_ids=${ownerId}`
+      const videoAuthorResponse = await fetch(getVideoAuthorUrl)
+      const videoAuthorData = await videoAuthorResponse.json()
+      setName(`${videoAuthorData.response[0].first_name} ${videoAuthorData.response[0].last_name}`)
+      setImgUrl(videoAuthorData.response[0].photo_100)
+      setIsFriend(videoAuthorData.response[0].is_friend)
       setIsLoading(false)
     } else {
-      const url = `https://api.vk.com/method/groups.getById?access_token=${accessToken}&v=5.131&fields=photo_100&group_id=${-1 * ownerId}`
-      const response = await fetch(url)
-      const data = await response.json()
-    //   console.log(data)
-      setName(data.response[0].name)
-      setImgUrl(data.response[0].photo_100)
-      setIsFriend(data.response[0].is_member)
+      const getVideoAuthorUrl = `https://api.vk.com/method/groups.getById?access_token=${accessToken}&v=5.131&fields=photo_100&group_id=${-1 * ownerId}`
+      const videoAuthorResponse = await fetch(getVideoAuthorUrl)
+      const videoAuthorData = await videoAuthorResponse.json()
+      setName(videoAuthorData.response[0].name)
+      setImgUrl(videoAuthorData.response[0].photo_100)
+      setIsFriend(videoAuthorData.response[0].is_member)
       setIsLoading(false)
     }
   }
 
-  const getVideoUrl = async () => {
-    const response = await fetch(playerUrl)
-    const htmlPage = await response.text()
-    const regex = /"url240":"https:.[^,]*|"url360":"https:.[^,]*|"url480":"https:.[^,]*|"url720":"https:.[^,]*/g
-    const urls = htmlPage.match(regex)
-    // console.log('\n')
-    // const res = await fetch(urls[3].split('":"')[1].slice(0, -1))
-    // console.log(res.status, res.statusTexts, res.type, res.headers)
-    // video.current.loadAsync(urls[3].split('":"')[1].slice(0, -1))
-    // setVideoUrl(urls[3].split('":"')[1].slice(0, -1))
-    // const customHtml = `<body><h1>LALALALALA</h1></body>`
+  // const getVideoUrl = async () => {
+  //   const response = await fetch(playerUrl)
+  //   const htmlPage = await response.text()
+  //   const regex = /"url240":"https:.[^,]*|"url360":"https:.[^,]*|"url480":"https:.[^,]*|"url720":"https:.[^,]*/g
+  //   const urls = htmlPage.match(regex)
+  //   // console.log('\n')
+  //   // const res = await fetch(urls[3].split('":"')[1].slice(0, -1))
+  //   // console.log(res.status, res.statusTexts, res.type, res.headers)
+  //   // video.current.loadAsync(urls[3].split('":"')[1].slice(0, -1))
+  //   // setVideoUrl(urls[3].split('":"')[1].slice(0, -1))
+  //   // const customHtml = `<body><h1>LALALALALA</h1></body>`
     
-    // const customHtml = `
-    // <html>
-    //   <body>
-    //     <video controls width="800" height="800">
-    //       <source src="${urls[3].split('":"')[1].slice(0, -1)}" type="video/mp4">
-    //     </video>
-    //   </body>
-    // <html>
-    // `
-    // console.log(urls[3].split('":"')[1].slice(0, -1))
-    setVideoUrl(customHtml)
-    // await video.current.loadAsync({uri: urls[3].split('":"')[1].slice(0, -1).concat('3953674881735.mp4')})
-    // return urls[3].split('":"')[1].slice(0, -1)
-  }
+  //   // const customHtml = `
+  //   // <html>
+  //   //   <body>
+  //   //     <video controls width="800" height="800">
+  //   //       <source src="${urls[3].split('":"')[1].slice(0, -1)}" type="video/mp4">
+  //   //     </video>
+  //   //   </body>
+  //   // <html>
+  //   // `
+  //   // console.log(urls[3].split('":"')[1].slice(0, -1))
+  //   setVideoUrl(customHtml)
+  //   // await video.current.loadAsync({uri: urls[3].split('":"')[1].slice(0, -1).concat('3953674881735.mp4')})
+  //   // return urls[3].split('":"')[1].slice(0, -1)
+  // }
 
   const likePressHandler = (isPressed) => {
     if (isPressed) {
@@ -92,12 +106,13 @@ const VideoScreen = ({navigation, route}) => {
     }
   }
   useEffect(() => {
-    fetchAuthroInfo()
+    fetchVideoInfo()
   }, [])
 
   const goBack = () => {
     navigation.goBack()
   }
+
   return (
     <SafeAreaView style={[{flex: 1, justifyContent: 'flex-start' }, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
       <StatusBar barStyle={COLORS.white} backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} />
@@ -116,7 +131,7 @@ const VideoScreen = ({navigation, route}) => {
           <>
             <VideoHeader 
               ownerId={ownerId}
-              date={date}
+              date={accessKey ? video.date : date}
               accessToken={accessToken}
               isLightTheme={isLightTheme}
               navigation={navigation}
@@ -126,7 +141,7 @@ const VideoScreen = ({navigation, route}) => {
               isMember={isMember}
             />
             <WebView
-              source={{uri: playerUrl}}
+              source={{uri: accessKey ? video.playerUrl : playerUrl}}
               allowsFullscreenVideo={true}
               startInLoadingState={true}
               renderLoading={() => {
@@ -147,10 +162,10 @@ const VideoScreen = ({navigation, route}) => {
             />
             <View style={{marginLeft: 5}}>
               <Text style={[styles.title, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
-                {title}
+                {accessKey ? video.title : title}
               </Text>
               <Text style={styles.views}>
-                {getShortagedNumber(views)} views
+                {getShortagedNumber(accessKey ? video.views : views)} views
               </Text>
               <DividerWithLine 
                 linePosition={'center'} 
@@ -160,8 +175,8 @@ const VideoScreen = ({navigation, route}) => {
                 dividerHeight={20}
               />
               <VideoScreenBottom 
-                canComment={canComment} 
-                comments={commentsCount} 
+                canComment={accessKey ? video.canComment : canComment} 
+                comments={accessKey ? video.commentsCount : commentsCount} 
                 likes={likesCount} 
                 isLiked={liked} 
                 reposts={reposts} 

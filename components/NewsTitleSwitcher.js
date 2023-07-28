@@ -19,10 +19,22 @@ const NewsTitleSwitcher = ({ isLightTheme }) => {
     inputRange: [0, 1],
     outputRange: [0, 100]
   })
+  const shadow = anim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 1000]
+  })
   // const newsOptions = [
   //   {label: 'News', value: 'News'},
   //   {label: 'Recommended', value: 'Recommended'}
   // ]      
+  const onShadowPress = () => {
+    isPressed.current = false
+    Animated.timing(anim, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: false,
+    }).start()
+  }
   const onNewsTypePress = () => {
     if (isPressed.current) {
       Animated.timing(anim, {
@@ -96,6 +108,9 @@ const NewsTitleSwitcher = ({ isLightTheme }) => {
           <Text style={[styles.option, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Recommended</Text>
         </TouchableOpacity>
       </Animated.View>
+      <Animated.View style={{width: shadow, height: shadow, position: 'absolute', left: '-100%'}}>
+          <TouchableOpacity style={{width: '100%', height: '100%'}} onPress={onShadowPress} activeOpacity={1}/>
+      </Animated.View>
     </View>
   )
 }
@@ -109,7 +124,6 @@ const styles = StyleSheet.create({
     position: 'absolute',  
     top: -20,
     zIndex: 5,
-    elevation: 9
   },
   dropdown: {
     backgroundColor: COLORS.light_smoke, 

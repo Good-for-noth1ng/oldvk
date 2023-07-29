@@ -36,7 +36,7 @@ const Group = ({navigation, route}) => {
   // const offset = groupData.offset  
   // const postData = groupData.items 
   // const totalPostCount = groupData.totalPostCount
-  const fields = 'members_count,counters,description,status,can_message,description,contacts,addresses,screen_name,links,main_section,can_post,can_suggest' 
+  const fields = 'members_count,counters,description,status,can_message,description,contacts,addresses,screen_name,links,main_section,can_post,can_suggest,member_status' 
   const fetchGroupWallContentUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&count=${count}&v=5.131&extended=1&owner_id=${-1 * groupId}`
   const fetchGroupInfoUrl = `https://api.vk.com/method/groups.getById?access_token=${accessToken}&v=5.131&group_id=${groupId}&fields=${fields}`
   const [isLoading, setIsLoading] = useState(true)  
@@ -70,7 +70,8 @@ const Group = ({navigation, route}) => {
       cleanedUsers,
       screenName: groupHeaderData.response[0].screen_name,
       canSuggest: groupHeaderData.response[0].can_suggest === 1 ? true : false,
-      canPost: groupHeaderData.response[0].can_post === 1 ? true : false
+      canPost: groupHeaderData.response[0].can_post === 1 ? true : false,
+      memberStatus: groupHeaderData.response[0].member_status
       // contacts: groupHeaderData.response[0].contacts,
       // contactsDetailed: contactsDetailed,
       // links: groupHeaderData.response[0].links
@@ -139,6 +140,9 @@ const Group = ({navigation, route}) => {
         isUserWall={wallHeaderData.isUserWall} 
         isMember={wallHeaderData.isMemberOfCommunity} 
         canWritePrivateMessage={wallHeaderData.canMessage}
+        memberStatus={wallHeaderData.memberStatus}
+        accessToken={accessToken}
+        groupId={groupId}
       />
       <DividerWithLine dividerHeight={10}/>
       <WallHeaderCountersGrid 

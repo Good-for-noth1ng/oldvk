@@ -192,6 +192,7 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
     </View>
   )
 }
+//TODO: fix memoization
 // export default memo(Post, compareStates)
 export default memo(Post, (prevProps, nextProps) => {
   return prevProps.id === nextProps.id && prevProps.isLigthTheme === nextProps.isLigthTheme

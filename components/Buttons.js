@@ -271,17 +271,31 @@ export const OptionsButton = ({buttonIcon, buttonText, isLightTheme, buttonPress
   )
 }
 
-export const WallHeaderButton = ({ isActiveState, activeStateText, inactiveStateText, buttonWidth }) => {
+export const WallHeaderButton = ({ isActiveState, activeStateText, inactiveStateText, switchToActiveStateHandler, switchToInactiveStateHandler, shouldAlwaysBeActive }) => {
+  const [isActive, setIsActive] = useState(isActiveState)
+  const onPress = () => {
+    if (isActiveState) {
+      switchToInactiveStateHandler()
+    } else {
+      switchToActiveStateHandler()
+    }
+    if (!shouldAlwaysBeActive) {
+      setIsActive(prevState => !prevState)
+    }
+  }
   return (
-    <TouchableOpacity style={{
-      backgroundColor: isActiveState ? COLORS.primary : COLORS.secondary,
-      height: 40,
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 5
-    }}>
-      <Text style={styles.wallHeaderButtonTextStyle}>{isActiveState ? activeStateText : inactiveStateText}</Text>
+    <TouchableOpacity 
+      style={{
+        backgroundColor: isActive ? COLORS.primary : COLORS.secondary,
+        height: 40,
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 5
+      }}
+      onPress={onPress}
+    >
+      <Text style={styles.wallHeaderButtonTextStyle}>{isActive ? activeStateText : inactiveStateText}</Text>
     </TouchableOpacity>
   )
 }

@@ -155,7 +155,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
 
 // export default memo(Comment)
 export default memo(Comment, (prevProps, nextProps) => {
-  return prevProps.commentId === nextProps.commentId
+  return prevProps.commentId === nextProps.commentId && prevProps.isLightTheme === nextProps.isLightTheme
 })
 
 const styles = StyleSheet.create({

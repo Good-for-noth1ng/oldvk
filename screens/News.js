@@ -56,6 +56,17 @@ const News = ({navigation}) => {
     newsUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=${count}&v=5.131`
   }
 
+  // const findPostAuthor = (item, profiles, groups) => {
+  //   let author = profiles.find(profile => profile.id === item.from_id)
+  //   if (author === undefined) {
+  //     author = groups.find(group => group.id === -1 * item.from_id)
+  //   }
+  //   return {
+  //     ...item,
+  //     author,
+  //   }
+  // }
+
   const fetchNews = () => {
     setIsLoading(true);    
     fetch(newsUrl)

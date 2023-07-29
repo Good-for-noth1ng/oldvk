@@ -36,8 +36,8 @@ const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfile
   let name
   // console.log(groupData, profileData)
   if (groupData !== undefined) {
-    imgUrl = groupData.photo_100 ? groupData.photo_100 : profileData.photo_100
-    name = groupData.name ? groupData.name : profileData.first_name + ' ' + profileData.last_name
+    imgUrl = groupData?.photo_100 ? groupData?.photo_100 : profileData?.photo_100
+    name = groupData?.name ? groupData?.name : profileData?.first_name + ' ' + profileData?.last_name
   } else {
     console.log(wallId)
   }

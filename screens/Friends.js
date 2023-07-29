@@ -1,13 +1,16 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ActivityIndicator, Animated } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Animated } from 'react-native'
 import React, { useState, useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
+import { FlatList } from "react-native-gesture-handler";
 import uuid from 'react-native-uuid';
 import Entypo from 'react-native-vector-icons/Entypo'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomHeader from '../components/CustomHeader'
 import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
 import UserListItem from '../components/UserListItem'
 import DividerWithLine from '../components/DividerWithLine'
 import Overlay from '../components/Overlay';
+import { FlashList } from "@shopify/flash-list";
 import { RadioOption, CollapsibleOption } from '../components/Buttons';
 import { COLORS } from '../constants/theme'
 
@@ -20,11 +23,11 @@ const Friends = ({navigation, route}) => {
   const [friendsData, setFriendsData] = useState(null)
   const [friendsCount, setFriendsCount] = useState(null)
   const [friendsCounterName, setFriendsCounterName] = useState('All friends')
-  const count = 5
+  const count = 10
   const offset = useRef(0)
   const remainToFetchNum = useRef()
   const searchQuery = useRef('')
-  const fetchFriendsUrl = `https://api.vk.com/method/friends.get?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}`
+  const fetchFriendsUrl = `https://api.vk.com/method/friends.get?user_id=${userId}&access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&fields=name,bdate,city,photo_100`
   const connectionController = useRef(undefined)
 
   const slideAnimation = useRef(new Animated.Value(2000)).current
@@ -119,10 +122,15 @@ const Friends = ({navigation, route}) => {
       text: 'Male'
     }
   ]
+
   const [chosenElementId, setChosenElementId] = useState(389)
 
   const handleDrawerOpening = () => {
     navigation.openDrawer()
+  }
+
+  const goBack = () => {
+    navigation.goBack()
   }
 
   const fetchFriends = async () => {
@@ -142,6 +150,11 @@ const Friends = ({navigation, route}) => {
     const fetchedFriendsList = await fetchFriends()
     if (fetchedFriendsList.count === 0) {
       setFriendsData(null)
+      setIsLoading(false)
+    } else {
+      remainToFetchNum.current = fetchedFriendsList.count - count
+      setFriendsCount(fetchedFriendsList.count)
+      setFriendsData(fetchedFriendsList.items)
       setIsLoading(false)
     }
   }
@@ -296,17 +309,21 @@ const Friends = ({navigation, route}) => {
     <SafeAreaView style={isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
       <CustomHeader
-         headerName={<Text style={styles.headerTextStyle}>Friends</Text>}
-         isLightTheme={isLightTheme}
-         iconComponent={<Entypo name='menu' color={COLORS.white} size={30}/>}
-         iconTouchHandler={handleDrawerOpening}
-         showSearchIcon={true}
-         navigation={navigation}
-         gapForSearchIcon={'45%'}
-         handleInputChange={handleInputChange}
-         onCleaningInput={initFriendsList}
-         onOptionsButton={openFilterMenu}
-         isScreenFromDrawerMenu={true}
+        headerName={<Text style={styles.headerTextStyle}>Friends</Text>}
+        isLightTheme={isLightTheme}
+        iconComponent={
+          currentUserId === userId ? 
+          <Entypo name='menu' color={COLORS.white} size={30}/> : 
+          <AntDesign name='arrowleft' size={30} color={COLORS.white}/>
+        }
+        iconTouchHandler={currentUserId === userId ? handleDrawerOpening : goBack}
+        showSearchIcon={true}
+        navigation={navigation}
+        gapForSearchIcon={'45%'}
+        handleInputChange={handleInputChange}
+        onCleaningInput={initFriendsList}
+        onOptionsButton={openFilterMenu}
+        isScreenFromDrawerMenu={userId === currentUserId}
       />
       {
         isLoading ?
@@ -327,6 +344,8 @@ const Friends = ({navigation, route}) => {
           ListHeaderComponent={listHeader}
           keyExtractor={keyExtractor}
           onEndReached={fetchMoreUsers}
+          showsVerticalScrollIndicator={false}
+          onEndReachedThreshold={0.8}
         />
       }
       <Overlay 

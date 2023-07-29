@@ -6,40 +6,66 @@ import { COLORS } from '../constants/theme'
 import { getShortagedNumber } from '../utils/numShortage'
 import { getNameInGroupHeader } from '../utils/getNameByKey';
 //TODO: add topic screen
-const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation }) => {
+const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, canAccess }) => {
   let countersGrid = []
   let row = []
   
+  const navigateToFriends = () => {
+    if (canAccess) {
+      navigation.push('FriendsList', {userId: ownerId})
+    }
+  }
+
   const navigateToAlbums = () => {
-    navigation.push('PhotoAlbumsList', {ownerId})
+    if (canAccess) {
+      navigation.push('PhotoAlbumsList', {ownerId})
+    }
   }
   const navigateToPhotos = () => {
-    navigation.push('Photos', { ownerId: ownerId })
+    if (canAccess) {
+      navigation.push('Photos', { ownerId: ownerId })
+    }
   }
 
   const navigateToVideosList = () => {
-    navigation.push('VideosList', { ownerId: ownerId })
+    if (canAccess) {
+      navigation.push('VideosList', { ownerId: ownerId })
+    }
+    
   }
 
   const navigateToGroupsList = () => {
-    navigation.push('UsersGroups', { userId: ownerId })
+    if (canAccess) {
+      navigation.push('UsersGroups', { userId: ownerId })
+    }
   }
 
   const navigateToSubscriptions = () => {
-    navigation.push('SubscriptionsList', { userId: ownerId })
+    if (canAccess) {
+      navigation.push('SubscriptionsList', { userId: ownerId })
+    }
   }
 
   const navigateToFollowersList = () => {
-    navigation.push('FollowersList', { userId: ownerId })
+    if (canAccess) {
+      navigation.push('FollowersList', { userId: ownerId })
+    }
   }
 
   const navigateToMembersList = () => {
-    navigation.push('MembersList', { groupId: -1 * ownerId })
+    if (canAccess) {
+      navigation.push('MembersList', { groupId: -1 * ownerId })
+    }
   }
 
   if (membersCount !== undefined) {
     row.push(
-      <TouchableOpacity key={uuid.v4()} style={styles.counterButton} onPress={navigateToMembersList}>
+      <TouchableOpacity 
+        key={uuid.v4()} 
+        style={styles.counterButton} 
+        onPress={navigateToMembersList}
+        activeOpacity={canAccess ? 0.6 : 1}
+      >
         <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(membersCount)}</Text>
         <Text style={styles.counterName} key={uuid.v4()}>members</Text>
       </TouchableOpacity>
@@ -71,49 +97,95 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation })
     ) {
       if (counters[key] !== 0 && key === 'followers') {
         row.push(
-          <TouchableOpacity key={uuid.v4()} style={styles.counterButton} onPress={navigateToFollowersList}>
+          <TouchableOpacity 
+            activeOpacity={canAccess ? 0.6 : 1} 
+            key={uuid.v4()} 
+            style={styles.counterButton} 
+            onPress={navigateToFollowersList}
+          >
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
             <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
           </TouchableOpacity>
         )
       } else if (counters[key] !== 0 && key === 'subscriptions') {
         row.push(
-          <TouchableOpacity key={uuid.v4()} style={styles.counterButton} onPress={navigateToSubscriptions}>
+          <TouchableOpacity
+            activeOpacity={canAccess ? 0.6 : 1} 
+            key={uuid.v4()} 
+            style={styles.counterButton} 
+            onPress={navigateToSubscriptions}
+          >
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
             <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
           </TouchableOpacity>
         )
       } else if (counters[key] !== 0 && key === 'groups') {
         row.push(
-          <TouchableOpacity key={uuid.v4()} style={styles.counterButton} onPress={navigateToGroupsList}>
+          <TouchableOpacity 
+            key={uuid.v4()} 
+            style={styles.counterButton} 
+            onPress={navigateToGroupsList}
+            activeOpacity={canAccess ? 0.6 : 1}
+          >
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
             <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
           </TouchableOpacity>
         )
       } else if (counters[key] !== 0 && key === 'videos') {
         row.push(
-          <TouchableOpacity key={uuid.v4()} style={styles.counterButton} onPress={navigateToVideosList}>
+          <TouchableOpacity 
+            key={uuid.v4()} 
+            style={styles.counterButton} 
+            onPress={navigateToVideosList}
+            activeOpacity={canAccess ? 0.6 : 1}
+          >
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
             <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
           </TouchableOpacity>
         )
       } else if (counters[key] !== 0 && key === 'photos') {
         row.push(
-          <TouchableOpacity key={uuid.v4()} style={styles.counterButton} onPress={navigateToPhotos}>
+          <TouchableOpacity 
+            key={uuid.v4()} 
+            style={styles.counterButton} 
+            onPress={navigateToPhotos}
+            activeOpacity={canAccess ? 0.6 : 1}
+          >
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
             <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
           </TouchableOpacity>
         )
       } else if (counters[key] !== 0 && key === 'albums') {
         row.push(
-          <TouchableOpacity key={uuid.v4()} style={styles.counterButton} onPress={navigateToAlbums}>
+          <TouchableOpacity 
+            key={uuid.v4()} 
+            style={styles.counterButton} 
+            onPress={navigateToAlbums}
+            activeOpacity={canAccess ? 0.6 : 1}
+          >
+            <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
+          </TouchableOpacity>
+        )
+      } else if (counters[key] !== 0 && key === 'friends') {
+        row.push(
+          <TouchableOpacity 
+            key={uuid.v4()} 
+            style={styles.counterButton} 
+            onPress={navigateToFriends}
+            activeOpacity={canAccess ? 0.6 : 1}
+          >
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
             <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
           </TouchableOpacity>
         )
       } else if(counters[key] !== 0) {
         row.push(
-          <TouchableOpacity key={uuid.v4()} style={styles.counterButton}>
+          <TouchableOpacity 
+            key={uuid.v4()} 
+            style={styles.counterButton}
+            activeOpacity={canAccess ? 0.6 : 1}
+          >
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
             <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
           </TouchableOpacity>

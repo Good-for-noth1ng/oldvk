@@ -230,6 +230,7 @@ const CommentThread = ({navigation, route}) => {
         attachments={mainComment.response.items[0]?.attachments}
         is_deleted={mainComment.response.items[0].deleted}
         isLightTheme={isLightTheme}
+        navigation={navigation}
       />
       <DividerWithLine 
         dividerHeight={16} 
@@ -251,7 +252,7 @@ const CommentThread = ({navigation, route}) => {
       return (
         <>
           <View style={[styles.bottomSpinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
-            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={40}/>
           </View>
           <DividerWithLine dividerHeight={5} marginB={5} borderBL={5} borderBR={5}/>
         </>

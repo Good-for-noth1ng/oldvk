@@ -168,7 +168,12 @@ const UserProfile = ({navigation, route}) => {
         canWritePrivateMessage={wallHeaderData.canWritePrivateMessage}
       />
       <DividerWithLine dividerHeight={10}/>
-      <WallHeaderCountersGrid counters={wallHeaderData.counters} navigation={navigation} ownerId={userId}/>
+      <WallHeaderCountersGrid 
+        counters={wallHeaderData.counters} 
+        navigation={navigation} 
+        ownerId={userId}
+        canAccess={!(wallHeaderData.canAccessClosed === false && wallHeaderData.isClosed === true)}
+      />
       {
         wallHeaderData.canAccessClosed === false && wallHeaderData.isClosed === true ?
         <WallIsPrivateText isPrivateText={'Profile is private'}/> : null

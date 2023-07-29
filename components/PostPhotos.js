@@ -29,7 +29,7 @@ const PostPhotos = ({postPhotos}) => {
         <Image 
           source={{uri: imageUrl}}
           style={{width: '100%', height: '100%'}}
-          resizeMode={resizeMode}
+          // resizeMode={resizeMode}
         />
     </TouchableOpacity>)
   }
@@ -85,9 +85,8 @@ const PostPhotos = ({postPhotos}) => {
     }
     let rowContainer = <View 
       style={{ 
-        display: 'flex', 
         flexDirection: 'row',
-        height: rowHeight,
+        height: rowHeight ? rowHeight : 200,
         padding: 0,
       }} 
       key={uuid.v4()}>

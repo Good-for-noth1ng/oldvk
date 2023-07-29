@@ -146,6 +146,7 @@ const Group = ({navigation, route}) => {
         counters={wallHeaderData.counters} 
         ownerId={-1 * groupId} 
         navigation={navigation}
+        canAccess={wallHeaderData.canAccess}
       />
       {
         !wallHeaderData.canAccess ? 

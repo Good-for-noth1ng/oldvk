@@ -29,7 +29,9 @@ const UserListItem = ({ imgUrl, firstName, lastName, id, navigation, isLightThem
   )
 }
 
-export default UserListItem
+export default React.memo(UserListItem, (prevProps, nextProps) => {
+  return prevProps.id === nextProps.id && prevProps.isLightTheme === nextProps.isLightTheme
+})
 
 const styles = StyleSheet.create({
   listItemContainerLight: {

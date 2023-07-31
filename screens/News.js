@@ -11,8 +11,8 @@ import CustomHeader from '../components/CustomHeader';
 import NewsTitleSwitcher from '../components/NewsTitleSwitcher';
 import DividerWithLine from '../components/DividerWithLine';
 import Repost from '../components/Repost';
-import { FlashList } from "@shopify/flash-list";
 import { FlatList } from "react-native-gesture-handler";
+
 //TODO npx expo install @shopify/flash-list expo-dev-client
 //TODO fix comments, likes etc. being undefined
 //TODO make news upload from redux directly
@@ -20,24 +20,6 @@ const News = ({navigation}) => {
   const drawerNavigator = navigation.getParent()
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const count = 20
-  // const panResponder = React.useRef(PanResponder.create({
-  //   onStartShouldSetPanResponder: () => true,
-  //   onPanResponderGrant: () => console.log('screen touched')
-  // })).current
-
-  // const subscribeOnBlur = () => {
-  //   const hideHeader = navigation.addListener('blur', () => {
-  //     drawerNavigator.setOptions({headerShown: false, swipeEnabled: false})
-  //   })
-  //   return hideHeader
-  // }
-
-  // const subscribeOnFocus = () => {
-  //   const showHeader = navigation.addListener('focus', () => {
-  //     drawerNavigator.setOptions({headerShown: false, swipeEnabled: true})
-  //   })
-  //   return showHeader
-  // }
          
   const accessToken = useSelector(state => state.user.accessToken)
   const dispatch = useDispatch()
@@ -48,6 +30,7 @@ const News = ({navigation}) => {
   const [postContent, setPostContent] = useState(initPostContent)
   const currentNewsPage = useSelector(state => state.news.currentPage)
   const nextFrom = useSelector(state => state.news.nextFrom)
+  
 
   let newsUrl
   if (currentNewsPage === 'News') {
@@ -87,15 +70,8 @@ const News = ({navigation}) => {
 
   useEffect(()=> {
     fetchNews();
-    const hideHeader = navigation.addListener('blur', () => {
-      drawerNavigator.setOptions({headerShown: false, swipeEnabled: false})
-    })
-    const showHeader = navigation.addListener('focus', () => {
-      drawerNavigator.setOptions({headerShown: false, swipeEnabled: true})
-    })
-    return hideHeader, showHeader
   }, [currentNewsPage])
-  
+
   const fetchRefreshData = () => {
     setIsLoading(true)
     let refreshUrl

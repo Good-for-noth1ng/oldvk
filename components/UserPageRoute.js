@@ -19,6 +19,8 @@ import PhotoAlbumsList from '../screens/PhotoAlbumsList';
 import VideoAlbumsList from '../screens/VideoAlbumsList';
 import VideoComments from '../screens/VideoComments';
 import Friends from '../screens/Friends';
+import Messages from '../screens/Messages';
+import Dialog from '../screens/Dialog';
 
 const UserPageStack = createNativeStackNavigator();
 
@@ -43,6 +45,8 @@ const UserPageRoute = () => {
       <UserPageStack.Screen name='VideoAlbumsList' component={VideoAlbumsList}options={{headerShown:false, animation: 'slide_from_right'}} />
       <UserPageStack.Screen name='VideoComments' component={VideoComments}options={{headerShown:false, animation: 'slide_from_right'}} />
       <UserPageStack.Screen name='FriendsList' component={Friends} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <UserPageStack.Screen name='Messages' component={Messages} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <UserPageStack.Screen name='Dialog' component={Dialog} options={{headerShown: false, animation: 'slide_from_right'}}/>
     </UserPageStack.Navigator>
   )
 }

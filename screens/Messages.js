@@ -3,12 +3,10 @@ import React from 'react'
 
 const Messages = () => {
   return (
-    <View>
-      <SafeAreaView>  
-        <StatusBar />
-        <Text>Messages</Text>
-      </SafeAreaView>
-    </View>
+    <SafeAreaView>  
+      <StatusBar />
+      <Text>Messages</Text>
+    </SafeAreaView>
   )
 }
 

@@ -143,6 +143,7 @@ const Group = ({navigation, route}) => {
         memberStatus={wallHeaderData.memberStatus}
         accessToken={accessToken}
         groupId={groupId}
+        navigation={navigation}
       />
       <DividerWithLine dividerHeight={10}/>
       <WallHeaderCountersGrid 

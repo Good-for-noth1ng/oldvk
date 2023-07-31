@@ -19,6 +19,8 @@ import AlbumVideos from '../screens/AlbumVideos';
 import PhotoAlbumsList from '../screens/PhotoAlbumsList';
 import VideoAlbumsList from '../screens/VideoAlbumsList';
 import VideoComments from '../screens/VideoComments';
+import Messages from '../screens/Messages';
+import Dialog from '../screens/Dialog';
 
 const FriendsStack = createNativeStackNavigator();
 
@@ -43,6 +45,8 @@ const FriendsRoute = () => {
       <FriendsStack.Screen name='PhotoAlbumsList' component={PhotoAlbumsList} options={{headerShown:false, animation: 'slide_from_right'}} />
       <FriendsStack.Screen name='VideoAlbumsList' component={VideoAlbumsList} options={{headerShown:false, animation: 'slide_from_right'}} />
       <FriendsStack.Screen name='VideoComments' component={VideoComments} options={{headerShown:false, animation: 'slide_from_right'}} />
+      <FriendsStack.Screen name='Messages' component={Messages} options={{headerShown:false, animation: 'slide_from_right'}}/>
+      <FriendsStack.Screen name='Dialog' component={Dialog} options={{headerShown:false, animation: 'slide_from_right'}}/>
     </FriendsStack.Navigator>
   )
 }

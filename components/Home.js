@@ -2,23 +2,17 @@ import { StyleSheet, Image } from 'react-native'
 import React from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useSelector } from 'react-redux';
-import { getHeaderTitle } from '@react-navigation/elements'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import Messages from '../screens/Messages';
-import Friends from '../screens/Friends';
-import Photos from '../screens/Photos';
+import MessagesRoute from './MessagesRoute';
 import Audio from '../screens/Audio';
-import GroupList from '../screens/GroupList';
 import Answers from '../screens/Answers';
 import Favorites from '../screens/Favorites';
-import Options from '../screens/Options';
 import OptionsRoute from './OptionsRoute';
 import CustomDrawer from './CustomDrawer';
 import NewsRoute from './NewsRoute';
 import GropsRoute from './GropsRoute';
 import FriendsRoute from './FriendsRoute';
 import UserPageRoute from './UserPageRoute';
-import UserProfile from '../screens/UserProfile';
 import PhotosRoute from './PhotosRoute';
 import VideosRoute from './VideosRoute';
 import { COLORS } from '../constants/theme';
@@ -34,16 +28,16 @@ const Home = () => {
       initialRouteName='Newsfeed' 
       drawerContent={props => <CustomDrawer {...props}/>}
       screenOptions={{
-          drawerLabelStyle: {
-            marginLeft: -10,
-          },
-          headerStyle: {
-            backgroundColor: COLORS.primary,
-          },
-          headerTintColor: COLORS.white,
-          drawerInactiveTintColor: COLORS.white,
-          drawerActiveTintColor: COLORS.white,
-          drawerType: 'slide'
+        drawerLabelStyle: {
+          marginLeft: -10,
+        },
+        headerStyle: {
+          backgroundColor: COLORS.primary,
+        },
+        headerTintColor: COLORS.white,
+        drawerInactiveTintColor: COLORS.white,
+        drawerActiveTintColor: COLORS.white,
+        drawerType: 'slide'
       }}
     >
         <Drawer.Screen name={'CurrentUser'} component={UserPageRoute} options={{
@@ -82,10 +76,12 @@ const Home = () => {
             <FontAwesome name='music' size={20} color={color}/>
           )
         }}/> */}
-        <Drawer.Screen name='Messages' component={Messages} options={{
+        <Drawer.Screen name='MessagesRoute' component={MessagesRoute} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='envelope' size={20} color={color}/>
-          )
+          ),
+          headerShown: false,
+          drawerLabel: 'Messages'
         }}/>
         <Drawer.Screen name='Communities' component={GropsRoute} options={{
           drawerIcon: ({color}) => (

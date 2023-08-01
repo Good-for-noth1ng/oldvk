@@ -1,21 +1,22 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Pressable, Animated } from 'react-native'
-import React, { useState, useEffect} from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { setUserID } from '../redux/userWallSlice'
 import CommentBottom from './CommentBottom'
 import CommentPhotos from './CommentPhotos'
+import CommentAttachments from './CommentAttachments'
 import { COLORS } from '../constants/theme'
 import { getHyperlinkInText } from '../utils/hyperlinks'
 
 const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme, openCommentMenu, commentId, ownerId, navigation, attachments, author}) => {
   const dispatch = useDispatch()
-  const authorsGeneralInfo = useSelector(state => state.comments)
-  const groups = authorsGeneralInfo.groups
-  const profiles = authorsGeneralInfo.profiles
-  const authors = [...groups, ...profiles]
+  // const authorsGeneralInfo = useSelector(state => state.comments)
+  // const groups = authorsGeneralInfo.groups
+  // const profiles = authorsGeneralInfo.profiles
+  // const authors = [...groups, ...profiles]
   const name = author.name ? author.name : `${author.first_name} ${author.last_name}` 
   const photoUrl = author.photo_100
-  let commentPhotos = []
+  // let commentPhotos = []
   const [isLiked, setIsLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(likes)
 
@@ -27,29 +28,29 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
     outputRange: [commentReplyBgInitColor, commentBgEndColor]
   })
 
-  if (attachments) {
-    for (let i = 0; i < attachments.length; i++) {
-      if (attachments[i].type === 'photo') {
-        commentPhotos.push(attachments[i].photo)
-      }
-    }
-  }
-  profiles.forEach(item => {
-    if (item.id === from_id) {
-      name = `${item.first_name} ${item.last_name}`;
-      photoUrl = item.photo_100; 
-    }
-  })
+  // if (attachments) {
+  //   for (let i = 0; i < attachments.length; i++) {
+  //     if (attachments[i].type === 'photo') {
+  //       commentPhotos.push(attachments[i].photo)
+  //     }
+  //   }
+  // }
+  // profiles.forEach(item => {
+  //   if (item.id === from_id) {
+  //     name = `${item.first_name} ${item.last_name}`;
+  //     photoUrl = item.photo_100; 
+  //   }
+  // })
 
 
-  if (name === undefined) {
-    groups.forEach(item => {
-      if (item.id === (from_id * (-1))) {
-        name = item.name
-        photoUrl = item.photo_100
-      }
-    })
-  }
+  // if (name === undefined) {
+  //   groups.forEach(item => {
+  //     if (item.id === (from_id * (-1))) {
+  //       name = item.name
+  //       photoUrl = item.photo_100
+  //     }
+  //   })
+  // }
 
   const handleProfilePress = () => {
     dispatch(setUserID(from_id))
@@ -114,7 +115,7 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
           <Text style={[styles.replyText, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
             {getHyperlinkInText(commentText)}
           </Text>
-          {commentPhotos.length > 0 ? <CommentPhotos commentPhotos={commentPhotos}/> : null}
+          {attachments ? <CommentAttachments attachments={attachments} navigation={navigation} isLightTheme={isLightTheme}/> : null}
           <CommentBottom likesCount={likesCount} handleLikePress={handleLikePress} date={commentDate} isLiked={isLiked}/>
         </View>
       </Animated.View>

@@ -8,6 +8,8 @@ import CommentBottom from './CommentBottom'
 import CommentReplies from './CommentReplies'
 import DividerWithLine from './DividerWithLine'
 import CommentPhotos from './CommentPhotos'
+import CommentVideos from './CommentVideos'
+import CommentAttachments from './CommentAttachments'
 import { getHyperlinkInText } from '../utils/hyperlinks'
 
 const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, likes, threadCount, threadComments, commentId, navigation, postId, ownerId, isLightTheme, openCommentMenu, author}) => {
@@ -24,15 +26,17 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
     inputRange: [0, 1],
     outputRange: [commentBgInitColor, commentBgEndColor]
   })
-  let commentPhotos = []
-
-  if (attachments !== undefined) {
-    for (let i = 0; i < attachments.length; i++) {
-      if (attachments[i].type === 'photo') {
-        commentPhotos.push(attachments[i].photo)
-      }
-    }
-  }
+  // let commentPhotos = []
+  // let commentVideos = []
+  // if (attachments !== undefined) {
+  //   for (let i = 0; i < attachments.length; i++) {
+  //     if (attachments[i].type === 'photo') {
+  //       commentPhotos.push(attachments[i].photo)
+  //     } else if (attachments[i].type === 'video') {
+  //       commentVideos.push(attachments[i].video)
+  //     }
+  //   }
+  // }
 
   const handleLikePress = () => {
     if(!isLiked) {
@@ -130,7 +134,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
                     {getHyperlinkInText(commentText)}
                   </Text> : null
                 }
-                {commentPhotos.length > 0 ? <CommentPhotos commentPhotos={commentPhotos}/> : null}
+                {attachments ? <CommentAttachments attachments={attachments} navigation={navigation} isLightTheme={isLightTheme}/> : null}
               </>
             }
             <CommentBottom likesCount={likesCount} handleLikePress={handleLikePress} date={commentDate} isLiked={isLiked}/>

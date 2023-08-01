@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, Image } from 'react-native'
 import React from 'react'
 import { COLORS } from '../constants/theme'
+
 const CommentPhotos = ({commentPhotos}) => {
   const imgNum = commentPhotos.length
   let images = []

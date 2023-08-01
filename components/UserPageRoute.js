@@ -24,7 +24,25 @@ import Dialog from '../screens/Dialog';
 
 const UserPageStack = createNativeStackNavigator();
 
-const UserPageRoute = () => {
+const UserPageRoute = ({navigation}) => {
+  // const shouldRemoveStackScreens = React.useRef(true)
+  // React.useEffect(() => {
+  //   const blur = navigation.addListener('blur', () => {
+  //     shouldRemoveStackScreens.current = false
+  //     console.log('blur', shouldRemoveStackScreens.current)
+  //   })
+  //   const focus = navigation.addListener('focus', () => {
+  //     shouldRemoveStackScreens.current = true
+  //     console.log('focus', shouldRemoveStackScreens.current)
+  //   })
+  //   const drawerItemPress = navigation.addListener('drawerItemPress', (e) => {
+  //     console.log(shouldRemoveStackScreens.current)
+  //     if (shouldRemoveStackScreens.current) {
+  //       navigation.popToTop()
+  //     }
+  //   })
+  //   return blur, focus, drawerItemPress
+  // }, [navigation])
   return (
     <UserPageStack.Navigator initialRouteName='UserProfile'>
       <UserPageStack.Screen name='UserProfile' component={UserProfile} options={{headerShown:false, animation: 'slide_from_right'}} />

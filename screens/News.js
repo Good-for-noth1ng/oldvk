@@ -30,7 +30,7 @@ const News = ({navigation}) => {
   const [postContent, setPostContent] = useState(initPostContent)
   const currentNewsPage = useSelector(state => state.news.currentPage)
   const nextFrom = useSelector(state => state.news.nextFrom)
-  
+  const shouldRemoveStackScreens = useRef()
 
   let newsUrl
   if (currentNewsPage === 'News') {
@@ -71,6 +71,25 @@ const News = ({navigation}) => {
   useEffect(()=> {
     fetchNews();
   }, [currentNewsPage])
+
+  useEffect(() => {
+    const drawerNavigator = navigation.getParent()
+    const blur = drawerNavigator.addListener('blur', () => {
+      shouldRemoveStackScreens.current = false
+      // console.log('blur')
+    })
+    const focus = drawerNavigator.addListener('focus', () => {
+      shouldRemoveStackScreens.current = true
+      // console.log('focus')
+    })
+    const drawerItemPress = drawerNavigator.addListener('drawerItemPress', (e) => {
+      // console.log(shouldRemoveStackScreens.current)
+      if (shouldRemoveStackScreens.current) {
+        navigation.popToTop()
+      }
+    })
+    return blur, focus, drawerItemPress
+  }, [navigation])
 
   const fetchRefreshData = () => {
     setIsLoading(true)

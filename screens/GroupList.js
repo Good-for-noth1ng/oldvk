@@ -26,11 +26,31 @@ const GroupList = ({navigation}) => {
   const slideAnimation = useRef(new Animated.Value(2000)).current
   const filterIsOpen = useRef(false)
   const connectionController = useRef(undefined)
+  const shouldRemoveStackScreens = useRef()
 
   useEffect(() => {
     initGroupList()
   }, [])
   
+  useEffect(() => {
+    const drawerNavigator = navigation.getParent()
+    const blur = drawerNavigator.addListener('blur', () => {
+      shouldRemoveStackScreens.current = false
+      // console.log('blur')
+    })
+    const focus = drawerNavigator.addListener('focus', () => {
+      shouldRemoveStackScreens.current = true
+      // console.log('focus')
+    })
+    const drawerItemPress = drawerNavigator.addListener('drawerItemPress', (e) => {
+      // console.log(shouldRemoveStackScreens.current)
+      if (shouldRemoveStackScreens.current) {
+        navigation.popToTop()
+      }
+    })
+    return blur, focus, drawerItemPress
+  }, [navigation])
+
   const refreshGroupList = () => {
     setIsLoading(true)
     initGroupList()

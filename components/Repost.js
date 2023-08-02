@@ -12,8 +12,7 @@ import { setItems, setOpenedPost, setScrolling } from '../redux/newsSlice'
 import { useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
 
-const Repost = ({ data, navigation, openedPost, isLightMode, id }) => {
-  // const dispatch = useDispatch()
+const Repost = ({ data, navigation, openedPost, isLightMode, id, accessToken }) => {
   let postPhotos = []
   let postDocs = []
   let postLinks = []
@@ -40,9 +39,14 @@ const Repost = ({ data, navigation, openedPost, isLightMode, id }) => {
   }
   const openPost = () => {
     if(openedPost) {
-        // dispatch(setOpenedPost(data));
-        // dispatch(setScrolling(false))
-        navigation.push('OpenPost', {ownerId: data.owner_id ? data.owner_id : data.source_id, postId: data.id ? data.id : data.post_id, shouldScroll: false})
+      navigation.push(
+        'OpenPost', 
+        {
+          ownerId: data.owner_id ? data.owner_id : data.source_id, 
+          postId: data.id ? data.id : data.post_id, 
+          shouldScroll: false
+        }
+      )
     }
   }
   return (

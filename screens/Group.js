@@ -181,6 +181,7 @@ const Group = ({navigation, route}) => {
           navigation={navigation} 
           isCommunityContent={true}
           id={item.key}
+          accessToken={accessToken}
         />
       )
     } 
@@ -192,6 +193,7 @@ const Group = ({navigation, route}) => {
         isCommunityContent={true} 
         isLigthTheme={isLightTheme}
         id={item.key}
+        accessToken={accessToken}
       />
     )
   }

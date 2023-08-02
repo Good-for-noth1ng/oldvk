@@ -126,6 +126,7 @@ const News = ({navigation}) => {
           navigation={navigation} 
           isLightMode={isLightTheme}
           id={item.key}
+          accessToken={accessToken}
         />
       )
     } else if (item.type === 'wall_photo') {
@@ -138,6 +139,7 @@ const News = ({navigation}) => {
         openedPost={true} 
         isLigthTheme={isLightTheme} 
         id={item.key}
+        accessToken={accessToken}
       />
     )
   }

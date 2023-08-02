@@ -24,25 +24,7 @@ import Dialog from '../screens/Dialog';
 
 const FriendsStack = createNativeStackNavigator();
 
-const FriendsRoute = ({navigation}) => {
-  // const shouldRemoveStackScreens = React.useRef(true)
-  // React.useEffect(() => {
-  //   const blur = navigation.addListener('blur', () => {
-  //     shouldRemoveStackScreens.current = false
-  //     console.log('blur', shouldRemoveStackScreens.current)
-  //   })
-  //   const focus = navigation.addListener('focus', () => {
-  //     shouldRemoveStackScreens.current = true
-  //     console.log('focus', shouldRemoveStackScreens.current)
-  //   })
-  //   const drawerItemPress = navigation.addListener('drawerItemPress', (e) => {
-  //     console.log(shouldRemoveStackScreens.current)
-  //     if (shouldRemoveStackScreens.current) {
-  //       navigation.popToTop()
-  //     }
-  //   })
-  //   return blur, focus, drawerItemPress
-  // }, [navigation])
+const FriendsRoute = () => {
   return (
     <FriendsStack.Navigator initialRouteName='FriendsList'>
       <FriendsStack.Screen name='FriendsList' component={Friends} options={{headerShown: false, animation: 'slide_from_right'}}/>

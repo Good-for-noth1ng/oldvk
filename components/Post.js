@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Image, InteractionManager, An
 import React, { useCallback, memo } from 'react'
 import * as Clipboard from 'expo-clipboard'
 import { COLORS } from '../constants/theme'
-import { useSelector, useDispatch } from 'react-redux'
+// import { useSelector, useDispatch } from 'react-redux'
 import BottomPost from './BottomPost'
 import PostHeader from './PostHeader'
 import PostText from './PostText'
@@ -11,12 +11,11 @@ import PostFiles from './PostFiles'
 import PostLinks from './PostLinks'
 import PostVideos from './PostVideos'
 import PostDivider from './PostDivider'
-import { setOpenedPost } from '../redux/newsSlice'
-import { setScrolling } from '../redux/newsSlice'
+// import { setOpenedPost } from '../redux/newsSlice'
+// import { setScrolling } from '../redux/newsSlice'
 import PostSigner from './PostSigner' 
 
-const Post = ({data, navigation, openedPost, isLigthTheme, id}) => {
-  const dispatch = useDispatch();
+const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => {
   let postPhotos = []
   let postDocs = []
   let postLinks = []
@@ -47,15 +46,13 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id}) => {
       useNativeDriver: false
     }).start()
   }
-  // console.log(data)
+  
   const openPost = () => {
     if (openedPost) {
-      // dispatch(setOpenedPost(data))
-      // dispatch(setScrolling(false))
       navigation.push('OpenPost', {ownerId: data.owner_id ? data.owner_id : data.source_id, postId: data.id ? data.id : data.post_id, shouldScroll: false}) // source_id, post_id
     }
   }
-  // console.log(data.type)
+  
   const initPostData = () => {
     if (data.attachments !== undefined && data.post_type === 'post') {  
       let attachments
@@ -81,25 +78,23 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id}) => {
 
   initPostData()
   
-  const addPostToFave = () => {
+  const addPostToFave = async () => {
+    const url = `https://api.vk.com/method/fave.addPost?access_token=${accessToken}&v=5.131&owner_id=${data.owner_id ? data.owner_id : data.source_id}&id=${data.id ? data.id : data.post_id}&access_key=${data.access_key && data.access_key}`
+    await fetch()
     ToastAndroid.show('Added to Favorite!', ToastAndroid.SHORT)
     onShadowPress()
   }
 
   const copyPostLink = async () => {
-    await Clipboard.setStringAsync(`https://vk.com/wall${data.owner_id}_${data.id}`)
+    await Clipboard.setStringAsync(`https://vk.com/wall${data.owner_id ? data.owner_id : data.source_id}_${data.id ? data.id : data.post_id}`)
     ToastAndroid.show('Copied!', ToastAndroid.SHORT)
     onShadowPress()
   }
-  // InteractionManager.addListener('')
+  
   return (
     <View style={isLigthTheme ? styles.postContainerLight : styles.postContainerDark}>
       <PostHeader 
-        // sourceId={data.source_id}
-        // from_id={data.from_id} 
         dataDate={data.date} 
-        // isCommunityContent={isCommunityContent} 
-        // isProfileContent={isProfileContent}
         navigation={navigation}
         isLightTheme={isLigthTheme}
         onMorePress={onMorePress}

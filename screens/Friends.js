@@ -31,7 +31,7 @@ const Friends = ({navigation, route}) => {
   const connectionController = useRef(undefined)
 
   const slideAnimation = useRef(new Animated.Value(2000)).current
-  
+  const shouldRemoveStackScreens = useRef()
 
   const fromButtonData = [
     {
@@ -162,6 +162,22 @@ const Friends = ({navigation, route}) => {
   useEffect(() => {
     initFriendsList()
   }, [])
+
+  useEffect(() => {
+    const drawerNavigator = navigation.getParent()
+    const blur = drawerNavigator.addListener('blur', () => {
+      shouldRemoveStackScreens.current = false
+    })
+    const focus = drawerNavigator.addListener('focus', () => {
+      shouldRemoveStackScreens.current = true
+    })
+    const drawerItemPress = drawerNavigator.addListener('drawerItemPress', (e) => {
+      if (shouldRemoveStackScreens.current) {
+        navigation.popToTop()
+      }
+    })
+    return blur, focus, drawerItemPress
+  }, [navigation])
 
   const listSeparator = () => (
     <DividerWithLine dividerHeight={10} dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}/>

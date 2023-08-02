@@ -289,6 +289,7 @@ const OpenPost = ({navigation, route}) => {
             openedPost={false} 
             isLigthTheme={isLightTheme}
             id={post.key}
+            accessToken={accessToken}
           />
           <OpenedPostBottom 
             likes={post?.likes?.count} 
@@ -308,6 +309,7 @@ const OpenPost = ({navigation, route}) => {
           navigation={navigation} 
           isLightMode={isLightTheme} 
           id={post.key}
+          accessToken={accessToken}
         />
         <OpenedPostBottom 
           likes={post?.likes?.count} 

@@ -2,6 +2,7 @@ import { StyleSheet, Image } from 'react-native'
 import React from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useSelector } from 'react-redux';
+import Entypo from 'react-native-vector-icons/Entypo'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import MessagesRoute from './MessagesRoute';
 import Audio from '../screens/Audio';
@@ -15,6 +16,7 @@ import FriendsRoute from './FriendsRoute';
 import UserPageRoute from './UserPageRoute';
 import PhotosRoute from './PhotosRoute';
 import VideosRoute from './VideosRoute';
+import FavoriteRoute from './FavoriteRoute';
 import { COLORS } from '../constants/theme';
 
 const Drawer = createDrawerNavigator()
@@ -104,12 +106,14 @@ const Home = () => {
           drawerIcon: ({color}) => (
             <FontAwesome name='comments' size={20} color={color}/>
           )
-        }}/>
-        <Drawer.Screen name='Favorites' component={Favorites} options={{
+        }}/> */}
+        <Drawer.Screen name='FavoriteRoute' component={FavoriteRoute} options={{
           drawerIcon: ({color}) => (
             <Entypo name='star' size={20} color={color}/>
-          )
-        }}/> */}
+          ),
+          headerShown: false,
+          drawerLabel: 'Favorite'
+        }}/>
         <Drawer.Screen name='Options' component={OptionsRoute} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='gear' size={20} color={color}/>

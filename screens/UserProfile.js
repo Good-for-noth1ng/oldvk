@@ -182,6 +182,7 @@ const UserProfile = ({navigation, route}) => {
           openedPost={true} 
           navigation={navigation} 
           id={item.key}
+          accessToken={accessToken}
         />
       )
     }
@@ -193,6 +194,7 @@ const UserProfile = ({navigation, route}) => {
         isLigthTheme={isLightTheme} 
         isProfileContent={true}
         id={item.key}
+        accessToken={accessToken}
       />
     )
   }

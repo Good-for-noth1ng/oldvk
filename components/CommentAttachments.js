@@ -6,7 +6,6 @@ import { COLORS } from '../constants/theme'
 import { getDuration } from '../utils/numShortage';
 
 const CommentAttachments = ({attachments, navigation, isLightTheme}) => {
-    // console.log(attachments)
   return (
     <View style={styles.container}>
       {
@@ -88,6 +87,15 @@ const CommentAttachments = ({attachments, navigation, isLightTheme}) => {
                 </View>
               </TouchableOpacity>
             )
+          } else if (attachment.type === 'sticker') {
+            return (
+              <Image 
+                source={{uri: attachment.sticker.images[attachment.sticker.images.length - 1].url}}
+                style={styles.sticker}
+                resizeMode='contain'
+                key={attachment.sticker.sticker_id}
+              />
+            )
           } else {
             return null
           }
@@ -102,13 +110,13 @@ export default CommentAttachments
 const styles = StyleSheet.create({
   container: {
     width: '85%',
-    height: 80,
+    height: 80, //80
     flexDirection: 'row',
     justifyContent: 'space-between',
     // backgroundColor: COLORS.light_smoke
   },
   photo: {
-    width: '49%',
+    width: '49%', // 49%
     height: '100%',
     borderRadius: 5,
     justifyContent: 'flex-end',
@@ -177,4 +185,8 @@ const styles = StyleSheet.create({
     // marginTop: 5,
     // marginBottom: 5
   },
+  sticker: {
+    width: '50%',
+    height: '100%'
+  }
 })

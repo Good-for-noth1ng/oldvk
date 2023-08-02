@@ -8,48 +8,51 @@ import { getTimeDate } from '../utils/date'
 import { setGroupID } from '../redux/groupSlice'
 import { setUserID } from '../redux/userWallSlice'
 
-const PostHeader = ({sourceId, dataDate, isRepost, isCommunityContent, isProfileContent, from_id, navigation, isLightTheme, onMorePress, isPinned}) => {  
+const PostHeader = ({dataDate, isRepost, navigation, isLightTheme, onMorePress, isPinned, author, ownerId}) => {  
   // if (isRepost) {console.log(sourceId, from_id)}
   // const accessToken = useSelector(state => state.user.accessToken)     
-  const dispatch = useDispatch()
-  let groupData = {}
-  let profileData = {}
-  let wallId
-  if (sourceId === undefined) {
-    wallId = from_id
-  } else {
-    wallId = sourceId
-  }
+  // const dispatch = useDispatch()
+  // let groupData = {}
+  // let profileData = {}
+  // let wallId
+  // if (sourceId === undefined) {
+  //   wallId = from_id
+  // } else {
+  //   wallId = sourceId
+  // }
 
-  if (wallId < 0) {
-    groupData = useSelector(state => {
-      const groups = [...state.news.groups, ...state.group.groups, ...state.userWall.groups]
-      return groups.find(group => group.id === 0 - wallId)
-    })
-  } else if (wallId > 0) {
-    profileData = useSelector(state => {
-      const profiles = [...state.news.profiles, ...state.group.profiles, ...state.userWall.profiles]
-      return profiles.find(profile => profile.id === wallId)
-    })
-  }
-  let imgUrl
-  let name
-  // console.log(groupData, profileData)
-  if (groupData !== undefined) {
-    imgUrl = groupData?.photo_100 ? groupData?.photo_100 : profileData?.photo_100
-    name = groupData?.name ? groupData?.name : profileData?.first_name + ' ' + profileData?.last_name
-  } else {
-    console.log(wallId)
-  }
+  // if (wallId < 0) {
+  //   groupData = useSelector(state => {
+  //     const groups = [...state.news.groups, ...state.group.groups, ...state.userWall.groups]
+  //     return groups.find(group => group.id === 0 - wallId)
+  //   })
+  // } else if (wallId > 0) {
+  //   profileData = useSelector(state => {
+  //     const profiles = [...state.news.profiles, ...state.group.profiles, ...state.userWall.profiles]
+  //     return profiles.find(profile => profile.id === wallId)
+  //   })
+  // }
+  // let imgUrl
+  // let name
+  // // console.log(groupData, profileData)
+  // if (groupData !== undefined) {
+  //   imgUrl = groupData?.photo_100 ? groupData?.photo_100 : profileData?.photo_100
+  //   name = groupData?.name ? groupData?.name : profileData?.first_name + ' ' + profileData?.last_name
+  // } else {
+  //   console.log(wallId)
+  // }
     
 
+  const name = author?.name ? author?.name : `${author?.first_name} ${author?.last_name}`
+  const imgUrl = author?.photo_100
+
   const openGroup = () => {
-    if (wallId < 0) {
-      dispatch(setGroupID(wallId))
-      navigation.push('Group', {groupId: -1 * wallId})
+    if (ownerId < 0) {
+      // dispatch(setGroupID(wallId))
+      navigation.push('Group', {groupId: (-1 * ownerId)})
     } else {
-      dispatch(setUserID(wallId))
-      navigation.push('UserProfile', {userId: wallId})
+      // dispatch(setUserID(wallId))
+      navigation.push('UserProfile', {userId: ownerId})
     }
   }
   

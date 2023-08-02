@@ -8,12 +8,12 @@ import PostFiles from './PostFiles'
 import PostLinks from './PostLinks'
 import PostVideos from './PostVideos'
 import PostDivider from './PostDivider'
-import { setOpenedPost, setScrolling } from '../redux/newsSlice'
+import { setItems, setOpenedPost, setScrolling } from '../redux/newsSlice'
 import { useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
 
-const Repost = ({ data, navigation, openedPost, isLightMode }) => {
-  const dispatch = useDispatch()
+const Repost = ({ data, navigation, openedPost, isLightMode, id }) => {
+  // const dispatch = useDispatch()
   let postPhotos = []
   let postDocs = []
   let postLinks = []
@@ -40,14 +40,20 @@ const Repost = ({ data, navigation, openedPost, isLightMode }) => {
   }
   const openPost = () => {
     if(openedPost) {
-        dispatch(setOpenedPost(data));
-        dispatch(setScrolling(false))
-        navigation.push('OpenPost')
+        // dispatch(setOpenedPost(data));
+        // dispatch(setScrolling(false))
+        navigation.push('OpenPost', {ownerId: data.owner_id ? data.owner_id : data.source_id, postId: data.id ? data.id : data.post_id, shouldScroll: false})
     }
   }
   return (
     <View style={isLightMode ? styles.postContainerLight : styles.postContainerDark}>
-      <PostHeader sourceId={data.owner_id} dataDate={data.date} isLightTheme={isLightMode} isRepost={false} navigation={navigation} from_id={data.from_id}/>
+      <PostHeader 
+        dataDate={data.date} 
+        isLightTheme={isLightMode} 
+        isRepost={false} 
+        navigation={navigation}
+        author={data.author} 
+      />
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12} />
         {
@@ -60,12 +66,14 @@ const Repost = ({ data, navigation, openedPost, isLightMode }) => {
         }
       </TouchableOpacity>
       <PostHeader 
-        sourceId={data.copy_history[0].owner_id !== undefined && data.copy_history[0].owner_id } 
+        // sourceId={data.copy_history[0].owner_id !== undefined && data.copy_history[0].owner_id } 
         dataDate={data.copy_history[0].date} 
-        from_id={data.copy_history[0].from_id !== undefined && data.copy_history[0].from_id}
+        // from_id={data.copy_history[0].from_id !== undefined && data.copy_history[0].from_id}
         navigation={navigation}
         isRepost={true} 
         isLightTheme={isLightMode}
+        author={data.copy_history[0].author}
+        // onMorePress={} //TODO: add func
       />
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12} />
@@ -111,7 +119,9 @@ const Repost = ({ data, navigation, openedPost, isLightMode }) => {
   )
 }
 
-export default memo(Repost)
+export default memo(Repost, (prevProps, nextProps) => {
+  return prevProps.id === nextProps.id && prevProps.isLightMode === nextProps.isLightMode
+})
 
 const styles = StyleSheet.create({
   postContainerLight: {

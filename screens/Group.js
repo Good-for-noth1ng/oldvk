@@ -19,6 +19,8 @@ import WallHeaderAdditionalInfo from '../components/WallHeaderAdditionalInfo'
 import WallIsPrivateText from '../components/WallIsPrivateText';
 import { cleanAdditionalInfoLinksAndUsers } from '../utils/dataPreparationForComponents'
 import ProfileHeaderName from '../components/ProfileHeaderName';
+import { findPostAuthor } from '../utils/dataPreparationForComponents';
+
 //TODO: replace selectors on usestate
 const Group = ({navigation, route}) => {
   const dispatch = useDispatch();
@@ -79,14 +81,14 @@ const Group = ({navigation, route}) => {
     // console.log(groupHeaderData.response[0].contacts)
     // console.log(data)
     if (data.error === undefined) {
-      data.response.items.forEach((item, index, array) => {
-        const key = uuid.v4()
-        array[index] = {...item, key}
-      })
+      const items = data.response.items.map(item => {
+        const preparedItem = findPostAuthor(item, data.response.profiles, data.response.groups)
+        return preparedItem
+      }) 
       remainToFetchNum.current = data.response.count - count
-      setGroupData(data.response.items)
+      setGroupData(items)
       setWallHeaderData(prevState => ({...prevState, canAccess: true}))
-      dispatch(setData(data.response))
+      // dispatch(setData(data.response))
     } else {
       setGroupData([])
       setWallHeaderData(prevState => ({...prevState, canAccess: false}))
@@ -108,14 +110,13 @@ const Group = ({navigation, route}) => {
     .then(response => response.json())
     .then(data => {
       if (data.error === undefined) {
-        data.response.items.forEach((item, index, array) => {
-          const key = uuid.v4()
-          array[index] = {...item, key}
+        const items = data.response.items.map(item => {
+          const preparedItem = findPostAuthor(item, data.response.profiles, data.response.groups)
+          return preparedItem
         })
         offset.current += count
         remainToFetchNum.current -= count
-        setGroupData(prevState => prevState.concat(data.response.items))
-        dispatch(pushData(data.response))
+        setGroupData(prevState => prevState.concat(items))
       }
     })
   }
@@ -158,7 +159,11 @@ const Group = ({navigation, route}) => {
         <WallIsPrivateText isPrivateText={'Community is private'}/> : null 
       }
       <DividerWithLine dividerHeight={10}/>
-      <WallHeaderPostSuggestButton canPost={wallHeaderData.canPost} canSuggest={wallHeaderData.canSuggest} isCommunityWall={true}/>
+      <WallHeaderPostSuggestButton 
+        canPost={wallHeaderData.canPost} 
+        canSuggest={wallHeaderData.canSuggest} 
+        isCommunityWall={true}
+      />
     </View>
   )
 
@@ -175,7 +180,7 @@ const Group = ({navigation, route}) => {
           openedPost={true} 
           navigation={navigation} 
           isCommunityContent={true}
-          id={item.id}
+          id={item.key}
         />
       )
     } 
@@ -186,7 +191,7 @@ const Group = ({navigation, route}) => {
         openedPost={true} 
         isCommunityContent={true} 
         isLigthTheme={isLightTheme}
-        id={item.id}
+        id={item.key}
       />
     )
   }

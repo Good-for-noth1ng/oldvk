@@ -28,13 +28,13 @@ const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost, navigatio
     const openComments = () => {
       if(openedPost) {
         const comments = dataComments?.count !== undefined ? dataComments.count : 0
-        dispatch(setOpenedPost(data))
+        // dispatch(setOpenedPost(data))
         if (comments > 0) {
           dispatch(setScrolling(true))
+          navigation.push('OpenPost', {ownerId: data.owner_id ? data.owner_id : data.source_id, postId: data.id ? data.id : data.post_id, shouldScroll: true})
         } else {
-          dispatch(setScrolling(false))
+          navigation.push('OpenPost', {ownerId: data.owner_id ? data.owner_id : data.source_id, postId: data.id ? data.id : data.post_id, shouldScroll: false})
         }
-        navigation.push('OpenPost')
       }
     }
     const unactiveButtonColor = isLightTheme ? COLORS.secondary : COLORS.smoke;

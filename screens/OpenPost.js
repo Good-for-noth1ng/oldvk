@@ -22,25 +22,26 @@ import TextInputField from '../components/TextInputField'
 import OverlayWithButtons from '../components/OverlayWithButtons'
 import { getTimeDate } from '../utils/date'
 import { COLORS } from '../constants/theme'
+import { findPostAuthor } from '../utils/dataPreparationForComponents';
 
-
-const OpenPost = ({navigation}) => {
+const OpenPost = ({navigation, route}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const [isLoading, setIsLoading] = useState(true);
-  const dispatch = useDispatch()
-  const data = useSelector(state => state.news.openedPost) 
+  
+  const [post, setPost] = useState()
+  const { ownerId, postId, shouldScroll } = route.params
+   
   const accessToken = useSelector(state => state.user.accessToken);
-  const ownerId = data.source_id ? data.source_id : data.owner_id
-  const postId = data.post_id ? data.post_id : data.id
+  const getPostUrl = `https://api.vk.com/method/wall.getById?access_token=${accessToken}&v=5.131&posts=${ownerId}_${postId}&extended=1&fields=photo_100,name`
   const commentsGeneralData = useSelector(state => state.comments); 
-  // let isAuthorInfoOpen = commentsGeneralData.isAuthorInfoOpen;
+  
   const authorName = commentsGeneralData.authorName;
   const authorImgUrl = commentsGeneralData.authorImgUrl;
   const registrationDate = commentsGeneralData.registrationDate;
   const registrationDateIsFetching = commentsGeneralData.authorInfoIsFetching;
   const authorInfoIsOpen = useRef(false)
   
-  const shouldScroll = useSelector(state => state.news.scrollToComments)
+  // const shouldScroll = useSelector(state => state.news.scrollToComments)
   const [comments, setComments] = useState(null);
   const commentsList = useRef()
   const currentLevelCommentsCount = useRef()
@@ -144,27 +145,18 @@ const OpenPost = ({navigation}) => {
     ]
   ]
 
-  let commentsUrl
-  
-  // if (data.source_id !== undefined && data.post_id !== undefined) {
-  //   commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.source_id}&count=10&post_id=${data.post_id}&sort=asc&offset=${offset.current}&thread_items_count=2&fields=photo_100&extended=1`;
-  // } else {
-  //   commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${data.owner_id}&count=10&post_id=${data.id}&sort=asc&thread_items_count=2&offset=${offset.current}&thread_items_count=2&fields=photo_100&extended=1`;
-  // }
-  if (data.source_id !== undefined && data.post_id !== undefined) {
-    commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${ownerId}&count=10&post_id=${postId}&sort=asc&offset=${offset.current}&thread_items_count=2&fields=photo_100&extended=1`;
-  } else {
-    commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${ownerId}&count=10&post_id=${postId}&sort=asc&thread_items_count=2&offset=${offset.current}&thread_items_count=2&fields=photo_100&extended=1`;
-  }
-  console.log(data.source_id, data.post_id, data.from_id, data.id) //data.from_id. data.id
+  const commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${ownerId}&count=10&post_id=${postId}&sort=asc&offset=${offset.current}&thread_items_count=2&fields=photo_100&extended=1`
   
   const fetchComments = async () => {
     //check access to post comments 203977193 1555
     const commentsResponse = await fetch(commentsUrl)
+    const postResponse = await fetch(getPostUrl)
     const commentsData = await commentsResponse.json()
+    const parsedPostResponse = await postResponse.json()
     if (commentsData.error !== undefined) {
       //access to post comments denied
       if (commentsData.error.error_code === 212) {
+        setPost(findPostAuthor(parsedPostResponse.response.items[0], parsedPostResponse.response.profiles, parsedPostResponse.response.groups))
         setComments(null)
         currentLevelCommentsCount.current = -1
         setIsLoading(false)
@@ -201,12 +193,11 @@ const OpenPost = ({navigation}) => {
           author,
           thread,
         }
-      }) 
+      })
+      setPost(findPostAuthor(parsedPostResponse.response.items[0], parsedPostResponse.response.profiles, parsedPostResponse.response.groups))
       setComments(items)
       currentLevelCommentsCount.current = commentsData.response.current_level_count - 10
       offset.current += 10
-      // dispatch(setProfiles(commentsData.response.profiles))
-      // dispatch(setGroups(commentsData.response.groups))
       setIsLoading(false)
     }
   }
@@ -249,8 +240,6 @@ const OpenPost = ({navigation}) => {
       }) 
       currentLevelCommentsCount.current -= 10
       offset.current += 10
-      // dispatch(pushProfiles(fetchMoreCommentsData.response.profiles))
-      // dispatch(pushGroups(fetchMoreCommentsData.response.groups))
       setComments(prevState => prevState.concat(items))
     }
   }
@@ -290,15 +279,22 @@ const OpenPost = ({navigation}) => {
   const listHeader = () => {
     // console.log(data)
     // console.log(data.likes)
-    if (data.copy_history === undefined) {
+    console.log(ownerId, postId)
+    if (post.copy_history === undefined) {
       return (
         <>
-          <Post data={data} navigation={navigation} openedPost={false} isLigthTheme={isLightTheme}/>
+          <Post 
+            data={post} 
+            navigation={navigation} 
+            openedPost={false} 
+            isLigthTheme={isLightTheme}
+            id={post.key}
+          />
           <OpenedPostBottom 
-            likes={data?.likes?.count} 
-            reposts={data?.reposts?.count} 
-            views={data?.views?.count} 
-            comments={data?.comments?.count}
+            likes={post?.likes?.count} 
+            reposts={post?.reposts?.count} 
+            views={post?.views?.count} 
+            comments={post?.comments?.count}
             isLightTheme={isLightTheme}
           />
         </>
@@ -306,12 +302,18 @@ const OpenPost = ({navigation}) => {
     }
     return (
       <>
-        <Repost data={data} openedPost={false} navigation={navigation} isLightMode={isLightTheme}/>
+        <Repost 
+          data={post} 
+          openedPost={false} 
+          navigation={navigation} 
+          isLightMode={isLightTheme} 
+          id={post.key}
+        />
         <OpenedPostBottom 
-          likes={data?.likes?.count} 
-          reposts={data?.reposts?.count} 
-          views={data?.views?.count} 
-          comments={data?.comments?.count}
+          likes={post?.likes?.count} 
+          reposts={post?.reposts?.count} 
+          views={post?.views?.count} 
+          comments={post?.comments?.count}
           isLightTheme={isLightTheme}
         />
       </>

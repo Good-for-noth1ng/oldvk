@@ -1,8 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Animated } from 'react-native'
 import React, { useState, useEffect, useRef } from 'react'
 import { FlatList } from "react-native-gesture-handler";
-import { useSelector, useDispatch } from 'react-redux'
-import uuid from 'react-native-uuid';
+import { useSelector } from 'react-redux'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Entypo from 'react-native-vector-icons/Entypo'
 import CustomHeader from '../components/CustomHeader'
@@ -15,12 +14,12 @@ import Repost from '../components/Repost';
 import WallIsPrivateText from '../components/WallIsPrivateText';
 import WallHeaderPostSuggestButton from '../components/WallHeaderPostSuggestButton';
 import WallHeaderPersonalContainer from '../components/WallHeaderPersonalContainer';
-import { setData, pushData, clear } from '../redux/userWallSlice'
+// import { setData, pushData, clear } from '../redux/userWallSlice'
 import { COLORS } from '../constants/theme'
 import ProfileHeaderName from '../components/ProfileHeaderName';
+import { findPostAuthor } from '../utils/dataPreparationForComponents';
 // fix redux calls
 const UserProfile = ({navigation, route}) => {
-  const dispatch = useDispatch()
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const [isUserInfoExpanded, setIsUserInfoExpanded] = useState(false)
@@ -31,9 +30,7 @@ const UserProfile = ({navigation, route}) => {
   const offset = useRef(0) 
   const remainToFetch = useRef(null)
   const [userData, setUserData] = useState([])
-  // const userData = useSelector(state => state.userWall)
-  // const postData = userData.items
-  
+
   const [isLoading, setIsLoading] = useState(true) 
   const userInfoUrlFields = 'friend_status,followers_count,photo_200,online,last_seen,counters,status,can_send_friend_request,can_write_private_message,can_post,relation,bdate,city,interests,home_town,personal,education,universities,screen_name'
   const userInfoUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${userId}&fields=${userInfoUrlFields}`
@@ -66,7 +63,6 @@ const UserProfile = ({navigation, route}) => {
       isOnlineUsingMobile = false
       isOnlineUsingPC = false
     }
-    // console.log(userInfoData.response[0].can_post)
     setWallHeaderData({
       userName: `${userInfoData.response[0].first_name} ${userInfoData.response[0].last_name}`,
       canAccessClosed: userInfoData.response[0].can_access_closed, 
@@ -92,18 +88,15 @@ const UserProfile = ({navigation, route}) => {
       screenName: userInfoData.response[0].screen_name
     })
     if (userWallContentData.error === undefined) {
-      userWallContentData.response.items.forEach((item, index, array) => {
-        const key = uuid.v4()
-        array[index] = {...item, key}
+      const items = userWallContentData.response.items.map(item => {
+        const preparedItem = findPostAuthor(item, userWallContentData.response.profiles, userWallContentData.response.groups)
+        return preparedItem
       })
-      dispatch(clear())
-      dispatch(setData(userWallContentData.response))
-      setUserData(userWallContentData.response.items)
+      setUserData(items)
       offset.current += count
       remainToFetch.current = userWallContentData.response.count - count
     } else if (userWallContentData.error.error_code === 30) {
       remainToFetch.current = 0
-      dispatch(clear())
     }
     setIsLoading(false)
   }
@@ -113,16 +106,14 @@ const UserProfile = ({navigation, route}) => {
     const wallContentResponse = await fetch(fetchMoreWallContentUrl)
     const wallContent = await wallContentResponse.json()
     if (wallContent.error === undefined) {
-      wallContent.response.items.forEach((item, index, array) => {
-        const key = uuid.v4()
-        array[index] = {...item, key}
+      const items = wallContent.response.items.map(item => {
+        const preparedItem = findPostAuthor(item, wallContent.response.profiles, wallContent.response.groups)
+        return preparedItem
       })
-      dispatch(pushData(wallContent.response))
-      setUserData(prevState => prevState.concat(wallContent.response.items))
+      setUserData(prevState => prevState.concat(items))
       offset.current += count
       remainToFetch.current -= count
     }
-
   }
 
   const openDrawer = () => {
@@ -209,11 +200,9 @@ const UserProfile = ({navigation, route}) => {
   const listFooter = () => {
     if (remainToFetch.current > 0) {
       return (
-        <>
-          <View style={[{justifyContent: 'center'}]}>
-            <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={40}/>
-          </View>
-        </>
+        <View style={[{justifyContent: 'center'}]}>
+          <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={40}/>
+        </View>
       )
     }
     return null

@@ -15,14 +15,12 @@ import { setOpenedPost } from '../redux/newsSlice'
 import { setScrolling } from '../redux/newsSlice'
 import PostSigner from './PostSigner' 
 
-const Post = ({data, navigation, openedPost, isCommunityContent, isProfileContent, isLigthTheme, id}) => {
+const Post = ({data, navigation, openedPost, isLigthTheme, id}) => {
   const dispatch = useDispatch();
   let postPhotos = []
   let postDocs = []
   let postLinks = []
   let postVideos = []
-  const signerID = data.signer_id
-  
 
   const dropdownCollapseAnim = React.useRef(new Animated.Value(0)).current
   const shadow = dropdownCollapseAnim.interpolate({
@@ -52,9 +50,9 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
   // console.log(data)
   const openPost = () => {
     if (openedPost) {
-      dispatch(setOpenedPost(data))
-      dispatch(setScrolling(false))
-      navigation.push('OpenPost')
+      // dispatch(setOpenedPost(data))
+      // dispatch(setScrolling(false))
+      navigation.push('OpenPost', {ownerId: data.owner_id ? data.owner_id : data.source_id, postId: data.id ? data.id : data.post_id, shouldScroll: false}) // source_id, post_id
     }
   }
   // console.log(data.type)
@@ -97,15 +95,17 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
   return (
     <View style={isLigthTheme ? styles.postContainerLight : styles.postContainerDark}>
       <PostHeader 
-        sourceId={data.source_id}
-        from_id={data.from_id} 
+        // sourceId={data.source_id}
+        // from_id={data.from_id} 
         dataDate={data.date} 
-        isCommunityContent={isCommunityContent} 
-        isProfileContent={isProfileContent}
+        // isCommunityContent={isCommunityContent} 
+        // isProfileContent={isProfileContent}
         navigation={navigation}
         isLightTheme={isLigthTheme}
         onMorePress={onMorePress}
         isPinned={data.is_pinned}
+        author={data.author}
+        ownerId={data.owner_id}
       />
       <Animated.View style={{width: shadow, height: shadow, position: 'absolute', zIndex: 4,}}>
         <TouchableOpacity
@@ -176,8 +176,8 @@ const Post = ({data, navigation, openedPost, isCommunityContent, isProfileConten
         ) : null
       }
       {
-        signerID ? 
-        <PostSigner signerID={signerID} navigation={navigation}/> :
+        data.signer ? 
+        <PostSigner author={data.signer} navigation={navigation}/> :
         null
       }
       <BottomPost 

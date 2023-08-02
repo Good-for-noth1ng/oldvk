@@ -53,8 +53,12 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
   // }
 
   const handleProfilePress = () => {
-    dispatch(setUserID(from_id))
-    navigation.push('UserProfile', {userId: from_id})
+    // dispatch(setUserID(from_id))
+    if (from_id > 0) {
+      navigation.push('UserProfile', {userId: from_id})
+    } else {
+      navigation.push('Group', {groupId: (-1 * from_id)})
+    }
     // fetchProfileInfo(from_id, name, photoUrl, commentId)
   }
 

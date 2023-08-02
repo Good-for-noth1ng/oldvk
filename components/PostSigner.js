@@ -5,26 +5,27 @@ import { useSelector, useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
 import { setUserID } from '../redux/userWallSlice'
 
-const PostSigner = ({ signerID, navigation }) => {
-  let name = ''
-  const dispatch = useDispatch()
-  const groupProfiles = useSelector(state => state.group.profiles)
-  const newsProfiles = useSelector(state => state.news.profiles)
-  for (let i = groupProfiles.length - 1; i >= 0; i--) {
-    if (groupProfiles[i].id === signerID) {
-      name = `${groupProfiles[i].first_name} ${groupProfiles[i].last_name}`
-    }
-  }
-  if (name === '') {
-    for (let i = newsProfiles.length - 1; i >= 0; i--) {
-      if (newsProfiles[i].id === signerID) {
-        name = `${newsProfiles[i].first_name} ${newsProfiles[i].last_name}`
-      }
-    } 
-  }
+const PostSigner = ({ navigation, author }) => {
+  const name = `${author.first_name} ${author.last_name}`
+  // console.log(author)
+  // const dispatch = useDispatch()
+  // const groupProfiles = useSelector(state => state.group.profiles)
+  // const newsProfiles = useSelector(state => state.news.profiles)
+  // for (let i = groupProfiles.length - 1; i >= 0; i--) {
+  //   if (groupProfiles[i].id === signerID) {
+  //     name = `${groupProfiles[i].first_name} ${groupProfiles[i].last_name}`
+  //   }
+  // }
+  // if (name === '') {
+  //   for (let i = newsProfiles.length - 1; i >= 0; i--) {
+  //     if (newsProfiles[i].id === signerID) {
+  //       name = `${newsProfiles[i].first_name} ${newsProfiles[i].last_name}`
+  //     }
+  //   } 
+  // }
   const onPress = () => {
-    dispatch(setUserID(signerID))
-    navigation.push('UserProfile', {userId: signerID})
+    // dispatch(setUserID(signerID))
+    navigation.push('UserProfile', {userId: author.id})
   }
 
   return (

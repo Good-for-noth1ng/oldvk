@@ -1,35 +1,30 @@
 import { View, Text, RefreshControl, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet, useColorScheme, Appearance, PanResponder, } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
-import uuid from 'react-native-uuid';
-import { useSelector, useDispatch, } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { COLORS } from '../constants/theme';
 import Post from '../components/Post'
 import Entypo from 'react-native-vector-icons/Entypo'
-import { setItems, setGroups, setProfiles, pushItems, pushGroups, pushProfiles, setNextFrom } from '../redux/newsSlice';
-import { Header } from '@react-navigation/elements';
+// import { setItems, setGroups, setProfiles, pushItems, pushGroups, pushProfiles, setNextFrom } from '../redux/newsSlice';
+// import { Header } from '@react-navigation/elements';
 import CustomHeader from '../components/CustomHeader';
 import NewsTitleSwitcher from '../components/NewsTitleSwitcher';
 import DividerWithLine from '../components/DividerWithLine';
 import Repost from '../components/Repost';
 import { FlatList } from "react-native-gesture-handler";
+import { findPostAuthor } from '../utils/dataPreparationForComponents';
 
-//TODO npx expo install @shopify/flash-list expo-dev-client
 //TODO fix comments, likes etc. being undefined
-//TODO make news upload from redux directly
 const News = ({navigation}) => {
-  const drawerNavigator = navigation.getParent()
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const count = 20
          
   const accessToken = useSelector(state => state.user.accessToken)
-  const dispatch = useDispatch()
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const nextFrom = useRef('')
   // const [isFetchingMoreData, setIsFetchingMoreData] = useState(false)
-  const initPostContent = useSelector(state => state.news.items)
-  const [postContent, setPostContent] = useState(initPostContent)
+  const [postContent, setPostContent] = useState([])
   const currentNewsPage = useSelector(state => state.news.currentPage)
-  const nextFrom = useSelector(state => state.news.nextFrom)
   const shouldRemoveStackScreens = useRef()
 
   let newsUrl
@@ -39,30 +34,16 @@ const News = ({navigation}) => {
     newsUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=${count}&v=5.131`
   }
 
-  // const findPostAuthor = (item, profiles, groups) => {
-  //   let author = profiles.find(profile => profile.id === item.from_id)
-  //   if (author === undefined) {
-  //     author = groups.find(group => group.id === -1 * item.from_id)
-  //   }
-  //   return {
-  //     ...item,
-  //     author,
-  //   }
-  // }
-
   const fetchNews = () => {
     setIsLoading(true);    
     fetch(newsUrl)
       .then((response) => response.json())
       .then((data) => {
         const items = data.response.items.map(item => { 
-          const key = uuid.v4() 
-          return {...item, key}
+          const preparedItem = findPostAuthor(item, data.response.profiles, data.response.groups)
+          return preparedItem
         })
-        dispatch(setItems(items));
-        dispatch(setGroups(data.response.groups));
-        dispatch(setProfiles(data.response.profiles));
-        dispatch(setNextFrom(data.response.next_from));
+        nextFrom.current = data.response.next_from
         setPostContent(items)
         setIsLoading(false);
       });
@@ -76,14 +57,11 @@ const News = ({navigation}) => {
     const drawerNavigator = navigation.getParent()
     const blur = drawerNavigator.addListener('blur', () => {
       shouldRemoveStackScreens.current = false
-      // console.log('blur')
     })
     const focus = drawerNavigator.addListener('focus', () => {
       shouldRemoveStackScreens.current = true
-      // console.log('focus')
     })
     const drawerItemPress = drawerNavigator.addListener('drawerItemPress', (e) => {
-      // console.log(shouldRemoveStackScreens.current)
       if (shouldRemoveStackScreens.current) {
         navigation.popToTop()
       }
@@ -103,12 +81,14 @@ const News = ({navigation}) => {
       .then(response => response.json())
       .then((data) => {
         const items = data.response.items.map(item => {  
-          return {...item, key: uuid.v4()}
+          const preparedItem = findPostAuthor(item, data.response.profiles, data.response.groups)
+          return preparedItem
         })
-        dispatch(setItems(items));
-        dispatch(setGroups(data.response.groups));
-        dispatch(setProfiles(data.response.profiles));
-        dispatch(setNextFrom(data.response.next_from));
+        nextFrom.current = data.response.next_from
+        // dispatch(setItems(items));
+        // dispatch(setGroups(data.response.groups));
+        // dispatch(setProfiles(data.response.profiles));
+        // dispatch(setNextFrom(data.response.next_from));
         setPostContent(items)
         setIsLoading(false)
       })
@@ -117,23 +97,19 @@ const News = ({navigation}) => {
   const fetchMoreData = () => {
     let fetchMoreDataUrl
     if (currentNewsPage === 'News') {
-      fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&count=20&start_from=${nextFrom}&v=5.131`
+      fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&count=20&start_from=${nextFrom.current}&v=5.131`
     } else {
-      fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=20&start_from=${nextFrom}&v=5.131`
+      fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=20&start_from=${nextFrom.current}&v=5.131`
     }
     fetch(fetchMoreDataUrl)
       .then((response) => response.json())
       .then((data) => {
         const items = data.response.items.map(item => {  
-          const key = uuid.v4()
-          return {...item, key}
-      })
-        dispatch(pushItems(items));
-        dispatch(pushGroups(data.response.groups));
-        dispatch(pushProfiles(data.response.profiles));
-        dispatch(setNextFrom(data.response.next_from));
-        const newPostContent = postContent.concat(items);
-        setPostContent(newPostContent);
+          const preparedItem = findPostAuthor(item, data.response.profiles, data.response.groups)
+          return preparedItem
+        })
+        nextFrom.current = data.response.next_from
+        setPostContent(prevState => prevState.concat(items));
       });
   }
   
@@ -149,6 +125,7 @@ const News = ({navigation}) => {
           openedPost={true} 
           navigation={navigation} 
           isLightMode={isLightTheme}
+          id={item.key}
         />
       )
     } else if (item.type === 'wall_photo') {
@@ -204,9 +181,6 @@ const News = ({navigation}) => {
             style={styles.listContainer}
             keyExtractor={keyExtractor}
             onEndReachedThreshold={0.8}
-            // disableScrollViewPanResponder={true}
-            // {...panResponder.panHandlers}
-            // onMomentumScrollBegin={() => console.log('mamamammamamamamam')}
             refreshControl={
               <RefreshControl 
                 refreshing={isLoading} 

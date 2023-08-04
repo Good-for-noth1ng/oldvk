@@ -5,15 +5,13 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { COLORS } from '../constants/theme'
 import { getShortagedNumber } from '../utils/numShortage'
-import { useDispatch } from 'react-redux'
 import { setOpenedPost, setScrolling } from '../redux/newsSlice'
 
-const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost, navigation, data, isLightTheme}) => {
+const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost, navigation, data, isLightTheme, accessToken}) => {
     // const [commentsCount, setCommentsCount] = useState(dataComments?.count !== undefined ? dataComments.count : 0)
     const [likesCount, setLikesCount] = useState(dataLikes?.count !== undefined ? dataLikes.count : 0)
     // const [repostsCount, setRepostsCount] = useState(dataReposts?.count !== undefined ? dataReposts.count : 0)
     const [isLikePressed, setIsLikePressed] = useState(false)
-    const dispatch = useDispatch()
 
     const handleLikePress = () => {
       if (!isLikePressed) {
@@ -30,7 +28,7 @@ const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost, navigatio
         const comments = dataComments?.count !== undefined ? dataComments.count : 0
         // dispatch(setOpenedPost(data))
         if (comments > 0) {
-          dispatch(setScrolling(true))
+          // dispatch(setScrolling(true))
           navigation.push('OpenPost', {ownerId: data.owner_id ? data.owner_id : data.source_id, postId: data.id ? data.id : data.post_id, shouldScroll: true})
         } else {
           navigation.push('OpenPost', {ownerId: data.owner_id ? data.owner_id : data.source_id, postId: data.id ? data.id : data.post_id, shouldScroll: false})

@@ -21,28 +21,12 @@ import VideoComments from '../screens/VideoComments';
 import Friends from '../screens/Friends';
 import Messages from '../screens/Messages';
 import Dialog from '../screens/Dialog';
+import Topics from '../screens/Topics';
+import Topic from '../screens/Topic';
 
 const UserPageStack = createNativeStackNavigator();
 
-const UserPageRoute = ({navigation}) => {
-  // const shouldRemoveStackScreens = React.useRef(true)
-  // React.useEffect(() => {
-  //   const blur = navigation.addListener('blur', () => {
-  //     shouldRemoveStackScreens.current = false
-  //     console.log('blur', shouldRemoveStackScreens.current)
-  //   })
-  //   const focus = navigation.addListener('focus', () => {
-  //     shouldRemoveStackScreens.current = true
-  //     console.log('focus', shouldRemoveStackScreens.current)
-  //   })
-  //   const drawerItemPress = navigation.addListener('drawerItemPress', (e) => {
-  //     console.log(shouldRemoveStackScreens.current)
-  //     if (shouldRemoveStackScreens.current) {
-  //       navigation.popToTop()
-  //     }
-  //   })
-  //   return blur, focus, drawerItemPress
-  // }, [navigation])
+const UserPageRoute = () => {
   return (
     <UserPageStack.Navigator initialRouteName='UserProfile'>
       <UserPageStack.Screen name='UserProfile' component={UserProfile} options={{headerShown:false, animation: 'slide_from_right'}} />
@@ -65,6 +49,8 @@ const UserPageRoute = ({navigation}) => {
       <UserPageStack.Screen name='FriendsList' component={Friends} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <UserPageStack.Screen name='Messages' component={Messages} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <UserPageStack.Screen name='Dialog' component={Dialog} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <UserPageStack.Screen name='Topics' component={Topics} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <UserPageStack.Screen name='Topic' component={Topic} options={{headerShown: false, animation: 'slide_from_right'}}/>
     </UserPageStack.Navigator>
   )
 }

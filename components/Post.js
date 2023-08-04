@@ -79,9 +79,14 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => 
   initPostData()
   
   const addPostToFave = async () => {
-    const url = `https://api.vk.com/method/fave.addPost?access_token=${accessToken}&v=5.131&owner_id=${data.owner_id ? data.owner_id : data.source_id}&id=${data.id ? data.id : data.post_id}&access_key=${data.access_key && data.access_key}`
-    await fetch()
-    ToastAndroid.show('Added to Favorite!', ToastAndroid.SHORT)
+    const url = `https://api.vk.com/method/fave.addPost?access_token=${accessToken}&v=5.131&owner_id=${data.owner_id ? data.owner_id : data.source_id}&id=${data.id ? data.id : data.post_id}${data.access_key ? `&access_key=${data.access_key}` : ''}`
+    const response = await fetch(url)
+    const parsedRes = await response.json()
+    if (parsedRes.response === 1) {
+      ToastAndroid.show('Added to Favorite!', ToastAndroid.SHORT)
+    } else {
+      ToastAndroid.show('Network Error', ToastAndroid.SHORT)
+    }
     onShadowPress()
   }
 
@@ -183,6 +188,7 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => 
         data={data}
         navigation={navigation}
         isLightTheme={isLigthTheme}
+        accessToken={accessToken}
       />
     </View>
   )

@@ -10,6 +10,12 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
   let countersGrid = []
   let row = []
   
+  const navigateToTopics = () => {
+    if (canAccess) {
+      navigation.push('Topics', {ownerId})
+    }
+  }
+
   const navigateToFriends = () => {
     if (canAccess) {
       navigation.push('FriendsList', {userId: ownerId})
@@ -173,6 +179,18 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
             key={uuid.v4()} 
             style={styles.counterButton} 
             onPress={navigateToFriends}
+            activeOpacity={canAccess ? 0.6 : 1}
+          >
+            <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
+          </TouchableOpacity>
+        )
+      } else if (counters[key] !== 0 && key === 'topics') {
+        row.push(
+          <TouchableOpacity 
+            key={uuid.v4()} 
+            style={styles.counterButton} 
+            onPress={navigateToTopics}
             activeOpacity={canAccess ? 0.6 : 1}
           >
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>

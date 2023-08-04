@@ -22,28 +22,13 @@ import VideoComments from '../screens/VideoComments';
 import Friends from '../screens/Friends';
 import Messages from '../screens/Messages';
 import Dialog from '../screens/Dialog';
+import Topics from '../screens/Topics';
+import Topic from '../screens/Topic';
 
 const GroupStack = createNativeStackNavigator();
 
-const GropsRoute = ({navigation}) => {
-  // const shouldRemoveStackScreens = React.useRef(true)
-  // React.useEffect(() => {
-  //   const blur = navigation.addListener('blur', () => {
-  //     shouldRemoveStackScreens.current = false
-  //     console.log('blur', shouldRemoveStackScreens.current)
-  //   })
-  //   const focus = navigation.addListener('focus', () => {
-  //     shouldRemoveStackScreens.current = true
-  //     console.log('focus', shouldRemoveStackScreens.current)
-  //   })
-  //   const drawerItemPress = navigation.addListener('drawerItemPress', (e) => {
-  //     console.log(shouldRemoveStackScreens.current)
-  //     if (shouldRemoveStackScreens.current) {
-  //       navigation.popToTop()
-  //     }
-  //   })
-  //   return blur, focus, drawerItemPress
-  // }, [navigation])
+const GropsRoute = () => {
+  
   return (
     <GroupStack.Navigator initialRouteName='GroupList'>
       <GroupStack.Screen name='GroupList' component={GroupList} options={{headerShown: false, animation: 'slide_from_right'}}/>
@@ -67,6 +52,8 @@ const GropsRoute = ({navigation}) => {
       <GroupStack.Screen name='FriendsList' component={Friends} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <GroupStack.Screen name='Messages' component={Messages} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <GroupStack.Screen name='Dialog' component={Dialog} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <GroupStack.Screen name='Topics' component={Topics} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <GroupStack.Screen name='Topic' component={Topic} options={{headerShown: false, animation: 'slide_from_right'}}/>
     </GroupStack.Navigator>
   )
 }

@@ -1,4 +1,4 @@
-import { View, Text, RefreshControl, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet, useColorScheme, Appearance, PanResponder, } from 'react-native'
+import { View, Text, RefreshControl, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet, FlatList, useColorScheme, Appearance, PanResponder, } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
 import { useSelector } from 'react-redux';
 import { COLORS } from '../constants/theme';
@@ -10,7 +10,7 @@ import CustomHeader from '../components/CustomHeader';
 import NewsTitleSwitcher from '../components/NewsTitleSwitcher';
 import DividerWithLine from '../components/DividerWithLine';
 import Repost from '../components/Repost';
-import { FlatList } from "react-native-gesture-handler";
+// import { FlatList } from "react-native-gesture-handler";
 import { findPostAuthor } from '../utils/dataPreparationForComponents';
 
 //TODO fix comments, likes etc. being undefined

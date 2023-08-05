@@ -10,8 +10,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Octicons from 'react-native-vector-icons/Octicons'
-import { setProfiles, closeAuthorInfo, pushProfiles, setGroups, pushGroups } from '../redux/commentsSlice'
-import { setID } from '../redux/userWallSlice'
+// import { setProfiles, closeAuthorInfo, pushProfiles, setGroups, pushGroups } from '../redux/commentsSlice'
+// import { setID } from '../redux/userWallSlice'
 import Post from '../components/Post'
 import Comment from '../components/Comment'
 import OpenedPostBottom from '../components/OpenedPostBottom'
@@ -80,44 +80,28 @@ const OpenPost = ({navigation, route}) => {
       useNativeDriver: true
     }).start()
   }
-
-  //TODO: replace icons to buttons, purge duplicate in CommentThread screen
   const commentMenuButtonIconSize = 22
   const commentMenuButtonColor = isLightTheme ? COLORS.primary : COLORS.white
-  
-  const copyCommentText = async (commentText) => {
-    await Clipboard.setStringAsync(commentText)
-    ToastAndroid.show('Copied!', ToastAndroid.SHORT)
-  }
-
-  const navigateToUserProfile = (userId) => {
-    // dispatch(setID(userId))
-    navigation.push('UserProfile', {userId})
-  }
-
-  const navigateToUserList = () => {
-    navigation.push('ReactedUsersList')
-  }
-
+  //TODO: replace icons to buttons, purge duplicate in CommentThread screen
   const commentMenuButtons = [
     [
       {
         icon: <Feather name='user' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
         text: 'Profile',
-        key: uuid.v4(),
+        key: 1863,
         type: 'profile',
         handleTouch: (...args) => navigateToUserProfile(...args)
       },
       {
         icon: <Ionicons name='arrow-undo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize} />,
         text: 'Reply',
-        key: uuid.v4(),
+        key: 1920,
         type: 'reply'
       },
       {
         icon: <Feather name='users' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
         text: 'Liked',
-        key: uuid.v4(),
+        key: 2100,
         type: 'liked',
         handleTouch: (...args) => navigateToUserList(...args)
       },
@@ -126,20 +110,20 @@ const OpenPost = ({navigation, route}) => {
       {
         icon: <MaterialCommunityIcons name='content-copy' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
         text: 'Copy',
-        key: uuid.v4(),
+        key: 192864,
         type: 'copy',
         handleTouch: (...args) => copyCommentText(...args)
       },
       {
         icon: <Ionicons name='arrow-redo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
         text: 'Share',
-        key: uuid.v4(),
+        key: 123,
         type: 'share',
       },
       {
         icon: <Octicons name='report' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
         text: 'Report',
-        key: uuid.v4(),
+        key: 782,
         type: 'report'
       },
     ]

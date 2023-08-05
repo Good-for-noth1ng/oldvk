@@ -54,7 +54,18 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
     const re = /^\d*$/g; 
     dispatch(startLoadingRegistrationDate())
     // dispatch(openAuthorInfo());
-    fetch(profileDataRegUrl)
+    if (vkId < 0) {
+      setRegistrationData({
+        registrationDate: '',
+        authorName: name,
+        authorImgUrl: photoUrl,
+        authorId: vkId,
+        authorCommentId: commentId,
+        ownerId: ownerId,
+        commentText
+      })
+    } else {
+      fetch(profileDataRegUrl)
       .then(response => response.json())
       .then(result => {
         const regDate = result.regDate 
@@ -70,12 +81,9 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
               commentText
             })
           )
-          // dispatch(setRegistrationDate(regDate))
-          // dispatch(setAuthorName(name));
-          // dispatch(setAuthorImgUrl(photoUrl));
-          // dispatch(stopLoadingRegistrationDate());
         }
       })
+    }
   }
   
   const navigateToCommentAuthor = () => {

@@ -20,7 +20,9 @@ const CommentsOverlay = ({slideAnimation, isLightTheme, handleShadowTouch, regis
 
   const navigateToUserProfile = (userId) => {
     // dispatch(setID(userId))
-    navigation.push('UserProfile', {userId})
+    if (userId > 0) {
+      navigation.push('UserProfile', {userId})
+    }
   }
 
   const navigateToUserList = () => {

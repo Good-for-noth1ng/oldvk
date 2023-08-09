@@ -29,51 +29,6 @@ const CommentsOverlay = ({slideAnimation, isLightTheme, handleShadowTouch, regis
   }
 
   const commentMenuButtonColor = isLightTheme ? COLORS.primary : COLORS.white
-  // const commentMenuButtons = [
-  //   [
-  //     // {
-  //     //   icon: <Feather name='user' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-  //     //   text: 'Profile',
-  //     //   key: 1863,
-  //     //   type: 'profile',
-  //     //   handleTouch: (...args) => navigateToUserProfile(...args)
-  //     // },
-  //     // {
-  //     //   icon: <Ionicons name='arrow-undo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize} />,
-  //     //   text: 'Reply',
-  //     //   key: 1920,
-  //     //   type: 'reply'
-  //     // },
-  //     // {
-  //     //   icon: <Feather name='users' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-  //     //   text: 'Liked',
-  //     //   key: 2100,
-  //     //   type: 'liked',
-  //     //   handleTouch: (...args) => navigateToUserList(...args)
-  //     // },
-  //   ],
-  //   [
-  //     // {
-  //     //   icon: <MaterialCommunityIcons name='content-copy' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-  //     //   text: 'Copy',
-  //     //   key: 192864,
-  //     //   type: 'copy',
-  //     //   handleTouch: (...args) => copyCommentText(...args)
-  //     // },
-  //     // {
-  //     //   icon: <Ionicons name='arrow-redo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-  //     //   text: 'Share',
-  //     //   key: 123,
-  //     //   type: 'share',
-  //     // },
-  //     // {
-  //     //   icon: <Octicons name='report' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-  //     //   text: 'Report',
-  //     //   key: 782,
-  //     //   type: 'report'
-  //     // },
-  //   ]
-  // ]
 
   return (
     <Animated.View style={[styles.box, {transform: [{translateY: slideAnimation}]}]}>

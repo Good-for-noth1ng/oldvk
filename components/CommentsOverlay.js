@@ -8,7 +8,7 @@ import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 
 const CommentsOverlay = ({slideAnimation, isLightTheme, handleShadowTouch, registrationDate, registrationDateIsFetching, authorImgUrl, authorName, navigation}) => {
-  
+
     const onShadowPress = () => {
     handleShadowTouch()
   }
@@ -21,6 +21,8 @@ const CommentsOverlay = ({slideAnimation, isLightTheme, handleShadowTouch, regis
   const navigateToUserProfile = (userId) => {
     if (userId > 0) {
       navigation.push('UserProfile', {userId})
+    } else {
+      
     }
   }
 

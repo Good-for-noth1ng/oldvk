@@ -27,6 +27,7 @@ const CommentsOverlay = ({slideAnimation, isLightTheme, handleShadowTouch, regis
   const navigateToUserList = () => {
     navigation.push('ReactedUsersList')
   }
+  
   const commentMenuButtonColor = isLightTheme ? COLORS.primary : COLORS.white
 
   return (

@@ -1,5 +1,7 @@
-import { StyleSheet, Text, View, Animated, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, Animated, TouchableOpacity, Image, ActivityIndicator, ToastAndroid } from 'react-native'
 import React from 'react'
+import { useSelector } from 'react-redux'
+import * as Clipboard from 'expo-clipboard'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -7,20 +9,28 @@ import Octicons from 'react-native-vector-icons/Octicons'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 
-const CommentsOverlay = ({slideAnimation, isLightTheme, handleShadowTouch, registrationDate, registrationDateIsFetching, authorImgUrl, authorName, navigation}) => {
-
-    const onShadowPress = () => {
+const CommentsOverlay = ({ slideAnimation, isLightTheme, handleShadowTouch, navigation }) => {
+  const commentsGeneralData = useSelector(state => state.comments); 
+  
+  const authorName = commentsGeneralData.authorName;
+  const authorImgUrl = commentsGeneralData.authorImgUrl;
+  const registrationDate = commentsGeneralData.registrationDate;
+  const registrationDateIsFetching = commentsGeneralData.authorInfoIsFetching;
+  const authorId = commentsGeneralData.authorId
+  const commentText = commentsGeneralData.commentText
+  // console.log(ownerId)
+  const onShadowPress = () => {
     handleShadowTouch()
   }
 
-  const copyCommentText = async (commentText) => {
+  const copyCommentText = async () => {
     await Clipboard.setStringAsync(commentText)
     ToastAndroid.show('Copied!', ToastAndroid.SHORT)
   }
 
-  const navigateToUserProfile = (userId) => {
-    if (userId > 0) {
-      navigation.push('UserProfile', {userId})
+  const navigateToUserProfile = () => {
+    if (authorId > 0) {
+      navigation.push('UserProfile', { userId: authorId })
     }
   }
 
@@ -57,36 +67,44 @@ const CommentsOverlay = ({slideAnimation, isLightTheme, handleShadowTouch, regis
           
           <View style={{flexDirection: 'row', justifyContent: 'center', }}>
             <View style={{height: 200, alignItems: 'flex-start', paddingLeft: 30, paddingRight: 30}}>
-              <TouchableOpacity>
-                <Feather name='user' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>
-                <Text>Profile</Text>
+              <TouchableOpacity activeOpacity={0.8} onPress={navigateToUserProfile} style={styles.commentMenuButton}>
+                <Feather name='user' color={isLightTheme ? COLORS.primary : COLORS.white} size={22}/>
+                <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>
+                  Profile
+                </Text>
               </TouchableOpacity>
               
-              <TouchableOpacity>
-                <Ionicons name='arrow-undo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize} />
-                <Text>Reply</Text>
+              <TouchableOpacity style={styles.commentMenuButton}>
+                <Ionicons name='arrow-undo-outline' color={isLightTheme ? COLORS.primary : COLORS.white} size={22} />
+                <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>Reply</Text>
               </TouchableOpacity>
                 
-              <TouchableOpacity>
-                <Feather name='users' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>
-                <Text>Liked</Text>
+              <TouchableOpacity activeOpacity={0.8} onPress={navigateToUserList} style={styles.commentMenuButton}>
+                <Feather name='users' color={isLightTheme ? COLORS.primary : COLORS.white} size={22}/>
+                <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>Liked</Text>
               </TouchableOpacity>
             </View>
 
             <View style={{height: 200, alignItems: 'flex-start', paddingLeft: 30, paddingRight: 30}}>
-              <TouchableOpacity>
-                <MaterialCommunityIcons name='content-copy' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>
-                <Text>Copy</Text>
+              <TouchableOpacity activeOpacity={0.8} onPress={copyCommentText} style={styles.commentMenuButton}>
+                <MaterialCommunityIcons name='content-copy' color={isLightTheme ? COLORS.primary : COLORS.white} size={22}/>
+                <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>
+                  Copy
+                </Text>
               </TouchableOpacity>
               
-              <TouchableOpacity>
-                <Ionicons name='arrow-redo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>
-                <Text>Share</Text>
+              <TouchableOpacity style={styles.commentMenuButton}>
+                <Ionicons name='arrow-redo-outline' color={isLightTheme ? COLORS.primary : COLORS.white} size={22}/>
+                <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>
+                  Share
+                </Text>
               </TouchableOpacity>
               
-              <TouchableOpacity>
-                <Octicons name='report' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>
-                <Text>Report</Text>
+              <TouchableOpacity style={styles.commentMenuButton}>
+                <Octicons name='report' color={isLightTheme ? COLORS.primary : COLORS.white} size={22}/>
+                <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>
+                  Report
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -177,9 +195,18 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: COLORS.secondary
   },
+  commentMenuButton: {
+    height: '12%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 10,
+    // paddingLeft: 15,
+    borderRadius: 5,
+  },
   commentMenuButtonText: {
     fontSize: 18,
     marginLeft: 10,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
 })

@@ -4,12 +4,12 @@ import { FlatList } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from 'react-redux'
 import { useFocusEffect } from '@react-navigation/native';
 import uuid from 'react-native-uuid'
-import * as Clipboard from 'expo-clipboard'
+// import * as Clipboard from 'expo-clipboard'
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import Feather from 'react-native-vector-icons/Feather'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import Octicons from 'react-native-vector-icons/Octicons'
+// import Ionicons from 'react-native-vector-icons/Ionicons'
+// import Feather from 'react-native-vector-icons/Feather'
+// import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+// import Octicons from 'react-native-vector-icons/Octicons'
 // import { setProfiles, closeAuthorInfo, pushProfiles, setGroups, pushGroups } from '../redux/commentsSlice'
 // import { setID } from '../redux/userWallSlice'
 import Post from '../components/Post'
@@ -23,6 +23,7 @@ import OverlayWithButtons from '../components/OverlayWithButtons'
 import { getTimeDate } from '../utils/date'
 import { COLORS } from '../constants/theme'
 import { findPostAuthor } from '../utils/dataPreparationForComponents';
+import CommentsOverlay from '../components/CommentsOverlay';
 
 const OpenPost = ({navigation, route}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
@@ -33,12 +34,7 @@ const OpenPost = ({navigation, route}) => {
    
   const accessToken = useSelector(state => state.user.accessToken);
   const getPostUrl = `https://api.vk.com/method/wall.getById?access_token=${accessToken}&v=5.131&posts=${ownerId}_${postId}&extended=1&fields=photo_100,name`
-  const commentsGeneralData = useSelector(state => state.comments); 
-  
-  const authorName = commentsGeneralData.authorName;
-  const authorImgUrl = commentsGeneralData.authorImgUrl;
-  const registrationDate = commentsGeneralData.registrationDate;
-  const registrationDateIsFetching = commentsGeneralData.authorInfoIsFetching;
+
   const authorInfoIsOpen = useRef(false)
   
   // const shouldScroll = useSelector(state => state.news.scrollToComments)
@@ -80,54 +76,6 @@ const OpenPost = ({navigation, route}) => {
       useNativeDriver: true
     }).start()
   }
-  const commentMenuButtonIconSize = 22
-  const commentMenuButtonColor = isLightTheme ? COLORS.primary : COLORS.white
-  //TODO: replace icons to buttons, purge duplicate in CommentThread screen
-  const commentMenuButtons = [
-    [
-      {
-        icon: <Feather name='user' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-        text: 'Profile',
-        key: 1863,
-        type: 'profile',
-        handleTouch: (...args) => navigateToUserProfile(...args)
-      },
-      {
-        icon: <Ionicons name='arrow-undo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize} />,
-        text: 'Reply',
-        key: 1920,
-        type: 'reply'
-      },
-      {
-        icon: <Feather name='users' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-        text: 'Liked',
-        key: 2100,
-        type: 'liked',
-        handleTouch: (...args) => navigateToUserList(...args)
-      },
-    ],
-    [
-      {
-        icon: <MaterialCommunityIcons name='content-copy' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-        text: 'Copy',
-        key: 192864,
-        type: 'copy',
-        handleTouch: (...args) => copyCommentText(...args)
-      },
-      {
-        icon: <Ionicons name='arrow-redo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-        text: 'Share',
-        key: 123,
-        type: 'share',
-      },
-      {
-        icon: <Octicons name='report' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-        text: 'Report',
-        key: 782,
-        type: 'report'
-      },
-    ]
-  ]
 
   const commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${ownerId}&count=10&post_id=${postId}&sort=asc&offset=${offset.current}&thread_items_count=2&fields=photo_100&extended=1`
   
@@ -383,7 +331,13 @@ const OpenPost = ({navigation, route}) => {
             showsVerticalScrollIndicator={false}
           />
           { comments ? <TextInputField isLightTheme={isLightTheme}/> : null}
-          <OverlayWithButtons 
+          <CommentsOverlay 
+            slideAnimation={slideAnimation}
+            isLightTheme={isLightTheme}
+            handleShadowTouch={closeCommentMenu}
+            navigation={navigation}
+          />
+          {/* <OverlayWithButtons 
             slideAnimation={slideAnimation}
             handleShadowTouch={closeCommentMenu}
             isLightTheme={isLightTheme}
@@ -393,7 +347,7 @@ const OpenPost = ({navigation, route}) => {
             authorName={authorName}
             navigation={navigation}
             registrationDateIsFetching={registrationDateIsFetching}
-          />
+          /> */}
         </>
       }
     </SafeAreaView>

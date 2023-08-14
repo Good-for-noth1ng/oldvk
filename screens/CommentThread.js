@@ -5,32 +5,33 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useFocusEffect } from '@react-navigation/native';
 import uuid from 'react-native-uuid';
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import Feather from 'react-native-vector-icons/Feather'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import Octicons from 'react-native-vector-icons/Octicons'
+// import Ionicons from 'react-native-vector-icons/Ionicons'
+// import Feather from 'react-native-vector-icons/Feather'
+// import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+// import Octicons from 'react-native-vector-icons/Octicons'
 import CustomHeader from '../components/CustomHeader'
 import Comment from '../components/Comment';
 import { COLORS } from '../constants/theme'
-import { setProfiles, pushProfiles } from '../redux/commentsSlice';
-import { setID } from '../redux/userWallSlice'
+// import { setProfiles, pushProfiles } from '../redux/commentsSlice';
+// import { setID } from '../redux/userWallSlice'
 import DividerWithLine from '../components/DividerWithLine';
 import TextInputField from '../components/TextInputField';
 import OverlayWithButtons from '../components/OverlayWithButtons';
+import CommentsOverlay from '../components/CommentsOverlay';
 
 const CommentThread = ({navigation, route}) => {
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
   const accessToken = useSelector(state => state.user.accessToken)
-  const commentsGeneralData = useSelector(state => state.comments)
+  // const commentsGeneralData = useSelector(state => state.comments)
   const {threadMainCommentId, ownerId, postId} = route.params
   // const threadMainCommentId = commentsGeneralData.threadMainCommentId
   // const ownerId = commentsGeneralData.ownerId
   // const postId = commentsGeneralData.postId
   // let isAuthorInfoOpen = commentsGeneralData.isAuthorInfoOpen;
-  const authorName = commentsGeneralData.authorName;
-  const authorImgUrl = commentsGeneralData.authorImgUrl;
-  const registrationDate = commentsGeneralData.registrationDate;
-  const registrationDateIsFetching = commentsGeneralData.authorInfoIsFetching;
+  // const authorName = commentsGeneralData.authorName;
+  // const authorImgUrl = commentsGeneralData.authorImgUrl;
+  // const registrationDate = commentsGeneralData.registrationDate;
+  // const registrationDateIsFetching = commentsGeneralData.authorInfoIsFetching;
   const authorInfoIsOpen = useRef(false)
 
   let getThreadUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&count=10&comment_id=${threadMainCommentId}&extended=1&fields=photo_100&need_likes=1&owner_id=${ownerId}&post_id=${postId}&sort=asc`
@@ -47,56 +48,56 @@ const CommentThread = ({navigation, route}) => {
   const slideAnimation = useRef(new Animated.Value(2000)).current
 
   //TODO: replace icons to buttons, purge duplicate in CommentThread screen
-  const commentMenuButtonIconSize = 22
-  const commentMenuButtonColor = isLightTheme ? COLORS.primary : COLORS.white
+  // const commentMenuButtonIconSize = 22
+  // const commentMenuButtonColor = isLightTheme ? COLORS.primary : COLORS.white
   
-  const navigateToUserProfile = (userId) => {
-    dispatch(setID(userId))
-    navigation.push('UserProfile', { userId: userId })
-  }
+  // const navigateToUserProfile = (userId) => {
+  //   dispatch(setID(userId))
+  //   navigation.push('UserProfile', { userId: userId })
+  // }
 
-  const navigateToUserList = () => {
-    navigation.push('ReactedUsersList')
-  }
+  // const navigateToUserList = () => {
+  //   navigation.push('ReactedUsersList')
+  // }
 
-  const commentMenuButtons = [
-    [
-      {
-        icon: <Feather name='user' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-        text: 'Profile',
-        key: uuid.v4(),
-        handleTouch: (...args) => navigateToUserProfile(...args)
-      },
-      {
-        icon: <Ionicons name='arrow-undo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize} />,
-        text: 'Reply',
-        key: uuid.v4()
-      },
-      {
-        icon: <Feather name='users' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-        text: 'Liked',
-        key: uuid.v4(),
-        handleTouch: (...args) => navigateToUserList(...args)
-      },
-    ],
-    [
-      {
-        icon: <MaterialCommunityIcons name='content-copy' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-        text: 'Copy',
-        key: uuid.v4()
-      },
-      {
-        icon: <Ionicons name='arrow-redo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-        text: 'Share',
-        key: uuid.v4()
-      },
-      {
-        icon: <Octicons name='report' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-        text: 'Report',
-        key: uuid.v4(),
-      },
-    ]
-  ]
+  // const commentMenuButtons = [
+  //   [
+  //     {
+  //       icon: <Feather name='user' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
+  //       text: 'Profile',
+  //       key: uuid.v4(),
+  //       handleTouch: (...args) => navigateToUserProfile(...args)
+  //     },
+  //     {
+  //       icon: <Ionicons name='arrow-undo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize} />,
+  //       text: 'Reply',
+  //       key: uuid.v4()
+  //     },
+  //     {
+  //       icon: <Feather name='users' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
+  //       text: 'Liked',
+  //       key: uuid.v4(),
+  //       handleTouch: (...args) => navigateToUserList(...args)
+  //     },
+  //   ],
+  //   [
+  //     {
+  //       icon: <MaterialCommunityIcons name='content-copy' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
+  //       text: 'Copy',
+  //       key: uuid.v4()
+  //     },
+  //     {
+  //       icon: <Ionicons name='arrow-redo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
+  //       text: 'Share',
+  //       key: uuid.v4()
+  //     },
+  //     {
+  //       icon: <Octicons name='report' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
+  //       text: 'Report',
+  //       key: uuid.v4(),
+  //     },
+  //   ]
+  // ]
 
   useFocusEffect(
     useCallback(() => {
@@ -308,11 +309,17 @@ const CommentThread = ({navigation, route}) => {
             ListHeaderComponent={listHeader}
             ListFooterComponent={listBottom}
             onEndReached={fetchMoreComments}
-            onEndReachedThreshold={1}
+            onEndReachedThreshold={0.8}
             showsVerticalScrollIndicator={false}
           />
           <TextInputField isLightTheme={isLightTheme}/>
-          <OverlayWithButtons 
+          <CommentsOverlay 
+            slideAnimation={slideAnimation}
+            isLightTheme={isLightTheme}
+            handleShadowTouch={closeCommentMenu}
+            navigation={navigation}
+          />
+          {/* <OverlayWithButtons 
             slideAnimation={slideAnimation}
             handleShadowTouch={closeCommentMenu}
             isLightTheme={isLightTheme}
@@ -322,7 +329,7 @@ const CommentThread = ({navigation, route}) => {
             authorName={authorName}
             navigation={navigation}
             registrationDateIsFetching={registrationDateIsFetching}
-          />
+          /> */}
         </>
       }
     </SafeAreaView>

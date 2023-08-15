@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ActivityIndicator, RefreshControl, BackHandler, Animated } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ActivityIndicator, RefreshControl, BackHandler, Animated, KeyboardAvoidingView } from 'react-native'
 import React, {useEffect, useState, useRef, useCallback, } from 'react'
 import { useFocusEffect } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux'
@@ -247,7 +247,7 @@ const GroupList = ({navigation}) => {
   }
 
   return (
-    <SafeAreaView style={isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
+    <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
       <CustomHeader
         isLightTheme={isLightTheme} 
@@ -266,6 +266,7 @@ const GroupList = ({navigation}) => {
         onOptionsButton={openFilters}
         isScreenFromDrawerMenu={true}
       />
+      <KeyboardAvoidingView style={{flex: 1}} behavior={'height'}>
       {
         isLoading ? 
         <View style={styles.spinnerContainer}>
@@ -289,6 +290,7 @@ const GroupList = ({navigation}) => {
           }    
           style={styles.list}
           ListFooterComponent={footer}
+          keyboardShouldPersistTaps={'handled'}
         />
       }
       <Overlay 
@@ -298,6 +300,7 @@ const GroupList = ({navigation}) => {
         headerText={'Filters'}
         actionButtonText={'Show Results'}
       />
+      </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }
@@ -310,14 +313,14 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center'
   },
-  mainContainerLight: {
+  mainContainer: {
     flex: 1,
-    backgroundColor: COLORS.light_smoke
+    // backgroundColor: COLORS.light_smoke
   },
-  mainContainerDark: {
-    flex: 1,
-    backgroundColor: COLORS.background_dark
-  },
+  // mainContainerDark: {
+  //   flex: 1,
+  //   backgroundColor: COLORS.background_dark
+  // },
   list: {
     marginLeft: 5,
     marginRight: 5,

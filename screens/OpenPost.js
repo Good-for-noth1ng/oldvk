@@ -1,4 +1,4 @@
-import { StyleSheet, View, ActivityIndicator, Text, StatusBar, TouchableOpacity, SafeAreaView, Animated, BackHandler, ToastAndroid } from 'react-native'
+import { StyleSheet, View, ActivityIndicator, Text, StatusBar, SafeAreaView, Animated, BackHandler, KeyboardAvoidingView } from 'react-native'
 import React, { useState, useEffect, useCallback, memo, useRef } from 'react'
 import { FlatList } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from 'react-redux'
@@ -36,7 +36,7 @@ const OpenPost = ({navigation, route}) => {
   const getPostUrl = `https://api.vk.com/method/wall.getById?access_token=${accessToken}&v=5.131&posts=${ownerId}_${postId}&extended=1&fields=photo_100,name`
 
   const authorInfoIsOpen = useRef(false)
-  
+  const shouldScrollToComments = useRef(shouldScroll)
   // const shouldScroll = useSelector(state => state.news.scrollToComments)
   const [comments, setComments] = useState(null);
   const commentsList = useRef()
@@ -287,8 +287,9 @@ const OpenPost = ({navigation, route}) => {
   // }
 
   const scrollingToComments = () => {
-    if(shouldScroll) {
-      commentsList.current.scrollToIndex({index: 0, animated: true,viewPosition: 0.1})
+    if(shouldScrollToComments.current) {
+      commentsList.current.scrollToIndex({index: 0, animated: true, viewPosition: 0.1})
+      shouldScrollToComments.current = false
     }
   }
 
@@ -329,7 +330,10 @@ const OpenPost = ({navigation, route}) => {
             style={[styles.list, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}
             keyExtractor={keyExtractor}
             showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps={'handled'}
+            keyboardDismissMode={'interactive'}
           />
+          
           { comments ? <TextInputField isLightTheme={isLightTheme}/> : null}
           <CommentsOverlay 
             slideAnimation={slideAnimation}
@@ -337,17 +341,6 @@ const OpenPost = ({navigation, route}) => {
             handleShadowTouch={closeCommentMenu}
             navigation={navigation}
           />
-          {/* <OverlayWithButtons 
-            slideAnimation={slideAnimation}
-            handleShadowTouch={closeCommentMenu}
-            isLightTheme={isLightTheme}
-            buttons={commentMenuButtons}
-            registrationDate={registrationDate}
-            authorImgUrl={authorImgUrl}
-            authorName={authorName}
-            navigation={navigation}
-            registrationDateIsFetching={registrationDateIsFetching}
-          /> */}
         </>
       }
     </SafeAreaView>

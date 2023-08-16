@@ -24,16 +24,9 @@ const CommentThread = ({navigation, route}) => {
   const accessToken = useSelector(state => state.user.accessToken)
   // const commentsGeneralData = useSelector(state => state.comments)
   const {threadMainCommentId, ownerId, postId} = route.params
-  // const threadMainCommentId = commentsGeneralData.threadMainCommentId
-  // const ownerId = commentsGeneralData.ownerId
-  // const postId = commentsGeneralData.postId
-  // let isAuthorInfoOpen = commentsGeneralData.isAuthorInfoOpen;
-  // const authorName = commentsGeneralData.authorName;
-  // const authorImgUrl = commentsGeneralData.authorImgUrl;
-  // const registrationDate = commentsGeneralData.registrationDate;
-  // const registrationDateIsFetching = commentsGeneralData.authorInfoIsFetching;
+  
   const authorInfoIsOpen = useRef(false)
-
+  const shouldScroll = useRef(true)
   let getThreadUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&count=10&comment_id=${threadMainCommentId}&extended=1&fields=photo_100&need_likes=1&owner_id=${ownerId}&post_id=${postId}&sort=asc`
   let getThreadMainCommentUrl = `https://api.vk.com/method/wall.getComment?access_token=${accessToken}&v=5.131&comment_id=${threadMainCommentId}&extended=1&fields=photo_100&owner_id=${ownerId}`
   const [isLoading, setIsLoading] = useState(true)
@@ -46,58 +39,6 @@ const CommentThread = ({navigation, route}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
 
   const slideAnimation = useRef(new Animated.Value(2000)).current
-
-  //TODO: replace icons to buttons, purge duplicate in CommentThread screen
-  // const commentMenuButtonIconSize = 22
-  // const commentMenuButtonColor = isLightTheme ? COLORS.primary : COLORS.white
-  
-  // const navigateToUserProfile = (userId) => {
-  //   dispatch(setID(userId))
-  //   navigation.push('UserProfile', { userId: userId })
-  // }
-
-  // const navigateToUserList = () => {
-  //   navigation.push('ReactedUsersList')
-  // }
-
-  // const commentMenuButtons = [
-  //   [
-  //     {
-  //       icon: <Feather name='user' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-  //       text: 'Profile',
-  //       key: uuid.v4(),
-  //       handleTouch: (...args) => navigateToUserProfile(...args)
-  //     },
-  //     {
-  //       icon: <Ionicons name='arrow-undo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize} />,
-  //       text: 'Reply',
-  //       key: uuid.v4()
-  //     },
-  //     {
-  //       icon: <Feather name='users' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-  //       text: 'Liked',
-  //       key: uuid.v4(),
-  //       handleTouch: (...args) => navigateToUserList(...args)
-  //     },
-  //   ],
-  //   [
-  //     {
-  //       icon: <MaterialCommunityIcons name='content-copy' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-  //       text: 'Copy',
-  //       key: uuid.v4()
-  //     },
-  //     {
-  //       icon: <Ionicons name='arrow-redo-outline' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-  //       text: 'Share',
-  //       key: uuid.v4()
-  //     },
-  //     {
-  //       icon: <Octicons name='report' color={commentMenuButtonColor} size={commentMenuButtonIconSize}/>,
-  //       text: 'Report',
-  //       key: uuid.v4(),
-  //     },
-  //   ]
-  // ]
 
   useFocusEffect(
     useCallback(() => {
@@ -276,7 +217,10 @@ const CommentThread = ({navigation, route}) => {
   }
 
   const scrollingToThreadStart = () => {
-    threadList.current.scrollToIndex({index: 2, animated: true})
+    if (shouldScroll.current) {
+      threadList.current.scrollToIndex({index: 2, animated: true})
+      shouldScroll.current = false
+    } 
   }
 
   return (
@@ -311,6 +255,8 @@ const CommentThread = ({navigation, route}) => {
             onEndReached={fetchMoreComments}
             onEndReachedThreshold={0.8}
             showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps={'handled'}
+            keyboardDismissMode={'interactive'}
           />
           <TextInputField isLightTheme={isLightTheme}/>
           <CommentsOverlay 
@@ -319,17 +265,6 @@ const CommentThread = ({navigation, route}) => {
             handleShadowTouch={closeCommentMenu}
             navigation={navigation}
           />
-          {/* <OverlayWithButtons 
-            slideAnimation={slideAnimation}
-            handleShadowTouch={closeCommentMenu}
-            isLightTheme={isLightTheme}
-            buttons={commentMenuButtons}
-            registrationDate={registrationDate}
-            authorImgUrl={authorImgUrl}
-            authorName={authorName}
-            navigation={navigation}
-            registrationDateIsFetching={registrationDateIsFetching}
-          /> */}
         </>
       }
     </SafeAreaView>

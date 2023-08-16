@@ -1,20 +1,13 @@
-import { StyleSheet, Text, View, SafeAreaView, ActivityIndicator, StatusBar, FlatList } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, ActivityIndicator, StatusBar, FlatList, RefreshControl } from 'react-native'
 import React, { useRef } from 'react'
-import uuid from 'react-native-uuid';
 import { useSelector } from 'react-redux'
-import AntDesign from 'react-native-vector-icons/AntDesign'
 import Entypo from 'react-native-vector-icons/Entypo'
 import CustomHeader from '../components/CustomHeader'
-import VideosListItem from '../components/VideosListItem'
 import DividerWithLine from '../components/DividerWithLine'
 import { findPostAuthor } from '../utils/dataPreparationForComponents';
-// import { FlatList } from "react-native-gesture-handler";
 import Post from '../components/Post'
 import Repost from '../components/Repost';
-// import Carousel from '../components/Carousel';
-// import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
 import { COLORS } from '../constants/theme'
-// import { FlashList } from "@shopify/flash-list";
 
 const Favorites = ({navigation}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
@@ -26,6 +19,14 @@ const Favorites = ({navigation}) => {
   const offset = React.useRef(0)
   const remainToFetchNum = React.useRef(null)
   const shouldRemoveStackScreens = useRef()
+
+  const refreshFavs = () => {
+    setIsLoading(true)
+    setFavorites([])
+    remainToFetchNum.current = null
+    offset.current = 0
+    fetchFave()
+  }
 
   const fetchFave = async () => {
     const fetchFaveUrl = `https://api.vk.com/method/fave.get?access_token=${accessToken}&v=5.131&extended=1&fields=photo_100&count=${count}&offset=${offset.current}`
@@ -127,6 +128,14 @@ const Favorites = ({navigation}) => {
           style={styles.listContainer}
           showsVerticalScrollIndicator={false}
           ListFooterComponent={listFooter}
+          refreshControl={
+            <RefreshControl 
+              refreshing={isLoading}
+              onRefresh={refreshFavs}
+              colors={[COLORS.primary, COLORS.white]} 
+              tintColor={isLightTheme ? COLORS.primary : COLORS.white}
+            />
+          }
         />
       }
     </SafeAreaView>

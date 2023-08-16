@@ -56,7 +56,7 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
     // dispatch(setUserID(from_id))
     if (from_id > 0) {
       navigation.push('UserProfile', {userId: from_id})
-    } else {
+    } else if (from_id < 0) {
       navigation.push('Group', {groupId: (-1 * from_id)})
     }
     // fetchProfileInfo(from_id, name, photoUrl, commentId)
@@ -108,14 +108,16 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
           <Image source={{uri: photoUrl}} style={styles.image}/>
         </TouchableOpacity>
         <View style={styles.commentConentContainer}>
-          <Text 
-            style={[
-              styles.authorName, 
-              isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}
-            ]}
-          >
-            {name}
-          </Text>
+          <TouchableOpacity activeOpacity={1} onPress={handleProfilePress}>
+            <Text 
+              style={[
+                styles.authorName, 
+                isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}
+              ]}
+            >
+              {name}
+            </Text>
+          </TouchableOpacity>
           <Text style={[styles.replyText, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
             {getHyperlinkInText(commentText)}
           </Text>

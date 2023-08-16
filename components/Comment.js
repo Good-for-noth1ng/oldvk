@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Animated, Pressable } from 'react-native'
-import React, { useEffect, useState, memo, } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useState, memo, } from 'react'
+import { useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
 import { startLoadingRegistrationDate, setRegistrationData } from '../redux/commentsSlice'
-import { setUserID } from '../redux/userWallSlice'
+// import { setUserID } from '../redux/userWallSlice'
 import CommentBottom from './CommentBottom'
 import CommentReplies from './CommentReplies'
 import DividerWithLine from './DividerWithLine'
-import CommentPhotos from './CommentPhotos'
-import CommentVideos from './CommentVideos'
+// import CommentPhotos from './CommentPhotos'
+// import CommentVideos from './CommentVideos'
 import CommentAttachments from './CommentAttachments'
 import { getHyperlinkInText } from '../utils/hyperlinks'
 
@@ -26,17 +26,6 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
     inputRange: [0, 1],
     outputRange: [commentBgInitColor, commentBgEndColor]
   })
-  // let commentPhotos = []
-  // let commentVideos = []
-  // if (attachments !== undefined) {
-  //   for (let i = 0; i < attachments.length; i++) {
-  //     if (attachments[i].type === 'photo') {
-  //       commentPhotos.push(attachments[i].photo)
-  //     } else if (attachments[i].type === 'video') {
-  //       commentVideos.push(attachments[i].video)
-  //     }
-  //   }
-  // }
 
   const handleLikePress = () => {
     if(!isLiked) {
@@ -53,18 +42,17 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
     let profileDataRegUrl = `https://vkdia.com/pages/fake-vk-profile/registration-date?vkId=${vkId}`;
     const re = /^\d*$/g; 
     dispatch(startLoadingRegistrationDate())
-    // dispatch(openAuthorInfo());
     if (vkId < 0) {
-      setRegistrationData({
-        registrationDate: '',
+      dispatch(setRegistrationData({
+        registrationDate: 0,
         authorName: name,
         authorImgUrl: photoUrl,
         authorId: vkId,
         authorCommentId: commentId,
         ownerId: ownerId,
         commentText
-      })
-    } else {
+      }))
+    } else if (vkId > 0) {
       fetch(profileDataRegUrl)
       .then(response => response.json())
       .then(result => {
@@ -83,13 +71,23 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
           )
         }
       })
+    } else {
+      dispatch(setRegistrationData({
+        registrationDate: 0,
+        authorName: '',
+        authorImgUrl: 'banned',
+        authorId: vkId,
+        authorCommentId: commentId,
+        ownerId: ownerId,
+        commentText
+      }))
     }
   }
   
   const navigateToCommentAuthor = () => {
     if (from_id > 0) {
       navigation.push('UserProfile', {userId: from_id})
-    } else {
+    } else if(from_id < 0) {
       navigation.push('Group', {groupId: (-1 * from_id)})
     }
   }
@@ -135,7 +133,9 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
             {
               is_deleted ? <View style={styles.deltedContainer}><Text style={styles.deletedText}>Comment deleted</Text></View> : 
               <>
-                <Text style={[styles.authorName, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>{name}</Text>
+                <TouchableOpacity activeOpacity={1} onPress={navigateToCommentAuthor}>
+                  <Text style={[styles.authorName, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>{name}</Text>
+                </TouchableOpacity>
                 {
                   commentText ? 
                   <Text style={[styles.text, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>

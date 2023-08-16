@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Animated } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Animated, FlatList, RefreshControl } from 'react-native'
 import React, { useState, useEffect, useRef } from 'react'
-import { FlatList } from "react-native-gesture-handler";
+// import { FlatList } from "react-native-gesture-handler";
 import { useSelector } from 'react-redux'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -45,6 +45,13 @@ const UserProfile = ({navigation, route}) => {
   //   {title: "quis ut nam facilis et officia qui"},
   //   {title: "fugiat veniam minus"}
   // ]
+
+  const refreshProfile = () => {
+    setIsLoading(true)
+    offset.current = 0
+    remainToFetch.current = null
+    fetchData()
+  }
 
   const fetchData = async () => {
     const userInfoResponse = await fetch(userInfoUrl)
@@ -241,6 +248,14 @@ const UserProfile = ({navigation, route}) => {
             onEndReached={fetchMore}
             showsVerticalScrollIndicator={false}
             onEndReachedThreshold={0.8}
+            refreshControl={
+              <RefreshControl 
+                refreshing={isLoading}
+                onRefresh={refreshProfile}
+                colors={[COLORS.primary, COLORS.white]} 
+                tintColor={isLightTheme ? COLORS.primary : COLORS.white}
+              />
+            }
           />
         </>
       }

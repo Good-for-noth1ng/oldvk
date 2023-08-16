@@ -16,6 +16,7 @@ const CommentsOverlay = ({ slideAnimation, isLightTheme, handleShadowTouch, navi
   const authorImgUrl = commentsGeneralData.authorImgUrl;
   const registrationDate = commentsGeneralData.registrationDate;
   const registrationDateIsFetching = commentsGeneralData.authorInfoIsFetching;
+  console.log(registrationDateIsFetching)
   const authorId = commentsGeneralData.authorId
   const commentText = commentsGeneralData.commentText
   // console.log(ownerId)
@@ -31,14 +32,14 @@ const CommentsOverlay = ({ slideAnimation, isLightTheme, handleShadowTouch, navi
   const navigateToUserProfile = () => {
     if (authorId > 0) {
       navigation.push('UserProfile', { userId: authorId })
+    } else {
+      navigation.push('Group', { groupId: -1 * authorId})
     }
   }
 
   const navigateToUserList = () => {
     navigation.push('ReactedUsersList')
   }
-  
-  const commentMenuButtonColor = isLightTheme ? COLORS.primary : COLORS.white
 
   return (
     <Animated.View style={[styles.box, {transform: [{translateY: slideAnimation}]}]}>
@@ -55,11 +56,15 @@ const CommentsOverlay = ({ slideAnimation, isLightTheme, handleShadowTouch, navi
             </View> :
             <>
               <View style={styles.nameAvatarContainer}>
-                <Image style={styles.avatarInfo} source={{uri: authorImgUrl}}/>
+                <Image style={styles.avatarInfo} source={authorImgUrl === 'banned' ? require('../assets/avatars/banned-light.jpg') : {uri: authorImgUrl}}/>
                 <Text style={[styles.nameInfo, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>{authorName}</Text>
               </View>
               <View style={styles.registredContainer}>
-                <Text style={styles.registredText}>Registred: {getTimeDate(registrationDate)}</Text>
+                {
+                  registrationDate !== 0 ? 
+                  <Text style={styles.registredText}>Registred: {getTimeDate(registrationDate)}</Text> :
+                  null
+                }
               </View>
             </>
           }
@@ -67,13 +72,16 @@ const CommentsOverlay = ({ slideAnimation, isLightTheme, handleShadowTouch, navi
           
           <View style={{flexDirection: 'row', justifyContent: 'center', }}>
             <View style={{height: 200, alignItems: 'flex-start', paddingLeft: 30, paddingRight: 30}}>
-              <TouchableOpacity activeOpacity={0.8} onPress={navigateToUserProfile} style={styles.commentMenuButton}>
-                <Feather name='user' color={isLightTheme ? COLORS.primary : COLORS.white} size={22}/>
-                <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>
-                  Profile
-                </Text>
-              </TouchableOpacity>
-              
+              {
+                authorId !== 0 ?
+                <TouchableOpacity activeOpacity={0.8} onPress={navigateToUserProfile} style={styles.commentMenuButton}>
+                  <Feather name='user' color={isLightTheme ? COLORS.primary : COLORS.white} size={22}/>
+                  <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>
+                    {authorId > 0 ? 'Profile' : 'Community'}
+                  </Text>
+                </TouchableOpacity> :
+                null
+              }
               <TouchableOpacity style={styles.commentMenuButton}>
                 <Ionicons name='arrow-undo-outline' color={isLightTheme ? COLORS.primary : COLORS.white} size={22} />
                 <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>Reply</Text>

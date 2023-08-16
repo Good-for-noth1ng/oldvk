@@ -187,8 +187,10 @@ const VideosList = ({ navigation, route }) => {
           <AntDesign name='arrowleft' size={30} color={COLORS.white}/>
         }
         iconTouchHandler={currentUserId === ownerId ? openDrawer : goBack}
-        isScreenFromDrawerMenu={ownerId === currentUserId}
+        showSearchIcon={true}
+        gapForSearchIcon={'50%'}
         navigation={navigation}
+        isScreenFromDrawerMenu={ownerId === currentUserId}
       />
       {
         isLoading ?
@@ -208,22 +210,6 @@ const VideosList = ({ navigation, route }) => {
           keyExtractor={keyExtractor} 
         />
         </View>
-        // <FlatList
-        //   style={styles.list} 
-        //   data={videosList}
-        //   renderItem={renderItem}
-        //   ListFooterComponent={footer}
-        //   ListHeaderComponent={listHeader}
-        //   ItemSeparatorComponent={listSeparator}
-        //   showsVerticalScrollIndicator={false}
-        //   onEndReached={fetchMoreVideos}
-        // ListEmptyComponent={
-        //   <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
-        //     <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
-        //   </View>
-        // }
-        //   keyExtractor={keyExtractor}
-        // />
       }
     </SafeAreaView>
   )

@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ActivityIndicator, RefreshControl, BackHandler, Animated, KeyboardAvoidingView } from 'react-native'
 import React, {useEffect, useState, useRef, useCallback, } from 'react'
 import { useFocusEffect } from '@react-navigation/native';
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import uuid from 'react-native-uuid';
 import GroupListItem from '../components/GroupListItem';
 import { COLORS } from '../constants/theme';
@@ -36,14 +36,11 @@ const GroupList = ({navigation}) => {
     const drawerNavigator = navigation.getParent()
     const blur = drawerNavigator.addListener('blur', () => {
       shouldRemoveStackScreens.current = false
-      // console.log('blur')
     })
     const focus = drawerNavigator.addListener('focus', () => {
       shouldRemoveStackScreens.current = true
-      // console.log('focus')
     })
     const drawerItemPress = drawerNavigator.addListener('drawerItemPress', (e) => {
-      // console.log(shouldRemoveStackScreens.current)
       if (shouldRemoveStackScreens.current) {
         navigation.popToTop()
       }

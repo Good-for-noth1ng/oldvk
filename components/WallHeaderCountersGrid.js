@@ -6,7 +6,7 @@ import { COLORS } from '../constants/theme'
 import { getShortagedNumber } from '../utils/numShortage'
 import { getNameInGroupHeader } from '../utils/getNameByKey';
 //TODO: add topic screen
-const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, canAccess }) => {
+const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, canAccess, isUserOnHisOwnPage }) => {
   let countersGrid = []
   let row = []
   
@@ -17,9 +17,15 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
   }
 
   const navigateToFriends = () => {
-    if (canAccess) {
-      navigation.push('FriendsList', {userId: ownerId})
+    if (isUserOnHisOwnPage) {
+      const drawerNavigation = navigation.getParent()
+      drawerNavigation.navigate('Friends', {userId: ownerId})
+    } else {
+      if (canAccess) {
+        navigation.push('FriendsList', {userId: ownerId})
+      }
     }
+
   }
 
   const navigateToAlbums = () => {
@@ -134,7 +140,7 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
             activeOpacity={canAccess ? 0.6 : 1}
           >
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
-            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>communities</Text>
           </TouchableOpacity>
         )
       } else if (counters[key] !== 0 && key === 'videos') {

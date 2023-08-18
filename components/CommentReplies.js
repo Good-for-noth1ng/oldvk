@@ -39,6 +39,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
                 ownerId={ownerId}
                 navigation={navigation}
                 attachments={threadComments[0].attachments}
+                is_deleted={threadComments[0].is_deleted}
               />
               <DividerWithLine dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={5}/>
               <CommentReply
@@ -54,6 +55,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
                 ownerId={ownerId}
                 navigation={navigation}
                 attachments={threadComments[1].attachments}
+                is_deleted={threadComments[1].is_deleted}
               />
               <DividerWithLine dividerColor={!isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={7}/>
               {

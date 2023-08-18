@@ -36,7 +36,7 @@ const UserProfile = ({navigation, route}) => {
   const userInfoUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${userId}&fields=${userInfoUrlFields}`
   const userWallUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&v=5.131&owner_id=${userId}&extended=1&count=${count}`
   const [wallHeaderData , setWallHeaderData] = useState({screenName: 'Profile'})
-  
+  const shouldRemoveStackScreens = useRef()
   //TODO:
   //const allData = Promise.all([fetchReq1, fetchReq2, fetchReq3]);
   //allData.then((res) => console.log(res));
@@ -135,6 +135,24 @@ const UserProfile = ({navigation, route}) => {
     fetchData()
   }, [])
 
+  useEffect(() => {
+    if (userId === currentUserId) {
+      const drawerNavigator = navigation.getParent()
+      const blur = drawerNavigator.addListener('blur', () => {
+        shouldRemoveStackScreens.current = false
+      })
+      const focus = drawerNavigator.addListener('focus', () => {
+        shouldRemoveStackScreens.current = true
+      })
+      const drawerItemPress = drawerNavigator.addListener('drawerItemPress', (e) => {
+        if (shouldRemoveStackScreens.current) {
+          navigation.popToTop()
+        }
+      })
+      return blur, focus, drawerItemPress
+    }
+  }, [navigation])
+
   const listHeader = () => (
     <View style={styles.wallHeaderContainer}>
       <WallHeaderGeneralInfo 
@@ -164,6 +182,7 @@ const UserProfile = ({navigation, route}) => {
         friendStatus={wallHeaderData.friendStatus}
         canSendFriendRequest={wallHeaderData.canSendFriendRequest}
         canWritePrivateMessage={wallHeaderData.canWritePrivateMessage}
+        shouldHideButtons={currentUserId === userId}
       />
       <DividerWithLine dividerHeight={10}/>
       <WallHeaderCountersGrid 
@@ -171,6 +190,7 @@ const UserProfile = ({navigation, route}) => {
         navigation={navigation} 
         ownerId={userId}
         canAccess={!(wallHeaderData.canAccessClosed === false && wallHeaderData.isClosed === true)}
+        isUserOnHisOwnPage={currentUserId === userId}
       />
       {
         wallHeaderData.canAccessClosed === false && wallHeaderData.isClosed === true ?
@@ -214,7 +234,11 @@ const UserProfile = ({navigation, route}) => {
         </View>
       )
     }
-    return null
+    return (
+      <DividerWithLine 
+        dividerHeight={5}
+      />
+    )
   }
 
   // console.log(navigation.getParent())

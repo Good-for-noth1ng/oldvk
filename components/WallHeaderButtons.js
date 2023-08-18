@@ -4,7 +4,7 @@ import uuid from 'react-native-uuid';
 import { WallHeaderButton } from './Buttons'
 import DividerWithLine from './DividerWithLine';
 
-const WallHeaderButtons = ({ isUserWall, isMember, canWritePrivateMessage, canSendFriendRequest, friendStatus, memberStatus, groupId, accessToken, navigation }) => {
+const WallHeaderButtons = ({ isUserWall, isMember, canWritePrivateMessage, canSendFriendRequest, friendStatus, memberStatus, groupId, accessToken, navigation, shouldHideButtons }) => {
   let buttons = []
   const isFriend = friendStatus === 3 ? true : false 
   
@@ -24,6 +24,11 @@ const WallHeaderButtons = ({ isUserWall, isMember, canWritePrivateMessage, canSe
   const navigateToDialog = () => {
     navigation.push('Dialog')
   }
+
+  if (shouldHideButtons) {
+    return null
+  }
+
   if (isUserWall) {
     // 0 — не является другом
     // 1 — отправлена заявка/подписка пользователю

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Animated, Pressable } from 'react-native'
-import React, { useState, memo, } from 'react'
+import React, { useState, memo, useRef, } from 'react'
 import { useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
 import { startLoadingRegistrationDate, setRegistrationData } from '../redux/commentsSlice'
@@ -19,7 +19,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
   const [isLiked, setIsLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(likes)
 
-  const colorTransitionAnimation = new Animated.Value(0)
+  const colorTransitionAnimation = useRef(new Animated.Value(0)).current
   const commentBgEndColor = isLightTheme ? COLORS.light_blue : COLORS.light_black
   const commentBgInitColor = isLightTheme ? COLORS.white : COLORS.primary_dark
   const commentBgColor = colorTransitionAnimation.interpolate({

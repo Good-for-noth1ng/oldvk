@@ -74,9 +74,22 @@ const Favorites = ({navigation}) => {
   }
 
   const renderItem = ({item}) => {
-    if (item.copy_history === undefined) {
+    if (item !== undefined) {
+      if (item.copy_history === undefined) {
+        return (
+          <Post 
+            data={item}
+            isLigthTheme={isLightTheme}
+            navigation={navigation}
+            id={item.key}
+            openedPost={true}
+            accessToken={accessToken}
+          />
+        )
+      }
+
       return (
-        <Post 
+        <Repost 
           data={item}
           isLigthTheme={isLightTheme}
           navigation={navigation}
@@ -86,16 +99,6 @@ const Favorites = ({navigation}) => {
         />
       )
     }
-    return (
-      <Repost 
-        data={item}
-        isLigthTheme={isLightTheme}
-        navigation={navigation}
-        id={item.key}
-        openedPost={true}
-        accessToken={accessToken}
-      />
-    )
   }
 
   const listFooter = () => {

@@ -1,26 +1,20 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Pressable, Animated } from 'react-native'
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { setUserID } from '../redux/userWallSlice'
+import React, { useRef, useState } from 'react'
+// import { useDispatch } from 'react-redux'
+// import { setUserID } from '../redux/userWallSlice'
 import CommentBottom from './CommentBottom'
-import CommentPhotos from './CommentPhotos'
+// import CommentPhotos from './CommentPhotos'
 import CommentAttachments from './CommentAttachments'
 import { COLORS } from '../constants/theme'
 import { getHyperlinkInText } from '../utils/hyperlinks'
 
-const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme, openCommentMenu, commentId, ownerId, navigation, attachments, author}) => {
-  const dispatch = useDispatch()
-  // const authorsGeneralInfo = useSelector(state => state.comments)
-  // const groups = authorsGeneralInfo.groups
-  // const profiles = authorsGeneralInfo.profiles
-  // const authors = [...groups, ...profiles]
+const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme, openCommentMenu, commentId, ownerId, navigation, attachments, author, is_deleted}) => {
   const name = author.name ? author.name : `${author.first_name} ${author.last_name}` 
   const photoUrl = author.photo_100
-  // let commentPhotos = []
   const [isLiked, setIsLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(likes)
 
-  const colorTransitionAnimation = new Animated.Value(0)
+  const colorTransitionAnimation = useRef(new Animated.Value(0)).current
   const commentBgEndColor = isLightTheme ? COLORS.light_blue : COLORS.light_black
   const commentReplyBgInitColor = isLightTheme ? COLORS.white : COLORS.primary_dark
   const commentReplyBgColor = colorTransitionAnimation.interpolate({
@@ -28,38 +22,12 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
     outputRange: [commentReplyBgInitColor, commentBgEndColor]
   })
 
-  // if (attachments) {
-  //   for (let i = 0; i < attachments.length; i++) {
-  //     if (attachments[i].type === 'photo') {
-  //       commentPhotos.push(attachments[i].photo)
-  //     }
-  //   }
-  // }
-  // profiles.forEach(item => {
-  //   if (item.id === from_id) {
-  //     name = `${item.first_name} ${item.last_name}`;
-  //     photoUrl = item.photo_100; 
-  //   }
-  // })
-
-
-  // if (name === undefined) {
-  //   groups.forEach(item => {
-  //     if (item.id === (from_id * (-1))) {
-  //       name = item.name
-  //       photoUrl = item.photo_100
-  //     }
-  //   })
-  // }
-
   const handleProfilePress = () => {
-    // dispatch(setUserID(from_id))
     if (from_id > 0) {
       navigation.push('UserProfile', {userId: from_id})
     } else if (from_id < 0) {
       navigation.push('Group', {groupId: (-1 * from_id)})
     }
-    // fetchProfileInfo(from_id, name, photoUrl, commentId)
   }
 
   const handleLikePress = () => {
@@ -105,7 +73,7 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
         style={[styles.commentReplyContainer, {backgroundColor: commentReplyBgColor}]}
       >
         <TouchableOpacity activeOpacity={1} style={styles.imageContainer} onPress={handleProfilePress}>
-          <Image source={{uri: photoUrl}} style={styles.image}/>
+          <Image source={is_deleted ? require('../assets/avatars/banned-light.jpg') : {uri: photoUrl}} style={styles.image}/>
         </TouchableOpacity>
         <View style={styles.commentConentContainer}>
           <TouchableOpacity activeOpacity={1} onPress={handleProfilePress}>

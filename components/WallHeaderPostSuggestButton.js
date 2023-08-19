@@ -1,30 +1,46 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 import Octicons from 'react-native-vector-icons/Octicons'
+import { LinearGradient } from 'expo-linear-gradient'
 import { COLORS } from '../constants/theme'
 
+const MakePostButton = ({text, action}) => {
+  return (
+    <TouchableOpacity style={styles.suggestButton}>
+      <LinearGradient style={styles.buttonGradient} colors={[COLORS.gradientHeaderStart, COLORS.gradientHeaderEnd]}>
+        <Text style={styles.suggestButtonText}>{text}</Text>
+      </LinearGradient>
+    </TouchableOpacity>
+  )
+}
+
+const AttachPhotosButton = () => {
+  return (
+    <TouchableOpacity style={styles.addPhotoButton}>
+      <LinearGradient style={styles.addPhotoGradient} colors={[COLORS.gradientHeaderStart, COLORS.gradientHeaderEnd]}>
+        <Octicons color={COLORS.white} size={24} name={'device-camera'}/>
+      </LinearGradient>
+    </TouchableOpacity>
+  )
+}
 const WallHeaderPostSuggestButton = ({canPost, canSuggest, isCommunityWall}) => {
   if (isCommunityWall) {
     if (canPost) {
       return(
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.suggestButton}>
-          <Text style={styles.suggestButtonText}>{'Write a post'}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.addPhotoButton}>
-          <Octicons color={COLORS.white} size={24} name={'device-camera'}/>
-        </TouchableOpacity>
+        <MakePostButton 
+          text={'Write a post'}
+        />
+        <AttachPhotosButton />
       </View>
       )
     } else if (canSuggest) {
       return(
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.suggestButton}>
-            <Text style={styles.suggestButtonText}>{'Suggest a post'}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.addPhotoButton}>
-            <Octicons color={COLORS.white} size={24} name={'device-camera'}/>
-          </TouchableOpacity>
+          <MakePostButton 
+            text={'Suggest a post'}
+          />
+          <AttachPhotosButton />
         </View>
         )
     } else {
@@ -34,12 +50,10 @@ const WallHeaderPostSuggestButton = ({canPost, canSuggest, isCommunityWall}) => 
     if (canPost) {
       return (
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity style={styles.suggestButton}>
-          <Text style={styles.suggestButtonText}>{'Write a post'}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.addPhotoButton}>
-          <Octicons color={COLORS.white} size={24} name={'device-camera'}/>
-        </TouchableOpacity>
+        <MakePostButton 
+          text={'Write a post'}
+        />
+        <AttachPhotosButton />
       </View>
       )
     }
@@ -56,10 +70,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   suggestButton: {
-    backgroundColor: COLORS.primary,
+    // backgroundColor: COLORS.primary,
     borderRadius: 5,
     width: '75%',
     height: 35,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  buttonGradient: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 5,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
@@ -69,11 +91,19 @@ const styles = StyleSheet.create({
     color: COLORS.white
   },
   addPhotoButton: {
-    backgroundColor: COLORS.primary,
+    // backgroundColor: COLORS.primary,
     borderRadius: 5,
     width: '22%',
     flexDirection: 'row',
     height: 35,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  addPhotoGradient: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 5,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
   }

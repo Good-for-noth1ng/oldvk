@@ -29,7 +29,7 @@ const UserPageStack = createNativeStackNavigator();
 const UserPageRoute = () => {
   return (
     <UserPageStack.Navigator initialRouteName='UserProfile'>
-      <UserPageStack.Screen name='UserProfile' component={UserProfile} options={{headerShown:false, animation: 'slide_from_right'}} />
+      <UserPageStack.Screen name='UserProfile' component={UserProfile} options={{headerShown:false, animation: 'slide_from_right'}}/>
       <UserPageStack.Screen name='OpenPost' component={OpenPost} options={{headerShown:false, animation: 'slide_from_right'}} />
       <UserPageStack.Screen name='Group' component={Group} options={{headerShown:false, animation: 'slide_from_right'}} />
       <UserPageStack.Screen name='CommentThread' component={CommentThread} options={{headerShown:false, animation: 'slide_from_right'}} />

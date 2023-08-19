@@ -173,6 +173,7 @@ const CommentThread = ({navigation, route}) => {
         is_deleted={mainComment.response.items[0].deleted}
         isLightTheme={isLightTheme}
         navigation={navigation}
+        openCommentMenu={openCommentMenu}
       />
       <DividerWithLine 
         dividerHeight={16} 

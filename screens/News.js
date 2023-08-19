@@ -129,7 +129,7 @@ const News = ({navigation}) => {
           accessToken={accessToken}
         />
       )
-    } else if (item.type === 'wall_photo') {
+    } else if (item.type === 'wall_photo' || item.type === 'friend') {
       return null
     }
     return (
@@ -160,7 +160,6 @@ const News = ({navigation}) => {
   
   return(
     <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
-      <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white} animated={true}/>
       <CustomHeader 
         headerName={<NewsTitleSwitcher isLightTheme={isLightTheme}/>} 
         iconComponent={<Entypo name='menu' color={COLORS.white} size={30}/>}

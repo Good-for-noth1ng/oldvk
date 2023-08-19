@@ -3,6 +3,7 @@ import { Text, View, TouchableOpacity, StyleSheet, TouchableHighlight, Animated,
 import { SIZES, COLORS } from '../constants/theme'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { FlatList } from 'react-native-gesture-handler'
+import { LinearGradient } from 'expo-linear-gradient'
 import { useSelector } from 'react-redux'
 
 export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth,}) => {
@@ -251,10 +252,15 @@ export const LoginButton = ({buttonText, navigation, isLightTheme }) => {
       underlayColor={COLORS.primary_light}
       activeOpacity={0.6}
       onPress={() => navigation.navigate('WebViewLogin')}
-    >
-      <Text style={isLightTheme ? styles.textLight : styles.textDark}>
-        {buttonText}
-      </Text>
+    > 
+      <LinearGradient 
+        style={{width: '100%', height: '100%', borderRadius: 5, alignContent: 'center', justifyContent: 'center'}}
+        colors={isLightTheme ? [COLORS.gradientHeaderStart, COLORS.gradientHeaderEnd] : [COLORS.background_dark, COLORS.black]}
+      >
+        <Text style={isLightTheme ? styles.textLight : styles.textDark}>
+          {buttonText}
+        </Text>
+      </LinearGradient>
     </TouchableHighlight>
   )
 }
@@ -286,7 +292,7 @@ export const WallHeaderButton = ({ isActiveState, activeStateText, inactiveState
   return (
     <TouchableOpacity 
       style={{
-        backgroundColor: isActive ? COLORS.primary : COLORS.secondary,
+        // backgroundColor: isActive ? COLORS.primary : COLORS.secondary,
         height: 40,
         flex: 1,
         alignItems: 'center',
@@ -295,7 +301,11 @@ export const WallHeaderButton = ({ isActiveState, activeStateText, inactiveState
       }}
       onPress={onPress}
     >
-      <Text style={styles.wallHeaderButtonTextStyle}>{isActive ? activeStateText : inactiveStateText}</Text>
+      <LinearGradient 
+        style={{width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', borderRadius: 5}} 
+        colors={isActive ? [COLORS.gradientHeaderStart, COLORS.gradientHeaderEnd] : [COLORS.smoke, COLORS.secondary]}>
+        <Text style={styles.wallHeaderButtonTextStyle}>{isActive ? activeStateText : inactiveStateText}</Text>
+      </LinearGradient>
     </TouchableOpacity>
   )
 }

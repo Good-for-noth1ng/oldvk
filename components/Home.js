@@ -47,9 +47,8 @@ const Home = () => {
             <Image source={{uri: urlDrawerPhoto}} style={{width: 80, height: 80, borderRadius: 5}}/>
           ),
           headerShown: false,
-          drawerItemStyle: {
-            display: 'none'
-          }
+          // drawer: 'CurrentUser'
+          drawerLabel: userName
         }}/>
 
         <Drawer.Screen name='Friends' component={FriendsRoute} options={{
@@ -57,7 +56,8 @@ const Home = () => {
             <FontAwesome name='user' color={color} size={20}/>
           ),
           headerShown: false,
-          drawer: 'Friends'
+          // drawer: 'Friends'
+          drawerLabel: 'Friends'
         }}/>
         <Drawer.Screen name='PhotosRoute' component={PhotosRoute} options={{
           drawerIcon: ({color}) => (

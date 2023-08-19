@@ -24,7 +24,7 @@ const UserProfile = ({navigation, route}) => {
   const accessToken = useSelector(state => state.user.accessToken)
   const [isUserInfoExpanded, setIsUserInfoExpanded] = useState(false)
   const currentUserId = useSelector(state => state.user.userId)
-  const userId = route.params !== undefined ? route.params.userId : currentUserId
+  const userId = route?.params !== undefined ? route.params.userId : currentUserId
   console.log(currentUserId, userId)
   const count = 15
   const offset = useRef(0) 
@@ -136,7 +136,7 @@ const UserProfile = ({navigation, route}) => {
   }, [])
 
   useEffect(() => {
-    if (userId === currentUserId) {
+    if (currentUserId === userId) {
       const drawerNavigator = navigation.getParent()
       const blur = drawerNavigator.addListener('blur', () => {
         shouldRemoveStackScreens.current = false

@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Animated } from 'react-native'
-import React, { useState, useEffect, useRef } from 'react'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Animated, FlatList, RefreshControl, BackHandler } from 'react-native'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useSelector } from 'react-redux'
-import { FlatList } from "react-native-gesture-handler";
+import { useFocusEffect } from '@react-navigation/native';
+// import { FlatList } from "react-native-gesture-handler";
 import uuid from 'react-native-uuid';
 import Entypo from 'react-native-vector-icons/Entypo'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -10,7 +11,6 @@ import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
 import UserListItem from '../components/UserListItem'
 import DividerWithLine from '../components/DividerWithLine'
 import Overlay from '../components/Overlay';
-import { FlashList } from "@shopify/flash-list";
 import { RadioOption, CollapsibleOption } from '../components/Buttons';
 import { COLORS } from '../constants/theme'
 
@@ -27,8 +27,8 @@ const Friends = ({navigation, route}) => {
   const offset = useRef(0)
   const remainToFetchNum = useRef()
   const searchQuery = useRef('')
-  const fetchFriendsUrl = `https://api.vk.com/method/friends.get?user_id=${userId}&access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&fields=name,bdate,city,photo_100`
   const connectionController = useRef(undefined)
+  const filterIsOpen = useRef(false)
 
   const slideAnimation = useRef(new Animated.Value(2000)).current
   const shouldRemoveStackScreens = useRef()
@@ -134,6 +134,7 @@ const Friends = ({navigation, route}) => {
   }
 
   const fetchFriends = async () => {
+    const fetchFriendsUrl = `https://api.vk.com/method/friends.get?user_id=${userId}&access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&fields=name,bdate,city,photo_100`
     const response = await fetch(fetchFriendsUrl)
     const data = await response.json()
     const items = data.response.items.map(item => { return {...item, key: uuid.v4()}})
@@ -178,6 +179,11 @@ const Friends = ({navigation, route}) => {
     })
     return blur, focus, drawerItemPress
   }, [navigation])
+
+  const refreshFriendsList = () => {
+    setIsLoading(true)
+    initFriendsList()
+  }
 
   const listSeparator = () => (
     <DividerWithLine dividerHeight={10} dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}/>
@@ -305,7 +311,20 @@ const Friends = ({navigation, route}) => {
     return item.key
   }
 
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        if (filterIsOpen.current) {
+          closeFilterMenu()
+          return true
+        }
+      }
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress)
+      return () => subscription.remove()
+  }, [filterIsOpen.current]))
+
   const openFilterMenu = () => {
+    filterIsOpen.current = true
     Animated.timing(slideAnimation, {
       toValue: 0,
       duration: 500,
@@ -314,6 +333,7 @@ const Friends = ({navigation, route}) => {
   }
 
   const closeFilterMenu = () => {
+    filterIsOpen.current = false
     Animated.timing(slideAnimation, {
       toValue: 2000,
       duration: 500,
@@ -362,6 +382,14 @@ const Friends = ({navigation, route}) => {
           onEndReached={fetchMoreUsers}
           showsVerticalScrollIndicator={false}
           onEndReachedThreshold={0.8}
+          refreshControl={
+            <RefreshControl 
+              refreshing={isLoading}
+              onRefresh={refreshFriendsList}
+              colors={[COLORS.primary, COLORS.white]}
+              tintColor={isLightTheme ? COLORS.primary : COLORS.white}
+            />
+          }
         />
       }
       <Overlay 

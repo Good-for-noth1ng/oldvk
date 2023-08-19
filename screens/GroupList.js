@@ -245,7 +245,6 @@ const GroupList = ({navigation}) => {
 
   return (
     <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
-      <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
       <CustomHeader
         isLightTheme={isLightTheme} 
         headerName={
@@ -263,7 +262,6 @@ const GroupList = ({navigation}) => {
         onOptionsButton={openFilters}
         isScreenFromDrawerMenu={true}
       />
-      <KeyboardAvoidingView style={{flex: 1}} behavior={'height'}>
       {
         isLoading ? 
         <View style={styles.spinnerContainer}>
@@ -297,7 +295,6 @@ const GroupList = ({navigation}) => {
         headerText={'Filters'}
         actionButtonText={'Show Results'}
       />
-      </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }

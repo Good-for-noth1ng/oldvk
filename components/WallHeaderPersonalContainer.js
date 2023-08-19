@@ -13,7 +13,18 @@ const WallHeaderPersonalContainer = ({personal, relation, bdate, city, interests
   if (universities) {
     if (universities.length > 0) {
       universitiesList = universities.map(univer => {
-        return `${univer.name}, ${univer.graduation}, ${univer.chair_name}`
+        let result = ''
+        if (univer.name) {
+          result += univer.name
+        }
+        if (univer.graduation) {
+          result += `, ${univer.graduation}`
+        }
+        if (univer.chair_name) {
+          result += `, ${univer.chair_name}`
+        }
+        return result
+        //return `${univer.name}${univer.graduation && ','} ${univer.graduation !== undefined ? univer.graduation + ',' : ''} ${univer.chair_name !== undefined  ? univer.chair_name : ''}`
       })
     }
   }

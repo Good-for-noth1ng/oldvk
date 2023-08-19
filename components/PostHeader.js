@@ -1,59 +1,28 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, InteractionManager } from 'react-native'
-import React, { useState, memo, useEffect, useRef } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React from 'react'
 import Feather from 'react-native-vector-icons/Feather'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
-import { setGroupID } from '../redux/groupSlice'
-import { setUserID } from '../redux/userWallSlice'
 
 const PostHeader = ({dataDate, isRepost, navigation, isLightTheme, onMorePress, isPinned, author, ownerId}) => {  
-  // if (isRepost) {console.log(sourceId, from_id)}
-  // const accessToken = useSelector(state => state.user.accessToken)     
-  // const dispatch = useDispatch()
-  // let groupData = {}
-  // let profileData = {}
-  // let wallId
-  // if (sourceId === undefined) {
-  //   wallId = from_id
-  // } else {
-  //   wallId = sourceId
-  // }
-
-  // if (wallId < 0) {
-  //   groupData = useSelector(state => {
-  //     const groups = [...state.news.groups, ...state.group.groups, ...state.userWall.groups]
-  //     return groups.find(group => group.id === 0 - wallId)
-  //   })
-  // } else if (wallId > 0) {
-  //   profileData = useSelector(state => {
-  //     const profiles = [...state.news.profiles, ...state.group.profiles, ...state.userWall.profiles]
-  //     return profiles.find(profile => profile.id === wallId)
-  //   })
-  // }
-  // let imgUrl
-  // let name
-  // // console.log(groupData, profileData)
-  // if (groupData !== undefined) {
-  //   imgUrl = groupData?.photo_100 ? groupData?.photo_100 : profileData?.photo_100
-  //   name = groupData?.name ? groupData?.name : profileData?.first_name + ' ' + profileData?.last_name
-  // } else {
-  //   console.log(wallId)
-  // }
-    
-
+  
   const name = author?.name ? author?.name : `${author?.first_name} ${author?.last_name}`
   const imgUrl = author?.photo_100
 
   const openGroup = () => {
-    if (ownerId < 0) {
-      // dispatch(setGroupID(wallId))
-      navigation.push('Group', {groupId: (-1 * ownerId)})
+    if (author.name) {
+      navigation.push('Group', {groupId: author.id})
     } else {
-      // dispatch(setUserID(wallId))
-      navigation.push('UserProfile', {userId: ownerId})
+      navigation.push('UserProfile', { userId: author.id})
     }
+    // if (ownerId < 0) {
+    //   // dispatch(setGroupID(wallId))
+    //   navigation.push('Group', {groupId: (-1 * ownerId)})
+    // } else {
+    //   // dispatch(setUserID(wallId))
+    //   navigation.push('UserProfile', {userId: ownerId})
+    // }
   }
   
   let postNameTextStyle;

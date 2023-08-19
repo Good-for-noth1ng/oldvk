@@ -1,20 +1,27 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, StatusBar } from 'react-native'
 import React from 'react'
 import { COLORS, SIZES } from '../constants/theme'
-// 
+import { LinearGradient } from 'expo-linear-gradient'
+
 const Header = ({screenName, isLight}) => {
   return (
-    <View style={isLight ? styles.headerStyleLight : styles.headerStyleDark}>
-      <View style={styles.textLogoContainerStyle}>
-        <View style={styles.logoContainerStyle}>  
-          <Image 
-            source={isLight ? require('../assets/icons/vk_logo_eng_blue.png') : require ('../assets/icons/vk_logo_eng_black.png')}
-            style={styles.logoStyle}
-          />
+    <>
+      <StatusBar backgroundColor={COLORS.black} barStyle={COLORS.white}/>
+      <LinearGradient 
+        style={styles.header} 
+        colors={isLight ? [COLORS.gradientHeaderStart, COLORS.gradientHeaderEnd] : [COLORS.primary_dark, COLORS.black]}
+      >
+        <View style={styles.textLogoContainerStyle}>
+          <View style={styles.logoContainerStyle}>  
+            <Image 
+              source={isLight ? require('../assets/icons/vk_logo_eng_blue.png') : require ('../assets/icons/vk_logo_eng_black.png')}
+              style={styles.logoStyle}
+            />
+          </View>
+          <Text style={styles.screenNameStyle}>{screenName}</Text>
         </View>
-        <Text style={styles.screenNameStyle}>{screenName}</Text>
-      </View>
-    </View>
+      </LinearGradient>
+    </>
   )
 }
 
@@ -34,25 +41,25 @@ const styles = StyleSheet.create({
         width: '80%',
         height: '80%',
     },
-    headerStyleLight: {
+    header: {
         width: '100%',
         height: 55,
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: COLORS.primary
+        // backgroundColor: COLORS.primary
     },
-    headerStyleDark: {
-      width: '100%',
-        height: 55,
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        backgroundColor: COLORS.primary_dark,
+    // headerStyleDark: {
+    //   width: '100%',
+    //     height: 55,
+    //     display: 'flex',
+    //     flexDirection: 'row',
+    //     justifyContent: 'flex-start',
+    //     alignItems: 'center',
+    //     backgroundColor: COLORS.primary_dark,
 
-    },
+    // },
     screenNameStyle: {
       color: COLORS.white,
       fontFamily: 'sans-serif',

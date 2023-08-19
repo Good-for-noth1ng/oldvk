@@ -33,22 +33,37 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
       navigation.push('PhotoAlbumsList', {ownerId})
     }
   }
+  
   const navigateToPhotos = () => {
-    if (canAccess) {
-      navigation.push('Photos', { ownerId: ownerId })
+    if (isUserOnHisOwnPage) {
+      const drawerNavigation = navigation.getParent()
+      drawerNavigation.navigate('PhotosRoute')
+    } else {
+      if (canAccess) {
+        navigation.push('Photos', { ownerId: ownerId })
+      }
     }
   }
 
   const navigateToVideosList = () => {
-    if (canAccess) {
-      navigation.push('VideosList', { ownerId: ownerId })
+    if (isUserOnHisOwnPage) {
+      const drawerNavigation = navigation.getParent()
+      drawerNavigation.navigate('VideosRoute')
+    } else {
+      if (canAccess) {
+        navigation.push('VideosList', { ownerId: ownerId })
+      }
     }
-    
   }
 
   const navigateToGroupsList = () => {
-    if (canAccess) {
-      navigation.push('UsersGroups', { userId: ownerId })
+    if (isUserOnHisOwnPage) {
+      const drawerNavigation = navigation.getParent()
+      drawerNavigation.navigate('Communities')
+    } else {
+      if (canAccess) {
+        navigation.push('UsersGroups', { userId: ownerId })
+      }
     }
   }
 

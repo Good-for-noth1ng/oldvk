@@ -23,19 +23,18 @@ const Login = ({navigation}) => {
   return (
     // <View>
     <SafeAreaView style={[styles.mainContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.background_dark}]}>
-      <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
-        <Header screenName={'Авторизация'} isLight={isLightTheme}/>
-        <View style={styles.heroButtonContainer}>
-          <View style={styles.textContainer}>
-            <Text style={[styles.textHeader, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
-              Добро пожаловать!
-            </Text>
-            <Text style={[styles.subtitle, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
-              oldvk - мобильное приложение для соцсети вконтакте
-            </Text>
-          </View>
-          <LoginButton buttonText={'Войти через vk.com'} isLightTheme={isLightTheme}  navigation={navigation}/>
+      <Header screenName={'Авторизация'} isLight={isLightTheme}/>
+      <View style={styles.heroButtonContainer}>
+        <View style={styles.textContainer}>
+          <Text style={[styles.textHeader, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
+            Добро пожаловать!
+          </Text>
+          <Text style={[styles.subtitle, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
+            oldvk - мобильное приложение для соцсети вконтакте
+          </Text>
         </View>
+        <LoginButton buttonText={'Войти через vk.com'} isLightTheme={isLightTheme}  navigation={navigation}/>
+      </View>
     </SafeAreaView>
   )
 }

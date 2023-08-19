@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, BackHandler } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, BackHandler, StatusBar } from 'react-native'
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { useFocusEffect } from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import { LinearGradient } from 'expo-linear-gradient'
 import NewsTitleSwitcher from './NewsTitleSwitcher'
 import { COLORS } from '../constants/theme'
 
@@ -76,7 +77,12 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
   }
 
   return (
-    <View style={[styles.headerContainer, isLightTheme ? {backgroundColor: COLORS.primary} : {backgroundColor: COLORS.primary_dark}]}>
+    <>
+      <StatusBar backgroundColor={COLORS.black} barStyle={COLORS.white} animated={true} />
+      <LinearGradient 
+        style={styles.headerContainer} 
+        colors={isLightTheme ? [COLORS.gradientHeaderStart, COLORS.gradientHeaderEnd] : [COLORS.primary_dark, COLORS.black]}>
+      {/* <View style={[styles.headerContainer, isLightTheme ? {backgroundColor: COLORS.primary} : {backgroundColor: COLORS.primary_dark}]}> */}
       {
         showSearchInputField ?
         <View style={styles.inputFieldContainer}>
@@ -132,7 +138,9 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
         </TouchableOpacity>
          : null
       }
-    </View>
+      {/* </View> */}
+      </LinearGradient>
+    </>
   )
 }
 

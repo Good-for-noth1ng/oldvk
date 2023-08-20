@@ -7,6 +7,7 @@ import searchResultsReducer from "./searchResultsSlice";
 import colorSchemeReducer from "./colorSchemeSlice";
 import userWallReducer from "./userWallSlice";
 import optionsReducer from "./optionsSlice"; 
+import radioGenderButtonsReducers from "./radioGenderButtonsSlice";
 
 export const store = configureStore({
     reducer: {
@@ -18,11 +19,6 @@ export const store = configureStore({
         colorScheme: colorSchemeReducer,
         userWall: userWallReducer,
         options: optionsReducer,
+        radioGender: radioGenderButtonsReducers
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-        immutableCheck: {
-            ignoredPaths: ['user', 'news', 'comments', 'group', 'searchResults', 'colorScheme', 'userWall', 'options']
-        },
-        serializableCheck: { ignoredPaths: ['user', 'news', 'comments', 'group', 'searchResults', 'colorScheme', 'userWall', 'options'] }
-      })
 })

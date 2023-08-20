@@ -11,6 +11,7 @@ import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
 import UserListItem from '../components/UserListItem'
 import DividerWithLine from '../components/DividerWithLine'
 import Overlay from '../components/Overlay';
+import { chooseButton } from '../redux/radioGenderButtonsSlice';
 import { RadioOption, CollapsibleOption } from '../components/Buttons';
 import { COLORS } from '../constants/theme'
 
@@ -33,20 +34,9 @@ const Friends = ({navigation, route}) => {
   const slideAnimation = useRef(new Animated.Value(2000)).current
   const shouldRemoveStackScreens = useRef()
 
-  const fromButtonData = [
-    {
-      id: 64738292,
-      text: 'From'
-    }
-  ]
-
-  const toButtonData = [
-    {
-      id: 64008292,
-      text: 'To'
-    }
-  ]
-
+  const genderRadioButtons = useSelector(state => state.radioGender.buttons)
+  const chosenGenderId = useSelector(state => state.radioGender.chosenId)
+  
   const relationshipStatusButtonText = [
     {
       text: "Not selected"
@@ -77,12 +67,6 @@ const Friends = ({navigation, route}) => {
     },
   ]
 
-  for (let i = 14; i < 81; i++) {
-    const fromId = uuid.v4()
-    const toId = uuid.v4()
-    fromButtonData.push({id: fromId, text: `from ${i}`})
-    toButtonData.push({id: toId, text: `to ${i}`})
-  }
   
   const relationshipStatusButtonData = relationshipStatusButtonText.map(item => {
     const id = uuid.v4()
@@ -98,6 +82,31 @@ const Friends = ({navigation, route}) => {
     buttonListItems: relationshipStatusButtonData
   }
 
+
+
+
+  
+  const fromButtonData = [
+    {
+      id: 64738292,
+      text: 'From'
+    }
+  ]
+
+  const toButtonData = [
+    {
+      id: 64008292,
+      text: 'To'
+    }
+  ]
+
+  for (let i = 14; i < 81; i++) {
+    const fromId = uuid.v4()
+    const toId = uuid.v4()
+    fromButtonData.push({id: fromId, text: `from ${i}`})
+    toButtonData.push({id: toId, text: `to ${i}`})
+  }
+
   const fromButton = {
     id: 137049350,
     buttonListItems: fromButtonData
@@ -107,23 +116,6 @@ const Friends = ({navigation, route}) => {
     id: 137049353,
     buttonListItems: toButtonData
   }
-
-  const radioButtons = [
-    {
-      id: 389,
-      text: 'Any'
-    },
-    {
-      id: 390,
-      text: 'Female'
-    },
-    {
-      id: 391,
-      text: 'Male'
-    }
-  ]
-
-  const [chosenElementId, setChosenElementId] = useState(389)
 
   const handleDrawerOpening = () => {
     navigation.openDrawer()
@@ -271,7 +263,7 @@ const Friends = ({navigation, route}) => {
     }
     connectionController.current = new AbortController()
     const signal = connectionController.current.signal
-    const usersSearchUrl = `https://api.vk.com/method/users.search?q=${searchQuery.current}&access_token=${accessToken}&v=5.131&fields=bdate,city,photo_100&offset=${offset.current}&count=${count}`
+    const usersSearchUrl = `https://api.vk.com/method/users.search?q=${searchQuery.current}&access_token=${accessToken}&v=5.131&fields=bdate,city,photo_100&offset=${offset.current}&count=${count}&sex=${chosenGenderId}`
     const searchResults = await fetch(usersSearchUrl, { signal: signal })
     const searchData = await searchResults.json()
     offset.current += count
@@ -402,9 +394,9 @@ const Friends = ({navigation, route}) => {
           <>
             <RadioOption 
               headerText={'Gender'}
-              buttonsData={radioButtons}
-              chosenElementId={chosenElementId}
-              changeColor={setChosenElementId}
+              buttonsData={genderRadioButtons}
+              chosenElementId={chosenGenderId}
+              changeColor={chooseButton}
             />
             <CollapsibleOption 
               headerText={'Relationship status'}

@@ -4,7 +4,7 @@ import { SIZES, COLORS } from '../constants/theme'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { FlatList } from 'react-native-gesture-handler'
 import { LinearGradient } from 'expo-linear-gradient'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth,}) => {
   const scaleShadow = useRef(new Animated.Value(0)).current
@@ -173,9 +173,10 @@ export const CollapsibleOption = ({headerText, buttons, isLightTheme}) => {
   )
 }
 
-export const RadioButton = ({id, text, changeColor, chosenElementId, data}) => {
+export const RadioButton = ({id, text, changeColor, chosenElementId}) => {
+  const dispatch = useDispatch()
   const onPress = () => {
-    changeColor(id)
+    dispatch(changeColor(id))
   }
   return (
     <TouchableOpacity
@@ -200,13 +201,13 @@ export const RadioOption = ({headerText, buttonsData, changeColor, chosenElement
         style={[styles.radioButtonsContainer]}
       >
         {buttonsData.map(item => (
-        <RadioButton 
-          key={item.id} 
-          id={item.id} 
-          text={item.text}
-          changeColor={changeColor} 
-          chosenElementId={chosenElementId}
-        />
+          <RadioButton 
+            key={item.id} 
+            id={item.id} 
+            text={item.text}
+            changeColor={changeColor} 
+            chosenElementId={chosenElementId}
+          />
       ))}
       </View>
     </View>
@@ -248,7 +249,7 @@ export const CustomDrawerButton = ({ buttonIcon, buttonText, pressHandler }) => 
 export const LoginButton = ({buttonText, navigation, isLightTheme }) => {  
   return (
     <TouchableHighlight 
-      style={[styles.loginButtonContainer, isLightTheme ? {backgroundColor: COLORS.primary} : {backgroundColor: COLORS.primary_dark}]} 
+      style={[styles.loginButtonContainer]} 
       underlayColor={COLORS.primary_light}
       activeOpacity={0.6}
       onPress={() => navigation.navigate('WebViewLogin')}
@@ -350,7 +351,6 @@ const styles = StyleSheet.create({
     width: 170,
     height: 45,
     borderRadius: 5,
-    padding: 5,
     alignContent: 'center',
     justifyContent: 'center',
   },

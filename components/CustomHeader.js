@@ -1,12 +1,12 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, BackHandler, StatusBar } from 'react-native'
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { useFocusEffect } from '@react-navigation/native';
-import Entypo from 'react-native-vector-icons/Entypo'
+// import Entypo from 'react-native-vector-icons/Entypo'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { LinearGradient } from 'expo-linear-gradient'
-import NewsTitleSwitcher from './NewsTitleSwitcher'
+// import NewsTitleSwitcher from './NewsTitleSwitcher'
 import { COLORS } from '../constants/theme'
 
 const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIcon, handleInputChange, navigation, isLightTheme, gapForSearchIcon, rightsideIconComponent, rightsideIconComponentTouchHandler, onCleaningInput, onOptionsButton, isScreenFromDrawerMenu}) => {
@@ -82,63 +82,60 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
       <LinearGradient 
         style={styles.headerContainer} 
         colors={isLightTheme ? [COLORS.gradientHeaderStart, COLORS.gradientHeaderEnd] : [COLORS.primary_dark, COLORS.black]}>
-      {/* <View style={[styles.headerContainer, isLightTheme ? {backgroundColor: COLORS.primary} : {backgroundColor: COLORS.primary_dark}]}> */}
-      {
-        showSearchInputField ?
-        <View style={styles.inputFieldContainer}>
-          <View style={[styles.inputFieldInnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.background_dark}]}> 
-            <TouchableOpacity style={styles.inputButtonsContainer} onPress={blurInput}>
-              <AntDesign name='arrowleft' size={20} color={COLORS.secondary}/>
-            </TouchableOpacity>  
-            <TextInput
-              style={[styles.inputField, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]} 
-              ref={inputField}
-              onLayout={initFocusOnField}
-              selectionColor={COLORS.secondary}
-              placeholder='Search'
-              placeholderTextColor={COLORS.smoke}
-              onChangeText={handlingChanges}
-              autoCapitalize='none'
-              value={inputFieldText}
-            />
-            <View style={{width: 70, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}}>
-              <TouchableOpacity onPress={clearInputField}>
-                <AntDesign name='close' size={20} color={COLORS.secondary}/>
-              </TouchableOpacity>
-              {
-                onOptionsButton && (
-                  <TouchableOpacity onPress={openOptions}>
-                    <Ionicons name='options-outline' size={20} color={COLORS.secondary}/>
-                  </TouchableOpacity>
-                )
-              }
+        {
+          showSearchInputField ?
+          <View style={styles.inputFieldContainer}>
+            <View style={[styles.inputFieldInnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.background_dark}]}> 
+              <TouchableOpacity style={styles.inputButtonsContainer} onPress={blurInput}>
+                <AntDesign name='arrowleft' size={20} color={COLORS.secondary}/>
+              </TouchableOpacity>  
+              <TextInput
+                style={[styles.inputField, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]} 
+                ref={inputField}
+                onLayout={initFocusOnField}
+                selectionColor={COLORS.secondary}
+                placeholder='Search'
+                placeholderTextColor={COLORS.smoke}
+                onChangeText={handlingChanges}
+                autoCapitalize='none'
+                value={inputFieldText}
+              />
+              <View style={{width: 70, flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center'}}>
+                <TouchableOpacity onPress={clearInputField}>
+                  <AntDesign name='close' size={20} color={COLORS.secondary}/>
+                </TouchableOpacity>
+                {
+                  onOptionsButton && (
+                    <TouchableOpacity onPress={openOptions}>
+                      <Ionicons name='options-outline' size={20} color={COLORS.secondary}/>
+                    </TouchableOpacity>
+                  )
+                }
+              </View>
             </View>
-          </View>
-        </View> :
-        <>
-          <TouchableOpacity activeOpacity={1} style={styles.iconContainer} onPress={iconTouchHandler}>
-            {iconComponent}
-          </TouchableOpacity>
-          <View>
-            {headerName}
-          </View>
-          {
-            rightsideIconComponent &&
-            <TouchableOpacity style={styles.rightsideIcon} activeOpacity={1} onPress={rightsideIconComponentTouchHandler}>
-              {rightsideIconComponent}
+          </View> :
+          <>
+            <TouchableOpacity activeOpacity={1} style={styles.iconContainer} onPress={iconTouchHandler}>
+              {iconComponent}
             </TouchableOpacity>
-          }
-        </>
-      }
-      
-      {
-        showSearchIcon && !showSearchInputField ? 
-        <TouchableOpacity style={{marginLeft: gapForSearchIcon}} onPress={handleSearchIconPress}>
-          <FontAwesome name='search' size={20} color={COLORS.white}/>
-        </TouchableOpacity>
-         : null
-      }
-      {/* </View> */}
+            <View>
+              {headerName}
+            </View>
+            {
+              rightsideIconComponent &&
+              <TouchableOpacity style={styles.rightsideIcon} activeOpacity={1} onPress={rightsideIconComponentTouchHandler}>
+                {rightsideIconComponent}
+              </TouchableOpacity>
+            }
+          </>
+        }  
+        {
+          showSearchIcon && !showSearchInputField ? 
+          <TouchableOpacity style={{marginLeft: gapForSearchIcon}} onPress={handleSearchIconPress}>
+            <FontAwesome name='search' size={20} color={COLORS.white}/>
+          </TouchableOpacity>
+          : null
+        }
       </LinearGradient>
     </>
   )

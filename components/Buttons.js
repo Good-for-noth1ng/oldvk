@@ -1,36 +1,42 @@
 import React, { useRef, useState } from 'react'
-import { Text, View, TouchableOpacity, StyleSheet, TouchableHighlight, Animated, } from 'react-native'
+import { Text, View, TouchableOpacity, StyleSheet, TouchableHighlight, Animated, LayoutAnimation} from 'react-native'
 import { SIZES, COLORS } from '../constants/theme'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { FlatList } from 'react-native-gesture-handler'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useSelector, useDispatch } from 'react-redux'
+import { FlashList } from "@shopify/flash-list";
 
-export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth,}) => {
-  const scaleShadow = useRef(new Animated.Value(0)).current
-  const collapsibleMenuWidthAnimation = useRef(new Animated.Value(0)).current
-  const collapsibleMenuHeightAnimation = useRef(new Animated.Value(0)).current
-  const zIndexMenu = useRef(new Animated.Value(4)).current
+export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth, zIndexMenu, setZIndex}) => {
+  // const scaleShadow = useRef(new Animated.Value(0)).current
+  // const collapsibleMenuWidthAnimation = useRef(new Animated.Value(0)).current
+  // const collapsibleMenuHeightAnimation = useRef(new Animated.Value(0)).current
+  const [menuHeight, setMenuHeight] = useState(0) 
+  const [shadow, setShadow] = useState(0)
   const [selectedListItem, setSelectedListItem] = useState(buttonListItems[0].text)
   const listItemHeight = 35
   
-  const shadow = scaleShadow.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 2000]    
-  })
-  const menuWidth = collapsibleMenuWidthAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 200]    
-  })
-  const menuHeight = collapsibleMenuHeightAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, listItemHeight * 9]    
-  })
+  // const shadow = scaleShadow.interpolate({
+  //   inputRange: [0, 1],
+  //   outputRange: [0, 2000]    
+  // })
+  //TODO: DELETE
+  // const menuWidth = collapsibleMenuWidthAnimation.interpolate({
+  //   inputRange: [0, 1],
+  //   outputRange: [0, 200]    
+  // })
+
+
+  // const menuHeight = collapsibleMenuHeightAnimation.interpolate({
+  //   inputRange: [0, 1],
+  //   outputRange: [0, listItemHeight * 9]    
+  // })
 
   const renderItem = ({item}) => {
     const onPress = () => {
-      setSelectedListItem(item.text); 
-      setTimeout(closeCollapsibleMenu, 60);
+      setSelectedListItem(item.text);
+      closeCollapsibleMenu() 
+      // setTimeout(closeCollapsibleMenu, 60);
     }
     return (
       <TouchableOpacity
@@ -41,6 +47,7 @@ export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth,}
           justifyContent: 'flex-start',
           alignItems: 'center',
           paddingLeft: 10,
+          zIndex: zIndexMenu,
           // backgroundColor: COLORS.light_blue
         }}
         activeOpacity={0.5}
@@ -58,59 +65,25 @@ export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth,}
   }
 
   const closeCollapsibleMenu = () => {
-    Animated.sequence([
-      Animated.timing(collapsibleMenuHeightAnimation, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: false,
-      }),
-      Animated.parallel([
-        Animated.timing(scaleShadow, {
-          toValue: 0,
-          duration: 10,
-          useNativeDriver: false,
-        }),
-        Animated.timing(collapsibleMenuWidthAnimation, {
-          toValue: 0,
-          duration: 10,
-          useNativeDriver: false,
-        }),
-      ]),
-      Animated.timing(zIndexMenu, {
-        toValue: 4,
-        duration: 300,
-        useNativeDriver: false,
-      }),
-    ]).start()
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    setZIndex(4)
+    setShadow(0)
+    setMenuHeight(0)
   }
 
   const openCollapsibleMenu = () => {
-    Animated.sequence([
-      Animated.timing(zIndexMenu, {
-        toValue: 6,
-        duration: 300,
-        useNativeDriver: false,
-      }),
-      Animated.parallel([
-        Animated.timing(scaleShadow, {
-          toValue: 1,
-          duration: 10,
-          useNativeDriver: false,
-        }),
-        Animated.timing(collapsibleMenuWidthAnimation, {
-          toValue: 1,
-          duration: 10,
-          useNativeDriver: false,
-        })
-      ]),
-      Animated.timing(collapsibleMenuHeightAnimation, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: false,
-      })
-    ]).start()
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    setZIndex(7)
+    setShadow(2000)
+    setMenuHeight(listItemHeight * 9)
   }
 
+  const keyExtractor = (item) => {
+    return item.id
+  }
+  const getItemLayout = (data, index) => {
+    return {length: listItemHeight, offset: listItemHeight * index, index}
+  }
   return (
     <TouchableOpacity style={[styles.collapsibleButtonContainer, {width: buttonWidth}]} onPress={openCollapsibleMenu} activeOpacity={1}>
       <Text
@@ -119,10 +92,10 @@ export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth,}
         {selectedListItem}
       </Text>
       <Animated.View
-        style={[{width: shadow, height: shadow, position: 'absolute', zIndex: 3}]}
+        style={[{width: shadow, height: shadow, position: 'absolute', zIndex: zIndexMenu - 1}]}
       >
         <TouchableOpacity 
-          style={{ width: '100%', height: '100%', position: 'absolute', zIndex: 3}} 
+          style={{ width: '100%', height: '100%', position: 'absolute', zIndex: zIndexMenu - 1}} 
           onPress={closeCollapsibleMenu}
           activeOpacity={0}
         />
@@ -135,14 +108,17 @@ export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth,}
             height: menuHeight,
             backgroundColor: COLORS.white,
             flex: 1,
-            // zIndex: zIndexMenu
+            zIndex: zIndexMenu
           }
         ]}
       >
         <FlatList 
           data={buttonListItems}
           renderItem={renderItem}
-          keyExtractor={item => item.id}
+          keyExtractor={keyExtractor}
+          getItemLayout={getItemLayout}
+          // estimatedItemSize={listItemHeight}
+          // initialNumToRender={9}
         />
       </Animated.View>
       
@@ -152,9 +128,10 @@ export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth,}
 }
 
 export const CollapsibleOption = ({headerText, buttons, isLightTheme}) => {
-  const buttonWidth =  buttons.length === 1 ? '100%' : `${Math.floor(100 / buttons.length) - 3}%` 
+  const buttonWidth =  buttons.length === 1 ? '100%' : `${Math.floor(100 / buttons.length) - 3}%`
+  const [zIndexMenu, setZIndex] = useState(4) 
   return (
-    <View style={{marginTop: 5, marginBottom: 5}}>
+    <View style={[{marginTop: 5, marginBottom: 5, zIndex: zIndexMenu}]}>
       <Text style={{fontSize: 16, color: COLORS.secondary}}>{headerText}</Text>
       <View
         style={[styles.radioButtonsContainer]}
@@ -165,6 +142,8 @@ export const CollapsibleOption = ({headerText, buttons, isLightTheme}) => {
               key={item.id} 
               buttonListItems={item.buttonListItems}
               buttonWidth={buttonWidth}
+              zIndexMenu={zIndexMenu}
+              setZIndex={setZIndex}
             />
           ))
         }

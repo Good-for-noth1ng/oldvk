@@ -37,85 +37,11 @@ const Friends = ({navigation, route}) => {
   const genderRadioButtons = useSelector(state => state.radioGender.buttons)
   const chosenGenderId = useSelector(state => state.radioGender.chosenId)
   
-  const relationshipStatusButtonText = [
-    {
-      text: "Not selected"
-    },
-    {
-      text: "Single"
-    },
-    {
-      text: "In a relationship"
-    },
-    {
-      text: "Engaged"
-    },
-    {
-      text: "Married"
-    },
-    {
-      text: "In a civil union"
-    },
-    {
-      text: "It's complicated"
-    },
-    {
-      text: 'Actively searching'
-    },
-    {
-      text: 'In love'
-    },
-  ]
+  const relationshipButtons = useSelector(state => state.relationshipStatus.buttons)
+  const chosenRelationshipId = useSelector(state => state.relationshipStatus.selectedId)
 
-  
-  const relationshipStatusButtonData = relationshipStatusButtonText.map(item => {
-    const id = uuid.v4()
-    return {
-      ...item,
-      id: id,
-      data: 'there is data for search query'
-    }
-  })
-
-  const relationShipButton = {
-    id: 137049352,
-    buttonListItems: relationshipStatusButtonData
-  }
-
-
-
-
-  
-  const fromButtonData = [
-    {
-      id: 64738292,
-      text: 'From'
-    }
-  ]
-
-  const toButtonData = [
-    {
-      id: 64008292,
-      text: 'To'
-    }
-  ]
-
-  for (let i = 14; i < 81; i++) {
-    const fromId = uuid.v4()
-    const toId = uuid.v4()
-    fromButtonData.push({id: fromId, text: `from ${i}`})
-    toButtonData.push({id: toId, text: `to ${i}`})
-  }
-
-  const fromButton = {
-    id: 137049350,
-    buttonListItems: fromButtonData
-  }
-
-  const toButton = {
-    id: 137049353,
-    buttonListItems: toButtonData
-  }
+  const fromButton = useSelector(state => state.ageRange.fromButton)
+  const toButton = useSelector(state => state.ageRange.toButton)
 
   const handleDrawerOpening = () => {
     navigation.openDrawer()
@@ -400,7 +326,7 @@ const Friends = ({navigation, route}) => {
             />
             <CollapsibleOption 
               headerText={'Relationship status'}
-              buttons={[relationShipButton]}
+              buttons={[{id: 2651627278, buttonListItems: relationshipButtons}]}
             />
             <CollapsibleOption 
               headerText={'Age'}

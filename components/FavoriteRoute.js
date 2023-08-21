@@ -32,6 +32,7 @@ const FavoriteRoute = () => {
     <FavoriteStack.Navigator initialRouteName='Favorites'>
       <FavoriteStack.Screen name='Favorites' component={Favorites} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <FavoriteStack.Screen name='UserProfile' component={UserProfile} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <FavoriteStack.Screen name='OpenPost' component={OpenPost} options={{headerShown: false, animation: 'slide_from_right'}} />
       <FavoriteStack.Screen name='Friends' component={Friends} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <FavoriteStack.Screen name='CommentThread' component={CommentThread} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <FavoriteStack.Screen name='Group' component={Group} options={{headerShown: false, animation: 'slide_from_right'}}/>

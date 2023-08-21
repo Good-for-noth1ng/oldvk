@@ -8,6 +8,8 @@ import colorSchemeReducer from "./colorSchemeSlice";
 import userWallReducer from "./userWallSlice";
 import optionsReducer from "./optionsSlice"; 
 import radioGenderButtonsReducers from "./radioGenderButtonsSlice";
+import relationshipStatusCollapsibleReducer from "./relationshipStatusCollapsibleOption";
+import ageCollapsibleReducer from "./ageCollapsibleOption"
 
 export const store = configureStore({
     reducer: {
@@ -19,6 +21,8 @@ export const store = configureStore({
         colorScheme: colorSchemeReducer,
         userWall: userWallReducer,
         options: optionsReducer,
-        radioGender: radioGenderButtonsReducers
+        radioGender: radioGenderButtonsReducers,
+        relationshipStatus: relationshipStatusCollapsibleReducer,
+        ageRange: ageCollapsibleReducer
     },
 })

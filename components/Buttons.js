@@ -5,38 +5,19 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import { FlatList } from 'react-native-gesture-handler'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useSelector, useDispatch } from 'react-redux'
-import { FlashList } from "@shopify/flash-list";
 
-export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth, zIndexMenu, setZIndex}) => {
-  // const scaleShadow = useRef(new Animated.Value(0)).current
-  // const collapsibleMenuWidthAnimation = useRef(new Animated.Value(0)).current
-  // const collapsibleMenuHeightAnimation = useRef(new Animated.Value(0)).current
+export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth, zIndexMenu, setZIndex, onSelectItemAction}) => {
+  const dispatch = useDispatch()
   const [menuHeight, setMenuHeight] = useState(0) 
   const [shadow, setShadow] = useState(0)
   const [selectedListItem, setSelectedListItem] = useState(buttonListItems[0].text)
   const listItemHeight = 35
-  
-  // const shadow = scaleShadow.interpolate({
-  //   inputRange: [0, 1],
-  //   outputRange: [0, 2000]    
-  // })
-  //TODO: DELETE
-  // const menuWidth = collapsibleMenuWidthAnimation.interpolate({
-  //   inputRange: [0, 1],
-  //   outputRange: [0, 200]    
-  // })
-
-
-  // const menuHeight = collapsibleMenuHeightAnimation.interpolate({
-  //   inputRange: [0, 1],
-  //   outputRange: [0, listItemHeight * 9]    
-  // })
 
   const renderItem = ({item}) => {
-    const onPress = () => {
+    const onItemSelect = () => {
       setSelectedListItem(item.text);
       closeCollapsibleMenu() 
-      // setTimeout(closeCollapsibleMenu, 60);
+      dispatch(onSelectItemAction(item.data))
     }
     return (
       <TouchableOpacity
@@ -51,7 +32,7 @@ export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth, 
           // backgroundColor: COLORS.light_blue
         }}
         activeOpacity={0.5}
-        onPress={onPress}
+        onPress={onItemSelect}
       >
         <Text
           style={{
@@ -117,8 +98,7 @@ export const CollapsibleButton = ({ buttonListItems, isLightTheme, buttonWidth, 
           renderItem={renderItem}
           keyExtractor={keyExtractor}
           getItemLayout={getItemLayout}
-          // estimatedItemSize={listItemHeight}
-          // initialNumToRender={9}
+          initialNumToRender={9}
         />
       </Animated.View>
       
@@ -144,6 +124,7 @@ export const CollapsibleOption = ({headerText, buttons, isLightTheme}) => {
               buttonWidth={buttonWidth}
               zIndexMenu={zIndexMenu}
               setZIndex={setZIndex}
+              onSelectItemAction={item.onSelectItemAction}
             />
           ))
         }

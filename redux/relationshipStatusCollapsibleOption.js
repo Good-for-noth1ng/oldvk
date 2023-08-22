@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import uuid from 'react-native-uuid'
 
 export const relationshipStatusCollapsibleSlice = createSlice({
   name: 'relationshipStatus',
@@ -6,48 +7,57 @@ export const relationshipStatusCollapsibleSlice = createSlice({
     buttons: [
       {
         text: "Not selected",
-        id: 0
+        id: uuid.v4(),
+        data: 0,
       },
       {
         text: "Single",
-        id: 1,
+        id: uuid.v4(),
+        data: 1
       },
       {
         text: "In a relationship",
-        id: 2,
+        id: uuid.v4(),
+        data: 2
       },
       {
         text: "Engaged",
-        id: 3,
+        id: uuid.v4(),
+        data: 3,
       },
       {
         text: "Married",
-        id: 4,
+        id: uuid.v4(),
+        data: 4,
       },
       {
         text: "It's complicated",
-        id: 5 
+        id: uuid.v4(),
+        data: 5 
       },
       {
         text: 'Actively searching',
-        id: 6,
+        id: uuid.v4(),
+        data: 6
       },
       {
         text: 'In love',
-        id: 7
+        id: uuid.v4(),
+        data: 7
       },
       {
         text: "In a civil union",
-        id: 8,
+        id: uuid.v4(),
+        data: 8
       },
     ],
-    selectedId: 0
+    selectedRelationshipStatus: 0
   },
   reducers: {
     selectRelatioshipStatus: (state, action) => {
       return {
         ...state,
-        selectedId: action.payload
+        selectedRelationshipStatus: action.payload
       }
     }
   }

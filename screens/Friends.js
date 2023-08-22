@@ -12,6 +12,8 @@ import UserListItem from '../components/UserListItem'
 import DividerWithLine from '../components/DividerWithLine'
 import Overlay from '../components/Overlay';
 import { chooseButton } from '../redux/radioGenderButtonsSlice';
+import { selectAgeFrom, selectAgeTo } from '../redux/ageCollapsibleOption';
+import { selectRelatioshipStatus } from '../redux/relationshipStatusCollapsibleOption';
 import { RadioOption, CollapsibleOption } from '../components/Buttons';
 import { COLORS } from '../constants/theme'
 
@@ -37,11 +39,15 @@ const Friends = ({navigation, route}) => {
   const genderRadioButtons = useSelector(state => state.radioGender.buttons)
   const chosenGenderId = useSelector(state => state.radioGender.chosenId)
   
-  const relationshipButtons = useSelector(state => state.relationshipStatus.buttons)
-  const chosenRelationshipId = useSelector(state => state.relationshipStatus.selectedId)
+  const searchByRelationshipStatus = useSelector(state => state.relationshipStatus) 
+  const relationshipButtons = searchByRelationshipStatus.buttons
+  const chosenRelationshipStatus = searchByRelationshipStatus.selectedRelationshipStatus
 
-  const fromButton = useSelector(state => state.ageRange.fromButton)
-  const toButton = useSelector(state => state.ageRange.toButton)
+  const searchByAgeParams = useSelector(state => state.ageRange)
+  const fromButton = searchByAgeParams.fromButton
+  const toButton = searchByAgeParams.toButton
+  const chosenFromValue = searchByAgeParams.selectedAgeFrom
+  const chosenToValue = searchByAgeParams.selectedAgeTo
 
   const handleDrawerOpening = () => {
     navigation.openDrawer()
@@ -183,14 +189,19 @@ const Friends = ({navigation, route}) => {
     }
   }
 
+  const applyFilterChange = () => {
+    offset.current = 0
+    getFriendsByQuery()
+  }
+
   const getFriendsByQuery = async () => {
-    if (connectionController.current) {
-      connectionController.current.abort()
-    }
-    connectionController.current = new AbortController()
-    const signal = connectionController.current.signal
-    const usersSearchUrl = `https://api.vk.com/method/users.search?q=${searchQuery.current}&access_token=${accessToken}&v=5.131&fields=bdate,city,photo_100&offset=${offset.current}&count=${count}&sex=${chosenGenderId}`
-    const searchResults = await fetch(usersSearchUrl, { signal: signal })
+    // if (connectionController.current) {
+    //   connectionController.current.abort()
+    // }
+    // connectionController.current = new AbortController()
+    // const signal = connectionController.current.signal
+    const usersSearchUrl = `https://api.vk.com/method/users.search?q=${searchQuery.current}&access_token=${accessToken}&v=5.131&fields=bdate,city,photo_100&offset=${offset.current}&count=${count}&sex=${chosenGenderId}&age_from=${chosenFromValue}&age_to=${chosenToValue}&status=${chosenRelationshipStatus}`
+    const searchResults = await fetch(usersSearchUrl)
     const searchData = await searchResults.json()
     offset.current += count
     const items = searchData.response.items.map(item => {return {...item, key: uuid.v4()}})
@@ -260,7 +271,7 @@ const Friends = ({navigation, route}) => {
   }
   
   return (
-    <SafeAreaView style={isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
+    <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
       <CustomHeader
         headerName={<Text style={styles.headerTextStyle}>Friends</Text>}
@@ -316,6 +327,7 @@ const Friends = ({navigation, route}) => {
         isLightTheme={isLightTheme}
         headerText={'Filters'}
         actionButtonText={'Show Results'}
+        handleActionButtonPress={applyFilterChange}
         overlayContentComponent={
           <>
             <RadioOption 
@@ -326,11 +338,11 @@ const Friends = ({navigation, route}) => {
             />
             <CollapsibleOption 
               headerText={'Relationship status'}
-              buttons={[{id: 2651627278, buttonListItems: relationshipButtons}]}
+              buttons={[{id: 2651627278, buttonListItems: relationshipButtons, onSelectItemAction: selectRelatioshipStatus}]}
             />
             <CollapsibleOption 
               headerText={'Age'}
-              buttons={[fromButton, toButton]}
+              buttons={[{...fromButton, onSelectItemAction: selectAgeFrom}, {...toButton, onSelectItemAction: selectAgeTo}]}
             />
           </>
         }
@@ -343,14 +355,6 @@ const Friends = ({navigation, route}) => {
 export default Friends
 
 const styles = StyleSheet.create({
-  mainContainerLight: {
-    flex: 1,
-    backgroundColor: COLORS.light_smoke
-  },
-  mainContainerDark: {
-    flex: 1,
-    backgroundColor: COLORS.background_dark
-  },
   headerTextStyle: {
     fontSize: 18,
     color: COLORS.white,

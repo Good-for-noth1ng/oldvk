@@ -10,19 +10,23 @@ import optionsReducer from "./optionsSlice";
 import radioGenderButtonsReducers from "./radioGenderButtonsSlice";
 import relationshipStatusCollapsibleReducer from "./relationshipStatusCollapsibleOption";
 import ageCollapsibleReducer from "./ageCollapsibleOption"
+import sortGroupsCollapsibleReducer from "./sortGroupsCollapsibleOption"
+import communityTypeCollapsibleOption from "./communityTypeCollapsibleOption";
 
 export const store = configureStore({
-    reducer: {
-        user: userReducer,
-        news: newsReducer,
-        comments: commentsReducer,
-        group: groupReducer,
-        searchResults: searchResultsReducer,
-        colorScheme: colorSchemeReducer,
-        userWall: userWallReducer,
-        options: optionsReducer,
-        radioGender: radioGenderButtonsReducers,
-        relationshipStatus: relationshipStatusCollapsibleReducer,
-        ageRange: ageCollapsibleReducer
-    },
+  reducer: {
+    user: userReducer,
+    news: newsReducer,
+    comments: commentsReducer,
+    group: groupReducer,
+    searchResults: searchResultsReducer,
+    colorScheme: colorSchemeReducer,
+    userWall: userWallReducer,
+    options: optionsReducer,
+    radioGender: radioGenderButtonsReducers,
+    relationshipStatus: relationshipStatusCollapsibleReducer,
+    ageRange: ageCollapsibleReducer,
+    groupsSortType: sortGroupsCollapsibleReducer,
+    communityType: communityTypeCollapsibleOption
+  },
 })

@@ -107,6 +107,9 @@ const PostPhotos = ({postPhotos}) => {
         <ImageViewer 
           imageUrls={imagesForSlides}
           enableImageZoom={true}
+          useNativeDriver={true}
+          enablePreload={true}
+          enableSwipeDown={true}
         />
       </Modal>
       <View style={styles.gridStyle}>

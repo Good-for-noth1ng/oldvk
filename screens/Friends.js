@@ -191,7 +191,8 @@ const Friends = ({navigation, route}) => {
 
   const applyFilterChange = () => {
     offset.current = 0
-    getFriendsByQuery()
+    setFriendsData([])
+    handleInputChange(searchQuery.current)
   }
 
   const getFriendsByQuery = async () => {

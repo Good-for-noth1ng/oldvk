@@ -9,7 +9,11 @@ import DividerWithLine from '../components/DividerWithLine';
 import CustomHeader from '../components/CustomHeader';
 import Entypo from 'react-native-vector-icons/Entypo'
 import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
+import { selectSortType } from '../redux/sortGroupsCollapsibleOption';
+import { selectCommunityType } from '../redux/communityTypeCollapsibleOption';
+import { CollapsibleOption } from '../components/Buttons';
 import Overlay from '../components/Overlay';
+
 
 const GroupList = ({navigation}) => {
   const accessToken = useSelector(state => state.user.accessToken)
@@ -27,6 +31,14 @@ const GroupList = ({navigation}) => {
   const filterIsOpen = useRef(false)
   const connectionController = useRef(undefined)
   const shouldRemoveStackScreens = useRef()
+
+  const sortSearchResult = useSelector(state => state.groupsSortType)
+  const sortSearchResultButtons = sortSearchResult.buttons
+  const chosenSortType = sortSearchResult.selectedSortType
+
+  const communityType = useSelector(state => state.communityType)
+  const communityTypeButtons = communityType.buttons
+  const chosenCommunityType = communityType.selectedCommunityType
 
   useEffect(() => {
     initGroupList()
@@ -156,15 +168,20 @@ const GroupList = ({navigation}) => {
     }
   }
 
+  const applyFilterChange = () => {
+    offset.current= 0
+    setGroupsData([])
+    handleInputChange(searchQuery.current)
+  }
   //TODO: add AbortController()
   const getGroupsByQuery = async () => {
-    if (connectionController.current) {
-      connectionController.current.abort()
-    } 
-    connectionController.current = new AbortController()
-    const signal = connectionController.current.signal
-    const groupSearchUrl = `https://api.vk.com/method/groups.search?q=${searchQuery.current}&access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}`
-    const searchResponse = await fetch(groupSearchUrl, { signal: signal })
+    // if (connectionController.current) {
+    //   connectionController.current.abort()
+    // } 
+    // connectionController.current = new AbortController()
+    // const signal = connectionController.current.signal
+    const groupSearchUrl = `https://api.vk.com/method/groups.search?q=${searchQuery.current}&access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&sort=${chosenSortType}&type=${chosenCommunityType}`
+    const searchResponse = await fetch(groupSearchUrl)
     const searchData = await searchResponse.json()
     const groupsNum = searchData.response.count
     const groupsItems = searchData.response.items
@@ -173,7 +190,7 @@ const GroupList = ({navigation}) => {
       return item.id
     }).join()
     const getGroupUrl = `https://api.vk.com/method/groups.getById?group_ids=${ids}&access_token=${accessToken}&fields=members_count,activity&v=5.131`
-    const groupsListResponse = await fetch(getGroupUrl, { signal })
+    const groupsListResponse = await fetch(getGroupUrl)
     const data = await groupsListResponse.json()
     const items = data.response.map(item => {return {...item, key: uuid.v4()}})
     return {
@@ -294,6 +311,19 @@ const GroupList = ({navigation}) => {
         isLightTheme={isLightTheme}
         headerText={'Filters'}
         actionButtonText={'Show Results'}
+        handleActionButtonPress={applyFilterChange}
+        overlayContentComponent={
+          <>
+            <CollapsibleOption 
+              headerText={'Order'}
+              buttons={[{id: 297172627290, buttonListItems: sortSearchResultButtons, onSelectItemAction: selectSortType}]}
+            />
+            <CollapsibleOption 
+              headerText={'Community type'}
+              buttons={[{id: 281273627398723, buttonListItems: communityTypeButtons, onSelectItemAction: selectCommunityType}]}
+            />
+          </>
+        }
       />
     </SafeAreaView>
   )

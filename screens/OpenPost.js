@@ -229,6 +229,9 @@ const OpenPost = ({navigation, route}) => {
             views={post?.views?.count} 
             comments={post?.comments?.count}
             isLightTheme={isLightTheme}
+            navigation={navigation}
+            ownerId={post.owner_id ? post.owner_id : post.source_id}
+            postId={post.id ? post.id : post.post_id}
           />
         </>
       )
@@ -249,6 +252,9 @@ const OpenPost = ({navigation, route}) => {
           views={post?.views?.count} 
           comments={post?.comments?.count}
           isLightTheme={isLightTheme}
+          navigation={navigation}
+          ownerId={post.owner_id ? post.owner_id : post.source_id}
+          postId={post.id ? post.id : post.post_id}
         />
       </>
     )

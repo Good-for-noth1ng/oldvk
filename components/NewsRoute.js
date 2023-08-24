@@ -21,28 +21,12 @@ import VideoComments from '../screens/VideoComments';
 import Friends from '../screens/Friends';
 import Messages from '../screens/Messages';
 import Dialog from '../screens/Dialog';
+import ReactedOnPostUsers from '../screens/ReactedOnPostUsers';
 
 const PostStack = createNativeStackNavigator();
 
 const NewsRoute = ({navigation}) => {
-  // const shouldRemoveStackScreens = React.useRef(true)
-  // React.useEffect(() => {
-  //   const blur = navigation.addListener('blur', () => {
-  //     shouldRemoveStackScreens.current = false
-  //     console.log('blur', shouldRemoveStackScreens.current)
-  //   })
-  //   const focus = navigation.addListener('focus', () => {
-  //     shouldRemoveStackScreens.current = true
-  //     console.log('focus', shouldRemoveStackScreens.current)
-  //   })
-  //   const drawerItemPress = navigation.addListener('drawerItemPress', (e) => {
-  //     console.log(shouldRemoveStackScreens.current)
-  //     if (shouldRemoveStackScreens.current) {
-  //       navigation.popToTop()
-  //     }
-  //   })
-  //   return blur, focus, drawerItemPress
-  // }, [navigation])
+  
   return (
     <PostStack.Navigator initialRouteName='News'>
       <PostStack.Screen name='News' component={News} options={{headerShown: false, animation: 'slide_from_right'}} />
@@ -66,6 +50,7 @@ const NewsRoute = ({navigation}) => {
       <PostStack.Screen name='FriendsList' component={Friends} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <PostStack.Screen name='Messages' component={Messages} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <PostStack.Screen name='Dialog' component={Dialog} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <PostStack.Screen name='ReactedOnPostUsers' component={ReactedOnPostUsers} options={{headerShown: false, animation: 'slide_from_right'}}/>
     </PostStack.Navigator>
   )
 }

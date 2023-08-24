@@ -26,7 +26,7 @@ export const communityTypeCollapsibleSlice = createSlice({
         data: 'event',
       },
     ],
-    selectedCommunityType: 0
+    selectedCommunityType: ''
   },
   reducers: {
     selectCommunityType: (state, action) => {

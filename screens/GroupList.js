@@ -180,10 +180,12 @@ const GroupList = ({navigation}) => {
     // } 
     // connectionController.current = new AbortController()
     // const signal = connectionController.current.signal
-    const groupSearchUrl = `https://api.vk.com/method/groups.search?q=${searchQuery.current}&access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&sort=${chosenSortType}&type=${chosenCommunityType}`
+    let groupSearchUrl = `https://api.vk.com/method/groups.search?q=${searchQuery.current}&access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&sort=${chosenSortType}`
+    if (chosenCommunityType !== '') { groupSearchUrl += `&type=${chosenCommunityType}`}
     const searchResponse = await fetch(groupSearchUrl)
     const searchData = await searchResponse.json()
     const groupsNum = searchData.response.count
+    // console.log(searchData)
     const groupsItems = searchData.response.items
     offset.current += count
     const ids = groupsItems.map(item => {

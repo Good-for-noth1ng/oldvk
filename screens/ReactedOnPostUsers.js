@@ -1,31 +1,25 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, FlatList } from 'react-native'
-import React, { useRef, useState, useEffect } from 'react'
-import uuid from 'react-native-uuid'
-import { useSelector } from 'react-redux'
+import { StyleSheet, Text, View, SafeAreaView, ActivityIndicator } from 'react-native'
+import React from 'react'
+import { useSelector } from 'react-redux';
+import { FlatList } from "react-native-gesture-handler";
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomHeader from '../components/CustomHeader'
 import UserListItem from '../components/UserListItem'
 import DividerWithLine from '../components/DividerWithLine'
 import { COLORS } from '../constants/theme'
 
-//TODO:
-//add react-native-snap-carousel: on one page all users on another related only
-const ReactedUsersList = ({ navigation }) => {
+const ReactedOnPostUsers = ({ navigation, route }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
-  const [isLoading, setIsLoading] = useState(true)
-  const [usersList, setUsersList] = useState([])
+  const [isLoading, setIsLoading] = React.useState(true)
+  const [usersList, setUsersList] = React.useState([])
   const count = 10
-  const offset = useRef(0)
-  const remainToFetchNum = useRef(null)
-  const commentsData = useSelector(state => state.comments)
-  const ownerId = commentsData.ownerId
-  const authorCommentId = commentsData.authorCommentId
-  // console.log(ownerId, authorCommentId)
-  
+  const offset = React.useRef(0)
+  const remainToFetchNum = React.useRef(null)
+  const { ownerId, postId } = route.params 
 
   const fetchUsersWhoReacted = async () => {
-    const likesListUrl = `https://api.vk.com/method/likes.getList?access_token=${accessToken}&v=5.131&type=comment&count=${count}&offset=${offset.current}&owner_id=${ownerId}&item_id=${authorCommentId}`
+    const likesListUrl = `https://api.vk.com/method/likes.getList?access_token=${accessToken}&v=5.131&type=post&count=${count}&offset=${offset.current}&owner_id=${ownerId}&item_id=${postId}`
     const likesListResponse = await fetch(likesListUrl)
     const likesListData = await likesListResponse.json()
     if (remainToFetchNum.current === null) {
@@ -37,27 +31,18 @@ const ReactedUsersList = ({ navigation }) => {
     const fetchUsersUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&fields=photo_100&user_ids=${likesListData.response.items}`
     const response = await fetch(fetchUsersUrl)
     const data = await response.json()
-    console.log(data.response)
+    // console.log(data.response)
     setUsersList(prevState => prevState.concat(data.response))
-  }
-
-  useEffect(() => {
-    setIsLoading(true)
-    fetchUsersWhoReacted()
     setIsLoading(false)
-  }, [])
+  }
 
   const fetchMoreUsersWhoReacted = () => {
     fetchUsersWhoReacted()
   }
 
-  const navigateBack = () => {
-    navigation.goBack()
-  }
-
-  const listSeparator = () => (
-    <DividerWithLine dividerHeight={10} dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}/>
-  )
+  React.useEffect(() => {
+    fetchUsersWhoReacted()
+  }, [])
 
   const renderItem = ({item}) => {
     return (
@@ -74,6 +59,10 @@ const ReactedUsersList = ({ navigation }) => {
     )
   }
 
+  const listSeparator = () => (
+    <DividerWithLine dividerHeight={10} dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}/>
+  )
+  
   const listHeader = () => {
     return (
       <DividerWithLine 
@@ -114,16 +103,20 @@ const ReactedUsersList = ({ navigation }) => {
     )
   }
 
+  const goBack = () => {
+    navigation.goBack()
+  }
+
   return (
     <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
       <CustomHeader 
         isLightTheme={isLightTheme}
         headerName={<Text style={styles.headerTextStyle}>Reactions</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
-        iconTouchHandler={navigateBack}
+        iconTouchHandler={goBack}
       />
       {
-        isLoading ?
+        isLoading ? 
         <View style={styles.spinnerContainer}>
           <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50} />
         </View> :
@@ -131,7 +124,6 @@ const ReactedUsersList = ({ navigation }) => {
           <FlatList
             style={styles.list}
             data={usersList}
-            // keyExtractor={keyExtractor}
             renderItem={renderItem}
             ItemSeparatorComponent={listSeparator}
             showsVerticalScrollIndicator={false}
@@ -144,12 +136,11 @@ const ReactedUsersList = ({ navigation }) => {
             <Text style={{color: COLORS.secondary, fontSize: 17, fontWeight: 'bold',}}>No reactions</Text>
           </View>
       }
-      
     </SafeAreaView>
   )
 }
 
-export default ReactedUsersList
+export default ReactedOnPostUsers
 
 const styles = StyleSheet.create({
   headerTextStyle: {

@@ -7,10 +7,11 @@ import CountSortComments from './CountSortComments'
 import { getShortagedNumber } from '../utils/numShortage'
 import { COLORS } from '../constants/theme'
 
-const OpenedPostBottom = ({reposts, likes, views, comments, isLightTheme}) => {
+const OpenedPostBottom = ({reposts, likes, views, comments, isLightTheme, ownerId, postId, navigation}) => {
   const [isLikePressed, setIsLikePressed] = useState(false);
   const [likesCount, setLikesCount] = useState(likes !== undefined ? likes : 0);
   const [repostsCount, setRepostsCount] = useState(reposts !== undefined ? reposts : 0);
+
   const handleLikePress = useCallback(() => {
     if (isLikePressed) {
       setLikesCount(likesCount - 1);
@@ -19,16 +20,22 @@ const OpenedPostBottom = ({reposts, likes, views, comments, isLightTheme}) => {
     }
     setIsLikePressed(!isLikePressed);
   }, [isLikePressed])
+  
+  const navigateToReactedUsersList = () => {
+    navigation.push('ReactedOnPostUsers', {ownerId: ownerId, postId: postId})
+  }
+
   const unactiveButtonColor = isLightTheme ? COLORS.secondary : COLORS.smoke  
+  
   return (
     <>
       <View style={isLightTheme ? styles.bottomPostContainerLight : styles.bottomPostContainerDark}>
         <View style={styles.leftButtonsContainer}>
-          <TouchableOpacity onPress={handleLikePress} activeOpacity={1} style={styles.leftButtons}>
+          <TouchableOpacity onPress={handleLikePress} activeOpacity={0.8} style={styles.leftButtons} onLongPress={navigateToReactedUsersList}>
             <AntDesign name='like1' style={styles.iconsInfoGap} size={20} color={isLikePressed ? COLORS.primary : unactiveButtonColor}/>
             <Text style={{color: COLORS.secondary}}>{getShortagedNumber(likesCount)}</Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={1} style={styles.leftButtons}>
+          <TouchableOpacity activeOpacity={0.8} style={styles.leftButtons}>
             <FontAwesome name='share' style={styles.iconsInfoGap} size={20} color={unactiveButtonColor}/>
             <Text style={{color: COLORS.secondary}}>{getShortagedNumber(repostsCount)}</Text>
           </TouchableOpacity>

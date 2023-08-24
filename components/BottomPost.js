@@ -35,11 +35,14 @@ const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost, navigatio
         }
       }
     }
+    const navigateToReactedUsersList = () => {
+      navigation.push('ReactedOnPostUsers', { ownerId: data.owner_id ? data.owner_id : data.source_id, postId: data.id ? data.id : data.post_id})
+    }
     const unactiveButtonColor = isLightTheme ? COLORS.secondary : COLORS.smoke;
     const result = (
       <View style={styles.postBottomContainer}>
         <View>
-          <TouchableOpacity style={styles.buttonContainer} activeOpacity={1} onPress={openComments}>
+          <TouchableOpacity style={styles.buttonContainer} activeOpacity={0.8} onPress={openComments}>
             <MaterialCommunityIcons style={styles.iconButton} name='comment' color={unactiveButtonColor} size={20}/>
             <Text style={styles.buttonText}>
               {getShortagedNumber(dataComments?.count !== undefined ? dataComments.count : 0)}
@@ -47,13 +50,13 @@ const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost, navigatio
           </TouchableOpacity>
         </View>
         <View style={styles.bottomRightContainer}>
-          <TouchableOpacity style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.buttonContainer} activeOpacity={0.8}>
             <FontAwesome style={styles.iconButton} name='share' color={unactiveButtonColor} size={20}/>
             <Text style={styles.buttonText}>
               {getShortagedNumber(dataReposts?.count !== undefined ? dataReposts.count : 0)}
             </Text>  
           </TouchableOpacity>  
-          <TouchableOpacity style={styles.buttonContainer} activeOpacity={1} onPress={handleLikePress}>
+          <TouchableOpacity style={styles.buttonContainer} activeOpacity={0.8} onPress={handleLikePress} onLongPress={navigateToReactedUsersList}>
             <AntDesign style={styles.iconButton} color={isLikePressed ? COLORS.primary : unactiveButtonColor} name='like1' size={20} />
             <Text style={styles.buttonText}>{getShortagedNumber(likesCount)}</Text>
           </TouchableOpacity>

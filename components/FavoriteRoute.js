@@ -24,6 +24,8 @@ import Dialog from '../screens/Dialog';
 import Favorites from '../screens/Favorites';
 import Topics from '../screens/Topics';
 import Topic from '../screens/Topic';
+import ReactedOnPostUsers from '../screens/ReactedOnPostUsers';
+import ReactedOnVideoUsers from '../screens/ReactedOnVideoUsers';
 
 const FavoriteStack = createNativeStackNavigator();
 
@@ -53,6 +55,8 @@ const FavoriteRoute = () => {
       <FavoriteStack.Screen name='Dialog' component={Dialog} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <FavoriteStack.Screen name='Topics' component={Topics} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <FavoriteStack.Screen name='Topic' component={Topic} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <FavoriteStack.Screen name='ReactedOnPostUsers' component={ReactedOnPostUsers} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <FavoriteStack.Screen name='ReactedOnVideoUsers' component={ReactedOnVideoUsers} options={{headerShown: false, animation: 'slide_from_right'}}/>
     </FavoriteStack.Navigator>
   )
 }

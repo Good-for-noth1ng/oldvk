@@ -19,6 +19,8 @@ import AlbumVideos from '../screens/AlbumVideos';
 import PhotoAlbumsList from '../screens/PhotoAlbumsList';
 import VideoAlbumsList from '../screens/VideoAlbumsList';
 import Friends from '../screens/Friends';
+import ReactedOnPostUsers from '../screens/ReactedOnPostUsers';
+import ReactedOnVideoUsers from '../screens/ReactedOnVideoUsers';
 
 const VideoStack = createNativeStackNavigator();
 
@@ -43,6 +45,8 @@ const VideosRoute = () => {
       <VideoStack.Screen name='PhotoAlbumsList' component={PhotoAlbumsList}options={{headerShown:false, animation: 'slide_from_right'}} />
       <VideoStack.Screen name='VideoAlbumsList' component={VideoAlbumsList}options={{headerShown:false, animation: 'slide_from_right'}} />
       <VideoStack.Screen name='FriendsList' component={Friends} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <VideoStack.Screen name='ReactedOnPostUsers' component={ReactedOnPostUsers} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <VideoStack.Screen name='ReactedOnVideoUsers' component={ReactedOnVideoUsers} options={{headerShown: false, animation: 'slide_from_right'}}/>
     </VideoStack.Navigator>
   )
 }

@@ -10,14 +10,19 @@ const VideoScreenBottom = ({likes, reposts, isLiked, isLightTheme, likePressHand
   const onLikePress = () => {
     likePressHandler(isLiked)
   }
+
   const navigateToComments = () => {
     navigation.push('VideoComments', {ownerId, videoId})
   }
 
+  const navigateToReactedUsersList = () => {
+    navigation.push('ReactedOnVideoUsers', {ownerId, videoId})
+  } 
+
   return (
     <View style={styles.iconsContainer}>
       <View style={{flexDirection: 'row', gap: 20}}>
-        <TouchableOpacity style={styles.iconContainer} onPress={onLikePress}>
+        <TouchableOpacity style={styles.iconContainer} onPress={onLikePress} onLongPress={navigateToReactedUsersList}>
           {
             isLiked ?
             <AntDesign name='heart' size={23} color={COLORS.primary}/> :

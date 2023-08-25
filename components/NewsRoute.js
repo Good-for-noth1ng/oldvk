@@ -22,10 +22,11 @@ import Friends from '../screens/Friends';
 import Messages from '../screens/Messages';
 import Dialog from '../screens/Dialog';
 import ReactedOnPostUsers from '../screens/ReactedOnPostUsers';
+import ReactedOnVideoUsers from '../screens/ReactedOnVideoUsers';
 
 const PostStack = createNativeStackNavigator();
 
-const NewsRoute = ({navigation}) => {
+const NewsRoute = () => {
   
   return (
     <PostStack.Navigator initialRouteName='News'>
@@ -51,6 +52,7 @@ const NewsRoute = ({navigation}) => {
       <PostStack.Screen name='Messages' component={Messages} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <PostStack.Screen name='Dialog' component={Dialog} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <PostStack.Screen name='ReactedOnPostUsers' component={ReactedOnPostUsers} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <PostStack.Screen name='ReactedOnVideoUsers' component={ReactedOnVideoUsers} options={{headerShown: false, animation: 'slide_from_right'}}/>
     </PostStack.Navigator>
   )
 }

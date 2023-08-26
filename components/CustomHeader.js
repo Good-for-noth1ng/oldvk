@@ -1,18 +1,28 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, BackHandler, StatusBar } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, BackHandler, StatusBar, Animated, Dimensions } from 'react-native'
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { useFocusEffect } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux';
 // import Entypo from 'react-native-vector-icons/Entypo'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { LinearGradient } from 'expo-linear-gradient'
+import { collapseShadow, expandShadow } from '../redux/globalShadowSlice';
 // import NewsTitleSwitcher from './NewsTitleSwitcher'
 import { COLORS } from '../constants/theme'
 
+const globalShadowHeight = Dimensions.get('window').height
+
 const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIcon, handleInputChange, navigation, isLightTheme, gapForSearchIcon, rightsideIconComponent, rightsideIconComponentTouchHandler, onCleaningInput, onOptionsButton, isScreenFromDrawerMenu}) => {
+  const dispatch = useDispatch()
   const [showSearchInputField, setShowSearchInputField] = useState(false)
   const inputField = useRef()
   const [inputFieldText, setInputFieldText] = useState('')
+  const isShadowExpanded = useSelector(state => state.globalShadow.isOpen)
+
+  const closeGlobalShadow = () => {
+    dispatch(collapseShadow())
+  }
 
   useFocusEffect(
     useCallback(() => {
@@ -79,6 +89,15 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
   return (
     <>
       <StatusBar backgroundColor={COLORS.black} barStyle={COLORS.white} animated={true} />
+      {
+        isShadowExpanded ?
+        <TouchableOpacity 
+          activeOpacity={1}
+          onPress={closeGlobalShadow}
+          style={{width: '100%', height: globalShadowHeight, zIndex: 4, position: 'absolute'}}
+        />
+        : null
+      }
       <LinearGradient 
         style={styles.headerContainer} 
         colors={isLightTheme ? [COLORS.gradientHeaderStart, COLORS.gradientHeaderEnd] : [COLORS.primary_dark, COLORS.black]}>
@@ -114,28 +133,30 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
               </View>
             </View>
           </View> :
-          <>
-            <TouchableOpacity activeOpacity={1} style={styles.iconContainer} onPress={iconTouchHandler}>
-              {iconComponent}
-            </TouchableOpacity>
-            <View>
-              {headerName}
+          <View style={{width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingLeft: 15, paddingRight: 20}}>
+            <View style={{flexDirection: 'row', alignItems: 'center', gap: 35}}>
+              <TouchableOpacity activeOpacity={1} style={styles.iconContainer} onPress={iconTouchHandler}>
+                {iconComponent}
+              </TouchableOpacity>
+              <View>
+                {headerName}
+              </View>
             </View>
             {
               rightsideIconComponent &&
-              <TouchableOpacity style={styles.rightsideIcon} activeOpacity={1} onPress={rightsideIconComponentTouchHandler}>
+              <TouchableOpacity style={styles.rightsideIcon} activeOpacity={1} onPress={rightsideIconComponentTouchHandler && rightsideIconComponentTouchHandler}>
                 {rightsideIconComponent}
               </TouchableOpacity>
             }
-          </>
+            {
+              showSearchIcon && !showSearchInputField ? 
+              <TouchableOpacity onPress={handleSearchIconPress}>
+                <FontAwesome name='search' size={20} color={COLORS.white}/>
+              </TouchableOpacity>
+              : null
+            }
+          </View>
         }  
-        {
-          showSearchIcon && !showSearchInputField ? 
-          <TouchableOpacity style={{marginLeft: gapForSearchIcon}} onPress={handleSearchIconPress}>
-            <FontAwesome name='search' size={20} color={COLORS.white}/>
-          </TouchableOpacity>
-          : null
-        }
       </LinearGradient>
     </>
   )
@@ -179,8 +200,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },  
   iconContainer: {
-    marginLeft: 15,
-    marginRight: 35,
+    // marginLeft: 15,
+    // marginRight: 35,
   },
   searchIcon: {
     marginLeft: '35%'

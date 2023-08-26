@@ -1,4 +1,4 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
 import userReducer from './userSlice'
 import newsReducer from './newsSlice'
 import commentsReducer from "./commentsSlice";
@@ -12,6 +12,7 @@ import relationshipStatusCollapsibleReducer from "./relationshipStatusCollapsibl
 import ageCollapsibleReducer from "./ageCollapsibleOption"
 import sortGroupsCollapsibleReducer from "./sortGroupsCollapsibleOption"
 import communityTypeCollapsibleOption from "./communityTypeCollapsibleOption";
+import globalShadowReducer from "./globalShadowSlice";
 
 export const store = configureStore({
   reducer: {
@@ -27,6 +28,13 @@ export const store = configureStore({
     relationshipStatus: relationshipStatusCollapsibleReducer,
     ageRange: ageCollapsibleReducer,
     groupsSortType: sortGroupsCollapsibleReducer,
-    communityType: communityTypeCollapsibleOption
+    communityType: communityTypeCollapsibleOption,
+    globalShadow: globalShadowReducer
   },
+  
+  // middleware: (getDefaultMiddleware) => {
+  //   getDefaultMiddleware({
+  //     serializableCheck: false
+  //   })
+  // }
 })

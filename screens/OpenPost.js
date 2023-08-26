@@ -7,7 +7,7 @@ import uuid from 'react-native-uuid'
 // import * as Clipboard from 'expo-clipboard'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 // import Ionicons from 'react-native-vector-icons/Ionicons'
-// import Feather from 'react-native-vector-icons/Feather'
+import Feather from 'react-native-vector-icons/Feather'
 // import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 // import Octicons from 'react-native-vector-icons/Octicons'
 // import { setProfiles, closeAuthorInfo, pushProfiles, setGroups, pushGroups } from '../redux/commentsSlice'
@@ -24,6 +24,7 @@ import { getTimeDate } from '../utils/date'
 import { COLORS } from '../constants/theme'
 import { findPostAuthor } from '../utils/dataPreparationForComponents';
 import CommentsOverlay from '../components/CommentsOverlay';
+import PostCollapsibleHeaderMenu from '../components/PostCollapsibleHeaderMenu';
 
 const OpenPost = ({navigation, route}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
@@ -316,6 +317,7 @@ const OpenPost = ({navigation, route}) => {
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={handleNavigationBack}
         isLightTheme={isLightTheme}
+        rightsideIconComponent={<PostCollapsibleHeaderMenu isLightTheme={isLightTheme} accessToken={accessToken}/>}
       />
       {
         isLoading ? 

@@ -1,8 +1,8 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, InteractionManager, Animated, ToastAndroid } from 'react-native'
-import React, { useCallback, memo } from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, Image, InteractionManager, Animated, ToastAndroid , LayoutAnimation} from 'react-native'
+import React, { useState } from 'react'
 import * as Clipboard from 'expo-clipboard'
 import { COLORS } from '../constants/theme'
-// import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import BottomPost from './BottomPost'
 import PostHeader from './PostHeader'
 import PostText from './PostText'
@@ -14,37 +14,69 @@ import PostDivider from './PostDivider'
 // import { setOpenedPost } from '../redux/newsSlice'
 // import { setScrolling } from '../redux/newsSlice'
 import PostSigner from './PostSigner' 
+import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
 
 const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => {
+  const dispatch = useDispatch()
   let postPhotos = []
   let postDocs = []
   let postLinks = []
   let postVideos = []
 
-  const dropdownCollapseAnim = React.useRef(new Animated.Value(0)).current
-  const shadow = dropdownCollapseAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 500]
-  })
-  const dropdownMenuHeight = dropdownCollapseAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, 160]
-  })
+  const [dropdownMenuHeight, setDropdownMenuHeight] = useState(0)
+  // const isShadowExpanded = React.useRef(false)
+
+  // const isShadowExpanded = useSelector(state => state.globalShadow.isOpen)
+
+  // if (!isShadowExpanded.current && dropdownMenuHeight > 0) {
+  //   setDropdownMenuHeight(0)
+  // }
+  // const dropdownCollapseAnim = React.useRef(new Animated.Value(0)).current
+  // const shouldPerformAnimation = React.useRef(false)
+
+  // const dropdownMenuHeight = dropdownCollapseAnim.interpolate({
+  //   inputRange: [0, 1],
+  //   outputRange: [0, 160]
+  // })
+
+  // React.useEffect(() => {
+  //   if (shouldPerformAnimation.current) {
+  //     if (isShadowExpanded) {
+  //       Animated.timing(dropdownCollapseAnim, {
+  //         toValue: 1,
+  //         duration: 200, 
+  //         useNativeDriver: false
+  //       }).start()
+  //     } else {
+  //       Animated.timing(dropdownCollapseAnim, {
+  //         toValue: 0,
+  //         duration: 200, 
+  //         useNativeDriver: false
+  //       }).start()
+  //     }
+  //   } else {
+  //     shouldPerformAnimation.current = true
+  //   }
+  // }, [isShadowExpanded])
+  
+  // const shadow = dropdownCollapseAnim.interpolate({
+  //   inputRange: [0, 1],
+  //   outputRange: [0, 500]
+  // })
+
 
   const onMorePress = () => {
-    Animated.timing(dropdownCollapseAnim, {
-      toValue: 1,
-      duration: 200, 
-      useNativeDriver: false
-    }).start()
+    // isShadowExpanded.current = true
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    setDropdownMenuHeight(160)
+    dispatch(expandShadow(setDropdownMenuHeight))
   }
 
   const onShadowPress = () => {
-    Animated.timing(dropdownCollapseAnim, {
-      toValue: 0,
-      duration: 200, 
-      useNativeDriver: false
-    }).start()
+    // isShadowExpanded.current = false
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+    setDropdownMenuHeight(0)
+    dispatch(collapseShadow())
   }
   
   const openPost = () => {
@@ -105,15 +137,16 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => 
         onMorePress={onMorePress}
         isPinned={data.is_pinned}
         author={data.author}
-        ownerId={data.owner_id}
+        // ownerId={data.owner_id}
+        shouldShowMoreButton={openedPost}
       />
-      <Animated.View style={{width: shadow, height: shadow, position: 'absolute', zIndex: 4,}}>
+      {/* <Animated.View style={{width: shadow, height: shadow, position: 'absolute', zIndex: 4,}}>
         <TouchableOpacity
           activeOpacity={1} 
           onPress={onShadowPress}
           style={{width: '100%', height: '100%'}} 
         />
-      </Animated.View>
+      </Animated.View> */}
       <Animated.View 
         style={[
         styles.postDropdownMenu,
@@ -195,7 +228,7 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => 
 }
 //TODO: fix memoization
 // export default memo(Post, compareStates)
-export default memo(Post, (prevProps, nextProps) => {
+export default React.memo(Post, (prevProps, nextProps) => {
   return prevProps.id === nextProps.id && prevProps.isLigthTheme === nextProps.isLigthTheme
 })
 

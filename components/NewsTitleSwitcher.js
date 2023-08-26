@@ -109,7 +109,7 @@ const NewsTitleSwitcher = ({ isLightTheme }) => {
         </TouchableOpacity>
       </Animated.View>
       <Animated.View style={{width: shadow, height: shadow, position: 'absolute', left: '-100%'}}>
-          <TouchableOpacity style={{width: '100%', height: '100%'}} onPress={onShadowPress} activeOpacity={1}/>
+        <TouchableOpacity style={{width: '100%', height: '100%'}} onPress={onShadowPress} activeOpacity={1}/>
       </Animated.View>
     </View>
   )

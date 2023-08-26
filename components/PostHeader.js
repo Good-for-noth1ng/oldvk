@@ -5,7 +5,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 
-const PostHeader = ({dataDate, isRepost, navigation, isLightTheme, onMorePress, isPinned, author, ownerId}) => {  
+const PostHeader = ({dataDate, isRepost, navigation, isLightTheme, onMorePress, isPinned, author, ownerId, shouldShowMoreButton}) => {  
   
   const name = author?.name ? author?.name : `${author?.first_name} ${author?.last_name}`
   const imgUrl = author?.photo_100
@@ -64,16 +64,15 @@ const PostHeader = ({dataDate, isRepost, navigation, isLightTheme, onMorePress, 
         </View>
       </TouchableOpacity>
       {
-        !isRepost &&
-        <>
-          <TouchableOpacity 
-            pressRetentionOffset={10} 
-            style={styles.postHeaderRightsideContainer} 
-            onPress={() => onMorePress()}
-          >
-            <Feather name='more-vertical' size={20} color={COLORS.secondary}/>
-          </TouchableOpacity>
-        </>
+        !isRepost && shouldShowMoreButton ?
+        <TouchableOpacity 
+          pressRetentionOffset={10} 
+          style={styles.postHeaderRightsideContainer} 
+          onPress={() => onMorePress()}
+        >
+          <Feather name='more-vertical' size={20} color={COLORS.secondary}/>
+        </TouchableOpacity>
+        : null
       }    
     </View>
   )

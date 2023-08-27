@@ -19,7 +19,8 @@ export const globalShadowSlice = createSlice({
           onShadowCollapse(0)
         }
         return {
-          isOpen: false
+          isOpen: false,
+          onShadowCollapse: null
         }
       } 
   

@@ -10,6 +10,7 @@ import CustomHeader from '../components/CustomHeader';
 import NewsTitleSwitcher from '../components/NewsTitleSwitcher';
 import DividerWithLine from '../components/DividerWithLine';
 import Repost from '../components/Repost';
+import GlobalShadow from '../components/GlobalShadow';
 // import { FlatList } from "react-native-gesture-handler";
 import { findPostAuthor } from '../utils/dataPreparationForComponents';
 
@@ -190,11 +191,13 @@ const News = ({navigation}) => {
                 tintColor={isLightTheme ? COLORS.primary : COLORS.white}
               />
             }
+            // CellRendererComponent={({children}) => children}
             ListFooterComponent={listFooterComponent}
             removeClippedSubviews={true}
             updateCellsBatchingPeriod={30}
           />
       } 
+      <GlobalShadow />
     </SafeAreaView>
   )
 }
@@ -216,6 +219,7 @@ const styles = StyleSheet.create({
   listContainer: {
     marginLeft: 5,
     marginRight: 5,
+    zIndex: 4
   },
   bottomSpinnerContainer: {
     justifyContentL: 'center',

@@ -7,7 +7,7 @@ import uuid from 'react-native-uuid'
 // import * as Clipboard from 'expo-clipboard'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 // import Ionicons from 'react-native-vector-icons/Ionicons'
-import Feather from 'react-native-vector-icons/Feather'
+// import Feather from 'react-native-vector-icons/Feather'
 // import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 // import Octicons from 'react-native-vector-icons/Octicons'
 // import { setProfiles, closeAuthorInfo, pushProfiles, setGroups, pushGroups } from '../redux/commentsSlice'
@@ -19,8 +19,8 @@ import DividerWithLine from '../components/DividerWithLine'
 import CustomHeader from '../components/CustomHeader'
 import Repost from '../components/Repost'
 import TextInputField from '../components/TextInputField'
-import OverlayWithButtons from '../components/OverlayWithButtons'
-import { getTimeDate } from '../utils/date'
+// import OverlayWithButtons from '../components/OverlayWithButtons'
+// import { getTimeDate } from '../utils/date'
 import { COLORS } from '../constants/theme'
 import { findPostAuthor } from '../utils/dataPreparationForComponents';
 import CommentsOverlay from '../components/CommentsOverlay';
@@ -311,7 +311,6 @@ const OpenPost = ({navigation, route}) => {
         isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}
       ]}
     >
-      <StatusBar barStyle={COLORS.white} backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark}/>
       <CustomHeader 
         headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>Post</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}

@@ -52,7 +52,7 @@ const PostVideos = ({postVideos, navigation}) => {
         />
         <View style={{position: 'absolute', zIndex: 2, width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center',}}>
           <View style={{backgroundColor: COLORS.light_black, opacity: 0.9, borderRadius: 5}}>
-            <Entypo name='triangle-right' color={COLORS.white} size={30}/>
+            <Entypo name='triangle-right' color={COLORS.white} size={40}/>
           </View>
         </View>
         <Text style={styles.timeDuration}>{getDuration(item.duration)}</Text>
@@ -134,6 +134,10 @@ const styles = StyleSheet.create({
     color: COLORS.white, 
     backgroundColor: COLORS.light_black, 
     opacity: 0.8,
-    fontSize: 15
+    fontSize: 16,
+    borderRadius: 5,
+    padding: 3,
+    right: 10,
+    bottom: 10
   }
 })

@@ -198,17 +198,17 @@ const VideosList = ({ navigation, route }) => {
           <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
         </View> :
         <View style={{width: '100%', height: '100%', paddingLeft: 5, paddingRight: 5, flex: 1}}>
-        <FlashList
-          data={videosList}
-          renderItem={renderItem}
-          estimatedItemSize={93}
-          onEndReached={fetchMoreVideos}
-          ListHeaderComponent={listHeader}
-          ListFooterComponent={footer}
-          ItemSeparatorComponent={listSeparator}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={keyExtractor} 
-        />
+          <FlashList
+            data={videosList}
+            renderItem={renderItem}
+            estimatedItemSize={93}
+            onEndReached={fetchMoreVideos}
+            ListHeaderComponent={listHeader}
+            ListFooterComponent={footer}
+            ItemSeparatorComponent={listSeparator}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={keyExtractor} 
+          />
         </View>
       }
     </SafeAreaView>
@@ -231,6 +231,5 @@ const styles = StyleSheet.create({
   list: {
     marginLeft: 5,
     marginRight: 5,
-    borderRadius: 5
   },
 })

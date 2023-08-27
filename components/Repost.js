@@ -9,7 +9,6 @@ import PostFiles from './PostFiles'
 import PostLinks from './PostLinks'
 import PostVideos from './PostVideos'
 import PostDivider from './PostDivider'
-// import { setItems, setOpenedPost, setScrolling } from '../redux/newsSlice'
 import { useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
 import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
@@ -23,36 +22,17 @@ const Repost = ({ data, navigation, openedPost, isLightMode, id, accessToken }) 
   const dispatch = useDispatch()
   const isLightTheme = isLightMode
   const [dropdownMenuHeight, setDropdownMenuHeight] = React.useState(0)
-  // const dropdownCollapseAnim = React.useRef(new Animated.Value(0)).current
-  // const shadow = dropdownCollapseAnim.interpolate({
-  //   inputRange: [0, 1],
-  //   outputRange: [0, 500]
-  // })
-  // const dropdownMenuHeight = dropdownCollapseAnim.interpolate({
-  //   inputRange: [0, 1],
-  //   outputRange: [0, 160]
-  // })
 
   const onMorePress = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setDropdownMenuHeight(160)
     dispatch(expandShadow(setDropdownMenuHeight))
-    // Animated.timing(dropdownCollapseAnim, {
-    //   toValue: 1,
-    //   duration: 200, 
-    //   useNativeDriver: false
-    // }).start()
   }
 
   const onShadowPress = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setDropdownMenuHeight(0)
     dispatch(collapseShadow())
-    // Animated.timing(dropdownCollapseAnim, {
-    //   toValue: 0,
-    //   duration: 200, 
-    //   useNativeDriver: false
-    // }).start()
   }
 
   const addPostToFave = async () => {
@@ -186,6 +166,14 @@ const Repost = ({ data, navigation, openedPost, isLightMode, id, accessToken }) 
         postPhotos ? (
           <>
             <PostPhotos postPhotos={postPhotos}/>
+            <PostDivider dividerHeight={5}/>  
+          </>
+        ) : null
+      }
+      {
+        postVideos ? (
+          <>
+            <PostVideos postVideos={postVideos} navigation={navigation}/>
             <PostDivider dividerHeight={5}/>  
           </>
         ) : null

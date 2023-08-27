@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, InteractionManager, Animated, ToastAndroid , LayoutAnimation} from 'react-native'
+import { StyleSheet, Text, View, Image, InteractionManager, Animated, ToastAndroid , LayoutAnimation, Dimensions, TouchableOpacity} from 'react-native'
 import React, { useState } from 'react'
 import * as Clipboard from 'expo-clipboard'
 import { COLORS } from '../constants/theme'
@@ -11,10 +11,11 @@ import PostFiles from './PostFiles'
 import PostLinks from './PostLinks'
 import PostVideos from './PostVideos'
 import PostDivider from './PostDivider'
-// import { setOpenedPost } from '../redux/newsSlice'
-// import { setScrolling } from '../redux/newsSlice'
 import PostSigner from './PostSigner' 
 import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
+
+const globalShadowHeight = Dimensions.get('window').height
+const globalShadowWidth = Dimensions.get('window').width
 
 const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => {
   const dispatch = useDispatch()
@@ -24,58 +25,22 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => 
   let postVideos = []
 
   const [dropdownMenuHeight, setDropdownMenuHeight] = useState(0)
-  // const isShadowExpanded = React.useRef(false)
-
-  // const isShadowExpanded = useSelector(state => state.globalShadow.isOpen)
-
-  // if (!isShadowExpanded.current && dropdownMenuHeight > 0) {
-  //   setDropdownMenuHeight(0)
-  // }
-  // const dropdownCollapseAnim = React.useRef(new Animated.Value(0)).current
-  // const shouldPerformAnimation = React.useRef(false)
-
-  // const dropdownMenuHeight = dropdownCollapseAnim.interpolate({
-  //   inputRange: [0, 1],
-  //   outputRange: [0, 160]
-  // })
-
-  // React.useEffect(() => {
-  //   if (shouldPerformAnimation.current) {
-  //     if (isShadowExpanded) {
-  //       Animated.timing(dropdownCollapseAnim, {
-  //         toValue: 1,
-  //         duration: 200, 
-  //         useNativeDriver: false
-  //       }).start()
-  //     } else {
-  //       Animated.timing(dropdownCollapseAnim, {
-  //         toValue: 0,
-  //         duration: 200, 
-  //         useNativeDriver: false
-  //       }).start()
-  //     }
-  //   } else {
-  //     shouldPerformAnimation.current = true
-  //   }
-  // }, [isShadowExpanded])
-  
-  // const shadow = dropdownCollapseAnim.interpolate({
-  //   inputRange: [0, 1],
-  //   outputRange: [0, 500]
-  // })
-
-
+  const [postZIndex, setPostZIndex] = useState(0)
+  // const [showShadow, setShowShadow] = useState(false)
   const onMorePress = () => {
-    // isShadowExpanded.current = true
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setDropdownMenuHeight(160)
+    setPostZIndex(400)
+    // setShowShadow(true)
     dispatch(expandShadow(setDropdownMenuHeight))
   }
 
   const onShadowPress = () => {
-    // isShadowExpanded.current = false
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
     setDropdownMenuHeight(0)
+    setPostZIndex(0)
+    // setShowShadow(false)
+    // setDropdownMenuHeight(0)
     dispatch(collapseShadow())
   }
   
@@ -129,7 +94,10 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => 
   }
   
   return (
-    <View style={isLigthTheme ? styles.postContainerLight : styles.postContainerDark}>
+    <View 
+      style={[styles.postContainer, isLigthTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}, {zIndex: postZIndex}]}
+
+    >
       <PostHeader 
         dataDate={data.date} 
         navigation={navigation}
@@ -137,25 +105,18 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => 
         onMorePress={onMorePress}
         isPinned={data.is_pinned}
         author={data.author}
-        // ownerId={data.owner_id}
         shouldShowMoreButton={openedPost}
       />
-      {/* <Animated.View style={{width: shadow, height: shadow, position: 'absolute', zIndex: 4,}}>
-        <TouchableOpacity
-          activeOpacity={1} 
-          onPress={onShadowPress}
-          style={{width: '100%', height: '100%'}} 
-        />
-      </Animated.View> */}
       <Animated.View 
         style={[
         styles.postDropdownMenu,
         { 
-          height: dropdownMenuHeight, // 160   
+          height: dropdownMenuHeight,   
         },
         isLigthTheme ? 
         {backgroundColor: COLORS.white} :
-        {backgroundColor: COLORS.very_dark_gray}
+        {backgroundColor: COLORS.very_dark_gray},
+        // {transform: [{translateY: 13}]}
       ]}>
           <TouchableOpacity onPress={addPostToFave} style={styles.postDropdownMenuButton}>
             <Text style={[{fontSize: 17}, isLigthTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
@@ -170,6 +131,10 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => 
             <Text style={[{fontSize: 17}, isLigthTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Report</Text>
           </TouchableOpacity>
       </Animated.View>
+      {/* {
+        showShadow ?
+        <TouchableOpacity activeOpacity={1} onPress={onShadowPress} style={{zIndex: 3, width: 5000, height: 5000, zIndex: 4, position: 'absolute', bottom: 0, backgroundColor: COLORS.black}}/> : null
+      } */}
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12}/>
         {
@@ -233,31 +198,26 @@ export default React.memo(Post, (prevProps, nextProps) => {
 })
 
 const styles = StyleSheet.create({
-  postContainerLight: {
+  postContainer: {
     padding: 10,
     marginTop: 5,
     borderRadius: 5,
-    backgroundColor: COLORS.white,
-  },
-  postContainerDark: {
-    padding: 10,
-    marginTop: 5,
-    borderRadius: 5,
-    backgroundColor: COLORS.primary_dark,
+    position: 'relative'
   },
   postDropdownMenu: {
     left: '50%', 
     top: 10,
     borderRadius: 5,
-    elevation: 4, 
+    elevation: 2000, 
     position: 'absolute', 
     zIndex: 5, 
     width: 170,
   },
   postDropdownMenuButton: {
     position: 'relative', 
-    zIndex: 4, 
+    zIndex: 5, 
     flex: 1, 
+    elevation: 2000,
     alignItems: 'flex-start', 
     justifyContent: 'center', 
     paddingLeft: 5  

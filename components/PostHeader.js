@@ -4,25 +4,24 @@ import Feather from 'react-native-vector-icons/Feather'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
+import { useDispatch } from 'react-redux'
+import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
 
 const PostHeader = ({dataDate, isRepost, navigation, isLightTheme, onMorePress, isPinned, author, ownerId, shouldShowMoreButton}) => {  
-  
+  const dispatch = useDispatch()
   const name = author?.name ? author?.name : `${author?.first_name} ${author?.last_name}`
   const imgUrl = author?.photo_100
+  const dropdownCoords = React.useRef() 
 
+  const openDropdown = () => {
+    dispatch(expandShadow())
+  }
   const openGroup = () => {
     if (author.name) {
       navigation.push('Group', {groupId: author.id})
     } else {
       navigation.push('UserProfile', { userId: author.id})
     }
-    // if (ownerId < 0) {
-    //   // dispatch(setGroupID(wallId))
-    //   navigation.push('Group', {groupId: (-1 * ownerId)})
-    // } else {
-    //   // dispatch(setUserID(wallId))
-    //   navigation.push('UserProfile', {userId: ownerId})
-    // }
   }
   
   let postNameTextStyle;
@@ -68,9 +67,9 @@ const PostHeader = ({dataDate, isRepost, navigation, isLightTheme, onMorePress, 
         <TouchableOpacity 
           pressRetentionOffset={10} 
           style={styles.postHeaderRightsideContainer} 
-          onPress={() => onMorePress()}
+          // onPress={(e) => {console.log(e.nativeEvent); openDropdown()}}
         >
-          <Feather name='more-vertical' size={20} color={COLORS.secondary}/>
+          <Feather name='more-vertical' size={20} color={COLORS.secondary} ref={dropdownCoords} onLayout={e => console.log(e.nativeEvent)}/>
         </TouchableOpacity>
         : null
       }    

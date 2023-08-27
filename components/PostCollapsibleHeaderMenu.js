@@ -45,14 +45,6 @@ const PostCollapsibleHeaderMenu = ({ isLightTheme, accessToken}) => {
     dispatch(expandShadow())
   }
 
-  // const closeDropdownMenu = () => {
-  //   Animated.timing(anim, {
-  //     toValue: 0,
-  //     duration: 300,
-  //     useNativeDriver: false,
-  //   }).start()
-  // }
-
   return (
     <View style={styles.container}>
       <TouchableOpacity activeOpacity={1} onPress={openDropdownMenu}>
@@ -68,7 +60,6 @@ const PostCollapsibleHeaderMenu = ({ isLightTheme, accessToken}) => {
             styles.optionContainer,  
             isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
           ]} 
-          // onPress={onNewsOptionPress}
         >
           <Text style={[styles.option, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
         </TouchableOpacity>
@@ -127,6 +118,7 @@ const styles = StyleSheet.create({
     width: '100%',
     // height: '50%',
     flex: 1,
+    zIndex: 5,
     justifyContent: 'center',
     backgroundColor: COLORS.light_smoke,
     paddingLeft: 10,

@@ -10,7 +10,8 @@ import { COLORS } from '../constants/theme'
 import { findPostAuthor } from '../utils/dataPreparationForComponents';
 import DividerWithLine from '../components/DividerWithLine';
 import TextInputField from '../components/TextInputField';
-import OverlayWithButtons from '../components/OverlayWithButtons';
+import CommentsOverlay from '../components/CommentsOverlay';
+// import OverlayWithButtons from '../components/OverlayWithButtons';
 
 const Topic = ({navigation, route}) => {
   const {groupId, topicId} = route.params
@@ -24,11 +25,12 @@ const Topic = ({navigation, route}) => {
 
   const slideAnimation = React.useRef(new Animated.Value(2000)).current
   
-  const commentsGeneralData = useSelector(state => state.comments);
-  const authorName = commentsGeneralData.authorName;
-  const authorImgUrl = commentsGeneralData.authorImgUrl;
-  const registrationDate = commentsGeneralData.registrationDate;
-  const registrationDateIsFetching = commentsGeneralData.authorInfoIsFetching;
+  // const commentsGeneralData = useSelector(state => state.comments);
+  // const authorName = commentsGeneralData.authorName;
+  // const authorImgUrl = commentsGeneralData.authorImgUrl;
+  // const registrationDate = commentsGeneralData.registrationDate;
+  // const registrationDateIsFetching = commentsGeneralData.authorInfoIsFetching;
+  
   const authorInfoIsOpen = React.useRef(false)
 
   const closeCommentMenu = () => {
@@ -49,8 +51,8 @@ const Topic = ({navigation, route}) => {
     }).start()
   }
 
-  const commentMenuButtonIconSize = 22
-  const commentMenuButtonColor = isLightTheme ? COLORS.primary : COLORS.white
+  // const commentMenuButtonIconSize = 22
+  // const commentMenuButtonColor = isLightTheme ? COLORS.primary : COLORS.white
 
   const fetchTopicComments = async () => {
     const url = `https://api.vk.com/method/board.getComments?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&group_id=${groupId}&topic_id=${topicId}&need_likes=1&extended=1`
@@ -165,15 +167,11 @@ const Topic = ({navigation, route}) => {
             ItemSeparatorComponent={listSeparator}
           />
           <TextInputField isLightTheme={isLightTheme}/>
-          <OverlayWithButtons 
-            handleShadowTouch={closeCommentMenu}
+          <CommentsOverlay 
+            slideAnimation={slideAnimation}
             isLightTheme={isLightTheme}
-            buttons={commentMenuButtons}
-            registrationDate={registrationDate}
-            authorImgUrl={authorImgUrl}
-            authorName={authorName}
+            handleShadowTouch={closeCommentMenu}
             navigation={navigation}
-            registrationDateIsFetching={registrationDateIsFetching}
           />
         </>
         

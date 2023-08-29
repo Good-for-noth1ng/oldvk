@@ -19,40 +19,7 @@ const Repost = ({ data, navigation, openedPost, isLightMode, id, accessToken }) 
   let postLinks = []
   let postVideos = []
 
-  const dispatch = useDispatch()
   const isLightTheme = isLightMode
-  const [dropdownMenuHeight, setDropdownMenuHeight] = React.useState(0)
-
-  const onMorePress = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    setDropdownMenuHeight(160)
-    dispatch(expandShadow(setDropdownMenuHeight))
-  }
-
-  const onShadowPress = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    setDropdownMenuHeight(0)
-    dispatch(collapseShadow())
-  }
-
-  const addPostToFave = async () => {
-    let url = `https://api.vk.com/method/fave.addPost?access_token=${accessToken}&v=5.131&owner_id=${data.owner_id ? data.owner_id : data.source_id}&id=${data.id ? data.id : data.post_id}`
-    if (data.access_key) {url += `&access_key=${data.access_key}`}
-    const response = await fetch(url)
-    const parsedRes = await response.json()
-    if (parsedRes.response === 1) {
-      ToastAndroid.show('Added to Favorite!', ToastAndroid.SHORT)
-    } else {
-      ToastAndroid.show('Network Error', ToastAndroid.SHORT)
-    }
-    onShadowPress()
-  }
-
-  const copyPostLink = async () => {
-    await Clipboard.setStringAsync(`https://vk.com/wall${data.owner_id ? data.owner_id : data.source_id}_${data.id ? data.id : data.post_id}`)
-    ToastAndroid.show('Copied!', ToastAndroid.SHORT)
-    onShadowPress()
-  }
 
   if (data.attachments !== undefined && data.type === 'post') {  
     let attachments
@@ -89,7 +56,7 @@ const Repost = ({ data, navigation, openedPost, isLightMode, id, accessToken }) 
   }
 
   return (
-    <View style={isLightTheme ? styles.postContainerLight : styles.postContainerDark}>
+    <View style={[styles.postContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
       <PostHeader 
         dataDate={data.date}
         navigation={navigation} 
@@ -98,38 +65,8 @@ const Repost = ({ data, navigation, openedPost, isLightMode, id, accessToken }) 
         isPinned={data.is_pinned}
         author={data.author} 
         shouldShowMoreButton={openedPost}
-        onMorePress={onMorePress}
+        data={data}
       />
-      {/* <Animated.View style={{width: shadow, height: shadow, position: 'absolute', zIndex: 4,}}>
-        <TouchableOpacity
-          activeOpacity={1} 
-          onPress={onShadowPress}
-          style={{width: '100%', height: '100%'}} 
-        />
-      </Animated.View> */}
-      <Animated.View 
-        style={[
-        styles.postDropdownMenu,
-        { 
-          height: dropdownMenuHeight, // 160   
-        },
-        isLightTheme ? 
-        {backgroundColor: COLORS.white} :
-        {backgroundColor: COLORS.very_dark_gray}
-      ]}>
-          <TouchableOpacity onPress={addPostToFave} style={styles.postDropdownMenuButton}>
-            <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.postDropdownMenuButton}>
-            <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Not interested</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={copyPostLink} style={styles.postDropdownMenuButton}>
-            <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Copy Link</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.postDropdownMenuButton}>
-            <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Report</Text>
-          </TouchableOpacity>
-      </Animated.View>
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12} />
         {
@@ -208,33 +145,16 @@ export default React.memo(Repost, (prevProps, nextProps) => {
 })
 
 const styles = StyleSheet.create({
-  postContainerLight: {
+  postContainer: {
     padding: 10,
     marginTop: 5,
     borderRadius: 3,
-    backgroundColor: COLORS.white,
+    // backgroundColor: COLORS.white,
   },
-  postContainerDark: {
-    padding: 10,
-    marginTop: 5,
-    borderRadius: 3,
-    backgroundColor: COLORS.primary_dark,
-  },
-  postDropdownMenu: {
-    left: '50%', 
-    top: 10,
-    borderRadius: 5,
-    elevation: 4, 
-    position: 'absolute', 
-    zIndex: 5, 
-    width: 170,
-  },
-  postDropdownMenuButton: {
-    position: 'relative', 
-    zIndex: 4, 
-    flex: 1, 
-    alignItems: 'flex-start', 
-    justifyContent: 'center', 
-    paddingLeft: 5  
-  }
+  // postContainerDark: {
+  //   padding: 10,
+  //   marginTop: 5,
+  //   borderRadius: 3,
+  //   backgroundColor: COLORS.primary_dark,
+  // },
 })

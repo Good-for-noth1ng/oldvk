@@ -1,10 +1,23 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+import { useDispatch } from 'react-redux'
 import Feather from 'react-native-vector-icons/Feather'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
+import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
 
 const VideoHeader = ({ ownerId, date, isLightTheme, navigation, name, imgUrl, isMember, isFriend }) => {
+  const dispatch = useDispatch()
+  const dropdownCoords = React.useRef()
+
+  const openDropdown = () => {
+    dropdownCoords.current.measure(
+      (x, y, width, height, pageX, pageY) => {
+        // console.log(pageX, pageY, width)
+        dispatch(expandShadow({dropdownX: pageX, dropdownY: pageY}))
+      }
+    )
+  }
 
   const onProfilePress = () => {
     if (ownerId > 0) {
@@ -31,8 +44,10 @@ const VideoHeader = ({ ownerId, date, isLightTheme, navigation, name, imgUrl, is
             <Feather name='user-plus' size={23} color={COLORS.primary}/> 
           }  
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Feather name='more-vertical' size={23} color={COLORS.secondary}/>
+        <TouchableOpacity activeOpacity={0.8} onPress={openDropdown}>
+          <View ref={dropdownCoords}>
+            <Feather name='more-vertical' size={23} color={COLORS.secondary}/>
+          </View>
         </TouchableOpacity>
       </View>
     </View>

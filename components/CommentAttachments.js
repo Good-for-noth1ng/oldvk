@@ -59,7 +59,7 @@ const CommentAttachments = ({attachments, navigation, isLightTheme}) => {
                     source={{uri: attachment.doc.preview.photo.sizes[attachment.doc.preview.photo.sizes.length - 1].src}}
                     style={styles.videoCover}
                   />
-                  <Text style={styles.timeDuration}>gif</Text>
+                  <Text style={styles.timeDuration}>GIF</Text>
                 </View>
               )
             } else {
@@ -128,8 +128,11 @@ const styles = StyleSheet.create({
     color: COLORS.white, 
     backgroundColor: COLORS.light_black, 
     opacity: 0.8,
-    fontSize: 15,
-    borderBottomRightRadius: 5
+    fontSize: 12,
+    borderRadius: 5,
+    bottom: 3,
+    right: 3,
+    padding: 3,
   },
   videoTriangleContainer: {
     position: 'absolute', 

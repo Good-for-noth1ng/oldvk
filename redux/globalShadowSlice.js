@@ -14,7 +14,8 @@ export const globalShadowSlice = createSlice({
           ...state,
           isOpen: true,
           dropdownX: action.payload.dropdownX,
-          dropdownY: action.payload.dropdownY
+          dropdownY: action.payload.dropdownY,
+          data: action.payload?.data
         }
       },
       collapseShadow: (state, action) => {

@@ -25,6 +25,7 @@ import { COLORS } from '../constants/theme'
 import { findPostAuthor } from '../utils/dataPreparationForComponents';
 import CommentsOverlay from '../components/CommentsOverlay';
 import PostCollapsibleHeaderMenu from '../components/PostCollapsibleHeaderMenu';
+import GlobalShadow from '../components/GlobalShadow';
 
 const OpenPost = ({navigation, route}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)

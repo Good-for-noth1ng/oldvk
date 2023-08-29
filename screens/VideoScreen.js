@@ -12,6 +12,8 @@ import * as MediaLibrary from 'expo-media-library'
 import { getShortagedNumber } from '../utils/numShortage'
 import VideoScreenBottom from '../components/VideoScreenBottom'
 import VideoHeader from '../components/VideoHeader'
+import GlobalShadow from '../components/GlobalShadow'
+import VideosListDropdownMenu from '../components/VideosListDropdownMenu'
 
 const VideoScreen = ({navigation, route}) => {
   const { playerUrl, title, views, ownerId, likes, reposts, isLiked, isReposted, date, canLike, canAdd, canAddToFavs, commentsCount, canComment, videoId, accessKey } = route.params
@@ -190,6 +192,8 @@ const VideoScreen = ({navigation, route}) => {
           </>
         }
       </View>
+      <VideosListDropdownMenu />
+      <GlobalShadow />
     </SafeAreaView>
   )
 }

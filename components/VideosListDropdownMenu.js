@@ -48,10 +48,19 @@ const VideosListDropdownMenu = () => {
         <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.postDropdownMenuButton}>
-        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Not interested</Text>
+        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to my videos</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.postDropdownMenuButton}>
+        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to playlist</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.postDropdownMenuButton}>
         <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Copy Link</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.postDropdownMenuButton}>
+        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Share</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.postDropdownMenuButton}>
+        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Not interesting</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.postDropdownMenuButton}>
         <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Report</Text>

@@ -22,6 +22,7 @@ import ProfileHeaderName from '../components/ProfileHeaderName';
 import { findPostAuthor } from '../utils/dataPreparationForComponents';
 import PostDropdownMenu from '../components/PostDropdownMenu';
 import GlobalShadow from '../components/GlobalShadow';
+import GroupHeaderCollapsibleMenu from '../components/GroupHeaderCollapsibleMenu';
 
 //TODO: replace selectors on usestate
 const Group = ({navigation, route}) => {
@@ -222,12 +223,12 @@ const Group = ({navigation, route}) => {
   
   return (
     <SafeAreaView style={isLightTheme ? styles.feedContainerLight : styles.feedContainerDark}>
-      <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
       <CustomHeader 
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
         headerName={<ProfileHeaderName userShortName={wallHeaderData.screenName}/>}
         isLightTheme={isLightTheme}
+        rightsideIconComponent={<GroupHeaderCollapsibleMenu isLightTheme={isLightTheme} accessToken={accessToken}/>}
       />
       {
         isLoading ?

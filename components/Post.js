@@ -85,6 +85,7 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => 
         isPinned={data.is_pinned}
         author={data.author}
         shouldShowMoreButton={openedPost}
+        data={data}
       />
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12}/>

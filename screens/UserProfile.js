@@ -18,6 +18,9 @@ import WallHeaderPersonalContainer from '../components/WallHeaderPersonalContain
 import { COLORS } from '../constants/theme'
 import ProfileHeaderName from '../components/ProfileHeaderName';
 import { findPostAuthor } from '../utils/dataPreparationForComponents';
+import PostDropdownMenu from '../components/PostDropdownMenu'
+import GlobalShadow from '../components/GlobalShadow'
+
 // fix redux calls
 const UserProfile = ({navigation, route}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
@@ -283,6 +286,8 @@ const UserProfile = ({navigation, route}) => {
           />
         </>
       }
+      <PostDropdownMenu />
+      <GlobalShadow />
     </SafeAreaView>
   )
 }

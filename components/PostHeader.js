@@ -14,8 +14,14 @@ const PostHeader = ({dataDate, isRepost, navigation, isLightTheme, onMorePress, 
   const dropdownCoords = React.useRef() 
 
   const openDropdown = () => {
-    dispatch(expandShadow())
+    dropdownCoords.current.measure(
+      (x, y, width, height, pageX, pageY) => {
+        // console.log(pageX, pageY, width)
+        dispatch(expandShadow({dropdownX: pageX, dropdownY: pageY}))
+      }
+    )
   }
+  
   const openGroup = () => {
     if (author.name) {
       navigation.push('Group', {groupId: author.id})
@@ -67,9 +73,17 @@ const PostHeader = ({dataDate, isRepost, navigation, isLightTheme, onMorePress, 
         <TouchableOpacity 
           pressRetentionOffset={10} 
           style={styles.postHeaderRightsideContainer} 
-          // onPress={(e) => {console.log(e.nativeEvent); openDropdown()}}
+          onPress={openDropdown}
         >
-          <Feather name='more-vertical' size={20} color={COLORS.secondary} ref={dropdownCoords} onLayout={e => console.log(e.nativeEvent)}/>
+          <View
+            ref={dropdownCoords}
+          >
+            <Feather 
+              name='more-vertical' 
+              size={20} 
+              color={COLORS.secondary}  
+            />
+          </View>
         </TouchableOpacity>
         : null
       }    

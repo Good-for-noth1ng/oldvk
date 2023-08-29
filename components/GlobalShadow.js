@@ -21,7 +21,7 @@ const GlobalShadow = () => {
         <TouchableOpacity 
           activeOpacity={1}
           onPress={closeGlobalShadow}
-          style={{width: 100, height: 100, zIndex: 4, position: 'absolute', backgroundColor: COLORS.black, transform: [{translateX: 333 - 100}, {translateY: 89}]}}
+          style={{width: globalShadowWidth, height: globalShadowHeight, zIndex: 4, position: 'absolute', }}
         />
         : null
       }

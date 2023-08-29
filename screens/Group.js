@@ -20,6 +20,8 @@ import WallIsPrivateText from '../components/WallIsPrivateText';
 import { cleanAdditionalInfoLinksAndUsers } from '../utils/dataPreparationForComponents'
 import ProfileHeaderName from '../components/ProfileHeaderName';
 import { findPostAuthor } from '../utils/dataPreparationForComponents';
+import PostDropdownMenu from '../components/PostDropdownMenu';
+import GlobalShadow from '../components/GlobalShadow';
 
 //TODO: replace selectors on usestate
 const Group = ({navigation, route}) => {
@@ -254,6 +256,8 @@ const Group = ({navigation, route}) => {
           }
         />
       }
+      <PostDropdownMenu />
+      <GlobalShadow />
     </SafeAreaView>
   )
 }

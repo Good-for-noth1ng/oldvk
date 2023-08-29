@@ -11,6 +11,7 @@ import NewsTitleSwitcher from '../components/NewsTitleSwitcher';
 import DividerWithLine from '../components/DividerWithLine';
 import Repost from '../components/Repost';
 import GlobalShadow from '../components/GlobalShadow';
+import PostDropdownMenu from '../components/PostDropdownMenu';
 // import { FlatList } from "react-native-gesture-handler";
 import { findPostAuthor } from '../utils/dataPreparationForComponents';
 
@@ -197,6 +198,7 @@ const News = ({navigation}) => {
             updateCellsBatchingPeriod={30}
           />
       } 
+      <PostDropdownMenu />
       <GlobalShadow />
     </SafeAreaView>
   )

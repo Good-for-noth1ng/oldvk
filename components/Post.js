@@ -18,31 +18,29 @@ const globalShadowHeight = Dimensions.get('window').height
 const globalShadowWidth = Dimensions.get('window').width
 
 const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => {
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
   let postPhotos = []
   let postDocs = []
   let postLinks = []
   let postVideos = []
 
-  const [dropdownMenuHeight, setDropdownMenuHeight] = useState(0)
-  const [postZIndex, setPostZIndex] = useState(0)
   // const [showShadow, setShowShadow] = useState(false)
-  const onMorePress = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    setDropdownMenuHeight(160)
-    setPostZIndex(400)
-    // setShowShadow(true)
-    dispatch(expandShadow(setDropdownMenuHeight))
-  }
+  // const onMorePress = () => {
+  //   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+  //   setDropdownMenuHeight(160)
+  //   setPostZIndex(400)
+  //   // setShowShadow(true)
+  //   dispatch(expandShadow(setDropdownMenuHeight))
+  // }
 
-  const onShadowPress = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    setDropdownMenuHeight(0)
-    setPostZIndex(0)
-    // setShowShadow(false)
-    // setDropdownMenuHeight(0)
-    dispatch(collapseShadow())
-  }
+  // const onShadowPress = () => {
+  //   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+  //   setDropdownMenuHeight(0)
+  //   setPostZIndex(0)
+  //   // setShowShadow(false)
+  //   // setDropdownMenuHeight(0)
+  //   dispatch(collapseShadow())
+  // }
   
   const openPost = () => {
     if (openedPost) {
@@ -75,66 +73,19 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => 
 
   initPostData()
   
-  const addPostToFave = async () => {
-    const url = `https://api.vk.com/method/fave.addPost?access_token=${accessToken}&v=5.131&owner_id=${data.owner_id ? data.owner_id : data.source_id}&id=${data.id ? data.id : data.post_id}${data.access_key ? `&access_key=${data.access_key}` : ''}`
-    const response = await fetch(url)
-    const parsedRes = await response.json()
-    if (parsedRes.response === 1) {
-      ToastAndroid.show('Added to Favorite!', ToastAndroid.SHORT)
-    } else {
-      ToastAndroid.show('Network Error', ToastAndroid.SHORT)
-    }
-    onShadowPress()
-  }
-
-  const copyPostLink = async () => {
-    await Clipboard.setStringAsync(`https://vk.com/wall${data.owner_id ? data.owner_id : data.source_id}_${data.id ? data.id : data.post_id}`)
-    ToastAndroid.show('Copied!', ToastAndroid.SHORT)
-    onShadowPress()
-  }
-  
   return (
     <View 
-      style={[styles.postContainer, isLigthTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}, {zIndex: postZIndex}]}
+      style={[styles.postContainer, isLigthTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}
 
     >
       <PostHeader 
         dataDate={data.date} 
         navigation={navigation}
         isLightTheme={isLigthTheme}
-        onMorePress={onMorePress}
         isPinned={data.is_pinned}
         author={data.author}
         shouldShowMoreButton={openedPost}
       />
-      <Animated.View 
-        style={[
-        styles.postDropdownMenu,
-        { 
-          height: dropdownMenuHeight,   
-        },
-        isLigthTheme ? 
-        {backgroundColor: COLORS.white} :
-        {backgroundColor: COLORS.very_dark_gray},
-        // {transform: [{translateY: 13}]}
-      ]}>
-          <TouchableOpacity onPress={addPostToFave} style={styles.postDropdownMenuButton}>
-            <Text style={[{fontSize: 17}, isLigthTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.postDropdownMenuButton}>
-            <Text style={[{fontSize: 17}, isLigthTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Not interested</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={copyPostLink} style={styles.postDropdownMenuButton}>
-            <Text style={[{fontSize: 17}, isLigthTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Copy Link</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.postDropdownMenuButton}>
-            <Text style={[{fontSize: 17}, isLigthTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Report</Text>
-          </TouchableOpacity>
-      </Animated.View>
-      {/* {
-        showShadow ?
-        <TouchableOpacity activeOpacity={1} onPress={onShadowPress} style={{zIndex: 3, width: 5000, height: 5000, zIndex: 4, position: 'absolute', bottom: 0, backgroundColor: COLORS.black}}/> : null
-      } */}
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12}/>
         {
@@ -204,22 +155,4 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     position: 'relative'
   },
-  postDropdownMenu: {
-    left: '50%', 
-    top: 10,
-    borderRadius: 5,
-    elevation: 2000, 
-    position: 'absolute', 
-    zIndex: 5, 
-    width: 170,
-  },
-  postDropdownMenuButton: {
-    position: 'relative', 
-    zIndex: 5, 
-    flex: 1, 
-    elevation: 2000,
-    alignItems: 'flex-start', 
-    justifyContent: 'center', 
-    paddingLeft: 5  
-  }
 })

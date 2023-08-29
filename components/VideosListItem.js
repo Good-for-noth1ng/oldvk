@@ -11,8 +11,8 @@ import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
 
 const VideosListItem = ({title, duration, imageUrl, views, date, isLightTheme, navigation, playerUrl, ownerId, likes, reposts, isLiked, isReposted, id, canLike, canAdd, canAddToFavs, commentsCount, canComment, videoId}) => {
   const dispatch = useDispatch()
-  const [dropdownMenuHeight, setDropdownMenuHeight] = React.useState(0)
-  const [videoListItemZIndex, setVideoListItemZIndex] = React.useState(0)
+
+  const dropdownCoords = React.useRef(null)
   let shortagedTitle = title.slice(0, 40)
   if (shortagedTitle !== title) {
     shortagedTitle += '...'
@@ -41,26 +41,22 @@ const VideosListItem = ({title, duration, imageUrl, views, date, isLightTheme, n
     )
   }
 
-  const onShadowPressCallback = (initValue) => {
-    setDropdownMenuHeight(initValue)
-    setVideoListItemZIndex(initValue)
-  }
+  // const onShadowPressCallback = (initValue) => {
+  //   setDropdownMenuHeight(initValue)
+  //   setVideoListItemZIndex(initValue)
+  // }
 
   const onMorePress = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    setVideoListItemZIndex(4)
-    setDropdownMenuHeight(160)
-    dispatch(expandShadow(onShadowPressCallback))
-  }
-
-  const onShadowPress = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    setDropdownMenuHeight(0)
-    dispatch(collapseShadow())
+    dropdownCoords.current.measure(
+      (x, y, width, height, pageX, pageY) => {
+        // console.log(pageX, pageY, width)
+        dispatch(expandShadow({dropdownX: pageX, dropdownY: pageY}))
+      }
+    )
   }
 
   return (
-    <TouchableOpacity onPress={navigateToVideo} activeOpacity={0.8} style={[styles.mainContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}, {zIndex: videoListItemZIndex}]}>
+    <TouchableOpacity onPress={navigateToVideo} activeOpacity={0.8} style={[styles.mainContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
       <View style={styles.imageContainer}>
         <Image source={{uri: imageUrl}} style={{width: '100%', height: '100%', borderRadius: 5}}/>
         <Text style={styles.timeDuration}>{getDuration(duration)}</Text>
@@ -72,10 +68,10 @@ const VideosListItem = ({title, duration, imageUrl, views, date, isLightTheme, n
           <Text style={styles.date}>{getTimeDate(date)}</Text>
         </View>
       </View>
-      {/* <TouchableOpacity activeOpacity={0.8} onPress={onMorePress}>
+      <TouchableOpacity activeOpacity={0.8} onPress={onMorePress} ref={dropdownCoords}>
         <Feather name='more-vertical' color={COLORS.secondary} size={20}/>
       </TouchableOpacity>
-      <View 
+      {/*<View 
         style={[
         styles.dropdownMenu,
         { 

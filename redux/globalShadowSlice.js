@@ -4,23 +4,23 @@ export const globalShadowSlice = createSlice({
     name: 'globalShadow',
     initialState: {
       isOpen: false,
-      onShadowCollapse: null
+      dropdownX: 0,
+      dropdownY: 0,
+      data: null
     },
     reducers: {
       expandShadow: (state, action) => {
         return {
+          ...state,
           isOpen: true,
-          onShadowCollapse: action.payload && action.payload
+          dropdownX: action.payload.dropdownX,
+          dropdownY: action.payload.dropdownY
         }
       },
       collapseShadow: (state, action) => {
-        const onShadowCollapse = state.onShadowCollapse
-        if (onShadowCollapse) {
-          onShadowCollapse(0)
-        }
         return {
-          isOpen: false,
-          onShadowCollapse: null
+          ...state,
+          isOpen: false,  
         }
       } 
   

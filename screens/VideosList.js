@@ -12,6 +12,8 @@ import Carousel from '../components/Carousel';
 import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
 import { COLORS } from '../constants/theme'
 import { FlashList } from "@shopify/flash-list";
+import GlobalShadow from '../components/GlobalShadow';
+import VideosListDropdownMenu from '../components/VideosListDropdownMenu';
 
 const VideosList = ({ navigation, route }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
@@ -211,6 +213,8 @@ const VideosList = ({ navigation, route }) => {
           />
         </View>
       }
+      <VideosListDropdownMenu />
+      <GlobalShadow />
     </SafeAreaView>
   )
 }

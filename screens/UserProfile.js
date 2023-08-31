@@ -20,7 +20,7 @@ import ProfileHeaderName from '../components/ProfileHeaderName';
 import { findPostAuthor } from '../utils/dataPreparationForComponents';
 import PostDropdownMenu from '../components/PostDropdownMenu'
 import GlobalShadow from '../components/GlobalShadow'
-
+import Dropdown from '../components/Dropdown'
 // fix redux calls
 const UserProfile = ({navigation, route}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
@@ -286,7 +286,8 @@ const UserProfile = ({navigation, route}) => {
           />
         </>
       }
-      <PostDropdownMenu />
+      <Dropdown isLightTheme={isLightTheme} accessToken={accessToken}/>
+      {/* <PostDropdownMenu /> */}
       <GlobalShadow />
     </SafeAreaView>
   )

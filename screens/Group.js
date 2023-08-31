@@ -23,6 +23,7 @@ import { findPostAuthor } from '../utils/dataPreparationForComponents';
 import PostDropdownMenu from '../components/PostDropdownMenu';
 import GlobalShadow from '../components/GlobalShadow';
 import GroupHeaderCollapsibleMenu from '../components/GroupHeaderCollapsibleMenu';
+import Dropdown from '../components/Dropdown';
 
 //TODO: replace selectors on usestate
 const Group = ({navigation, route}) => {
@@ -257,7 +258,7 @@ const Group = ({navigation, route}) => {
           }
         />
       }
-      <PostDropdownMenu />
+      <Dropdown isLightTheme={isLightTheme} accessToken={accessToken}/>
       <GlobalShadow />
     </SafeAreaView>
   )

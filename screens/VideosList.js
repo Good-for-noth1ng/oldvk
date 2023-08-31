@@ -14,6 +14,7 @@ import { COLORS } from '../constants/theme'
 import { FlashList } from "@shopify/flash-list";
 import GlobalShadow from '../components/GlobalShadow';
 import VideosListDropdownMenu from '../components/VideosListDropdownMenu';
+import Dropdown from '../components/Dropdown';
 
 const VideosList = ({ navigation, route }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
@@ -179,7 +180,6 @@ const VideosList = ({ navigation, route }) => {
         {flex: 1}, 
         isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}
       ]}>
-      <StatusBar barStyle={COLORS.white} backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} />
       <CustomHeader 
         isLightTheme={isLightTheme}
         headerName={<Text style={styles.headerTextStyle}>Videos</Text>}
@@ -213,7 +213,8 @@ const VideosList = ({ navigation, route }) => {
           />
         </View>
       }
-      <VideosListDropdownMenu />
+      {/* <VideosListDropdownMenu /> */}
+      <Dropdown isLightTheme={isLightTheme} accessToken={accessToken}/>
       <GlobalShadow />
     </SafeAreaView>
   )

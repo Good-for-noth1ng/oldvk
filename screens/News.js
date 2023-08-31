@@ -14,6 +14,7 @@ import GlobalShadow from '../components/GlobalShadow';
 import PostDropdownMenu from '../components/PostDropdownMenu';
 // import { FlatList } from "react-native-gesture-handler";
 import { findPostAuthor } from '../utils/dataPreparationForComponents';
+import Dropdown from '../components/Dropdown';
 
 //TODO fix comments, likes etc. being undefined
 const News = ({navigation}) => {
@@ -198,7 +199,8 @@ const News = ({navigation}) => {
             updateCellsBatchingPeriod={30}
           />
       } 
-      <PostDropdownMenu />
+      <Dropdown isLightTheme={isLightTheme} accessToken={accessToken}/>
+      {/* <PostDropdownMenu /> */}
       <GlobalShadow />
     </SafeAreaView>
   )

@@ -14,7 +14,7 @@ const VideoHeader = ({ ownerId, date, isLightTheme, navigation, name, imgUrl, is
     dropdownCoords.current.measure(
       (x, y, width, height, pageX, pageY) => {
         // console.log(pageX, pageY, width)
-        dispatch(expandShadow({dropdownX: pageX, dropdownY: pageY}))
+        dispatch(expandShadow({dropdownX: pageX, dropdownY: pageY, dropdownType: 'videoScreen'}))
       }
     )
   }

@@ -50,7 +50,7 @@ const VideosListItem = ({title, duration, imageUrl, views, date, isLightTheme, n
     dropdownCoords.current.measure(
       (x, y, width, height, pageX, pageY) => {
         // console.log(pageX, pageY, width)
-        dispatch(expandShadow({dropdownX: pageX, dropdownY: pageY}))
+        dispatch(expandShadow({dropdownX: pageX, dropdownY: pageY, dropdownType: 'videoListItem'}))
       }
     )
   }
@@ -68,39 +68,19 @@ const VideosListItem = ({title, duration, imageUrl, views, date, isLightTheme, n
           <Text style={styles.date}>{getTimeDate(date)}</Text>
         </View>
       </View>
-      <TouchableOpacity activeOpacity={0.8} onPress={onMorePress} ref={dropdownCoords}>
-        <Feather name='more-vertical' color={COLORS.secondary} size={20}/>
+      <TouchableOpacity activeOpacity={0.8} onPress={onMorePress}>
+        <View ref={dropdownCoords}>
+          <Feather name='more-vertical' color={COLORS.secondary} size={20}/>
+        </View>
       </TouchableOpacity>
-      {/*<View 
-        style={[
-        styles.dropdownMenu,
-        { 
-          height: dropdownMenuHeight,   
-        },
-        isLightTheme ? 
-        {backgroundColor: COLORS.white} :
-        {backgroundColor: COLORS.very_dark_gray}
-      ]}>
-          <TouchableOpacity style={styles.dropdownMenuButton}>
-            <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.dropdownMenuButton}>
-            <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Not interested</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.dropdownMenuButton}>
-            <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Copy Link</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.dropdownMenuButton}>
-            <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Report</Text>
-          </TouchableOpacity>
-      </View> */}
     </TouchableOpacity>
   )
 }
 
-export default React.memo(VideosListItem, (prevProps, nextProps) => {
-  return prevProps.id === nextProps.id;
-})
+export default VideosListItem
+// export default React.memo(VideosListItem, (prevProps, nextProps) => {
+//   return prevProps.id === nextProps.id;
+// })
 
 const styles = StyleSheet.create({
   mainContainer: {

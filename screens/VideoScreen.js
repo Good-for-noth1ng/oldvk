@@ -14,6 +14,7 @@ import VideoScreenBottom from '../components/VideoScreenBottom'
 import VideoHeader from '../components/VideoHeader'
 import GlobalShadow from '../components/GlobalShadow'
 import VideosListDropdownMenu from '../components/VideosListDropdownMenu'
+import Dropdown from '../components/Dropdown'
 
 const VideoScreen = ({navigation, route}) => {
   const { playerUrl, title, views, ownerId, likes, reposts, isLiked, isReposted, date, canLike, canAdd, canAddToFavs, commentsCount, canComment, videoId, accessKey } = route.params
@@ -117,7 +118,6 @@ const VideoScreen = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={[{flex: 1, justifyContent: 'flex-start' }, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
-      <StatusBar barStyle={COLORS.white} backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} />
       <CustomHeader 
         isLightTheme={isLightTheme}
         headerName={<Text style={styles.headerTextStyle}>Video</Text>}
@@ -192,7 +192,8 @@ const VideoScreen = ({navigation, route}) => {
           </>
         }
       </View>
-      <VideosListDropdownMenu />
+      {/* <VideosListDropdownMenu /> */}
+      <Dropdown isLightTheme={isLightTheme} accessToken={accessToken}/>
       <GlobalShadow />
     </SafeAreaView>
   )

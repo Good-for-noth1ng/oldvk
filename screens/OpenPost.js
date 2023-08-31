@@ -26,6 +26,7 @@ import { findPostAuthor } from '../utils/dataPreparationForComponents';
 import CommentsOverlay from '../components/CommentsOverlay';
 import PostCollapsibleHeaderMenu from '../components/PostCollapsibleHeaderMenu';
 import GlobalShadow from '../components/GlobalShadow';
+import Dropdown from '../components/Dropdown';
 
 const OpenPost = ({navigation, route}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
@@ -351,6 +352,8 @@ const OpenPost = ({navigation, route}) => {
           />
         </>
       }
+      <GlobalShadow />
+      <Dropdown isLightTheme={isLightTheme} accessToken={accessToken}/>
     </SafeAreaView>
   )
 }

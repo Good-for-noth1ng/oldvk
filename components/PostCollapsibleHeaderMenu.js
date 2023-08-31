@@ -6,41 +6,15 @@ import { collapseShadow, expandShadow } from '../redux/globalShadowSlice'
 import { COLORS } from '../constants/theme'
 //TODO: add different sets of buttons
 const PostCollapsibleHeaderMenu = ({ isLightTheme, accessToken}) => {
-    const [isShadowExpanded, setIsShadowExpanded] = React.useState(false)
-
-    const anim = React.useRef(new Animated.Value(0)).current
-    const shouldPerformAnimation = React.useRef(false)
-    const listHeight = anim.interpolate({
-      inputRange: [0, 1],
-      outputRange: [0, 200]
-    })
-    const shadow = anim.interpolate({
-      inputRange: [0, 1],
-      outputRange: [0, 5000]
-    })
-
-    React.useEffect(() => {
-      if (shouldPerformAnimation.current) {
-        if (isShadowExpanded) {
-          Animated.timing(anim, {
-            toValue: 1,
-            duration: 300,
-            useNativeDriver: false,
-          }).start()
-        } else {
-          Animated.timing(anim, {
-            toValue: 0,
-            duration: 300,
-            useNativeDriver: false,
-          }).start()
-        }
-      } else {
-        shouldPerformAnimation.current = true
-      }
-    }, [isShadowExpanded])
+    const dispatch = useDispatch()  
+    const dropdownCoords = React.useRef()
 
     const openDropdownMenu = () => {
-      setIsShadowExpanded(true)
+      dropdownCoords.current.measure(
+      (x, y, width, height, pageX, pageY) => {
+        dispatch(expandShadow({dropdownX: pageX, dropdownY: pageY, data: null, dropdownType: 'openPost'}))
+      }
+    )
     }
 
     const closeDropdownMenu = () => {
@@ -50,49 +24,10 @@ const PostCollapsibleHeaderMenu = ({ isLightTheme, accessToken}) => {
     return (
       <View style={styles.container}>
         <TouchableOpacity activeOpacity={1} onPress={openDropdownMenu}>
-          <Feather name='more-vertical' size={20} color={COLORS.white}/>
+          <View ref={dropdownCoords}>
+            <Feather name='more-vertical' size={20} color={COLORS.white}/>
+          </View>
         </TouchableOpacity>
-        <Animated.View style={[
-          styles.dropdown,
-          {height: listHeight}, 
-          isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor : COLORS.secondary}
-        ]}>
-          <TouchableOpacity 
-            style={[
-              styles.optionContainer,  
-              isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
-            ]} 
-          >
-            <Text style={[styles.option, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={[
-              styles.optionContainer,  
-              isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
-            ]} 
-          >
-            <Text style={[styles.option, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Pin</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={[
-              styles.optionContainer,  
-              isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
-            ]} 
-          >
-            <Text style={[styles.option, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Copy link</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={[
-              styles.optionContainer,  
-              isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
-            ]} 
-          >
-            <Text style={[styles.option, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Delete</Text>
-          </TouchableOpacity>
-        </Animated.View>
-        <Animated.View style={{width: shadow, height: shadow, position: 'absolute', right: '-100%'}}>
-          <TouchableOpacity style={{width: '100%', height: '100%'}} onPress={closeDropdownMenu} activeOpacity={1}/>
-        </Animated.View>
       </View>
     )
 }

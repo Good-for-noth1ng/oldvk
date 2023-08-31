@@ -6,7 +6,8 @@ export const globalShadowSlice = createSlice({
       isOpen: false,
       dropdownX: 0,
       dropdownY: 0,
-      data: null
+      data: null,
+      dropdownType: ''
     },
     reducers: {
       expandShadow: (state, action) => {
@@ -15,6 +16,7 @@ export const globalShadowSlice = createSlice({
           isOpen: true,
           dropdownX: action.payload.dropdownX,
           dropdownY: action.payload.dropdownY,
+          dropdownType: action.payload.dropdownType,
           data: action.payload?.data
         }
       },

@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native'
-import { FlatList } from "react-native-gesture-handler";
-import React, { useEffect, useState, useRef } from 'react'
+import React from 'react'
 import uuid from 'react-native-uuid';
 import { useSelector } from 'react-redux'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -20,14 +19,19 @@ const VideosList = ({ navigation, route }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const currentUserId = useSelector(state => state.user.userId)
-  const [isLoading, setIsLoading] = useState(true)
-  const [videosList, setVideosList] = useState([])
-  const [albumsList, setAlbumsList] = useState([])
+  
+  const [isLoading, setIsLoading] = React.useState(true)
+  const [videosList, setVideosList] = React.useState([])
+  const [albumsList, setAlbumsList] = React.useState([])
+  const [videosCounterName, setVideosCounterName] = React.useState()
+
   const count = 10
-  const offset = useRef(0)
-  const remainToFetchNum = useRef(null)
-  const numOfVideos = useRef(0)
-  const numOfAlbums = useRef(0)
+  const offset = React.useRef(0)
+  const searchQuery = React.useRef('')
+  const remainToFetchNum = React.useRef(null)
+  const numOfVideos = React.useRef(0)
+  const numOfAlbums = React.useRef(0)
+  const shouldRemoveStackScreens = React.useRef()
   const ownerId = route.params === undefined ? currentUserId : route.params.ownerId
 
   const fetchVideos = async () => {
@@ -57,9 +61,25 @@ const VideosList = ({ navigation, route }) => {
     setIsLoading(false)
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchVideos()
   }, [])
+  
+  React.useEffect(() => {
+    const drawerNavigator = navigation.getParent()
+    const blur = drawerNavigator.addListener('blur', () => {
+      shouldRemoveStackScreens.current = false
+    })
+    const focus = drawerNavigator.addListener('focus', () => {
+      shouldRemoveStackScreens.current = true
+    })
+    const drawerItemPress = drawerNavigator.addListener('drawerItemPress', (e) => {
+      if (shouldRemoveStackScreens.current) {
+        navigation.popToTop()
+      }
+    })
+    return blur, focus, drawerItemPress
+  }, [navigation])
   
   const openDrawer = () => {
     navigation.openDrawer()
@@ -175,6 +195,24 @@ const VideosList = ({ navigation, route }) => {
     return item.key
   }
 
+  const fetchVideosByQuery = async () => {
+
+  }
+
+  const debounce = (func, delay=700) => {
+    let debounceTimer
+    return (...args) => {
+      clearTimeout(debounceTimer)
+      debounceTimer = setTimeout(() => {func(...args)}, delay)
+    }
+  }
+
+  const saveInput = async (query) => {
+
+  }
+
+  const handleInputChange = debounce((...args) => saveInput(...args))
+  
   return (
     <SafeAreaView style={[
         {flex: 1}, 

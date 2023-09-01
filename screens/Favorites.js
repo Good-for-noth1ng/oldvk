@@ -7,6 +7,8 @@ import DividerWithLine from '../components/DividerWithLine'
 import { findPostAuthor } from '../utils/dataPreparationForComponents';
 import Post from '../components/Post'
 import Repost from '../components/Repost';
+import Dropdown from '../components/Dropdown'
+import GlobalShadow from '../components/GlobalShadow'
 import { COLORS } from '../constants/theme'
 
 const Favorites = ({navigation}) => {
@@ -141,6 +143,8 @@ const Favorites = ({navigation}) => {
           }
         />
       }
+      <Dropdown accessToken={accessToken} isLightTheme={isLightTheme}/>
+      <GlobalShadow />
     </SafeAreaView>
   )
 }

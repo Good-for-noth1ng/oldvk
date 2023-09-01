@@ -199,8 +199,7 @@ const News = ({navigation}) => {
             updateCellsBatchingPeriod={30}
           />
       } 
-      <Dropdown isLightTheme={isLightTheme} accessToken={accessToken}/>
-      {/* <PostDropdownMenu /> */}
+      <Dropdown isLightTheme={isLightTheme} accessToken={accessToken} />
       <GlobalShadow />
     </SafeAreaView>
   )

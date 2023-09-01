@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View, Animated, TouchableOpacity, ToastAndroid } from 'react-native'
+import { StyleSheet, Text, View, Animated, TouchableOpacity, ToastAndroid, BackHandler } from 'react-native'
 import React from 'react'
 import * as Clipboard from 'expo-clipboard'
+import { useFocusEffect } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux'
 import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
 import { COLORS } from '../constants/theme'
@@ -14,6 +15,7 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
   const shouldPerformAnimation = React.useRef(false)
   const listHeight = React.useRef(new Animated.Value(0)).current
   let listTargetHeight
+  
   switch (dropdownType) {
     case 'post':
       listTargetHeight = 160
@@ -30,10 +32,25 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
     case 'videoScreen':
       listTargetHeight = 250
       break
+    case 'profile':
+      listTargetHeight = 200
+      break
     default:
       listTargetHeight = 160
       break;
   }
+
+  useFocusEffect(React.useCallback(() => {
+    const onBackPress = () => {
+      if (isShadowExpanded) {
+        dispatch(collapseShadow())
+        return true
+      }
+      return false
+    }
+    const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress)
+    return () => subscription.remove()
+  }, [isShadowExpanded]))
 
   React.useEffect(() => {
     if (shouldPerformAnimation.current) {
@@ -72,6 +89,7 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
     ToastAndroid.show('Copied!', ToastAndroid.SHORT)
     dispatch(collapseShadow())
   }
+
   if (dropdownType === 'post') {
     return (
       <Animated.View 
@@ -85,13 +103,13 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
         {backgroundColor: COLORS.very_dark_gray},
         {transform: [{translateX: dropdownData.dropdownX - 150}, {translateY: dropdownData.dropdownY}]}
       ]}>
-        <TouchableOpacity style={styles.postDropdownMenuButton}>
+        <TouchableOpacity style={styles.postDropdownMenuButton} onPress={addPostToFave} activeOpacity={0.8}>
           <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.postDropdownMenuButton}>
           <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Not interested</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.postDropdownMenuButton}>
+        <TouchableOpacity style={styles.postDropdownMenuButton} onPress={copyPostLink} activeOpacity={0.8}>
           <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Copy Link</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.postDropdownMenuButton}>
@@ -253,6 +271,48 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
         <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Report</Text>
       </TouchableOpacity>
     </Animated.View>)
+  } else if (dropdownType === 'profile') {
+    return (
+      <Animated.View style={[
+        styles.headerDropdown,
+        {height: listHeight}, 
+        isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor : COLORS.secondary},
+        {transform: [{translateX: dropdownData.dropdownX - 180}, {translateY: dropdownData.dropdownY}]}
+      ]}>
+        <TouchableOpacity 
+          style={[
+            styles.headerDropdownOptionContainer,  
+            isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
+          ]} 
+        >
+          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[
+            styles.headerDropdownOptionContainer,  
+            isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
+          ]} 
+        >
+          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Leave/Join Community</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[
+            styles.headerDropdownOptionContainer,  
+            isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
+          ]} 
+        >
+          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Copy link</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[
+            styles.headerDropdownOptionContainer,  
+            isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
+          ]} 
+        >
+          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Report</Text>
+        </TouchableOpacity>
+      </Animated.View>
+    )
   }
   return null
 }

@@ -208,7 +208,7 @@ const OpenPost = ({navigation, route}) => {
   )
 
   const handleNavigationBack = () => {
-    navigation.pop()
+    navigation.goBack()
   }
 
   const listHeader = () => {

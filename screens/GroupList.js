@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ActivityIndicator, RefreshControl, BackHandler, Animated, KeyboardAvoidingView } from 'react-native'
-import React, {useEffect, useState, useRef, useCallback, } from 'react'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ActivityIndicator, RefreshControl, BackHandler, Animated } from 'react-native'
+import React, { useCallback } from 'react'
 import { useFocusEffect } from '@react-navigation/native';
 import { useSelector } from 'react-redux'
 import uuid from 'react-native-uuid';
@@ -17,20 +17,20 @@ import Overlay from '../components/Overlay';
 
 const GroupList = ({navigation}) => {
   const accessToken = useSelector(state => state.user.accessToken)
-  const [isLoading, setIsLoading] = useState(true)
-  const [groupsData, setGroupsData] = useState(null)
+  const [isLoading, setIsLoading] = React.useState(true)
+  const [groupsData, setGroupsData] = React.useState(null)
   const drawerNavigator = navigation.getParent()
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
-  const [groupsCount, setGroupsCount] = useState(null)
-  const remainToFetchNum = useRef()
-  const offset = useRef(0)
-  const searchQuery = useRef('')
+  const [groupsCount, setGroupsCount] = React.useState(null)
+  const remainToFetchNum = React.useRef()
+  const offset = React.useRef(0)
+  const searchQuery = React.useRef('')
   const count = 5
-  const [groupsCounterName, setGroupsCounterName] = useState('All communities')
-  const slideAnimation = useRef(new Animated.Value(2000)).current
-  const filterIsOpen = useRef(false)
-  const connectionController = useRef(undefined)
-  const shouldRemoveStackScreens = useRef()
+  const [groupsCounterName, setGroupsCounterName] = React.useState('All communities')
+  const slideAnimation = React.useRef(new Animated.Value(2000)).current
+  const filterIsOpen = React.useRef(false)
+  const connectionController = React.useRef(undefined)
+  const shouldRemoveStackScreens = React.useRef()
 
   const sortSearchResult = useSelector(state => state.groupsSortType)
   const sortSearchResultButtons = sortSearchResult.buttons
@@ -40,11 +40,11 @@ const GroupList = ({navigation}) => {
   const communityTypeButtons = communityType.buttons
   const chosenCommunityType = communityType.selectedCommunityType
 
-  useEffect(() => {
+  React.useEffect(() => {
     initGroupList()
   }, [])
   
-  useEffect(() => {
+  React.useEffect(() => {
     const drawerNavigator = navigation.getParent()
     const blur = drawerNavigator.addListener('blur', () => {
       shouldRemoveStackScreens.current = false

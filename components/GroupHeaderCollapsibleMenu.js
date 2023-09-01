@@ -1,8 +1,7 @@
-import { StyleSheet, Text, View, Animated, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Feather from 'react-native-vector-icons/Feather'
-import GlobalShadow from './GlobalShadow'
 import { collapseShadow, expandShadow } from '../redux/globalShadowSlice'
 import { COLORS } from '../constants/theme'
 
@@ -41,25 +40,4 @@ const styles = StyleSheet.create({
     top: -10,
     right: 0
   },
-  // dropdown: { 
-  //   zIndex: 5,
-  //   position: 'absolute',
-  //   elevation: 15,
-  //   width: 200,
-  //   borderRadius: 5,
-  //   right: 0
-  // },
-  // optionContainer: {
-  //   width: '100%',
-  //   // height: '50%',
-  //   flex: 1,
-  //   zIndex: 5,
-  //   justifyContent: 'center',
-  //   backgroundColor: COLORS.light_smoke,
-  //   paddingLeft: 10,
-  //   borderRadius: 5
-  // },
-  // option: {
-  //   fontSize: 18,
-  // },
 })

@@ -143,10 +143,11 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
               </View>
             </View>
             {
-              rightsideIconComponent &&
-              <TouchableOpacity style={styles.rightsideIcon} activeOpacity={1} onPress={rightsideIconComponentTouchHandler && rightsideIconComponentTouchHandler}>
+              rightsideIconComponent ?
+              <TouchableOpacity activeOpacity={1} onPress={rightsideIconComponentTouchHandler && rightsideIconComponentTouchHandler}>
                 {rightsideIconComponent}
-              </TouchableOpacity>
+              </TouchableOpacity> :
+              null
             }
             {
               showSearchIcon && !showSearchInputField ? 
@@ -206,8 +207,6 @@ const styles = StyleSheet.create({
   searchIcon: {
     marginLeft: '35%'
   },
-  rightsideIcon: {
-    marginLeft: '48%'
-  }, 
+ 
 
 })

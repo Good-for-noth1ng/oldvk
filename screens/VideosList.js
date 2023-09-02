@@ -34,6 +34,7 @@ const VideosList = ({ navigation, route }) => {
   const shouldRemoveStackScreens = React.useRef()
   const ownerId = route.params === undefined ? currentUserId : route.params.ownerId
 
+  
   const fetchVideos = async () => {
     const fetchVideosUrl = `https://api.vk.com/method/video.get?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&owner_id=${ownerId}&extended=1`
     const response = await fetch(fetchVideosUrl)

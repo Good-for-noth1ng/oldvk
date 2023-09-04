@@ -9,6 +9,14 @@ export const getShortagedNumber = (num) => {
       } else {
         return `${mainPart}k`
       }
+    } else if (num < 1000000000) {
+      const mainPart = (num - num % 1000000) / 1000000
+      const addPart = Math.round(num % 1000000 / 100000)
+      if (addPart > 0) {
+        return `${mainPart}.${addPart}kk`
+      } else {
+        return `${mainPart}kk`
+      }
     }
     // if (num < 1000) {
     //   return `${num}`

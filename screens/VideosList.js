@@ -20,33 +20,51 @@ const VideosList = ({ navigation, route }) => {
   const accessToken = useSelector(state => state.user.accessToken)
   const currentUserId = useSelector(state => state.user.userId)
   
+  
   const [isLoading, setIsLoading] = React.useState(true)
   const [videosList, setVideosList] = React.useState([])
   const [albumsList, setAlbumsList] = React.useState([])
-  const [videosCounterName, setVideosCounterName] = React.useState()
+  const [videosCount, setVideosCount] = React.useState(0)
+  const [videosCounterName, setVideosCounterName] = React.useState('All videos')
 
   const count = 10
   const offset = React.useRef(0)
   const searchQuery = React.useRef('')
   const remainToFetchNum = React.useRef(null)
-  const numOfVideos = React.useRef(0)
+  
+  // const [numOfVideos, setNumOfVideos] = React.useState(0) 
+  // const numOfVideos = React.useRef(0)
   const numOfAlbums = React.useRef(0)
+
   const shouldRemoveStackScreens = React.useRef()
   const ownerId = route.params === undefined ? currentUserId : route.params.ownerId
 
+  const initVideosList = () => {
+    setIsLoading(true)
+    offset.current = 0
+    remainToFetchNum.current = null
+    searchQuery.current = ''
+    setVideosList([])
+    fetchVideos()
+  }
+
   const fetchVideos = async () => {
-    const fetchVideosUrl = `https://api.vk.com/method/video.get?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&owner_id=${ownerId}&extended=1`
+    let fetchVideosUrl = `https://api.vk.com/method/video.get?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&owner_id=${ownerId}&extended=1`
+    if (searchQuery.current !== '') {
+      fetchVideosUrl = `https://api.vk.com/method/video.search?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&extended=1&q=${searchQuery.current}`
+    }
     const response = await fetch(fetchVideosUrl)
     const data = await response.json()
     if (remainToFetchNum.current === null) {
-      numOfVideos.current = data.response.count
+      // numOfVideos.current = data.response.count
       remainToFetchNum.current = data.response.count - count
       const fetchVideoAlbumsUrl = `https://api.vk.com/method/video.getAlbums?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&owner_id=${ownerId}&extended=1`
       const albumsRes = await fetch(fetchVideoAlbumsUrl)
       const albums = await albumsRes.json()
-      // console.log(albums)
       numOfAlbums.current = albums.response.count
       offset.current += count
+      setVideosCount(data.response.count)
+      setVideosCounterName('All videos')
       setAlbumsList(albums.response.items)
     } else {
       offset.current += count 
@@ -102,6 +120,7 @@ const VideosList = ({ navigation, route }) => {
   }
 
   const listHeader = () => {
+    // console.log(videosCount, 'list header')
     return (
       <>
         <DividerWithLine 
@@ -125,8 +144,8 @@ const VideosList = ({ navigation, route }) => {
         }
         <SearchResultHeaderCounter 
           isLightTheme={isLightTheme}
-          counterName={'All videos'}
-          counterNum={numOfVideos.current}
+          counterName={videosCounterName}
+          counterNum={videosCount}
         />
         <DividerWithLine 
           dividerHeight={10}  
@@ -196,7 +215,23 @@ const VideosList = ({ navigation, route }) => {
   }
 
   const fetchVideosByQuery = async () => {
-
+    let videosSearchUrl = `https://api.vk.com/method/video.search?q=${searchQuery.current}&access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&extended=1`
+    const searchRes = await fetch(videosSearchUrl)
+    const searchData = await searchRes.json()
+    const videosNum = searchData.response.count
+    const videoItems = searchData.response.items.map(item => {
+      const key = uuid.v4()
+      return {
+        ...item,
+        key
+      }
+    })
+    offset.current += count
+    return {
+      items: videoItems,
+      videosNum,
+      counterName: 'Search result'
+    }
   }
 
   const debounce = (func, delay=700) => {
@@ -208,7 +243,18 @@ const VideosList = ({ navigation, route }) => {
   }
 
   const saveInput = async (query) => {
-
+    offset.current = 0
+    searchQuery.current = query
+    if (!(query.replace(/\s/g, '') === '')) {      
+      setIsLoading(true)
+      const fetchedByQueryVideos = await fetchVideosByQuery()
+      remainToFetchNum.current = fetchedByQueryVideos.videosNum - count 
+      // console.log(fetchedByQueryVideos.videosNum)
+      setVideosCount(fetchedByQueryVideos.videosNum)
+      setVideosCounterName(fetchedByQueryVideos.counterName)
+      setVideosList(fetchedByQueryVideos.items)
+      setIsLoading(false)
+    }
   }
 
   const handleInputChange = debounce((...args) => saveInput(...args))
@@ -228,7 +274,8 @@ const VideosList = ({ navigation, route }) => {
         }
         iconTouchHandler={currentUserId === ownerId ? openDrawer : goBack}
         showSearchIcon={true}
-        gapForSearchIcon={'50%'}
+        handleInputChange={handleInputChange}
+        onCleaningInput={initVideosList}
         navigation={navigation}
         isScreenFromDrawerMenu={ownerId === currentUserId}
       />

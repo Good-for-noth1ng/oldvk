@@ -13,6 +13,7 @@ import SubscriptionsList from '../screens/SubscriptionsList';
 import UsersGroups from '../screens/UsersGroups';
 import VideosList from '../screens/VideosList';
 import VideoScreen from '../screens/VideoScreen';
+import VideoComments from '../screens/VideoComments';
 import Photos from '../screens/Photos';
 import AlbumPhotos from '../screens/AlbumPhotos';
 import AlbumVideos from '../screens/AlbumVideos';
@@ -47,6 +48,7 @@ const VideosRoute = () => {
       <VideoStack.Screen name='FriendsList' component={Friends} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <VideoStack.Screen name='ReactedOnPostUsers' component={ReactedOnPostUsers} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <VideoStack.Screen name='ReactedOnVideoUsers' component={ReactedOnVideoUsers} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <VideoStack.Screen name='VideoComments' component={VideoComments} options={{headerShown: false, animation: 'slide_from_right'}}/>
     </VideoStack.Navigator>
   )
 }

@@ -276,7 +276,6 @@ const GroupList = ({navigation}) => {
         showSearchIcon={true}
         handleInputChange={handleInputChange}
         navigation={navigation}
-        gapForSearchIcon={'35%'}
         onCleaningInput={initGroupList}
         onOptionsButton={openFilters}
         isScreenFromDrawerMenu={true}

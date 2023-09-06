@@ -120,7 +120,6 @@ const VideosList = ({ navigation, route }) => {
   }
 
   const listHeader = () => {
-    // console.log(videosCount, 'list header')
     return (
       <>
         <DividerWithLine 

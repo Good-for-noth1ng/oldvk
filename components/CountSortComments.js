@@ -3,6 +3,7 @@ import React, { useState} from 'react'
 import FontAwesome from 'react-native-vector-icons/FontAwesome5'
 import { COLORS } from '../constants/theme'
 
+
 const CountSortComments = ({comments, isLightTheme}) => {
   const [commentsCount, setCommentsCount] = useState(comments !== undefined ? comments : 0)
   return (

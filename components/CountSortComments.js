@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import React, { useState} from 'react'
+import React from 'react'
 import FontAwesome from 'react-native-vector-icons/FontAwesome5'
 import { COLORS } from '../constants/theme'
 
 
 const CountSortComments = ({comments, isLightTheme}) => {
-  const [commentsCount, setCommentsCount] = useState(comments !== undefined ? comments : 0)
+  const [commentsCount, setCommentsCount] = React.useState(comments !== undefined ? comments : 0)
   return (
     <View style={[styles.countSortContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
         <Text style={{fontSize: 14, color: COLORS.secondary}}>

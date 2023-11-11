@@ -43,11 +43,11 @@ const CommentsOverlay = ({ slideAnimation, isLightTheme, handleShadowTouch, navi
 
   return (
     <Animated.View style={[styles.box, {transform: [{translateY: slideAnimation}]}]}>
-      <TouchableOpacity style={styles.upperShadow} onPress={onShadowPress} activeOpacity={0}>
-      </TouchableOpacity>
+      {/* <TouchableOpacity style={styles.upperShadow} onPress={onShadowPress} activeOpacity={0}>
+      </TouchableOpacity> */}
       <View style={[styles.menuContainer]}>
-        <TouchableOpacity style={styles.sideShadow} onPress={onShadowPress} activeOpacity={0}>
-        </TouchableOpacity>
+        {/* <TouchableOpacity style={styles.sideShadow} onPress={onShadowPress} activeOpacity={0}>
+        </TouchableOpacity> */}
         <View style={[styles.menu, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.very_dark_gray}]}>
           {
             registrationDateIsFetching ? 
@@ -117,11 +117,11 @@ const CommentsOverlay = ({ slideAnimation, isLightTheme, handleShadowTouch, navi
             </View>
           </View>
         </View>
-        <TouchableOpacity style={styles.sideShadow} onPress={onShadowPress} activeOpacity={0}>
-        </TouchableOpacity>
+        {/* <TouchableOpacity style={styles.sideShadow} onPress={onShadowPress} activeOpacity={0}>
+        </TouchableOpacity> */}
       </View>
-      <TouchableOpacity style={styles.downShadow} onPress={onShadowPress} activeOpacity={0}>
-      </TouchableOpacity>
+      {/* <TouchableOpacity style={styles.downShadow} onPress={onShadowPress} activeOpacity={0}>
+      </TouchableOpacity> */}
     </Animated.View>
   )
 }

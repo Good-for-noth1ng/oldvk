@@ -7,7 +7,7 @@ import CountSortComments from './CountSortComments'
 import { getShortagedNumber } from '../utils/numShortage'
 import { COLORS } from '../constants/theme'
 
-const OpenedPostBottom = ({reposts, likes, views, comments, isLightTheme, ownerId, postId, navigation}) => {
+const OpenedPostBottom = ({reposts, likes, views, comments, isLightTheme, ownerId, postId, navigation, commentsSortType, setCommentsSortType}) => {
   const [isLikePressed, setIsLikePressed] = useState(false);
   const [likesCount, setLikesCount] = useState(likes !== undefined ? likes : 0);
   const [repostsCount, setRepostsCount] = useState(reposts !== undefined ? reposts : 0);
@@ -53,7 +53,12 @@ const OpenedPostBottom = ({reposts, likes, views, comments, isLightTheme, ownerI
         dividerLineWidth={'95%'}
         linePosition={'center'}
       />
-      <CountSortComments comments={comments} isLightTheme={isLightTheme}/>
+      <CountSortComments 
+        comments={comments} 
+        isLightTheme={isLightTheme} 
+        commentsSortType={commentsSortType} 
+        // setCommentsSortType={setCommentsSortType}
+      />
       <DividerWithLine 
         dividerHeight={20} 
         dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}

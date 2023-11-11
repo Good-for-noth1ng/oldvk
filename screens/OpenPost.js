@@ -1,5 +1,5 @@
 import { StyleSheet, View, ActivityIndicator, Text, StatusBar, SafeAreaView, Animated, BackHandler, KeyboardAvoidingView } from 'react-native'
-import React, { useState, useEffect, useCallback, memo, useRef } from 'react'
+import React from 'react'
 import { FlatList } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from 'react-redux'
 import { useFocusEffect } from '@react-navigation/native';
@@ -30,24 +30,25 @@ import Dropdown from '../components/Dropdown';
 
 const OpenPost = ({navigation, route}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = React.useState(true);
   
-  const [post, setPost] = useState()
+  const [post, setPost] = React.useState()
   const { ownerId, postId, shouldScroll } = route.params
    
   const accessToken = useSelector(state => state.user.accessToken);
   const getPostUrl = `https://api.vk.com/method/wall.getById?access_token=${accessToken}&v=5.131&posts=${ownerId}_${postId}&extended=1&fields=photo_100,name`
 
-  const authorInfoIsOpen = useRef(false)
-  const shouldScrollToComments = useRef(shouldScroll)
+  const authorInfoIsOpen = React.useRef(false)
+  const shouldScrollToComments = React.useRef(shouldScroll)
   // const shouldScroll = useSelector(state => state.news.scrollToComments)
-  const [comments, setComments] = useState(null);
-  const commentsList = useRef()
-  const currentLevelCommentsCount = useRef()
-  const offset = useRef(0)
-  
+  const [comments, setComments] = React.useState(null);
+  const commentsList = React.useRef()
+  const currentLevelCommentsCount = React.useRef()
+  const offset = React.useRef(0)
+  const commentsSortType = useSelector(state => state.comments.commentsSortType)
+
   useFocusEffect(
-    useCallback(() => {
+    React.useCallback(() => {
       const onBackPress = () => {
         if (authorInfoIsOpen.current === true) {
           closeCommentMenu()
@@ -60,7 +61,7 @@ const OpenPost = ({navigation, route}) => {
     }, [authorInfoIsOpen.current])
   )
 
-  const slideAnimation = useRef(new Animated.Value(2000)).current
+  const slideAnimation = React.useRef(new Animated.Value(2000)).current
   
   const closeCommentMenu = () => {
     authorInfoIsOpen.current = false
@@ -80,11 +81,12 @@ const OpenPost = ({navigation, route}) => {
     }).start()
   }
 
-  const commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${ownerId}&count=10&post_id=${postId}&sort=asc&offset=${offset.current}&thread_items_count=2&fields=photo_100&extended=1`
+  const commentsUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${ownerId}&count=10&post_id=${postId}&sort=${commentsSortType}&offset=${offset.current}&thread_items_count=2&fields=photo_100&extended=1`
   
   const fetchComments = async () => {
     //check access to post comments 203977193 1555
-    const commentsResponse = await fetch(commentsUrl)
+    const curl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${ownerId}&count=10&post_id=${postId}&sort=${commentsSortType}&offset=${0}&thread_items_count=2&fields=photo_100&extended=1`
+    const commentsResponse = await fetch(curl)
     const postResponse = await fetch(getPostUrl)
     const commentsData = await commentsResponse.json()
     const parsedPostResponse = await postResponse.json()
@@ -179,9 +181,11 @@ const OpenPost = ({navigation, route}) => {
     }
   }
 
-  useEffect(() => { 
+  React.useEffect(() => {
+    setIsLoading(true)
+    shouldScrollToComments.current = true
     fetchComments();
-  }, []);
+  }, [commentsSortType]);
 
   const renderComment = ({item}) => (
     <Comment 
@@ -235,6 +239,8 @@ const OpenPost = ({navigation, route}) => {
             navigation={navigation}
             ownerId={post.owner_id ? post.owner_id : post.source_id}
             postId={post.id ? post.id : post.post_id}
+            commentsSortType={commentsSortType}
+            // setCommentsSortType={setCommentsSortType}
           />
         </>
       )
@@ -258,6 +264,8 @@ const OpenPost = ({navigation, route}) => {
           navigation={navigation}
           ownerId={post.owner_id ? post.owner_id : post.source_id}
           postId={post.id ? post.id : post.post_id}
+          commentsSortType={commentsSortType}
+          // setCommentsSortType={setCommentsSortType}
         />
       </>
     )
@@ -341,17 +349,18 @@ const OpenPost = ({navigation, route}) => {
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps={'handled'}
             keyboardDismissMode={'interactive'}
+            ListEmptyComponent={<View><ActivityIndicator size={30} color={COLORS.primary}/></View>}
           />
           
           { comments ? <TextInputField isLightTheme={isLightTheme}/> : null}
-          <CommentsOverlay 
-            slideAnimation={slideAnimation}
-            isLightTheme={isLightTheme}
-            handleShadowTouch={closeCommentMenu}
-            navigation={navigation}
-          />
         </>
       }
+      <CommentsOverlay 
+        slideAnimation={slideAnimation}
+        isLightTheme={isLightTheme}
+        handleShadowTouch={closeCommentMenu}
+        navigation={navigation}
+      />
       <GlobalShadow />
       <Dropdown isLightTheme={isLightTheme} accessToken={accessToken}/>
     </SafeAreaView>

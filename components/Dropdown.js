@@ -3,11 +3,14 @@ import React from 'react'
 import * as Clipboard from 'expo-clipboard'
 import { useFocusEffect } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux'
+import Feather from 'react-native-vector-icons/Feather'
 import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
+import { setCommentsSortType } from '../redux/commentsSlice';
 import { COLORS } from '../constants/theme'
 
 const Dropdown = ({ isLightTheme, accessToken }) => {
   const dispatch = useDispatch()
+  const commentsSortType = useSelector(state => state.comments.commentsSortType)
   const dropdownData = useSelector(state => state.globalShadow)
   const isShadowExpanded = dropdownData.isOpen
   const data = dropdownData.data
@@ -15,7 +18,7 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
   const shouldPerformAnimation = React.useRef(false)
   const listHeight = React.useRef(new Animated.Value(0)).current
   let listTargetHeight
-  
+  // console.log(data)
   switch (dropdownType) {
     case 'post':
       listTargetHeight = 160
@@ -34,6 +37,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
       break
     case 'profile':
       listTargetHeight = 200
+      break
+    case 'commentsSort':
+      listTargetHeight = 100
       break
     default:
       listTargetHeight = 160
@@ -88,6 +94,28 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
     await Clipboard.setStringAsync(`https://vk.com/wall${data.owner_id ? data.owner_id : data.source_id}_${data.id ? data.id : data.post_id}`)
     ToastAndroid.show('Copied!', ToastAndroid.SHORT)
     dispatch(collapseShadow())
+  }
+
+  const sortCommentsOldFirst = () => {
+    if (commentsSortType === 'asc') {
+      dispatch(collapseShadow())
+    } else {
+      // const func = data.setCommentsSortType 
+      // func('desc')
+      dispatch(collapseShadow())
+      dispatch(setCommentsSortType())
+    }
+  }
+
+  const sortCommentsNewFirst = () => {
+    if (commentsSortType === 'desc') {
+      dispatch(collapseShadow())
+    } else {
+      // const func = data.setCommentsSortType 
+      // func('asc')
+      dispatch(collapseShadow())
+      dispatch(setCommentsSortType())
+    }
   }
 
   if (dropdownType === 'post') {
@@ -313,6 +341,29 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
         </TouchableOpacity>
       </Animated.View>
     )
+  } else if (dropdownType === 'commentsSort') {
+    return (
+      <Animated.View 
+        style={[
+          styles.commentsSortDropdown,
+          { 
+            height: listHeight,   
+          },
+          isLightTheme ? 
+          {backgroundColor: COLORS.white} :
+          {backgroundColor: COLORS.very_dark_gray},
+          {transform: [{translateX: dropdownData.dropdownX - 73}, {translateY: dropdownData.dropdownY}]}
+        ]}>
+        <TouchableOpacity style={styles.commentsSortDropdownButton} activeOpacity={0.5} onPress={sortCommentsOldFirst}>
+          <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Old</Text>
+          {commentsSortType === 'asc' && <Feather name='check' size={20} color={COLORS.primary}/>}
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.commentsSortDropdownButton} activeOpacity={0.5} onPress={sortCommentsNewFirst}>
+          <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>New</Text>
+          {commentsSortType === 'desc' && <Feather name='check' size={20} color={COLORS.primary}/>}
+        </TouchableOpacity>
+      </Animated.View>
+    )
   }
   return null
 }
@@ -327,6 +378,13 @@ const styles = StyleSheet.create({
     zIndex: 5, 
     width: 170,
   },
+  commentsSortDropdown: {
+    borderRadius: 5,
+    elevation: 5, 
+    position: 'absolute', 
+    zIndex: 5, 
+    width: 110,
+  },
   postDropdownMenuButton: {
     position: 'relative', 
     zIndex: 5, 
@@ -334,6 +392,16 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start', 
     justifyContent: 'center', 
     paddingLeft: 5  
+  },
+  commentsSortDropdownButton: {
+    position: 'relative', 
+    zIndex: 5, 
+    flex: 1, 
+    alignItems: 'center', 
+    justifyContent: 'space-between', 
+    paddingLeft: 10,
+    paddingRight: 10,
+    flexDirection: 'row',
   },
   headerDropdown: {
     zIndex: 5,

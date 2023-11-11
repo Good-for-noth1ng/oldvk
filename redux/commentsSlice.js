@@ -16,8 +16,21 @@ export const commentsSlice = createSlice({
     threadMainCommentId: 0,
     ownerId: 0,
     postId: 0,
+    commentsSortType: 'asc',
   },
   reducers: {
+    setCommentsSortType: (state, action) => {
+      let sortType
+      if (state.commentsSortType === 'asc') {
+        sortType = 'desc'
+      } else {
+        sortType = 'asc'
+      }
+      return {
+        ...state,
+        commentsSortType: sortType
+      }
+    },
     setProfiles: (state, action) => {
       return {
         ...state,
@@ -154,6 +167,7 @@ export const {
     setThreadData,
     pushThreadData,
     setDataForFetchingCommentThread,
-    setRegistrationData
+    setRegistrationData,
+    setCommentsSortType
 } = commentsSlice.actions;
 export default commentsSlice.reducer;

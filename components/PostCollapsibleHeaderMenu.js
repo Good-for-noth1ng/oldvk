@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Feather from 'react-native-vector-icons/Feather'
 import { collapseShadow, expandShadow } from '../redux/globalShadowSlice'
 import { COLORS } from '../constants/theme'
+
 //TODO: add different sets of buttons
 const PostCollapsibleHeaderMenu = ({ isLightTheme, accessToken}) => {
     const dispatch = useDispatch()  
@@ -11,15 +12,15 @@ const PostCollapsibleHeaderMenu = ({ isLightTheme, accessToken}) => {
 
     const openDropdownMenu = () => {
       dropdownCoords.current.measure(
-      (x, y, width, height, pageX, pageY) => {
-        dispatch(expandShadow({dropdownX: pageX, dropdownY: pageY, data: null, dropdownType: 'openPost'}))
-      }
-    )
+        (x, y, width, height, pageX, pageY) => {
+          dispatch(expandShadow({dropdownX: pageX, dropdownY: pageY, data: null, dropdownType: 'openPost'}))
+        }
+      )
     }
 
-    const closeDropdownMenu = () => {
-      setIsShadowExpanded(false)
-    }
+    // const closeDropdownMenu = () => {
+    //   setIsShadowExpanded(false)
+    // }
 
     return (
       <View style={styles.container}>

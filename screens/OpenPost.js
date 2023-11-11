@@ -21,6 +21,7 @@ import Repost from '../components/Repost'
 import TextInputField from '../components/TextInputField'
 // import OverlayWithButtons from '../components/OverlayWithButtons'
 // import { getTimeDate } from '../utils/date'
+import { expandShadow, collapseShadow } from '../redux/globalShadowSlice';
 import { COLORS } from '../constants/theme'
 import { findPostAuthor } from '../utils/dataPreparationForComponents';
 import CommentsOverlay from '../components/CommentsOverlay';
@@ -29,7 +30,10 @@ import GlobalShadow from '../components/GlobalShadow';
 import Dropdown from '../components/Dropdown';
 
 const OpenPost = ({navigation, route}) => {
+  const dispatch = useDispatch()
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
+  const isGlobalShadowExpanded = useSelector(state => state.globalShadow.isOpen)
+  const shouldPerfomeAuthorInfoAnim = React.useRef(false);
   const [isLoading, setIsLoading] = React.useState(true);
   
   const [post, setPost] = React.useState()
@@ -63,8 +67,15 @@ const OpenPost = ({navigation, route}) => {
 
   const slideAnimation = React.useRef(new Animated.Value(2000)).current
   
+  React.useEffect(() => {
+    if (isGlobalShadowExpanded == false) {
+      closeCommentMenu()
+    }
+  }, [isGlobalShadowExpanded])
+
   const closeCommentMenu = () => {
     authorInfoIsOpen.current = false
+    dispatch(collapseShadow())
     Animated.timing(slideAnimation, {
       toValue: 2000,
       duration: 500,
@@ -73,9 +84,10 @@ const OpenPost = ({navigation, route}) => {
   }
 
   const openCommentMenu = () => {
-    authorInfoIsOpen.current = true
+    authorInfoIsOpen.current = true 
+    dispatch(expandShadow({dropdownType: 'none'}))
     Animated.timing(slideAnimation, {
-      toValue: 0,
+      toValue: 100,
       duration: 500,
       useNativeDriver: true
     }).start()
@@ -85,6 +97,7 @@ const OpenPost = ({navigation, route}) => {
   
   const fetchComments = async () => {
     //check access to post comments 203977193 1555
+    offset.current = 0
     const curl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&need_likes=1&owner_id=${ownerId}&count=10&post_id=${postId}&sort=${commentsSortType}&offset=${0}&thread_items_count=2&fields=photo_100&extended=1`
     const commentsResponse = await fetch(curl)
     const postResponse = await fetch(getPostUrl)
@@ -298,10 +311,6 @@ const OpenPost = ({navigation, route}) => {
         )
     }
   }
-
-  // const handleClosingCommentAuthorInfo = () => {
-  //   dispatch(closeAuthorInfo());
-  // }
 
   const scrollingToComments = () => {
     if(shouldScrollToComments.current) {

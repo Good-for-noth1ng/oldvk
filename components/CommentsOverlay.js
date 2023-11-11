@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Animated, TouchableOpacity, Image, ActivityIndicator, ToastAndroid } from 'react-native'
+import { StyleSheet, Text, View, Animated, TouchableOpacity, Image, ActivityIndicator, ToastAndroid, Dimensions } from 'react-native'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import * as Clipboard from 'expo-clipboard'
@@ -9,6 +9,7 @@ import Octicons from 'react-native-vector-icons/Octicons'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 
+const width = Dimensions.get('window').width
 const CommentsOverlay = ({ slideAnimation, isLightTheme, handleShadowTouch, navigation }) => {
   const commentsGeneralData = useSelector(state => state.comments); 
   
@@ -42,12 +43,7 @@ const CommentsOverlay = ({ slideAnimation, isLightTheme, handleShadowTouch, navi
   }
 
   return (
-    <Animated.View style={[styles.box, {transform: [{translateY: slideAnimation}]}]}>
-      {/* <TouchableOpacity style={styles.upperShadow} onPress={onShadowPress} activeOpacity={0}>
-      </TouchableOpacity> */}
-      <View style={[styles.menuContainer]}>
-        {/* <TouchableOpacity style={styles.sideShadow} onPress={onShadowPress} activeOpacity={0}>
-        </TouchableOpacity> */}
+    <Animated.View style={[styles.box, {transform: [{translateY: slideAnimation}, {translateX: (width - 320) / 2 }]}]}>
         <View style={[styles.menu, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.very_dark_gray}]}>
           {
             registrationDateIsFetching ? 
@@ -117,11 +113,6 @@ const CommentsOverlay = ({ slideAnimation, isLightTheme, handleShadowTouch, navi
             </View>
           </View>
         </View>
-        {/* <TouchableOpacity style={styles.sideShadow} onPress={onShadowPress} activeOpacity={0}>
-        </TouchableOpacity> */}
-      </View>
-      {/* <TouchableOpacity style={styles.downShadow} onPress={onShadowPress} activeOpacity={0}>
-      </TouchableOpacity> */}
     </Animated.View>
   )
 }
@@ -130,26 +121,13 @@ export default CommentsOverlay
 
 const styles = StyleSheet.create({
   box: {
-    width: '100%',
-    height: '100%',
-    zIndex: 0,
+    width: 320,
+    height: '55%',
+    zIndex: 6,
     position: 'absolute',
   },
-  menuContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: '100%',
-    height: '60%' //60%
-  },
-  upperShadow: {
-    backgroundColor: COLORS.black,
-    opacity: 0,
-    width: '100%',
-    height: '20%',
-  },
   menu: {
-    width: '94%',
+    width: '100%',
     height: '100%',
     elevation: 30,
     shadowColor: COLORS.black,
@@ -158,18 +136,6 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     paddingBottom: 15,
     paddingLeft: 15,
-  },
-  sideShadow: {
-    height: '100%',
-    width: '3%',
-    backgroundColor: COLORS.black,
-    opacity: 0,
-  },
-  downShadow: {
-    backgroundColor: COLORS.black,
-    opacity: 0,
-    width: '100%',
-    height: '40%',
   },
   nameAvatarContainer: {
     width: '100%',

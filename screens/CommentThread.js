@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Animated, BackHandler } from 'react-native'
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React from 'react'
 import { FlatList } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from 'react-redux'
 import { useFocusEffect } from '@react-navigation/native';
@@ -9,6 +9,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 // import Feather from 'react-native-vector-icons/Feather'
 // import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 // import Octicons from 'react-native-vector-icons/Octicons'
+import { expandShadow, collapseShadow } from '../redux/globalShadowSlice';
 import CustomHeader from '../components/CustomHeader'
 import Comment from '../components/Comment';
 import { COLORS } from '../constants/theme'
@@ -18,30 +19,33 @@ import DividerWithLine from '../components/DividerWithLine';
 import TextInputField from '../components/TextInputField';
 import OverlayWithButtons from '../components/OverlayWithButtons';
 import CommentsOverlay from '../components/CommentsOverlay';
+import GlobalShadow from '../components/GlobalShadow';
 
 const CommentThread = ({navigation, route}) => {
-  // const dispatch = useDispatch()
+  const dispatch = useDispatch()
   const accessToken = useSelector(state => state.user.accessToken)
   // const commentsGeneralData = useSelector(state => state.comments)
+  const isGlobalShadowExpanded = useSelector(state => state.globalShadow.isOpen)
+  const shouldPerfomeAuthorInfoAnim = React.useRef(false);
   const {threadMainCommentId, ownerId, postId} = route.params
   
-  const authorInfoIsOpen = useRef(false)
-  const shouldScroll = useRef(true)
+  const authorInfoIsOpen = React.useRef(false)
+  const shouldScroll = React.useRef(true)
   let getThreadUrl = `https://api.vk.com/method/wall.getComments?access_token=${accessToken}&v=5.131&count=10&comment_id=${threadMainCommentId}&extended=1&fields=photo_100&need_likes=1&owner_id=${ownerId}&post_id=${postId}&sort=asc`
   let getThreadMainCommentUrl = `https://api.vk.com/method/wall.getComment?access_token=${accessToken}&v=5.131&comment_id=${threadMainCommentId}&extended=1&fields=photo_100&owner_id=${ownerId}`
-  const [isLoading, setIsLoading] = useState(true)
-  const [comments, setComments] = useState(null)
-  const [mainComment, setMainComment] = useState(null)
-  const threadList = useRef(null)
-  const offset = useRef(10)
-  const currentLevelCommentsCount = useRef()
+  const [isLoading, setIsLoading] = React.useState(true)
+  const [comments, setComments] = React.useState(null)
+  const [mainComment, setMainComment] = React.useState(null)
+  const threadList = React.useRef(null)
+  const offset = React.useRef(10)
+  const currentLevelCommentsCount = React.useRef()
   
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
 
-  const slideAnimation = useRef(new Animated.Value(2000)).current
+  const slideAnimation = React.useRef(new Animated.Value(2000)).current
 
   useFocusEffect(
-    useCallback(() => {
+    React.useCallback(() => {
       const onBackPress = () => {
         if (authorInfoIsOpen.current === true) {
           closeCommentMenu()
@@ -54,8 +58,15 @@ const CommentThread = ({navigation, route}) => {
     }, [authorInfoIsOpen.current])
   )
 
+  React.useEffect(() => {
+    if (isGlobalShadowExpanded == false) {
+      closeCommentMenu()
+    }
+  }, [isGlobalShadowExpanded])
+
   const closeCommentMenu = () => {
     authorInfoIsOpen.current = false
+    dispatch(collapseShadow())
     Animated.timing(slideAnimation, {
       toValue: 2000,
       duration: 500,
@@ -65,8 +76,9 @@ const CommentThread = ({navigation, route}) => {
 
   const openCommentMenu = () => {
     authorInfoIsOpen.current = true
+    dispatch(expandShadow({dropdownType: 'none'}))
     Animated.timing(slideAnimation, {
-      toValue: 0,
+      toValue: 100,
       duration: 500,
       useNativeDriver: true
     }).start()
@@ -99,7 +111,7 @@ const CommentThread = ({navigation, route}) => {
     setIsLoading(false)
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchThreadComments()
   }, [])
 
@@ -260,14 +272,15 @@ const CommentThread = ({navigation, route}) => {
             keyboardDismissMode={'interactive'}
           />
           <TextInputField isLightTheme={isLightTheme}/>
-          <CommentsOverlay 
-            slideAnimation={slideAnimation}
-            isLightTheme={isLightTheme}
-            handleShadowTouch={closeCommentMenu}
-            navigation={navigation}
-          />
         </>
       }
+      <CommentsOverlay 
+        slideAnimation={slideAnimation}
+        isLightTheme={isLightTheme}
+        handleShadowTouch={closeCommentMenu}
+        navigation={navigation}
+      />
+      <GlobalShadow />
     </SafeAreaView>
   )
 }

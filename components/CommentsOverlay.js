@@ -10,7 +10,7 @@ import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 
 const width = Dimensions.get('window').width
-const CommentsOverlay = ({ slideAnimation, isLightTheme, handleShadowTouch, navigation }) => {
+const CommentsOverlay = ({ slideAnimation, isLightTheme, navigation }) => {
   const commentsGeneralData = useSelector(state => state.comments); 
   
   const authorName = commentsGeneralData.authorName;
@@ -21,9 +21,6 @@ const CommentsOverlay = ({ slideAnimation, isLightTheme, handleShadowTouch, navi
   const authorId = commentsGeneralData.authorId
   const commentText = commentsGeneralData.commentText
   // console.log(ownerId)
-  const onShadowPress = () => {
-    handleShadowTouch()
-  }
 
   const copyCommentText = async () => {
     await Clipboard.setStringAsync(commentText)

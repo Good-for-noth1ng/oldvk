@@ -22,11 +22,14 @@ import PostDropdownMenu from '../components/PostDropdownMenu'
 import GlobalShadow from '../components/GlobalShadow'
 import Dropdown from '../components/Dropdown'
 import UserHeaderCollapsibleMenu from '../components/UserHeaderCollapsibleMenu'
+import ProfileOverlay from '../components/ProfileOverlay'
 // fix redux calls
 const UserProfile = ({navigation, route}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const [isUserInfoExpanded, setIsUserInfoExpanded] = useState(false)
+  const isGlobalShadowExpanded = useSelector(state => state.globalShadow.isOpen)
+  const authorInfoIsOpen = React.useRef(false)
   const currentUserId = useSelector(state => state.user.userId)
   const userId = route?.params !== undefined ? route.params.userId : currentUserId
   console.log(currentUserId, userId)
@@ -64,16 +67,27 @@ const UserProfile = ({navigation, route}) => {
     const userWallContentData = await userWallContentResponse.json()
     let isOnlineUsingMobile
     let isOnlineUsingPC
-    if (userInfoData.response[0].online === 1 && (userInfoData.response[0].online_app || userInfoData.response[0].online_mobile)) {
+    if (userInfoData.response[0].online === 1 && userInfoData.response[0].last_seen.platform < 6) {
       isOnlineUsingMobile = true
       isOnlineUsingPC = false
-    } else if (userInfoData.response[0].online === 1) {
+    } else if (userInfoData.response[0].online === 1 && userInfoData.response[0].last_seen.platform > 5) {
       isOnlineUsingMobile = false
       isOnlineUsingPC = true
     } else {
       isOnlineUsingMobile = false
       isOnlineUsingPC = false
     }
+    // console.log(userInfoData.response[0], userInfoData.response[0])
+    // if (userInfoData.response[0].online === 1 && (userInfoData.response[0].online_app || userInfoData.response[0].online_mobile)) {
+    //   isOnlineUsingMobile = true
+    //   isOnlineUsingPC = false
+    // } else if (userInfoData.response[0].online === 1) {
+    //   isOnlineUsingMobile = false
+    //   isOnlineUsingPC = true
+    // } else {
+    //   isOnlineUsingMobile = false
+    //   isOnlineUsingPC = false
+    // }
     setWallHeaderData({
       userName: `${userInfoData.response[0].first_name} ${userInfoData.response[0].last_name}`,
       canAccessClosed: userInfoData.response[0].can_access_closed, 
@@ -135,11 +149,11 @@ const UserProfile = ({navigation, route}) => {
     navigation.goBack()
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchData()
   }, [])
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (currentUserId === userId) {
       const drawerNavigator = navigation.getParent()
       const blur = drawerNavigator.addListener('blur', () => {
@@ -260,7 +274,13 @@ const UserProfile = ({navigation, route}) => {
         headerName={<ProfileHeaderName userShortName={wallHeaderData.screenName}/>}
         isScreenFromDrawerMenu={userId === currentUserId}
         navigation={navigation}
-        rightsideIconComponent={<UserHeaderCollapsibleMenu isLightTheme={isLightTheme} accessToken={accessToken}/>}
+        rightsideIconComponent={
+          <UserHeaderCollapsibleMenu 
+            isLightTheme={isLightTheme} 
+            accessToken={accessToken}
+            data={{userId, name: wallHeaderData.userName ? wallHeaderData.userName : '', imgUrl: wallHeaderData.avatarUrl ? wallHeaderData.avatarUrl : ''}}
+          />
+        }
       />
       {
         isLoading ?
@@ -285,10 +305,17 @@ const UserProfile = ({navigation, route}) => {
                 tintColor={isLightTheme ? COLORS.primary : COLORS.white}
               />
             }
+            ListEmptyComponent={
+              !(wallHeaderData.canAccessClosed === false && wallHeaderData.isClosed === true) ?
+              <View style={styles.noPostsContainer}>
+                <Text style={[styles.noPostsText, {color: COLORS.secondary}]}>No posts yet</Text>
+              </View> : null
+            }
           />
         </>
       }
       <Dropdown isLightTheme={isLightTheme} accessToken={accessToken}/>
+      <ProfileOverlay isLightTheme={isLightTheme}/>
       {/* <PostDropdownMenu /> */}
       <GlobalShadow />
     </SafeAreaView>
@@ -327,5 +354,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  noPostsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10
+  },
+  noPostsText: {
+    fontSize: 17,
+    fontWeight: 'bold'
   }
 })

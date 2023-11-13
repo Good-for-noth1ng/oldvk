@@ -70,22 +70,23 @@ export default BottomPost
 
 const styles = StyleSheet.create({
     postBottomContainer: {
-        display: 'flex',
-        paddingLeft: 0,
-        paddingRight: 5,
+        // display: 'flex',
+        // paddingLeft: 0,
+        // paddingRight: 5,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between'
     },
     bottomRightContainer: {
-        display: 'flex',
-        width: '33%',
+        // display: 'flex',
+        // width: '33%',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        gap: 10
     },
     buttonText: {
-        marginLeft: 3,
+        // marginLeft: 3,
         color: COLORS.secondary
     },
     buttonContainer: {
@@ -93,11 +94,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        width: 45,
+        // width: 45,
         height: 30,
+        gap: 6
         // backgroundColor: COLORS.smoke
       },
     iconButton: {
-        marginRight: 3,
+        // marginRight: 3,
     },
 })

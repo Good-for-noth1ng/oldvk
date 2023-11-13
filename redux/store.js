@@ -13,6 +13,7 @@ import ageCollapsibleReducer from "./ageCollapsibleOption"
 import sortGroupsCollapsibleReducer from "./sortGroupsCollapsibleOption"
 import communityTypeCollapsibleOption from "./communityTypeCollapsibleOption";
 import globalShadowReducer from "./globalShadowSlice";
+import regDateReducer from "./regDateSlice";
 
 export const store = configureStore({
   reducer: {
@@ -29,7 +30,8 @@ export const store = configureStore({
     ageRange: ageCollapsibleReducer,
     groupsSortType: sortGroupsCollapsibleReducer,
     communityType: communityTypeCollapsibleOption,
-    globalShadow: globalShadowReducer
+    globalShadow: globalShadowReducer,
+    userRegDate: regDateReducer, 
   },
   
   // middleware: (getDefaultMiddleware) => {

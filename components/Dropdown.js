@@ -5,6 +5,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux'
 import Feather from 'react-native-vector-icons/Feather'
 import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
+import { setUserForFetchingInfo } from '../redux/regDateSlice';
 import { setCommentsSortType } from '../redux/commentsSlice';
 import { COLORS } from '../constants/theme'
 
@@ -36,7 +37,7 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
       listTargetHeight = 250
       break
     case 'profile':
-      listTargetHeight = 200
+      listTargetHeight = 250
       break
     case 'commentsSort':
       listTargetHeight = 100
@@ -77,6 +78,41 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
       shouldPerformAnimation.current = true
     }
   }, [isShadowExpanded])
+
+  const openProfileRegistartionDate = () => {
+    dispatch(collapseShadow())
+    dispatch(expandShadow({dropdownType: 'none'}))
+    dispatch(setUserForFetchingInfo({registrationDate: 0, name: data.name, imgUrl: data.imgUrl, userId: data.userId, isFetching: true, isOpen: true}))
+    let profileDataRegUrl = `https://vkdia.com/pages/fake-vk-profile/registration-date?vkId=${data.userId}`;
+    const re = /^\d*$/g; 
+    if (data.userId > 0) {
+      fetch(profileDataRegUrl)
+      .then(response => response.json())
+      .then(result => {
+        const regDate = result.regDate 
+        if (re.test(regDate)) {
+          dispatch(
+            setUserForFetchingInfo({
+              name: data.name, 
+              imgUrl: data.imgUrl, 
+              userId: data.userId, 
+              isFetching: false, 
+              registrationDate: regDate, 
+              isOpen: true,
+            })
+          )
+        }
+      })
+    } else {
+      dispatch(setUserForFetchingInfo({
+        registrationDate: 0,
+        name: '',
+        imgUrl: 'banned',
+        userId: vkId,
+        isFetching: false,
+      }))
+    }
+  }
 
   const addPostToFave = async () => {
     const url = `https://api.vk.com/method/fave.addPost?access_token=${accessToken}&v=5.131&owner_id=${data.owner_id ? data.owner_id : data.source_id}&id=${data.id ? data.id : data.post_id}${data.access_key ? `&access_key=${data.access_key}` : ''}`
@@ -338,6 +374,15 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
           ]} 
         >
           <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Report</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[
+            styles.headerDropdownOptionContainer,  
+            isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
+          ]}
+          onPress={openProfileRegistartionDate}
+        >
+          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Registration Date</Text>
         </TouchableOpacity>
       </Animated.View>
     )

@@ -29,7 +29,8 @@ const PostPhotos = ({postPhotos}) => {
         <Image 
           source={{uri: imageUrl}}
           style={{width: '100%', height: '100%'}}
-          // resizeMode={resizeMode}
+          // style={{flex: 1, width: null, height: null}}
+          // resizeMode={'contain'}
         />
     </TouchableOpacity>)
   }

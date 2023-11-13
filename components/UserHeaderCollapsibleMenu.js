@@ -5,14 +5,14 @@ import Feather from 'react-native-vector-icons/Feather'
 import { collapseShadow, expandShadow } from '../redux/globalShadowSlice'
 import { COLORS } from '../constants/theme'
 
-const UserHeaderCollapsibleMenu = ({isLightTheme, accessToken}) => {
+const UserHeaderCollapsibleMenu = ({ isLightTheme, accessToken, data }) => {
     const dispatch = useDispatch()
     const dropdownCoords = React.useRef()
   
     const openDropdownMenu = () => {
       dropdownCoords.current.measure(
         (x, y, width, height, pageX, pageY) => {
-          dispatch(expandShadow({dropdownX: pageX, dropdownY: pageY, data: null, dropdownType: 'profile'}))
+          dispatch(expandShadow({dropdownX: pageX, dropdownY: pageY, data: data, dropdownType: 'profile'}))
         }
       )
     }

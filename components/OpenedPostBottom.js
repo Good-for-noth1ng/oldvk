@@ -29,7 +29,7 @@ const OpenedPostBottom = ({reposts, likes, views, comments, isLightTheme, ownerI
   
   return (
     <>
-      <View style={isLightTheme ? styles.bottomPostContainerLight : styles.bottomPostContainerDark}>
+      <View style={[styles.bottomPostContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
         <View style={styles.leftButtonsContainer}>
           <TouchableOpacity onPress={handleLikePress} activeOpacity={0.8} style={styles.leftButtons} onLongPress={navigateToReactedUsersList}>
             <AntDesign name='like1' style={styles.iconsInfoGap} size={20} color={isLikePressed ? COLORS.primary : unactiveButtonColor}/>
@@ -45,6 +45,7 @@ const OpenedPostBottom = ({reposts, likes, views, comments, isLightTheme, ownerI
           <Text style={{color: COLORS.secondary}}>{getShortagedNumber(views)}</Text>
         </View>
       </View>
+
       <DividerWithLine  
         dividerHeight={40} 
         dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
@@ -70,7 +71,7 @@ const OpenedPostBottom = ({reposts, likes, views, comments, isLightTheme, ownerI
 export default memo(OpenedPostBottom)
 
 const styles = StyleSheet.create({
-  bottomPostContainerLight: {
+  bottomPostContainer: {
     display: 'flex', 
     flexDirection: 'row', 
     justifyContent: 'space-between',
@@ -78,34 +79,32 @@ const styles = StyleSheet.create({
     paddingLeft: 7,
     paddingRight: 7,
     height: 20,
-    backgroundColor: COLORS.white
+    //backgroundColor: COLORS.white
   },
-  bottomPostContainerDark: {
-    display: 'flex', 
-    flexDirection: 'row', 
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingLeft: 7,
-    paddingRight: 7,
-    height: 20,
-    backgroundColor: COLORS.primary_dark
-  },
-  leftButtonsContainer: {
-    display: 'flex', 
+  // bottomPostContainerDark: {
+  //   display: 'flex', 
+  //   flexDirection: 'row', 
+  //   justifyContent: 'space-between',
+  //   alignItems: 'center',
+  //   paddingLeft: 7,
+  //   paddingRight: 7,
+  //   height: 20,
+  //   backgroundColor: COLORS.primary_dark
+  // },
+  leftButtonsContainer: { 
     flexDirection: 'row',
-    width: '33%',
-    justifyContent: 'space-between'
+    // width: '33%',
+    justifyContent: 'flex-start',
+    gap: 20
   },
   viewsButton: {
-    width: '16%',
-    display: 'flex',
+    // width: '16%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
   },
   leftButtons: {
-    width: '38%',
-    display: 'flex',
+    // width: '38%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',

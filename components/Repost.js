@@ -56,7 +56,11 @@ const Repost = ({ data, navigation, openedPost, isLightMode, id, accessToken }) 
   }
 
   return (
-    <View style={[styles.postContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+    <View style={[
+      styles.postContainer, 
+      isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark},
+      openedPost && {borderRadius: 5}
+    ]}>
       <PostHeader 
         dataDate={data.date}
         navigation={navigation} 
@@ -148,7 +152,9 @@ const styles = StyleSheet.create({
   postContainer: {
     padding: 10,
     marginTop: 5,
-    borderRadius: 3,
+    // borderRadius: 3,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
     // backgroundColor: COLORS.white,
   },
   // postContainerDark: {

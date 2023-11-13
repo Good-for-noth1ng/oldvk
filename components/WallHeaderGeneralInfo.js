@@ -17,7 +17,7 @@ const WallHeaderGeneralInfo = ({ name, avatarUrl, lastSeen, status, isOnlineUsin
   
   let onlineStatus
   if (lastSeen !== undefined && !isOnlineUsingMobile && !isOnlineUsingPC) {
-    if (lastSeen.platform > 5) {
+    if (lastSeen.platform < 6) {
       onlineStatus = (
         <View style={styles.onlineStatusContainer}>
           <Ionicons name='phone-portrait-sharp' color={COLORS.secondary} size={14}/>

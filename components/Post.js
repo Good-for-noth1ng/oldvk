@@ -75,7 +75,11 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => 
   
   return (
     <View 
-      style={[styles.postContainer, isLigthTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}
+      style={[
+        styles.postContainer, 
+        isLigthTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark},
+        openedPost && {borderRadius: 5}
+      ]}
 
     >
       <PostHeader 
@@ -153,7 +157,9 @@ const styles = StyleSheet.create({
   postContainer: {
     padding: 10,
     marginTop: 5,
-    borderRadius: 5,
+    // borderRadius: 5,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5,
     position: 'relative'
   },
 })

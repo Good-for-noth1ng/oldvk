@@ -33,9 +33,8 @@ const OpenPost = ({navigation, route}) => {
   const dispatch = useDispatch()
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const isGlobalShadowExpanded = useSelector(state => state.globalShadow.isOpen)
-  const shouldPerfomeAuthorInfoAnim = React.useRef(false);
   const [isLoading, setIsLoading] = React.useState(true);
-  
+  const isInitRender = React.useRef(true)
   const [post, setPost] = React.useState()
   const { ownerId, postId, shouldScroll } = route.params
    
@@ -196,7 +195,10 @@ const OpenPost = ({navigation, route}) => {
 
   React.useEffect(() => {
     setIsLoading(true)
-    shouldScrollToComments.current = true
+    if (!isInitRender) {
+      shouldScrollToComments.current = true
+    }
+    isInitRender.current = false
     fetchComments();
   }, [commentsSortType]);
 
@@ -353,12 +355,14 @@ const OpenPost = ({navigation, route}) => {
             onEndReached={fetchMoreComments}
             ListFooterComponent={listFooter}
             onEndReachedThreshold={0.8}
-            style={[styles.list, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}
+            style={[
+              styles.list, 
+              // isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}
+            ]}
             keyExtractor={keyExtractor}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps={'handled'}
             keyboardDismissMode={'interactive'}
-            ListEmptyComponent={<View><ActivityIndicator size={30} color={COLORS.primary}/></View>}
           />
           
           { comments ? <TextInputField isLightTheme={isLightTheme}/> : null}
@@ -367,7 +371,6 @@ const OpenPost = ({navigation, route}) => {
       <CommentsOverlay 
         slideAnimation={slideAnimation}
         isLightTheme={isLightTheme}
-        handleShadowTouch={closeCommentMenu}
         navigation={navigation}
       />
       <GlobalShadow />

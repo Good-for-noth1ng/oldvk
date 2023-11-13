@@ -21,14 +21,14 @@ const VideoScreen = ({navigation, route}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   console.log(videoId, accessKey)
-  const [video, setVideo] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [name, setName] = useState('')
-  const [imgUrl, setImgUrl] = useState('')
-  const [isFriend, setIsFriend] = useState(0)
-  const [isMember, setIsMember] = useState(0)
-  const [likesCount, setLikesCount] = useState(likes)
-  const [liked, setLiked] = useState(isLiked === 1 ? true : false)
+  const [video, setVideo] = React.useState(null)
+  const [isLoading, setIsLoading] = React.useState(true)
+  const [name, setName] = React.useState('')
+  const [imgUrl, setImgUrl] = React.useState('')
+  const [isFriend, setIsFriend] = React.useState(0)
+  const [isMember, setIsMember] = React.useState(0)
+  const [likesCount, setLikesCount] = React.useState(likes)
+  const [liked, setLiked] = React.useState(isLiked === 1 ? true : false)
 
   const webViewJsScript = `
   const meta = document.createElement('meta'); 
@@ -108,7 +108,7 @@ const VideoScreen = ({navigation, route}) => {
       setLiked(true)
     }
   }
-  useEffect(() => {
+  React.useEffect(() => {
     fetchVideoInfo()
   }, [])
 

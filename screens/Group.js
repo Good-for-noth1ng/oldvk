@@ -256,6 +256,12 @@ const Group = ({navigation, route}) => {
               tintColor={isLightTheme ? COLORS.primary : COLORS.white}
             />
           }
+          ListEmptyComponent={
+            wallHeaderData.canAccess ?
+            <View style={styles.noPostsContainer}>
+              <Text style={[styles.noPostsText, {color: COLORS.secondary}]}>No posts yet</Text>
+            </View> : null
+          }
         />
       }
       <Dropdown isLightTheme={isLightTheme} accessToken={accessToken}/>
@@ -293,4 +299,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 5
   },
+  noPostsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10
+  },
+  noPostsText: {
+    fontSize: 17,
+    fontWeight: 'bold'
+  }
 })

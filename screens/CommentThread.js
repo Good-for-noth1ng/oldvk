@@ -261,7 +261,9 @@ const CommentThread = ({navigation, route}) => {
             data={comments}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
-            style={[styles.list, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}
+            style={[
+              styles.list,
+            ]}
             ItemSeparatorComponent={commentSeparator}
             ListHeaderComponent={listHeader}
             ListFooterComponent={listBottom}

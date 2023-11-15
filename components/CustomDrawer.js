@@ -19,7 +19,7 @@ const CustomDrawer = (props) => {
 
   return (
     <View style={{flex: 1, backgroundColor: COLORS.very_dark_gray}}>
-      <DrawerContentScrollView>
+      <DrawerContentScrollView showsVerticalScrollIndicator={false}>
         {/* <TouchableOpacity style={styles.profileDrawerContainer} activeOpacity={0.8} onPress={goToUserProfilePage}>
           <Image source={{uri: urlDrawerPhoto}} style={styles.profileImageStyle}/>
           <View>

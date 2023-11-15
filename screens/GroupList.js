@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ActivityIndicator, RefreshControl, BackHandler, Animated } from 'react-native'
 import React, { useCallback } from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useFocusEffect } from '@react-navigation/native';
 import { useSelector } from 'react-redux'
 import uuid from 'react-native-uuid';
@@ -13,6 +14,7 @@ import { selectSortType } from '../redux/sortGroupsCollapsibleOption';
 import { selectCommunityType } from '../redux/communityTypeCollapsibleOption';
 import { CollapsibleOption } from '../components/Buttons';
 import Overlay from '../components/Overlay';
+import VisitedGroups from '../components/VisitedGroups';
 
 
 const GroupList = ({navigation}) => {
@@ -26,6 +28,7 @@ const GroupList = ({navigation}) => {
   const offset = React.useRef(0)
   const searchQuery = React.useRef('')
   const count = 5
+  const visitedGroups = React.useRef([])
   const [groupsCounterName, setGroupsCounterName] = React.useState('All communities')
   const slideAnimation = React.useRef(new Animated.Value(2000)).current
   const filterIsOpen = React.useRef(false)
@@ -41,6 +44,7 @@ const GroupList = ({navigation}) => {
   const chosenCommunityType = communityType.selectedCommunityType
 
   React.useEffect(() => {
+    checkForVisitedGroups()
     initGroupList()
   }, [])
   
@@ -60,8 +64,33 @@ const GroupList = ({navigation}) => {
     return blur, focus, drawerItemPress
   }, [navigation])
 
+  // const deleteGroupFromVisited = async () => {
+  //   const visitedGroupsFromStorage = await AsyncStorage.getItem("visitedGroups");
+  //   const visitedGroups = JSON.parse(visitedGroupsFromStorage);
+  //   for (let i = 0; i < visitedGroups.length; i++) {
+  //     if (visitedGroups[i].id === groupId) {
+  //       visitedGroups.splice(i, 1)
+  //       break
+  //     }
+  //   }
+  //   await AsyncStorage.setItem("visitedGroups", JSON.stringify([...visitedGroups, {id: groupId, img: img, name: name}]))
+  // }
+
+  const checkForVisitedGroups = async () => {
+    try {
+      const visitedGroupsStorageData = await AsyncStorage.getItem("visitedGroups");
+      const visitedGroupsData = JSON.parse(visitedGroupsStorageData)
+      if (visitedGroupsData !== null) {
+        visitedGroups.current = visitedGroupsData
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const refreshGroupList = () => {
     setIsLoading(true)
+    checkForVisitedGroups()
     initGroupList()
   }
 
@@ -103,6 +132,11 @@ const GroupList = ({navigation}) => {
           borderTR={5} 
           dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
         />
+        {
+          visitedGroups.current.length > 0 ?
+          <VisitedGroups visitedGroups={visitedGroups.current} isLightTheme={isLightTheme} navigation={navigation}/>
+          : null
+        }
         <SearchResultHeaderCounter 
           isLightTheme={isLightTheme}
           counterNum={groupsCount}
@@ -297,8 +331,8 @@ const GroupList = ({navigation}) => {
             <RefreshControl 
               refreshing={isLoading}
               onRefresh={refreshGroupList}
-              colors={[COLORS.primary, COLORS.white]}
-              tintColor={isLightTheme ? COLORS.primary : COLORS.white} 
+              colors={[COLORS.primary, COLORS.white, COLORS.secondary]}
+              tintColor={COLORS.primary} 
             />
           }    
           style={styles.list}

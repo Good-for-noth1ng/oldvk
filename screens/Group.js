@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Ref
 import React, { useEffect, useState, useLayoutEffect, useRef } from 'react'
 import { FlatList } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from 'react-redux'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { COLORS } from '../constants/theme'
 import CustomHeader from '../components/CustomHeader'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -27,7 +28,7 @@ import Dropdown from '../components/Dropdown';
 
 //TODO: replace selectors on usestate
 const Group = ({navigation, route}) => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const accessToken = useSelector(state => state.user.accessToken)
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const [wallHeaderData, setWallHeaderData] = useState({screenName: 'Community'})
@@ -53,6 +54,26 @@ const Group = ({navigation, route}) => {
     navigation.goBack()
   }
 
+  const addGroupToVisitedStack = async (img, name) => {
+    try {
+      const visitedGroupsFromStorage = await AsyncStorage.getItem("visitedGroups");
+      const visitedGroups = JSON.parse(visitedGroupsFromStorage);
+      if (visitedGroups === null) {
+        await AsyncStorage.setItem("visitedGroups", JSON.stringify([{id: groupId, img: img, name: name}]))
+      } else {
+        for (let i = 0; i < visitedGroups.length; i++) {
+          if (visitedGroups[i].id === groupId) {
+            visitedGroups.splice(i, 1)
+            break
+          }
+        }
+        await AsyncStorage.setItem("visitedGroups", JSON.stringify([...visitedGroups, {id: groupId, img: img, name: name}]))
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   const fetchData = async () => {
     const response = await fetch(fetchGroupWallContentUrl)
     const groupHeaderResponse = await fetch(fetchGroupInfoUrl)
@@ -63,6 +84,7 @@ const Group = ({navigation, route}) => {
     const contactsDetailedRes = await contacts.json()
     const contactsDetailed = contactsDetailedRes.response
     const {cleanedLinks, cleanedUsers} = cleanAdditionalInfoLinksAndUsers(groupHeaderData.response[0].links, groupHeaderData.response[0].contacts, contactsDetailed)
+    addGroupToVisitedStack(groupHeaderData.response[0].photo_200, groupHeaderData.response[0].name)
     setWallHeaderData({
       communityName: groupHeaderData.response[0].name,
       communityMembersCount: groupHeaderData.response[0].members_count,

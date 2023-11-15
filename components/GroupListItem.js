@@ -1,13 +1,11 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { COLORS } from '../constants/theme'
-import { useDispatch } from 'react-redux'
-import { setGroupID } from '../redux/groupSlice'
+// import { useDispatch } from 'react-redux'
+// import { setGroupID } from '../redux/groupSlice'
 import { getShortagedNumber } from '../utils/numShortage'
 
 const GroupListItem = ({data, navigation, isLightTheme}) => {
-  const dispatch = useDispatch()
-    
   let name = data.name.slice(0,24)
   if (name !== data.name) {
     name += '...'

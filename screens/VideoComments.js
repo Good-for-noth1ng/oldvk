@@ -150,7 +150,7 @@ const VideoComments = ({ navigation, route }) => {
           ListHeaderComponent={listHeader}
           style={[
             {marginLeft: 5, marginRight: 5}, 
-            isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}
+            // isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}
           ]}
           showsVerticalScrollIndicator={false}
           ListFooterComponent={footer}

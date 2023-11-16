@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, Linking } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Linking, Modal } from 'react-native'
 import React from 'react'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Feather from 'react-native-vector-icons/Feather'
+import ImageViewer from 'react-native-image-zoom-viewer'
 import { COLORS } from '../constants/theme'
 import { getDuration } from '../utils/numShortage';
 

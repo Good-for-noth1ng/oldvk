@@ -1,12 +1,18 @@
-import { StyleSheet, Text, View, Image, Modal, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Image, Modal, TouchableOpacity, Dimensions, Touchable } from 'react-native'
 import React, {useState,  memo } from 'react'
 import uuid from 'react-native-uuid';
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Fontisio from 'react-native-vector-icons/Fontisto'
+import Feather from 'react-native-vector-icons/Feather'
 import { COLORS } from '../constants/theme';
 import { postWidth } from '../constants/theme';
 import ImageViewer from 'react-native-image-zoom-viewer'
 
+const screenWidth = Dimensions.get('window').width
 const PostPhotos = ({postPhotos}) => {
-  const [modalVisible, setModalVisible] = useState(false)
+  const [modalVisible, setModalVisible] = React.useState(false)
+  const openImageIndex = React.useRef(0)
   const imgNum = postPhotos.length
   const rowNum = Math.ceil(imgNum / 3)
   const columnNum = 3
@@ -18,12 +24,15 @@ const PostPhotos = ({postPhotos}) => {
   let totalHeight = 0
   let calcWidth
   
-  const initPhoto = (width, imageUrl, resizeMode) => {
+  const initPhoto = (width, imageUrl, resizeMode, indexForOpen) => {
     return (
     <TouchableOpacity  
         style={{width: width, height: '100%', display: 'flex',}}  
         key={uuid.v4()} 
-        onPress={() => {setModalVisible(!modalVisible)}}
+        onPress={() => {
+          openImageIndex.current = indexForOpen
+          setModalVisible(!modalVisible)
+        }}
         activeOpacity={1}
       >
         <Image 
@@ -34,6 +43,7 @@ const PostPhotos = ({postPhotos}) => {
         />
     </TouchableOpacity>)
   }
+  let indexForOpen = 0
   for (let i = 0; i < rowNum; i++) {
     let row = []
     let calcImageHeights = []
@@ -68,16 +78,32 @@ const PostPhotos = ({postPhotos}) => {
       } else {
         height = 350
       }
-      let imageUrl = postPhotos[index]?.sizes[lastIndexUrl].url
+      // let imageUrl = postPhotos[index]?.sizes[lastIndexUrl].url
+      // if (imageUrl === 'https://sun9-67.userapi.com/impg/upvqOAKZAzuDyd6RB66YTjnnRnj1sXpO9-9sYw/wAigjndoQgI.jpg?size=510x340&quality=95&crop=345,0,559,373&sign=dd24e89a515e9fe5a529f41ee9967a0a&c_uniq_tag=AbaGeU0zHtFHSCohsPZLuBdN2X0NqtbJ6_fpvbpkVuc&type=album') {
+      //   console.log(postPhotos[index]?.sizes)
+      // }
+      let imageUrl
+      for (let i = 0; i < lastIndexUrl; i++) {
+        if (postPhotos[index]?.sizes[i].type === 'x') {
+          imageUrl = postPhotos[index]?.sizes[i].url
+        }
+      }
+      if (imageUrl === undefined) {
+        imageUrl = postPhotos[index]?.sizes[lastIndexUrl].url
+      }
+      //postPhotos[index]?.sizes[lastIndexUrl].url
       imageUrls.push(imageUrl)
       calcImageHeights.push(height)
-      imagesForSlides.push({url: imageUrl})
+      if (imageUrl !== undefined) {
+        imagesForSlides.push({url: imageUrl})
+      }
       // let image = initPhoto(width=width, imageUrl=imageUrl)
       index += 1
       // row.push(image)
     }
     for (let k = 0; k < imgPerRow; k++) {
-      let image = initPhoto(Math.max(...widthOfImages), imageUrls[k], resizeMode)
+      let image = initPhoto(Math.max(...widthOfImages), imageUrls[k], resizeMode, indexForOpen)
+      indexForOpen += 1
       row.push(image)
     }
     let rowHeight = Math.min(...calcImageHeights)
@@ -97,6 +123,7 @@ const PostPhotos = ({postPhotos}) => {
     grid.push(rowContainer)
 
   }
+  // console.log(imagesForSlides)
   return (
     <>
       <Modal
@@ -111,6 +138,49 @@ const PostPhotos = ({postPhotos}) => {
           useNativeDriver={true}
           enablePreload={true}
           enableSwipeDown={true}
+          renderIndicator={(currentIndex) => <></>}
+          renderHeader={
+            (currentIndex) => (
+              <View style={{position: 'absolute', zIndex: 3, flexDirection: 'row', width: screenWidth, justifyContent: 'space-between', alignItems: 'center', paddingLeft: 10, paddingRight: 10, marginTop: 10}}>
+                <View style={{flexDirection: 'row', gap: 30}}>
+                  <TouchableOpacity activeOpacity={0.5} onPress={() => setModalVisible(false)}>
+                    <AntDesign name={'arrowleft'} size={25} color={COLORS.white}/>
+                  </TouchableOpacity>
+                  <Text style={{color: COLORS.white, fontSize: 17}}>{currentIndex + 1} of {imagesForSlides.length}</Text>
+                </View>
+                <Feather name={'more-vertical'} color={COLORS.white} size={25}/>
+              </View>
+            )
+          }
+          renderImage={
+            (props) => {
+              // console.log(props.source.uri)
+              return(
+                <Image source={{uri: props.source.uri}} style={{flex: 1, width: null, height: null}} resizeMode={'contain'}/>
+              )
+            }
+          }
+          renderFooter={
+            () => {
+              return (
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: screenWidth, paddingLeft: 15, paddingRight: 15, paddingBottom: 10}}>
+                  <TouchableOpacity>
+                    {
+                      true ?
+                      <AntDesign name={'heart'} color={COLORS.primary} size={20}/> :
+                      <AntDesign name={'hearto'} color={COLORS.white} size={20}/>
+                    }
+                  </TouchableOpacity>
+                  <TouchableOpacity><MaterialCommunityIcons name={'comment'} color={COLORS.white} size={20} /></TouchableOpacity>
+                  <TouchableOpacity><Fontisio name={'share-a'} size={20} color={COLORS.white}/></TouchableOpacity>
+                </View>
+              )
+            } 
+          }
+          index={openImageIndex.current}
+          // renderArrowLeft={
+          //   () => <AntDesign name={'arrowleft'} size={25} color={COLORS.white}/> 
+          // }
         />
       </Modal>
       <View style={styles.gridStyle}>

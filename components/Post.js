@@ -18,29 +18,10 @@ const globalShadowHeight = Dimensions.get('window').height
 const globalShadowWidth = Dimensions.get('window').width
 
 const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => {
-  // const dispatch = useDispatch()
   let postPhotos = []
   let postDocs = []
   let postLinks = []
   let postVideos = []
-
-  // const [showShadow, setShowShadow] = useState(false)
-  // const onMorePress = () => {
-  //   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-  //   setDropdownMenuHeight(160)
-  //   setPostZIndex(400)
-  //   // setShowShadow(true)
-  //   dispatch(expandShadow(setDropdownMenuHeight))
-  // }
-
-  // const onShadowPress = () => {
-  //   LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-  //   setDropdownMenuHeight(0)
-  //   setPostZIndex(0)
-  //   // setShowShadow(false)
-  //   // setDropdownMenuHeight(0)
-  //   dispatch(collapseShadow())
-  // }
   
   const openPost = () => {
     if (openedPost) {

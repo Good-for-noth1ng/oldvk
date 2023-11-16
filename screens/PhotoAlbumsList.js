@@ -50,7 +50,9 @@ const PhotoAlbumsList = ({navigation, route}) => {
   }, [])
 
   const fetchMore = () => {
-    fetchAlbums()
+    if (remainToFetchNum.current > 0) {
+      fetchAlbums()
+    }
   }
   const listHeader = () => {
     return (

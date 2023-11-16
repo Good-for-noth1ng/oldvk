@@ -65,7 +65,9 @@ const Photos = ({ navigation, route }) => {
 
   const fetchMore = ( ) => {
     // console.log('fetch more')
-    fetchPhotos()
+    if (remainToFetchNum.current > 0) {
+      fetchPhotos()
+    }
   }
 
   const openDrawer = () => {

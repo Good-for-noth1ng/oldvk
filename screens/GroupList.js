@@ -111,6 +111,9 @@ const GroupList = ({navigation}) => {
     offset.current = 0
     searchQuery.current = ''
     const fetchedUsersGroups = await fetchUsersGroups()
+    const visitedGroupsStorageData = await AsyncStorage.getItem("visitedGroups");
+    const visitedGroupsData = JSON.parse(visitedGroupsStorageData)
+    visitedGroups.current = visitedGroupsData !== null ? visitedGroupsData : []
     remainToFetchNum.current = fetchedUsersGroups.count - count
     setGroupsData(fetchedUsersGroups.items)
     setGroupsCount(fetchedUsersGroups.count)
@@ -250,6 +253,7 @@ const GroupList = ({navigation}) => {
     if (!(query.replace(/\s/g, '') === '')) {      
       setIsLoading(true)
       const fetchedByQueryGroups = await getGroupsByQuery()
+      visitedGroups.current = []
       remainToFetchNum.current = fetchedByQueryGroups.groupsNum - count  
       setGroupsCount(fetchedByQueryGroups.groupsNum)
       setGroupsCounterName(fetchedByQueryGroups.counterName)

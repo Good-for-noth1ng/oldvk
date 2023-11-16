@@ -177,17 +177,7 @@ const styles = StyleSheet.create({
     alignContent: 'flex-start',
     paddingLeft: 5,
     paddingRight: 5,
-    // borderRadius: 5
-    // backgroundColor: COLORS.white
   },
-  // commentContainerDark: {
-  //   display: 'flex',
-  //   flexDirection: 'row',
-  //   alignContent: 'flex-start',
-  //   paddingLeft: 5,
-  //   paddingRight: 5,
-  //   backgroundColor: COLORS.primary_dark
-  // },
   imageContainer: {
     marginRight: 7
   },

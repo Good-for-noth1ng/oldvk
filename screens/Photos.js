@@ -1,10 +1,13 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Image } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Image, Modal, Dimensions, TouchableOpacity } from 'react-native'
 import React, { useState, useRef, useEffect } from 'react'
 import { FlatList } from "react-native-gesture-handler";
 import { useSelector } from 'react-redux'
 import uuid from 'react-native-uuid';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Entypo from 'react-native-vector-icons/Entypo'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Fontisio from 'react-native-vector-icons/Fontisto'
+import Feather from 'react-native-vector-icons/Feather'
 import CustomHeader from '../components/CustomHeader'
 import DividerWithLine from '../components/DividerWithLine'
 import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
@@ -12,6 +15,9 @@ import Carousel from '../components/Carousel';
 import PhotoGridItem from '../components/PhotoGridItem';
 import { COLORS } from '../constants/theme'
 import { FlashList } from "@shopify/flash-list";
+import ImageViewer from 'react-native-image-zoom-viewer';
+
+const screenWidth = Dimensions.get('window').width
 const Photos = ({ navigation, route }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
@@ -25,6 +31,8 @@ const Photos = ({ navigation, route }) => {
   const numOfPhotos = useRef(0)
   const numOfAlbums = useRef(0)
   const ownerId = route.params === undefined ? currentUserId : route.params.ownerId
+  const [modalVisible, setModalVisible] = React.useState(false)
+  const imagesForSlides = React.useRef([])
   // console.log('rerender')
   const fetchPhotos = async () => {
     const fetchPhotosUrl = `https://api.vk.com/method/photos.getAll?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&owner_id=${ownerId}&extended=1`
@@ -51,10 +59,27 @@ const Photos = ({ navigation, route }) => {
       offset.current += count
       remainToFetchNum.current -= count 
     }
-    const photos = data.response.items.map(item => {
+    let photos = data.response.items.map(item => {
       const key = uuid.v4()
+      let ph
+      for (let i = 0; i < item.sizes.length; i++) {
+        if (item.sizes[i].type === 'x') {
+          ph = {url: item.sizes[i].url}
+          break
+        }
+      }
+      if (ph) {
+        imagesForSlides.current.push(ph)
+      } else {
+        imagesForSlides.current.push({uri: item.sizes[item.sizes.length - 1].url})
+      }
       return {...item, key: key}
     })
+    const emptyElemsNum = data.response.items.length % 3
+    for (let i = 0; i < emptyElemsNum; i++) {
+      const key = uuid.v4()
+      photos.push({key: key})
+    }
     setPhotosList(prevState => prevState.concat(photos))
     setIsLoading(false)
   }
@@ -113,9 +138,13 @@ const Photos = ({ navigation, route }) => {
     )
   }
 
+  const openImage = () => {
+    setModalVisible(prev => !prev)
+  }
+
   const renderItem = ({item}) => {
     return (
-      <PhotoGridItem item={item} isLightTheme={isLightTheme} id={item.key}/>     
+      <PhotoGridItem item={item} isLightTheme={isLightTheme} id={item.key} openImage={openImage}/>     
     )
   }
 
@@ -184,22 +213,88 @@ const Photos = ({ navigation, route }) => {
         //     estimatedItemSize={140}
         //   />
         // </View>
-        <FlatList
-          style={[styles.list, ]} 
-          data={photosList}
-          renderItem={renderItem}
-          ListFooterComponent={footer}
-          ListHeaderComponent={listHeader}
-          showsVerticalScrollIndicator={false}
-          numColumns={3}
+        <>
+          <Modal
+            animationType='fade'
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {setModalVisible(!modalVisible);}}
+          >
+            <ImageViewer 
+              imageUrls={imagesForSlides.current}
+              enableImageZoom={true}
+              useNativeDriver={true}
+              enablePreload={true}
+              enableSwipeDown={true}
+              renderIndicator={(currentIndex) => <></>}
+              renderHeader={
+              (currentIndex) => (
+                <View style={{
+                  position: 'absolute', 
+                  zIndex: 3, 
+                  flexDirection: 'row', 
+                  width: screenWidth, 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center', 
+                  paddingLeft: 10, 
+                  paddingRight: 10, 
+                  marginTop: 10
+                }}>
+                  <View style={{flexDirection: 'row', gap: 30}}>
+                    <TouchableOpacity activeOpacity={0.5} onPress={() => setModalVisible(false)}>
+                      <AntDesign name={'arrowleft'} size={25} color={COLORS.white}/>
+                    </TouchableOpacity>
+                    <Text style={{color: COLORS.white, fontSize: 17}}>{currentIndex + 1} of {imagesForSlides.current.length}</Text>
+                  </View>
+                    <Feather name={'more-vertical'} color={COLORS.white} size={25}/>
+                </View>
+              )
+              }
+          renderImage={
+            (props) => {
+              // console.log(props.source.uri)
+              return(
+                <Image source={{uri: props.source.uri}} style={{flex: 1, width: null, height: null}} resizeMode={'contain'}/>
+              )
+            }
+          }
+          renderFooter={
+            () => {
+              return (
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: screenWidth, paddingLeft: 15, paddingRight: 15, paddingBottom: 10}}>
+                  <TouchableOpacity>
+                    {
+                      true ?
+                      <AntDesign name={'heart'} color={COLORS.primary} size={20}/> :
+                      <AntDesign name={'hearto'} color={COLORS.white} size={20}/>
+                    }
+                  </TouchableOpacity>
+                  <TouchableOpacity><MaterialCommunityIcons name={'comment-outline'} color={COLORS.white} size={20} /></TouchableOpacity>
+                  <TouchableOpacity><MaterialCommunityIcons name={'share-outline'} size={20} color={COLORS.white}/></TouchableOpacity>
+                </View>
+              )
+            } 
+          }
+          // index={openImageIndex.current}
+        />
+          </Modal>
+          <FlatList
+            style={[styles.list, ]} 
+            data={photosList}
+            renderItem={renderItem}
+            ListFooterComponent={footer}
+            ListHeaderComponent={listHeader}
+            showsVerticalScrollIndicator={false}
+            numColumns={3}
           // ListEmptyComponent={
           //   <View style={[styles.spinnerContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
           //     <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
           //   </View>
-          // }
-          keyExtractor={keyExtractor}
-          onEndReached={fetchMore}
-        />
+            // }
+            keyExtractor={keyExtractor}
+            onEndReached={fetchMore}
+          />
+        </>
       }
         
     </SafeAreaView>

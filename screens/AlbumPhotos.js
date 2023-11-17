@@ -1,9 +1,13 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Image, Modal, Dimensions, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { FlatList } from "react-native-gesture-handler";
 import { useSelector } from 'react-redux'
 import uuid from 'react-native-uuid';
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import Entypo from 'react-native-vector-icons/Entypo'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Fontisio from 'react-native-vector-icons/Fontisto'
+import Feather from 'react-native-vector-icons/Feather'
 import CustomHeader from '../components/CustomHeader'
 import DividerWithLine from '../components/DividerWithLine'
 import PhotosGridChunk from '../components/PhotosGridChunk'
@@ -11,6 +15,7 @@ import PhotoGridItem from '../components/PhotoGridItem';
 import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
 import { COLORS } from '../constants/theme'
 
+const screenWidth = Dimensions.get('window').width
 const AlbumPhotos = ({ navigation, route }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
@@ -40,13 +45,17 @@ const AlbumPhotos = ({ navigation, route }) => {
     offset.current += count
     const photos = data.response.items.map((item) => {
       const key = uuid.v4()
-      // if (item === undefined) {
-      //   console.log('undef')
-      // }
+      
       return {...item, key: key}
     })
 
     setPhotosList(prevState => prevState.concat(photos))
+  }
+
+  const fetchMore = () => {
+    if (remainToFetchNum.current > 0) {
+      fetchAlbumPhotos()
+    }
   }
 
   React.useEffect(() => {
@@ -129,7 +138,7 @@ const AlbumPhotos = ({ navigation, route }) => {
             <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
           </View>
         }   
-        onEndReached={fetchAlbumPhotos}
+        onEndReached={fetchMore}
         ListHeaderComponent={listHeader}
         numColumns={3}
         showsVerticalScrollIndicator={false}

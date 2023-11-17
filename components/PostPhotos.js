@@ -171,8 +171,8 @@ const PostPhotos = ({postPhotos}) => {
                       <AntDesign name={'hearto'} color={COLORS.white} size={20}/>
                     }
                   </TouchableOpacity>
-                  <TouchableOpacity><MaterialCommunityIcons name={'comment'} color={COLORS.white} size={20} /></TouchableOpacity>
-                  <TouchableOpacity><Fontisio name={'share-a'} size={20} color={COLORS.white}/></TouchableOpacity>
+                  <TouchableOpacity><MaterialCommunityIcons name={'comment-outline'} color={COLORS.white} size={20} /></TouchableOpacity>
+                  <TouchableOpacity><MaterialCommunityIcons name={'share-outline'} size={20} color={COLORS.white}/></TouchableOpacity>
                 </View>
               )
             } 

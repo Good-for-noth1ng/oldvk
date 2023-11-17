@@ -1,23 +1,107 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, Linking, Modal } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Linking, Modal, Dimensions } from 'react-native'
 import React from 'react'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Fontisio from 'react-native-vector-icons/Fontisto'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Feather from 'react-native-vector-icons/Feather'
 import ImageViewer from 'react-native-image-zoom-viewer'
 import { COLORS } from '../constants/theme'
 import { getDuration } from '../utils/numShortage';
 
+const screenWidth = Dimensions.get('window').width
 const CommentAttachments = ({attachments, navigation, isLightTheme}) => {
+  const [isModalVisible, setISModalVisible] = React.useState(false)
+  const photos = React.useRef([])
+  const initRender = React.useRef(true)
+  if (initRender.current) {
+    for (let i = 0; i < attachments.length; i++) {
+      if (attachments[i].type === 'photo') {
+        let ph
+        for (let j = 0; j < attachments[i].photo.sizes.length; j++) {
+          if (attachments[i].photo.sizes[j].type === 'x') {
+            ph = {url: attachments[i].photo.sizes[j].url}
+            // console.log(attachments[i].photo.sizes[j].url)
+            break
+          }
+        }
+        if (ph === undefined) {
+          // console.log(attachments[i].photo.sizes[attachments[i].photo.sizes.length - 1].url)
+          photos.current.push({url: attachments[i].photo.sizes[attachments[i].photo.sizes.length - 1].url})
+        } else {
+          photos.current.push(ph)
+        }
+      }
+    }
+  }
+  initRender.current = false
+  // console.log(photos.current)
   return (
-    <View style={styles.container}>
+    <>
+      <Modal
+        animationType='fade'
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => {setISModalVisible(prev => !prev)}}
+      >
+        <ImageViewer 
+          imageUrls={photos.current}
+          enableImageZoom={true}
+          useNativeDriver={true}
+          enablePreload={true}
+          enableSwipeDown={true}
+          renderIndicator={(currentIndex) => <></>}
+          renderHeader={
+            (currentIndex) => (
+              <View style={{position: 'absolute', zIndex: 3, flexDirection: 'row', width: screenWidth, justifyContent: 'space-between', alignItems: 'center', paddingLeft: 10, paddingRight: 10, marginTop: 10}}>
+                <View style={{flexDirection: 'row', gap: 30}}>
+                  <TouchableOpacity activeOpacity={0.5} onPress={() => setISModalVisible(false)}>
+                    <AntDesign name={'arrowleft'} size={25} color={COLORS.white}/>
+                  </TouchableOpacity>
+                  <Text style={{color: COLORS.white, fontSize: 17}}>{currentIndex + 1} of {photos.current.length}</Text>
+                </View>
+                <Feather name={'more-vertical'} color={COLORS.white} size={25}/>
+              </View>
+            )
+          }
+          renderImage={
+            (props) => {
+              return(
+                <Image source={{uri: props.source.uri}} style={{flex: 1, width: null, height: null}} resizeMode={'contain'}/>
+              )
+            }
+          }
+          renderFooter={
+            () => {
+              return (
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: screenWidth, paddingLeft: 15, paddingRight: 15, paddingBottom: 10}}>
+                  <TouchableOpacity>
+                    {
+                      true ?
+                      <AntDesign name={'heart'} color={COLORS.primary} size={20}/> :
+                      <AntDesign name={'hearto'} color={COLORS.white} size={20}/>
+                    }
+                  </TouchableOpacity>
+                  <TouchableOpacity><MaterialCommunityIcons name={'comment-outline'} color={COLORS.white} size={20} /></TouchableOpacity>
+                  <TouchableOpacity><MaterialCommunityIcons name={'share-outline'} size={20} color={COLORS.white}/></TouchableOpacity>
+                </View>
+              )
+            } 
+          }
+          // index={openImageIndex.current}
+        />
+      </Modal>
+      <View style={styles.container}>
       {
         attachments.map(attachment => {
           if (attachment.type === 'photo') {
             return (
-              <Image 
-                source={{uri: attachment.photo.sizes[attachment.photo.sizes.length - 1].url}} 
-                style={styles.photo}
-                key={attachment.photo.id}
-              />
+              <TouchableOpacity activeOpacity={0.7} key={attachment.photo.id} style={styles.photo} onPress={() => setISModalVisible(prev => !prev)}>
+                <Image 
+                  source={{uri: attachment.photo.sizes[attachment.photo.sizes.length - 1].url}} 
+                  style={{width: '100%', height: '100%', borderRadius: 5}}
+                />
+              </TouchableOpacity>
             )
           } else if (attachment.type === 'video') {
             return (
@@ -102,7 +186,9 @@ const CommentAttachments = ({attachments, navigation, isLightTheme}) => {
           }
         })
       }
-    </View>
+      </View>
+    </>
+    
   )
 }
 

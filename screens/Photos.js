@@ -33,6 +33,8 @@ const Photos = ({ navigation, route }) => {
   const ownerId = route.params === undefined ? currentUserId : route.params.ownerId
   const [modalVisible, setModalVisible] = React.useState(false)
   const imagesForSlides = React.useRef([])
+  const indexForOpening = React.useRef(0)
+  const indexOfPhoto = React.useRef(-1)
   // console.log('rerender')
   const fetchPhotos = async () => {
     const fetchPhotosUrl = `https://api.vk.com/method/photos.getAll?access_token=${accessToken}&v=5.131&count=${count}&offset=${offset.current}&owner_id=${ownerId}&extended=1`
@@ -73,7 +75,8 @@ const Photos = ({ navigation, route }) => {
       } else {
         imagesForSlides.current.push({uri: item.sizes[item.sizes.length - 1].url})
       }
-      return {...item, key: key}
+      indexOfPhoto.current += 1
+      return {...item, key: key, indexOfPhoto: indexOfPhoto.current}
     })
     const emptyElemsNum = data.response.items.length % 3
     for (let i = 0; i < emptyElemsNum; i++) {
@@ -144,7 +147,7 @@ const Photos = ({ navigation, route }) => {
 
   const renderItem = ({item}) => {
     return (
-      <PhotoGridItem item={item} isLightTheme={isLightTheme} id={item.key} openImage={openImage}/>     
+      <PhotoGridItem item={item} isLightTheme={isLightTheme} id={item.key} openImage={openImage} indexForOpening={indexForOpening}/>     
     )
   }
 
@@ -244,7 +247,7 @@ const Photos = ({ navigation, route }) => {
                     <TouchableOpacity activeOpacity={0.5} onPress={() => setModalVisible(false)}>
                       <AntDesign name={'arrowleft'} size={25} color={COLORS.white}/>
                     </TouchableOpacity>
-                    <Text style={{color: COLORS.white, fontSize: 17}}>{currentIndex + 1} of {imagesForSlides.current.length}</Text>
+                    <Text style={{color: COLORS.white, fontSize: 17}}>{currentIndex + 1} of {numOfPhotos.current}</Text>
                   </View>
                     <Feather name={'more-vertical'} color={COLORS.white} size={25}/>
                 </View>
@@ -275,7 +278,7 @@ const Photos = ({ navigation, route }) => {
               )
             } 
           }
-          // index={openImageIndex.current}
+          index={indexForOpening.current}
         />
           </Modal>
           <FlatList

@@ -11,6 +11,7 @@ import PostFiles from './PostFiles'
 import PostLinks from './PostLinks'
 import PostVideos from './PostVideos'
 import PostDivider from './PostDivider'
+import PostPoll from './PostPoll'
 import PostSigner from './PostSigner' 
 import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
 
@@ -22,6 +23,7 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => 
   let postDocs = []
   let postLinks = []
   let postVideos = []
+  let postPoll
   
   const openPost = () => {
     if (openedPost) {
@@ -47,6 +49,8 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => 
         } else if (attachments[i].type === 'video') {
           postVideos.push(attachments[i].video)
           // postPhotos.push(attachments[i].video)
+        } else if (attachments[i].type === 'poll') {
+          postPoll = attachments[i].poll
         }
       }
     }
@@ -83,6 +87,14 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => 
           ) : null
         }
       </TouchableOpacity>
+      {
+        postPoll ?
+          <>
+            <PostPoll poll={postPoll} isLightTheme={isLigthTheme} accessToken={accessToken}/>
+            <PostDivider dividerHeight={5}/>
+          </>
+          : null
+      }
       { 
         postPhotos ? (
           <>

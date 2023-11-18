@@ -1,7 +1,11 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { COLORS } from '../constants/theme'
-const PhotoGridItem = ({item, isLightTheme, id, openImage}) => {
+const PhotoGridItem = ({item, isLightTheme, id, openImage, indexForOpening}) => {
+  const onPress = () => {
+    indexForOpening.current = item.indexOfPhoto
+    openImage()
+  }
   if (item.sizes === undefined) {
     return (
       <View 
@@ -17,7 +21,7 @@ const PhotoGridItem = ({item, isLightTheme, id, openImage}) => {
   return (
     <TouchableOpacity
       activeOpacity={0.7} 
-      onPress={openImage}
+      onPress={onPress}
       style={[
         styles.container, 
         isLightTheme ? 

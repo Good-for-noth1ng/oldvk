@@ -12,7 +12,7 @@ if (Platform.OS === 'android') {
   }
 }
 
-const WallHeaderGeneralInfo = ({ name, avatarUrl, lastSeen, status, isOnlineUsingMobile, isOnlineUsingPC, chevronPressHandler, expanded }) => {
+const WallHeaderGeneralInfo = ({ name, avatarUrl, lastSeen, status, isOnlineUsingMobile, isOnlineUsingPC, chevronPressHandler, expanded, shouldPerformExpanding }) => {
   // const isPersonalInfoOpen = React.useRef(false)
   
   let onlineStatus
@@ -52,8 +52,11 @@ const WallHeaderGeneralInfo = ({ name, avatarUrl, lastSeen, status, isOnlineUsin
     onlineStatus = null
   }
   const onChevronPress = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
-    chevronPressHandler(prevState => !prevState)
+    if (shouldPerformExpanding) {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+      chevronPressHandler(prevState => !prevState)
+    }
+    
   }
   return (
     <View style={styles.imageNameContainer}>
@@ -67,7 +70,10 @@ const WallHeaderGeneralInfo = ({ name, avatarUrl, lastSeen, status, isOnlineUsin
           <View style={styles.statusContainer}>
             <Text style={styles.statusText}>{status}</Text>
           </View>
-          <Entypo name={expanded ? 'chevron-up' : 'chevron-down'} color={COLORS.secondary} size={23} />
+          {
+            shouldPerformExpanding ?
+            <Entypo name={expanded ? 'chevron-up' : 'chevron-down'} color={COLORS.secondary} size={23} /> : null
+          }
         </TouchableOpacity>
       </View>
     </View>

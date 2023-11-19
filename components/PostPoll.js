@@ -1,10 +1,15 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, LayoutAnimation } from 'react-native'
 import React from 'react'
 import Entypo from 'react-native-vector-icons/Entypo'
 import PostPollVariant from './PostPollVariant'
 import { COLORS } from '../constants/theme'
 
 const PostPoll = ({ poll, accessToken, isLightTheme }) => {
+  const [hasVoted, setHasVoted] = React.useState(false)
+  const vote = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.linear)
+    setHasVoted(true)
+  }
   return (
     <View style={[
       {borderWidth: 1, borderRadius: 5, padding: 5, gap: 10}, 
@@ -32,9 +37,20 @@ const PostPoll = ({ poll, accessToken, isLightTheme }) => {
               key={item.id}
               accessToken={accessToken}
               isLightTheme={isLightTheme}
+              multiple={poll.multiple}
+              hasVoted={hasVoted}
+              setHasVoted={setHasVoted}
             />
           )
         })
+      }
+      {
+        poll.multiple && !hasVoted ?
+        <View style={{justifyContent: 'center', alignItems: 'center'}}>
+          <TouchableOpacity style={[styles.voteBtn, ]} activeOpacity={0.8} onPress={vote}>
+            <Text style={{fontSize: 15, color: COLORS.white}}>{hasVoted ? 'Voted' : 'Vote'}</Text>
+          </TouchableOpacity>
+        </View> : null
       }
     </View>
   )
@@ -53,5 +69,13 @@ const styles = StyleSheet.create({
   pollInfoText: {
     fontSize: 14,
     color: COLORS.secondary
+  },
+  voteBtn: {
+    borderRadius: 5, 
+    backgroundColor: COLORS.primary, 
+    width: 100, 
+    height: 30, 
+    justifyContent: 'center', 
+    alignItems: 'center',
   }
 })

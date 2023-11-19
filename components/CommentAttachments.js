@@ -2,6 +2,8 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, Linking, Modal, Dimens
 import React from 'react'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import Fontisio from 'react-native-vector-icons/Fontisto'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Feather from 'react-native-vector-icons/Feather'
@@ -13,10 +15,16 @@ const screenWidth = Dimensions.get('window').width
 const CommentAttachments = ({attachments, navigation, isLightTheme}) => {
   const [isModalVisible, setISModalVisible] = React.useState(false)
   const photos = React.useRef([])
+  const videosNum = React.useRef(0)
   const initRender = React.useRef(true)
+  const openImageIndex = React.useRef(0)
+  
   if (initRender.current) {
+    let indx = 0
     for (let i = 0; i < attachments.length; i++) {
       if (attachments[i].type === 'photo') {
+        attachments[i].photo = {...attachments[i].photo, indxToOpen: indx}
+        indx += 1
         let ph
         for (let j = 0; j < attachments[i].photo.sizes.length; j++) {
           if (attachments[i].photo.sizes[j].type === 'x') {
@@ -31,6 +39,19 @@ const CommentAttachments = ({attachments, navigation, isLightTheme}) => {
         } else {
           photos.current.push(ph)
         }
+      } else if (attachments[i].type === 'doc') {
+        if (attachments[i].doc.ext === 'gif') {
+          // console.log(attachments[i].doc.url)
+          attachments[i].doc = {...attachments[i].doc, indxToOpen: indx}
+          indx += 1
+          photos.current.push(
+            attachments[i].doc.url ? 
+            {url: attachments[i].doc.url} :  
+            {url: attachment.doc.preview.photo.sizes[attachment.doc.preview.photo.sizes.length - 1].src}
+          )
+        }
+      } else if (attachments[i].type === 'video') {
+        videosNum.current += 1
       }
     }
   }
@@ -88,15 +109,31 @@ const CommentAttachments = ({attachments, navigation, isLightTheme}) => {
               )
             } 
           }
-          // index={openImageIndex.current}
+          index={openImageIndex.current}
         />
       </Modal>
-      <View style={styles.container}>
+      <View 
+        style={[
+            styles.container, 
+            photos.current.length === 2 || videosNum.current === 2 || (photos.current.length === 1 && videosNum.current === 1) ?
+            {flexDirection: 'row'} : {flexDirection: 'column'}
+          ]}
+        >
       {
-        attachments.map(attachment => {
+        attachments.map((attachment) => {
           if (attachment.type === 'photo') {
             return (
-              <TouchableOpacity activeOpacity={0.7} key={attachment.photo.id} style={styles.photo} onPress={() => setISModalVisible(prev => !prev)}>
+              <TouchableOpacity 
+                activeOpacity={0.7} 
+                key={attachment.photo.id} 
+                style={styles.photo} 
+                onPress={
+                  () => {
+                    openImageIndex.current = attachment.photo.indxToOpen   
+                    setISModalVisible(prev => !prev);
+                  }
+                }
+              >
                 <Image 
                   source={{uri: attachment.photo.sizes[attachment.photo.sizes.length - 1].url}} 
                   style={{width: '100%', height: '100%', borderRadius: 5}}
@@ -136,20 +173,41 @@ const CommentAttachments = ({attachments, navigation, isLightTheme}) => {
             )
           } else if (attachment.type === 'doc') {
             if (attachment.doc.ext === 'gif') {
+              // console.log(attachment.doc)
               return (
-                <View
+                <TouchableOpacity
                   style={styles.photo}
+                  onPress={() => {
+                    openImageIndex.current = attachment.doc.indxToOpen
+                    setISModalVisible(prev => !prev)
+                  }}
                 >
                   <Image 
-                    source={{uri: attachment.doc.preview.photo.sizes[attachment.doc.preview.photo.sizes.length - 1].src}}
+                    // source={{uri: attachment.doc.preview.photo.sizes[attachment.doc.preview.photo.sizes.length - 1].src}}
+                    // source={{uri: 'https://media.giphy.com/media/xT0xeCCINrlk96yc0w/giphy.gif'}}
+                    source={attachment.doc.url ? { uri: attachment.doc.url} : {uri: attachment.doc.preview.photo.sizes[attachment.doc.preview.photo.sizes.length - 1].src}}
                     style={styles.videoCover}
                   />
                   <Text style={styles.timeDuration}>GIF</Text>
-                </View>
+                </TouchableOpacity>
               )
             } else {
               return null
             }
+          } else if (attachment.type === 'audio') {
+            let txt = attachment.audio.artist + ' - ' + attachment.audio.title
+            txt = txt.slice(0,30)
+            
+            return (
+              <TouchableOpacity activeOpacity={0.8} style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
+                <View style={{width: 40, height: 40, borderRadius: 50, backgroundColor: COLORS.primary, justifyContent: 'center', alignItems: 'center'}}>
+                  <Entypo name='triangle-right' color={COLORS.white} size={30}/>
+                </View>
+                <Text style={{fontSize: 15, color: COLORS.primary, fontWeight: 'bold'}}>{attachment.audio.artist}</Text>
+                <Text>-</Text>
+                <Text style={[{fontSize: 15}, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>{attachment.audio.title}</Text>
+              </TouchableOpacity>
+            )
           } else if (attachment.type === 'link') {
             return (
               <TouchableOpacity 
@@ -197,14 +255,14 @@ export default CommentAttachments
 const styles = StyleSheet.create({
   container: {
     width: '85%',
-    height: 80, //80
-    flexDirection: 'row',
+    //height: 80, //80
+    // flexDirection: 'row',
     justifyContent: 'space-between',
     // backgroundColor: COLORS.light_smoke
   },
   photo: {
     width: '49%', // 49%
-    height: '100%',
+    height: 80,//'100%',
     borderRadius: 5,
     justifyContent: 'flex-end',
     alignItems: 'flex-end'
@@ -276,7 +334,7 @@ const styles = StyleSheet.create({
     // marginBottom: 5
   },
   sticker: {
-    width: '50%',
-    height: '100%'
+    width: 100,
+    height: 100
   }
 })

@@ -171,52 +171,67 @@ const UserProfile = ({navigation, route}) => {
     }
   }, [navigation])
 
-  const listHeader = () => (
-    <View style={styles.wallHeaderContainer}>
-      <WallHeaderGeneralInfo 
-        name={wallHeaderData.userName}
-        avatarUrl={wallHeaderData.avatarUrl}
-        status={wallHeaderData.status}
-        lastSeen={wallHeaderData.lastSeen}
-        isOnlineUsingMobile={wallHeaderData.isOnlineUsingMobile}
-        isOnlineUsingPC={wallHeaderData.isOnlineUsingPC}
-        chevronPressHandler={setIsUserInfoExpanded}
-        expanded={isUserInfoExpanded}
-      /> 
-      <WallHeaderPersonalContainer 
-        personal={wallHeaderData.personal}
-        relation={wallHeaderData.relation}
-        bdate={wallHeaderData.bdate}
-        city={wallHeaderData.city}
-        interests={wallHeaderData.interests}
-        homeTown={wallHeaderData.homeTown}
-        education={wallHeaderData.education}
-        universities={wallHeaderData.universities}
-        isLightTheme={isLightTheme}
-        expanded={isUserInfoExpanded}    
-      /> 
-      <WallHeaderButtons
-        isUserWall={true}  
-        friendStatus={wallHeaderData.friendStatus}
-        canSendFriendRequest={wallHeaderData.canSendFriendRequest}
-        canWritePrivateMessage={wallHeaderData.canWritePrivateMessage}
-        shouldHideButtons={currentUserId === userId}
-      />
-      <DividerWithLine dividerHeight={10}/>
-      <WallHeaderCountersGrid 
-        counters={wallHeaderData.counters} 
-        navigation={navigation} 
-        ownerId={userId}
-        canAccess={!(wallHeaderData.canAccessClosed === false && wallHeaderData.isClosed === true)}
-        isUserOnHisOwnPage={currentUserId === userId}
-      />
-      {
-        wallHeaderData.canAccessClosed === false && wallHeaderData.isClosed === true ?
-        <WallIsPrivateText isPrivateText={'Profile is private'}/> : null
-      }
-      <WallHeaderPostSuggestButton canPost={wallHeaderData.canPost}/>
-    </View>
-  )
+  const listHeader = () => {
+    // console.log('lalalalalla')
+    const isThereAdditionalInfo = (
+      wallHeaderData.personal !== undefined || 
+      wallHeaderData.relation !== undefined || 
+      wallHeaderData.bdate !== undefined ||
+      wallHeaderData.city !== undefined ||
+      wallHeaderData.interests !== undefined ||
+      wallHeaderData.homeTown !== undefined ||
+      wallHeaderData.education !== undefined ||
+      wallHeaderData.universities !== undefined
+    )
+    
+    return(
+      <View style={styles.wallHeaderContainer}>
+        <WallHeaderGeneralInfo 
+          name={wallHeaderData.userName}
+          avatarUrl={wallHeaderData.avatarUrl}
+          status={wallHeaderData.status}
+          lastSeen={wallHeaderData.lastSeen}
+          isOnlineUsingMobile={wallHeaderData.isOnlineUsingMobile}
+          isOnlineUsingPC={wallHeaderData.isOnlineUsingPC}
+          chevronPressHandler={setIsUserInfoExpanded}
+          expanded={isUserInfoExpanded}
+          shouldPerformExpanding={isThereAdditionalInfo}
+        /> 
+        <WallHeaderPersonalContainer 
+          personal={wallHeaderData.personal}
+          relation={wallHeaderData.relation}
+          bdate={wallHeaderData.bdate}
+          city={wallHeaderData.city}
+          interests={wallHeaderData.interests}
+          homeTown={wallHeaderData.homeTown}
+          education={wallHeaderData.education}
+          universities={wallHeaderData.universities}
+          isLightTheme={isLightTheme}
+          expanded={isUserInfoExpanded}    
+        /> 
+        <WallHeaderButtons
+          isUserWall={true}  
+          friendStatus={wallHeaderData.friendStatus}
+          canSendFriendRequest={wallHeaderData.canSendFriendRequest}
+          canWritePrivateMessage={wallHeaderData.canWritePrivateMessage}
+          shouldHideButtons={currentUserId === userId}
+        />
+        <DividerWithLine dividerHeight={10}/>
+        <WallHeaderCountersGrid 
+          counters={wallHeaderData.counters} 
+          navigation={navigation} 
+          ownerId={userId}
+          canAccess={!(wallHeaderData.canAccessClosed === false && wallHeaderData.isClosed === true)}
+          isUserOnHisOwnPage={currentUserId === userId}
+        />
+        {
+          wallHeaderData.canAccessClosed === false && wallHeaderData.isClosed === true ?
+          <WallIsPrivateText isPrivateText={'Profile is private'}/> : null
+        }
+        <WallHeaderPostSuggestButton canPost={wallHeaderData.canPost}/>
+      </View>
+    )
+  }
 
   const renderItem = ({item}) => {
     if (item.copy_history !== undefined) {

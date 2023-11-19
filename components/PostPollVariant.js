@@ -1,18 +1,52 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, LayoutAnimation } from 'react-native'
 import React from 'react'
+import Entypo from 'react-native-vector-icons/Entypo' 
 import { COLORS } from '../constants/theme'
 
-const PostPollVariant = ({ isLightTheme, id, rate, text, votes, ownerId, accessToken, pollId }) => {
-  
+const PostPollVariant = ({ isLightTheme, id, rate, text, votes, ownerId, accessToken, pollId, multiple, hasVoted, setHasVoted }) => {
+  const [checked, setChecked] = React.useState(false)
+  const checkVote = () => {
+    setChecked(prev => !prev)
+  }
+  const vote = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.linear)
+    setChecked(true)
+    setHasVoted(true)
+  }
   return (
-    <TouchableOpacity style={[styles.answ, {backgroundColor: COLORS.light_blue}]} activeOpacity={0.8}>
-      <View style={[styles.voted, {backgroundColor: COLORS.primary},  rate ? {width: `${rate}%`} : {width: 0}]}/>
+    <TouchableOpacity 
+      style={[styles.answ, {backgroundColor: COLORS.light_blue}]} 
+      activeOpacity={hasVoted? 1 : 0.8}
+      onPress={!hasVoted ? multiple ? checkVote : vote : () => {}}
+    >
+      <View style={[
+        styles.voted, 
+        {backgroundColor: COLORS.primary},  
+        rate ? {width: `${rate}%`} : {width: 0},
+        checked ? {opacity: 1} : {opacity: 0.7}
+        ]}
+      />
       <View style={styles.voteContainer}>
         <Text style={[
           styles.optionText,
           // isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}
         ]}>{text}</Text>
-        <Text>{Math.round(rate)} %</Text>
+        <View style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
+          <Text>{Math.round(rate)} %</Text>
+          {
+            multiple && !hasVoted?
+            <View
+              style={{width: 15, height: 15, borderRadius: 5, borderWidth: 1, borderColor: COLORS.secondary}}
+            >
+              {
+                checked ?
+                <Entypo name='check' size={15} color={COLORS.secondary}/> : 
+                null
+              }
+            </View> :
+            null
+          }
+        </View>
       </View>
     </TouchableOpacity>
   )
@@ -44,7 +78,7 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 15,
-    width: '85%',
+    width: '80%',
     // height: 100
   },
   voted: {
@@ -52,6 +86,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     position: 'absolute',
     zIndex: 1,
-    opacity: 0.8
+
   }
 })

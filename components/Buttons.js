@@ -208,21 +208,15 @@ export const CustomDrawerButton = ({ buttonIcon, buttonText, pressHandler }) => 
 
 export const LoginButton = ({buttonText, navigation, isLightTheme }) => {  
   return (
-    <TouchableHighlight 
-      style={[styles.loginButtonContainer]} 
-      underlayColor={COLORS.primary_light}
+    <TouchableOpacity 
+      style={[styles.loginButtonContainer, isLightTheme ? {backgroundColor: COLORS.primary} : {backgroundColor: COLORS.primary_text}]} 
       activeOpacity={0.6}
       onPress={() => navigation.navigate('WebViewLogin')}
     > 
-      <LinearGradient 
-        style={{width: '100%', height: '100%', borderRadius: 5, alignContent: 'center', justifyContent: 'center'}}
-        colors={isLightTheme ? [COLORS.gradientHeaderStart, COLORS.gradientHeaderEnd] : [COLORS.background_dark, COLORS.black]}
-      >
-        <Text style={isLightTheme ? styles.textLight : styles.textDark}>
-          {buttonText}
-        </Text>
-      </LinearGradient>
-    </TouchableHighlight>
+      <Text style={isLightTheme ? styles.textLight : styles.textDark}>
+        {buttonText}
+      </Text>
+    </TouchableOpacity>
   )
 }
 

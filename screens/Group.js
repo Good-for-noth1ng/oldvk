@@ -147,51 +147,59 @@ const Group = ({navigation, route}) => {
     })
   }
 
-  const listHeader = () => (
-    <View style={styles.headerContainer}>
-      <WallHeaderGeneralInfo 
-        name={wallHeaderData.communityName}
-        avatarUrl={wallHeaderData.communityAvatarUrl}
-        status={wallHeaderData.communityStatus}
-        chevronPressHandler={setIsAdditionalInfoExpanded}
-        expanded={isAdditionalInfoExpanded}
-      />
-      <WallHeaderAdditionalInfo 
+  const listHeader = () => {
+    const isThereAdditionalInfo = (
+      wallHeaderData.description !== undefined ||
+      wallHeaderData.cleanedLinks !== undefined ||
+      wallHeaderData.cleanedUsers !== undefined
+    )
+    return (
+      <View style={styles.headerContainer}>
+        <WallHeaderGeneralInfo 
+          name={wallHeaderData.communityName}
+          avatarUrl={wallHeaderData.communityAvatarUrl}
+          status={wallHeaderData.communityStatus}
+          chevronPressHandler={setIsAdditionalInfoExpanded}
+          expanded={isAdditionalInfoExpanded}
+          shouldPerformExpanding={isThereAdditionalInfo}
+        />
+        <WallHeaderAdditionalInfo 
           description={wallHeaderData.description}
           cleanedLinks={wallHeaderData.cleanedLinks}
           cleanedUsers={wallHeaderData.cleanedUsers}
           navigation={navigation}
           expanded={isAdditionalInfoExpanded}
-      /> 
-      <WallHeaderButtons
-        isUserWall={wallHeaderData.isUserWall} 
-        isMember={wallHeaderData.isMemberOfCommunity} 
-        canWritePrivateMessage={wallHeaderData.canMessage}
-        memberStatus={wallHeaderData.memberStatus}
-        accessToken={accessToken}
-        groupId={groupId}
-        navigation={navigation}
-      />
-      <DividerWithLine dividerHeight={10}/>
-      <WallHeaderCountersGrid 
-        membersCount={wallHeaderData.membersCount} 
-        counters={wallHeaderData.counters} 
-        ownerId={-1 * groupId} 
-        navigation={navigation}
-        canAccess={wallHeaderData.canAccess}
-      />
-      {
-        !wallHeaderData.canAccess ? 
-        <WallIsPrivateText isPrivateText={'Community is private'}/> : null 
-      }
-      <DividerWithLine dividerHeight={10}/>
-      <WallHeaderPostSuggestButton 
-        canPost={wallHeaderData.canPost} 
-        canSuggest={wallHeaderData.canSuggest} 
-        isCommunityWall={true}
-      />
-    </View>
-  )
+        /> 
+        <WallHeaderButtons
+          isUserWall={wallHeaderData.isUserWall} 
+          isMember={wallHeaderData.isMemberOfCommunity} 
+          canWritePrivateMessage={wallHeaderData.canMessage}
+          memberStatus={wallHeaderData.memberStatus}
+          accessToken={accessToken}
+          groupId={groupId}
+          navigation={navigation}
+        />
+        <DividerWithLine dividerHeight={10}/>
+        <WallHeaderCountersGrid 
+          membersCount={wallHeaderData.membersCount} 
+          counters={wallHeaderData.counters} 
+          ownerId={-1 * groupId} 
+          navigation={navigation}
+          canAccess={wallHeaderData.canAccess}
+        />
+        {
+          !wallHeaderData.canAccess ? 
+          <WallIsPrivateText isPrivateText={'Community is private'}/> : null 
+        }
+        <DividerWithLine dividerHeight={10}/>
+        <WallHeaderPostSuggestButton 
+          canPost={wallHeaderData.canPost} 
+          canSuggest={wallHeaderData.canSuggest} 
+          isCommunityWall={true}
+        />
+      </View>
+    )
+  }
 
   const keyExtractor = (item) => {
     return item.key

@@ -1,7 +1,15 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
+// let isOnline
+// const getUserOnlineStatus = async () => {
+//   const onlineStatusStorage = await AsyncStorage.getItem("isCurrentUserOnline");
+//   const onlineStatus = JSON.parse(onlineStatusStorage)
+//   isOnline = onlineStatus !== null ? onlineStatus : false
+// }
 
+// getUserOnlineStatus()
 
 export const userSlice = createSlice({
   name: 'user',
@@ -12,7 +20,8 @@ export const userSlice = createSlice({
     userId: '',
     userProfileDrawerPhotoUrl: '',
     firstName: '',
-    lastName: ''
+    lastName: '',
+    isOnline: false
   },
   reducers: {
     initUserData: (state, action) => {
@@ -34,6 +43,18 @@ export const userSlice = createSlice({
         isLoggedIn: !state.isLoggedIn
       }
     },
+    toggleOnlineStatus: (state) => {
+      return {
+        ...state,
+        isOnline: !state.isOnline
+      }
+    },
+    setOnlineStatus: (state, action) => {
+      return {
+        ...state,
+        isOnline: action.payload
+      }
+    }
     // setAccessToken: (state, action) => {
     //   // state.accessToken = action.payload
     //   return {
@@ -84,7 +105,9 @@ export const {
     // setUserDrawerImageUrl, 
     // setFirstName, 
     // setLastName,
-    initUserData 
+    initUserData,
+    toggleOnlineStatus,
+    setOnlineStatus
 } = userSlice.actions
 
 export default userSlice.reducer

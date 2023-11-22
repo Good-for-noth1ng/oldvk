@@ -6,27 +6,6 @@ import { COLORS } from '../constants/theme'
 import PersonalContactItem from './PersonalContactItem'
 
 const WallHeaderAdditionalInfo = ({description, navigation, cleanedLinks, cleanedUsers, expanded}) => {
-  // console.log(links)
-  // const cleanedLinks = React.useRef(undefined)
-  // const cleanedUsers = React.useRef(undefined)
-  
-  // React.useLayoutEffect(() => {
-  //   if (links) {
-  //     cleanedLinks.current = links.map(link => ({...link, key: uuid.v4()}))
-  //     // console.log(cleanedLinks)
-  //   }
-  //   if (contacts && contactsDetailed) {
-  //     cleanedUsers.current = contacts.map(contact => (
-  //       {
-  //         ...contactsDetailed.find(contactDetailed => contactDetailed.id === contact.user_id), 
-  //         desc: contact.desc,
-  //         key: uuid.v4()
-  //       }
-  //     ))
-  //   }
-  //   console.log(cleanedLinks.current.length, cleanedUsers.current.length)
-  // }, [cleanedLinks.current, cleanedUsers.current])
-  
   if (!expanded) {
     return null
   }

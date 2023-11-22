@@ -11,6 +11,7 @@ export const COLORS = {
     very_dark_gray: 'hsl(230, 16%, 22%)', // hsl(230, 16%, 22%) #303342
     primary_blue_dark: 'hsl(210, 68%, 52%)', // hsl(210, 68%, 52%) #2a5885
     very_light_gray: 'hsl(240,9%,93%)', // hsl(240,9%,93%) hsla(240,7%,70%,.22)
+    dark_green: '#187D22',
 
 
     light_black: 'hsl(0, 0%, 24%)',   

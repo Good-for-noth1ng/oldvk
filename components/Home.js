@@ -1,9 +1,10 @@
-import { StyleSheet, Image } from 'react-native'
+import { StyleSheet, Image, View, Text } from 'react-native'
 import React from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useSelector } from 'react-redux';
 import Entypo from 'react-native-vector-icons/Entypo'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import MessagesRoute from './MessagesRoute';
 import Audio from '../screens/Audio';
 import Answers from '../screens/Answers';
@@ -44,11 +45,16 @@ const Home = () => {
     >
         <Drawer.Screen name={'CurrentUser'} component={UserPageRoute} options={{
           drawerIcon: () => (
-            <Image source={{uri: urlDrawerPhoto}} style={{width: 80, height: 80, borderRadius: 5}}/>
+              <Image source={{uri: urlDrawerPhoto}} style={{width: 80, height: 80, borderRadius: 5}}/>
           ),
           headerShown: false,
           // drawer: 'CurrentUser'
-          drawerLabel: userName
+          drawerLabel: () => (
+            <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', gap: 10}}>
+              <Text style={{fontSize: 16, color: COLORS.white}}>{userName}</Text>
+              {userData.isOnline ? <Ionicons name='phone-portrait-sharp' color={COLORS.dark_green} size={14}/> : null}
+            </View>
+          ) 
         }}/>
 
         <Drawer.Screen name='Friends' component={FriendsRoute} options={{

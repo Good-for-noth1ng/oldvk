@@ -1,7 +1,9 @@
 import { StyleSheet,  Appearance } from 'react-native'
-import React, { useState } from 'react'
+import React from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useSelector, useDispatch } from 'react-redux'
 import { toggleCurrentColorScheme } from '../redux/colorSchemeSlice'
+import { toggleOnlineStatus, setOnlineStatus } from '../redux/userSlice'
 import DrawerToggler from './DrawerToggler'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
@@ -11,34 +13,58 @@ import { COLORS } from '../constants/theme'
 
 const DrawerSwitchersContainer = () => {
   const dispatch = useDispatch()
-  const [isOnline, setIsOnline] = useState(false)
-  const [allowMarkAsRead, setAllowMarkAsRead] = useState(false)
-  const [allowSeeTyping, setAllowSeeTyping] = useState(false)
+  const isOnline = useSelector(state => state.user.isOnline)
+  // console.log(isOnline)
+  // const [isOnline, setIsOnline] = React.useState(false)
+  const isInitRender = React.useRef(true)
+  const [allowMarkAsRead, setAllowMarkAsRead] = React.useState(false)
+  const [allowSeeTyping, setAllowSeeTyping] = React.useState(false)
   const onlineStatusIntervalId = React.useRef()
   const accessToken = useSelector(state => state.user.accessToken)
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
 
-  const changeOnlineStatus = () => {
-    if (isOnline === false) {
-      const setOnlineStatus = () => {
-        const url = `https://api.vk.com/method/account.setOnline?access_token=${accessToken}&v=5.131`
-        fetch(url)
-        .then(res => res.json())
-        .then(data => console.log('now online status is shown'))
+  const getOnlineStatus = async () => {
+    ///TODO:
+    ///call api for status setting
+    ///
+    try {
+      const onlineStatusStorage = await AsyncStorage.getItem("isCurrentUserOnline");
+      const onlineStatus = JSON.parse(onlineStatusStorage)
+      if (onlineStatus !== null) {
+        dispatch(setOnlineStatus(onlineStatus))
+      } else {
+        dispatch(setOnlineStatus(false))
       }
-      setOnlineStatus()
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  if (isInitRender.current) {
+    getOnlineStatus()
+    isInitRender.current = false
+  }
+
+  const changeOnlineStatus = async (url, currentStatus) => {
+    const res = await fetch(url)
+    const data = await res.json()
+    // console.log(data)
+    await AsyncStorage.setItem("isCurrentUserOnline", JSON.stringify(!currentStatus))
+  }
+
+  const onOnlineStatusPress = () => {
+    dispatch(toggleOnlineStatus())
+    if (isOnline === false) {
+      changeOnlineStatus(`https://api.vk.com/method/account.setOnline?access_token=${accessToken}&v=5.131`, false)
       onlineStatusIntervalId.current = setInterval(() => {
-        setOnlineStatus()
+        changeOnlineStatus(`https://api.vk.com/method/account.setOnline?access_token=${accessToken}&v=5.131`, false)
       }, 300000)
     } else {
       clearInterval(onlineStatusIntervalId.current)
-      const url = `https://api.vk.com/method/account.setOffline?access_token=${accessToken}&v=5.131`
-      fetch(url)
-        .then(res => res.json())
-        .then(data => console.log('now offline status is shown'))
+      changeOnlineStatus(`https://api.vk.com/method/account.setOffline?access_token=${accessToken}&v=5.131`, true)
     }
-    setIsOnline(prevState => !prevState)
   }
+
   const changeReadStatus = () => {
     setAllowMarkAsRead(prevState => !prevState)
   }
@@ -65,7 +91,7 @@ const DrawerSwitchersContainer = () => {
           <MaterialCommunityIcons name='ghost-outline' size={20} color={COLORS.white}/>
         }
         currentState={isOnline}
-        setNewState={changeOnlineStatus}
+        setNewState={onOnlineStatusPress}
         falseText={'Offline'}
         trueText={'Online'}
       />

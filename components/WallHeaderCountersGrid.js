@@ -236,7 +236,7 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
     countersGrid.push(<View key={uuid.v4()} style={styles.counterRow}>{row}</View>)
   }
   return (
-    <View style={{paddingLeft: 4, paddingRight: 4}}>
+    <View style={{}}>
       {countersGrid}
     </View>
   )
@@ -248,9 +248,9 @@ const styles = StyleSheet.create({
   counterRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    // justifyContent: 'flex-start',
     gap: 4,
-    // justifyContent: 'space-evenly',
+    justifyContent: 'space-between',
     marginTop: 5,
     marginBottom: 5,
   },

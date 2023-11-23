@@ -8,6 +8,7 @@ import Feather from 'react-native-vector-icons/Feather'
 import { COLORS } from '../constants/theme';
 import { postWidth } from '../constants/theme';
 import ImageViewer from 'react-native-image-zoom-viewer'
+import OpenedPhotoBottom from './OpenedPhotoBottom';
 
 const screenWidth = Dimensions.get('window').width
 const PostPhotos = ({postPhotos}) => {
@@ -161,26 +162,9 @@ const PostPhotos = ({postPhotos}) => {
             }
           }
           renderFooter={
-            () => {
-              return (
-                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: screenWidth, paddingLeft: 15, paddingRight: 15, paddingBottom: 10}}>
-                  <TouchableOpacity>
-                    {
-                      true ?
-                      <AntDesign name={'heart'} color={COLORS.primary} size={20}/> :
-                      <AntDesign name={'hearto'} color={COLORS.white} size={20}/>
-                    }
-                  </TouchableOpacity>
-                  <TouchableOpacity><MaterialCommunityIcons name={'comment-outline'} color={COLORS.white} size={20} /></TouchableOpacity>
-                  <TouchableOpacity><MaterialCommunityIcons name={'share-outline'} size={20} color={COLORS.white}/></TouchableOpacity>
-                </View>
-              )
-            } 
+            () => {return (<OpenedPhotoBottom />)}
           }
           index={openImageIndex.current}
-          // renderArrowLeft={
-          //   () => <AntDesign name={'arrowleft'} size={25} color={COLORS.white}/> 
-          // }
         />
       </Modal>
       <View style={styles.gridStyle}>

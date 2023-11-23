@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, SafeAreaView, StatusBar, StyleSheet, useColorScheme } from 'react-native'
+import { View, Text, SafeAreaView, StatusBar, StyleSheet, useColorScheme, ScrollView } from 'react-native'
 // import { authorize } from 'react-native-app-auth'
 // import * as Linking from 'expo-linking'
 // import * as WebBrowser from 'expo-web-browser'
@@ -24,17 +24,19 @@ const Login = ({navigation}) => {
     // <View>
     <SafeAreaView style={[styles.mainContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.background_dark}]}>
       <Header screenName={'Авторизация'} isLight={isLightTheme}/>
-      <View style={styles.heroButtonContainer}>
-        <View style={styles.textContainer}>
-          <Text style={[styles.textHeader, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
-            Добро пожаловать!
-          </Text>
-          <Text style={[styles.subtitle, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
-            oldvk - мобильное приложение для соцсети вконтакте
-          </Text>
+      {/* <ScrollView style={{flex: 1}}> */}
+        <View style={styles.heroButtonContainer}>
+          <View style={styles.textContainer}>
+            <Text style={[styles.textHeader, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
+              Добро пожаловать!
+            </Text>
+            <Text style={[styles.subtitle, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
+              oldvk - мобильное приложение для соцсети вконтакте
+            </Text>
+          </View>
+          <LoginButton buttonText={'Войти через vk.com'} isLightTheme={isLightTheme}  navigation={navigation}/>
         </View>
-        <LoginButton buttonText={'Войти через vk.com'} isLightTheme={isLightTheme}  navigation={navigation}/>
-      </View>
+      {/* </ScrollView> */}
     </SafeAreaView>
   )
 }
@@ -44,41 +46,26 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   heroButtonContainer: {
-    display: 'flex',
-    justifyContent: 'space-between',
+    flex: 1,
     alignItems: 'center',
-    width: '100%',
-    height: '45%',
-    marginTop: 160
+    gap: 30,
+    justifyContent: 'center'
   },
   textContainer: {
     width: '65%',
-    display: 'flex',
-    height: '45%',
+    gap: 20,
     justifyContent: 'space-between',
   },
   textHeader: {
     fontSize: SIZES.extraLarge,
     fontWeight: '700',
     textAlign: 'center',
-    // color: COLORS.black
   },
-  // textHeaderDark: {
-  //   fontSize: SIZES.extraLarge,
-  //   fontWeight: '700',
-  //   textAlign: 'center',
-  //   color: COLORS.primary_text
-  // },
   subtitle: {
     fontSize: SIZES.medium,
     textAlign: 'center',
     color: COLORS.black,  
   },
-  // subtitle: {
-  //   fontSize: SIZES.medium,
-  //   textAlign: 'center',
-  //   color: COLORS.primary_text,
-  // }
 });
 
 export default Login

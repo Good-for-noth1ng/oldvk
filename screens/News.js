@@ -42,6 +42,7 @@ const News = ({navigation}) => {
     fetch(newsUrl)
       .then((response) => response.json())
       .then((data) => {
+        // todo: handle error 43 tmp unavailable
         const items = data.response.items.map(item => { 
           const preparedItem = findPostAuthor(item, data.response.profiles, data.response.groups)
           return preparedItem

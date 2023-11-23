@@ -44,35 +44,20 @@ const styles = StyleSheet.create({
     header: {
         width: '100%',
         height: 55,
-        display: 'flex',
+        paddingLeft: 10,
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        // backgroundColor: COLORS.primary
     },
-    // headerStyleDark: {
-    //   width: '100%',
-    //     height: 55,
-    //     display: 'flex',
-    //     flexDirection: 'row',
-    //     justifyContent: 'flex-start',
-    //     alignItems: 'center',
-    //     backgroundColor: COLORS.primary_dark,
-
-    // },
     screenNameStyle: {
       color: COLORS.white,
       fontFamily: 'sans-serif',
       fontSize: SIZES.extraLarge - 3,
-      // fontWeight: '600'
     },
     textLogoContainerStyle: {
-      width: '50%',
-      display: 'flex',
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      marginLeft: 10
+      gap: 20,
     }
-
 })

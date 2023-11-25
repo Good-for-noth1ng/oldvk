@@ -98,7 +98,7 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => 
       { 
         postPhotos ? (
           <>
-            <PostPhotos postPhotos={postPhotos}/>
+            <PostPhotos postPhotos={postPhotos} navigation={navigation} ownerId={data.owner_id} date={data.date} author={data.author}/>
             {!postVideos && <PostDivider dividerHeight={5}/>}   
           </>
         ) : null

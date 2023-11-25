@@ -23,6 +23,7 @@ import Messages from '../screens/Messages';
 import Dialog from '../screens/Dialog';
 import ReactedOnPostUsers from '../screens/ReactedOnPostUsers';
 import ReactedOnVideoUsers from '../screens/ReactedOnVideoUsers';
+import OpenedPhoto from '../screens/OpenedPhoto';
 
 const PostStack = createNativeStackNavigator();
 
@@ -53,6 +54,7 @@ const NewsRoute = () => {
       <PostStack.Screen name='Dialog' component={Dialog} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <PostStack.Screen name='ReactedOnPostUsers' component={ReactedOnPostUsers} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <PostStack.Screen name='ReactedOnVideoUsers' component={ReactedOnVideoUsers} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <PostStack.Screen name='OpenedPhoto' component={OpenedPhoto} options={{headerShown: false, animation: 'slide_from_right'}}/>
     </PostStack.Navigator>
   )
 }

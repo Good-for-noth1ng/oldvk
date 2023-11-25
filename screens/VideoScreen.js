@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React from 'react'
 import { WebView } from 'react-native-webview'
 import { useSelector } from 'react-redux'
 import CustomHeader from '../components/CustomHeader'

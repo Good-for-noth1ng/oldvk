@@ -11,7 +11,7 @@ import ImageViewer from 'react-native-image-zoom-viewer'
 import OpenedPhotoBottom from './OpenedPhotoBottom';
 
 const screenWidth = Dimensions.get('window').width
-const PostPhotos = ({postPhotos}) => {
+const PostPhotos = ({postPhotos, navigation, ownerId, date, author}) => {
   const [modalVisible, setModalVisible] = React.useState(false)
   const openImageIndex = React.useRef(0)
   const imgNum = postPhotos.length
@@ -162,7 +162,25 @@ const PostPhotos = ({postPhotos}) => {
             }
           }
           renderFooter={
-            () => {return (<OpenedPhotoBottom />)}
+            (index) => {
+              // console.log(props)
+              return (
+              <View style={{flexDirection: 'row', justifyContent: 'space-between', width: screenWidth, paddingLeft: 15, paddingRight: 15, paddingBottom: 10}}>
+                <TouchableOpacity>
+                {
+                  false ?
+                  <AntDesign name={'heart'} color={COLORS.primary} size={20}/> :
+                  <AntDesign name={'hearto'} color={COLORS.white} size={20}/>
+                }
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.push('OpenedPhoto', {photoUrl: imagesForSlides[index].url, ownerId: ownerId, date: date, author: author, width: imagesForSlides[index].props.style.width, height: imagesForSlides[index].props.style.height,})}>
+                  <MaterialCommunityIcons name={'comment-outline'} color={COLORS.white} size={20} />
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <MaterialCommunityIcons name={'share-outline'} size={22} color={COLORS.white}/>
+                </TouchableOpacity>
+              </View>)
+            }
           }
           index={openImageIndex.current}
         />

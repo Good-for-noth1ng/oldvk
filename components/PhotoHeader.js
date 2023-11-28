@@ -15,7 +15,7 @@ const PhotoHeader = ({ ownerId, date, isLightTheme, navigation, name, imgUrl, is
     }
   }
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
       <TouchableOpacity style={styles.vidPubContainer} onPress={onProfilePress}>
         <Image source={{uri: imgUrl}} style={styles.image}/>
         <View>
@@ -45,15 +45,16 @@ export default PhotoHeader
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 10,
-    marginTop: 10,
+    padding: 5,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   vidPubContainer: {
     flexDirection: 'row',
-    gap: 10
+    gap: 10,
+    maxWidth: '74%',
+    alignItems: 'center'
   },
   image: {
     width: 45,
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 18,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   date: {
     color: COLORS.secondary

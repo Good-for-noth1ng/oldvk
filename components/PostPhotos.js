@@ -73,6 +73,9 @@ const PostPhotos = ({postPhotos, navigation, ownerId, date, author}) => {
        
       let originHeight = postPhotos[index]?.sizes[lastIndexUrl].height
       let originWidth = postPhotos[index]?.sizes[lastIndexUrl].width
+      let text = postPhotos[index]?.text
+      let photoId = postPhotos[index]?.id
+      let userId = postPhotos[index]?.user_id
       resolution = originHeight / originWidth
       if (originWidth !== undefined) {
         height = resolution * width
@@ -96,7 +99,7 @@ const PostPhotos = ({postPhotos, navigation, ownerId, date, author}) => {
       imageUrls.push(imageUrl)
       calcImageHeights.push(height)
       if (imageUrl !== undefined) {
-        imagesForSlides.push({url: imageUrl})
+        imagesForSlides.push({url: imageUrl, text: text, photoId: photoId, userId: userId})
       }
       // let image = initPhoto(width=width, imageUrl=imageUrl)
       index += 1
@@ -173,7 +176,24 @@ const PostPhotos = ({postPhotos, navigation, ownerId, date, author}) => {
                   <AntDesign name={'hearto'} color={COLORS.white} size={20}/>
                 }
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => navigation.push('OpenedPhoto', {photoUrl: imagesForSlides[index].url, ownerId: ownerId, date: date, author: author, width: imagesForSlides[index].props.style.width, height: imagesForSlides[index].props.style.height,})}>
+                <TouchableOpacity 
+                  onPress={
+                    () => navigation.push(
+                      'OpenedPhoto', 
+                      {
+                        photoUrl: imagesForSlides[index].url,
+                        photoId: imagesForSlides[index].photoId,
+                        text: imagesForSlides[index].text,
+                        userId: imagesForSlides[index].userId,
+                        ownerId: ownerId, 
+                        date: date, 
+                        author: author, 
+                        width: imagesForSlides[index].props.style.width, 
+                        height: imagesForSlides[index].props.style.height,
+                      }
+                    )
+                  }
+                >
                   <MaterialCommunityIcons name={'comment-outline'} color={COLORS.white} size={20} />
                 </TouchableOpacity>
                 <TouchableOpacity>

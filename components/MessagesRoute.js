@@ -24,6 +24,7 @@ import Friends from '../screens/Friends';
 import Dialog from '../screens/Dialog';
 import Topics from '../screens/Topics';
 import Topic from '../screens/Topic';
+import OpenedPhoto from '../screens/OpenedPhoto';
 
 const MessagesStack = createNativeStackNavigator();
 
@@ -53,6 +54,7 @@ const MessagesRoute = () => {
       <MessagesStack.Screen name='Dialog' component={Dialog} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <MessagesStack.Screen name='Topics' component={Topics} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <MessagesStack.Screen name='Topic' component={Topic} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <MessagesStack.Screen name='OpenedPhoto' component={OpenedPhoto} options={{headerShown: false, animation: 'slide_from_right'}}/>
     </MessagesStack.Navigator>
   )
 }

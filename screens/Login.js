@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   heroButtonContainer: {
     flex: 1,
     alignItems: 'center',
-    gap: 30,
+    gap: 100,
     justifyContent: 'center'
   },
   textContainer: {

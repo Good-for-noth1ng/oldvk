@@ -14,7 +14,7 @@ import {
   initUserData 
 } from '../redux/userSlice'
 import { COLORS } from '../constants/theme'
-
+import { getTimeDate } from '../utils/date'
 const WebViewLogin = () => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const dispatch = useDispatch();
@@ -36,7 +36,7 @@ const WebViewLogin = () => {
         expiresIn = url.match(expireInRegex)[0].split('expires_in=')[1];
       }
       const userId = url.match(userIdRegex)[0].split('user_id=')[1];
-      console.log(url, '\n', accessToken, '\n', expiresIn, '\n', userId)
+      console.log(url, '\n', accessToken, '\n', getTimeDate(expiresIn), '\n', userId)
       
       // dispatch(setAccessToken(accessToken));
       // dispatch(setExpiresIn(expiresIn));

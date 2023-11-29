@@ -15,7 +15,7 @@ const OpenedPhoto = ({ navigation, route }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const { ownerId, photoUrl, date, author, width, height, text, photoId, userId } = route.params
-  // console.log(width, height)
+  console.log(author)
   const [isLoading, setIsLoading] = React.useState(false)
   const [comments, setComments] = React.useState([])
   const count = 20
@@ -81,7 +81,7 @@ const OpenedPhoto = ({ navigation, route }) => {
           accessToken={accessToken}
           isLightTheme={isLightTheme}
           navigation={navigation}
-          name={author.name}
+          name={author.name ? author.name : `${author.first_name} ${author.last_name}`}
           imgUrl={author.photo_100}
           isFriend={false}
           isMember={false}

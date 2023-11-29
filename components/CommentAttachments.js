@@ -12,7 +12,7 @@ import { COLORS } from '../constants/theme'
 import { getDuration } from '../utils/numShortage';
 
 const screenWidth = Dimensions.get('window').width
-const CommentAttachments = ({attachments, navigation, isLightTheme}) => {
+const CommentAttachments = ({attachments, navigation, isLightTheme, author, ownerId}) => {
   const [isModalVisible, setISModalVisible] = React.useState(false)
   const photos = React.useRef([])
   const videosNum = React.useRef(0)
@@ -28,14 +28,28 @@ const CommentAttachments = ({attachments, navigation, isLightTheme}) => {
         let ph
         for (let j = 0; j < attachments[i].photo.sizes.length; j++) {
           if (attachments[i].photo.sizes[j].type === 'x') {
-            ph = {url: attachments[i].photo.sizes[j].url}
+            ph = {
+              url: attachments[i].photo.sizes[j].url, 
+              photoId:  attachments[i].photo.id,
+              ownerId: ownerId,
+              text: attachments[i].photo.text,
+              userId: attachments[i].photo.user_id,
+              date: attachments[i].photo.date,
+            }
             // console.log(attachments[i].photo.sizes[j].url)
             break
           }
         }
         if (ph === undefined) {
           // console.log(attachments[i].photo.sizes[attachments[i].photo.sizes.length - 1].url)
-          photos.current.push({url: attachments[i].photo.sizes[attachments[i].photo.sizes.length - 1].url})
+          photos.current.push({
+            url: attachments[i].photo.sizes[attachments[i].photo.sizes.length - 1].url,
+            photoId:  attachments[i].photo.id,
+            ownerId: ownerId,
+            text: attachments[i].photo.text,
+            userId: attachments[i].photo.user_id,
+            date: attachments[i].photo.date,
+          })
         } else {
           photos.current.push(ph)
         }
@@ -93,7 +107,7 @@ const CommentAttachments = ({attachments, navigation, isLightTheme}) => {
             }
           }
           renderFooter={
-            () => {
+            (index) => {
               return (
                 <View style={{flexDirection: 'row', justifyContent: 'space-between', width: screenWidth, paddingLeft: 15, paddingRight: 15, paddingBottom: 10}}>
                   <TouchableOpacity>
@@ -103,7 +117,26 @@ const CommentAttachments = ({attachments, navigation, isLightTheme}) => {
                       <AntDesign name={'hearto'} color={COLORS.white} size={20}/>
                     }
                   </TouchableOpacity>
-                  <TouchableOpacity><MaterialCommunityIcons name={'comment-outline'} color={COLORS.white} size={20} /></TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={
+                      () => navigation.push(
+                        'OpenedPhoto',
+                        {
+                          photoUrl: photos.current[index].url,
+                          photoId: photos.current[index].photoId,
+                          text: photos.current[index].text,
+                          userId: photos.current[index].userId,
+                          ownerId: photos.current[index].ownerId,
+                          date: photos.current[index].date,
+                          author: author,
+                          width: photos.current[index].props.style.width,
+                          height: photos.current[index].props.style.height,
+                        }
+                      ) 
+                    }
+                  >
+                    <MaterialCommunityIcons name={'comment-outline'} color={COLORS.white} size={20}/>
+                  </TouchableOpacity>
                   <TouchableOpacity><MaterialCommunityIcons name={'share-outline'} size={20} color={COLORS.white}/></TouchableOpacity>
                 </View>
               )

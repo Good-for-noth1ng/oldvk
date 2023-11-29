@@ -18,6 +18,7 @@ import AlbumPhotos from '../screens/AlbumPhotos';
 import AlbumVideos from '../screens/AlbumVideos';
 import PhotoAlbumsList from '../screens/PhotoAlbumsList';
 import VideoAlbumsList from '../screens/VideoAlbumsList';
+import OpenedPhoto from '../screens/OpenedPhoto';
 
 const PhotoStack = createNativeStackNavigator();
 
@@ -38,9 +39,10 @@ const PhotosRoute = () => {
       <PhotoStack.Screen name='VideosList' component={VideosList} options={{headerShown:false, animation: 'slide_from_right'}} />
       <PhotoStack.Screen name='Video' component={VideoScreen} options={{headerShown:false, animation: 'slide_from_right'}}/>
       <PhotoStack.Screen name='AlbumPhotos' component={AlbumPhotos} options={{headerShown:false, animation: 'slide_from_right'}} />
-      <PhotoStack.Screen name='AlbumVideos' component={AlbumVideos}options={{headerShown:false, animation: 'slide_from_right'}} />
+      <PhotoStack.Screen name='AlbumVideos' component={AlbumVideos} options={{headerShown:false, animation: 'slide_from_right'}} />
       <PhotoStack.Screen name='PhotoAlbumsList' component={PhotoAlbumsList}options={{headerShown:false, animation: 'slide_from_right'}} />
       <PhotoStack.Screen name='VideoAlbumsList' component={VideoAlbumsList}options={{headerShown:false, animation: 'slide_from_right'}} />
+      <PhotoStack.Screen name='OpenedPhoto' component={OpenedPhoto} options={{headerShown:false, animation: 'slide_from_right'}} />
     </PhotoStack.Navigator>
   )
 }

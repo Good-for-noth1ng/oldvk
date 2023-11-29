@@ -142,7 +142,17 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
                     {getHyperlinkInText(commentText)}
                   </Text> : null
                 }
-                {attachments ? <CommentAttachments attachments={attachments} navigation={navigation} isLightTheme={isLightTheme}/> : null}
+                {
+                  attachments ? 
+                  <CommentAttachments 
+                    attachments={attachments} 
+                    navigation={navigation} 
+                    isLightTheme={isLightTheme} 
+                    author={author}
+                    // ownerId={from_id}
+                    ownerId={ownerId} 
+                  /> : null
+                }
               </>
             }
             <CommentBottom likesCount={likesCount} handleLikePress={handleLikePress} date={commentDate} isLiked={isLiked}/>

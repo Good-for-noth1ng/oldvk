@@ -126,6 +126,17 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
     dispatch(collapseShadow())
   }
 
+  const removePostFromFavorite = async () => {
+    const url = `https://api.vk.com/method/fave.removePost?access_token=${accessToken}&v=5.131&owner_id=${data.owner_id ? data.owner_id : data.source_id}&id=${data.id ? data.id : data.post_id}${data.access_key ? `&access_key=${data.access_key}` : ''}`
+    const response = await fetch(url)
+    const parsedRes = await response.json()
+    if (parsedRes.response === 1) {
+      ToastAndroid.show('Removed from Fave!', ToastAndroid.SHORT)
+    } else {
+      ToastAndroid.show('Network Error', ToastAndroid.SHORT)
+    }
+    dispatch(collapseShadow())
+  }
   const copyPostLink = async () => {
     await Clipboard.setStringAsync(`https://vk.com/wall${data.owner_id ? data.owner_id : data.source_id}_${data.id ? data.id : data.post_id}`)
     ToastAndroid.show('Copied!', ToastAndroid.SHORT)
@@ -154,6 +165,8 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
     }
   }
 
+  
+
   if (dropdownType === 'post') {
     return (
       <Animated.View 
@@ -167,8 +180,8 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
         {backgroundColor: COLORS.very_dark_gray},
         {transform: [{translateX: dropdownData.dropdownX - 150}, {translateY: dropdownData.dropdownY}]}
       ]}>
-        <TouchableOpacity style={styles.postDropdownMenuButton} onPress={addPostToFave} activeOpacity={0.8}>
-          <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
+        <TouchableOpacity style={styles.postDropdownMenuButton} onPress={data.is_favorite ? removePostFromFavorite : addPostToFave} activeOpacity={0.8}>
+          <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>{data.is_favorite ? 'Remove from fave' : 'Add to Bookmarks'}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.postDropdownMenuButton}>
           <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Not interested</Text>

@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // justifyContent: 'flex-start',
     gap: 4,
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     marginTop: 5,
     marginBottom: 5,
   },

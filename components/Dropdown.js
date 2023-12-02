@@ -126,6 +126,10 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
     dispatch(collapseShadow())
   }
 
+  const notInterested = () => {
+    dispatch(collapseShadow())
+  }
+
   const removePostFromFavorite = async () => {
     const url = `https://api.vk.com/method/fave.removePost?access_token=${accessToken}&v=5.131&owner_id=${data.owner_id ? data.owner_id : data.source_id}&id=${data.id ? data.id : data.post_id}${data.access_key ? `&access_key=${data.access_key}` : ''}`
     const response = await fetch(url)
@@ -183,9 +187,12 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
         <TouchableOpacity style={styles.postDropdownMenuButton} onPress={data.is_favorite ? removePostFromFavorite : addPostToFave} activeOpacity={0.8}>
           <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>{data.is_favorite ? 'Remove from fave' : 'Add to Bookmarks'}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.postDropdownMenuButton}>
-          <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Not interested</Text>
-        </TouchableOpacity>
+        {
+          data.fromNewsfeed ? 
+          <TouchableOpacity style={styles.postDropdownMenuButton} onPress={notInterested}>
+            <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Not interested</Text>
+          </TouchableOpacity> : null
+        }
         <TouchableOpacity style={styles.postDropdownMenuButton} onPress={copyPostLink} activeOpacity={0.8}>
           <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Copy Link</Text>
         </TouchableOpacity>

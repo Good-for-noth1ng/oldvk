@@ -18,12 +18,13 @@ import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
 const globalShadowHeight = Dimensions.get('window').height
 const globalShadowWidth = Dimensions.get('window').width
 
-const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => {
+const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken, fromNewsfeed}) => {
   let postPhotos = []
   let postDocs = []
   let postLinks = []
   let postVideos = []
   let postPoll
+  const [showNotInterested, setShowNotInterested] = React.useState(false)
   
   const openPost = () => {
     if (openedPost) {
@@ -75,6 +76,7 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken}) => 
         author={data.author}
         shouldShowMoreButton={openedPost}
         data={data}
+        fromNewsfeed={fromNewsfeed}
       />
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12}/>

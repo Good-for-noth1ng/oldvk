@@ -144,6 +144,7 @@ const News = ({navigation}) => {
         isLigthTheme={isLightTheme} 
         id={item.key}
         accessToken={accessToken}
+        fromNewsfeed={true}
       />
     )
   }

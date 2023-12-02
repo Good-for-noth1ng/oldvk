@@ -19,35 +19,48 @@ const PostLinks = ({postLinks, isLightTheme, isInFav}) => {
           if (postLink.photo !== undefined) {
             let url, postHeight, objectUrl
             objectUrl = postLink.url
-            for (let i = 0; i < postLink.photo.sizes.length; i++) {
-              if (postLink.photo.sizes[i].type === 'p') {
-                url = postLink.photo.sizes[i].url
-                postHeight = (postLink.photo.sizes[i].height / postLink.photo.sizes[i].width) * postWidth
-                break
-              }
-            }
-            if (url === undefined) {
-              url = postLink.photo.sizes[postLink.photo.sizes.length - 1].url
-            }
+            // console.log(postLink.photo.sizes)
+            postLink.photo.sizes.sort(function(a, b){return b.width - a.width})
+            // for (let i = 0; i < postLink.photo.sizes.length; i++) {
+            //   if (postLink.photo.sizes[i].width >= 300) {
+            //     url = postLink.photo.sizes[i].url
+            //     postHeight = (postLink.photo.sizes[i].height / postLink.photo.sizes[i].width) * postWidth
+            //     break
+            //   }
+            // }
+            url = postLink.photo.sizes[0].url
+            // if (url === undefined) {
+            //   url = postLink.photo.sizes[postLink.photo.sizes.length - 1].url
+            // }
             return (
-              <TouchableOpacity activeOpacity={0.8} onPress={() => Linking.openURL(objectUrl)}>
+              <TouchableOpacity activeOpacity={0.8} onPress={() => Linking.openURL(objectUrl)} style={[{borderWidth: 1}, isLightTheme ? {borderColor: COLORS.light_smoke} : {borderColor: COLORS.secondary}]}>
                 <ImageBackground 
                   source={{uri: url}} 
-                  style={{width: postWidth, height: postHeight, borderRadius: 5, justifyContent: 'center', alignItems: 'center', gap: 10}} 
+                  style={{width: postWidth, justifyContent: 'center', alignItems: 'center', aspectRatio: 2.2, }} 
                   resizeMode='contain'
                 >
-                  <View style={{width: '100%', height: '100%', backgroundColor: COLORS.black, position: 'absolute', opacity: 0.3}}/>
+                  {/* <View style={{width: '100%', height: '100%', backgroundColor: COLORS.black, position: 'absolute', opacity: 0.3}}/> */}
                   <TouchableOpacity style={{position: 'absolute', top: 5, right: 10}} activeOpacity={0.8} onPress={() => setIsFavPressed(prev => !prev)}>
                     <AntDesign name={isFavPressed ? 'star' : 'staro'} size={25} color={isFavPressed ? COLORS.primary : COLORS.white}/>
                   </TouchableOpacity>
-                  <Text style={{fontSize: 16, fontWeight: 'bold', color: COLORS.white, textShadowColor: COLORS.black, textShadowOffset: { width: 0.5, height: 0.5 }, textShadowRadius: 5}}>
+                </ImageBackground>
+                <View style={[{padding: 10}, isLightTheme ? {backgroundColor: COLORS.white,} : {backgroundColor: COLORS.light_black}]}>
+                  <Text 
+                    style={
+                      [{
+                        fontSize: 16, 
+                        fontWeight: 'bold', 
+                      },
+                      isLightTheme ? {color: COLORS.black} : {color: COLORS.white}
+                    ]
+                    }
+                  >
                     {postLink.title}
                   </Text>
-                  <View style={{backgroundColor: COLORS.white, borderRadius: 5, padding: 7, flexDirection: 'row', alignItems: 'center', gap: 5}}>
-                    <FontAwesome name='flash' color={COLORS.black} size={15}/>
-                    <Text style={{fontSize: 12, fontWeight: 'bold', color: COLORS.black, textTransform: 'uppercase'}}>Read</Text>
-                  </View>
-                </ImageBackground>          
+                  <Text style={[isLightTheme ? {color: COLORS.black} : {color: COLORS.light_smoke}]}>
+                    {postLink.caption}
+                  </Text>
+                </View>       
               </TouchableOpacity>
             )
           } else {

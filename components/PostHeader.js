@@ -7,7 +7,7 @@ import { getTimeDate } from '../utils/date'
 import { useDispatch } from 'react-redux'
 import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
 
-const PostHeader = ({dataDate, isRepost, navigation, isLightTheme, onMorePress, isPinned, author, ownerId, shouldShowMoreButton, data, fromNewsfeed}) => {  
+const PostHeader = ({dataDate, isRepost, navigation, isLightTheme, onMorePress, isPinned, author, ownerId, shouldShowMoreButton, data, fromNewsfeed, setShowNotInterested}) => {  
   const dispatch = useDispatch()
   const name = author?.name ? author?.name : `${author?.first_name} ${author?.last_name}`
   const imgUrl = author?.photo_100
@@ -17,7 +17,7 @@ const PostHeader = ({dataDate, isRepost, navigation, isLightTheme, onMorePress, 
     dropdownCoords.current.measure(
       (x, y, width, height, pageX, pageY) => {
         // console.log(pageX, pageY, width)
-        dispatch(expandShadow({dropdownX: pageX, dropdownY: pageY, data: {...data, fromNewsfeed}, dropdownType: 'post'}))
+        dispatch(expandShadow({dropdownX: pageX, dropdownY: pageY, data: {...data, fromNewsfeed, setShowNotInterested}, dropdownType: 'post'}))
       }
     )
   }

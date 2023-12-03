@@ -59,6 +59,24 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken, from
 
   initPostData()
   
+  const cancelShowNotInterested = async () => {
+    setShowNotInterested(prev => !prev)
+  }
+  if (showNotInterested) {
+    return (
+      <View style={[{borderRadius: 5, gap: 10, marginTop: 5, padding: 5, alignItems: 'center'}, isLigthTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+        <Text style={[{fontSize: 15}, isLigthTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>This community's posts will be shown less often</Text>
+        <View style={{flexDirection: 'row', gap: 10}}>
+          <TouchableOpacity style={{padding: 5, backgroundColor: COLORS.primary, borderRadius: 5}} onPress={cancelShowNotInterested}>
+            <Text style={[{fontSize: 15, color: COLORS.white}]}>Cancel</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={{padding: 5, backgroundColor: COLORS.primary, borderRadius: 5}}>
+            <Text style={[{fontSize: 15, color: COLORS.white}]}>Report</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
   return (
     <View 
       style={[
@@ -77,6 +95,7 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken, from
         shouldShowMoreButton={openedPost}
         data={data}
         fromNewsfeed={fromNewsfeed}
+        setShowNotInterested={setShowNotInterested}
       />
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12}/>

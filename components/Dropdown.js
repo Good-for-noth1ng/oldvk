@@ -127,6 +127,8 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
   }
 
   const notInterested = () => {
+    const setNotInterested = data.setShowNotInterested
+    setNotInterested(true)
     dispatch(collapseShadow())
   }
 

@@ -5,72 +5,64 @@ import * as FileSystem from 'expo-file-system'
 import { shareAsync } from 'expo-sharing'
 import { COLORS } from '../constants/theme'
 import uuid from 'react-native-uuid';
+import PostFile from './PostFile'
 
 const PostFiles = ({postDocs, isLightTheme}) => {
-  let renderDocs = []
-  for (let i = 0; i < postDocs.length; i++) {
-    let doc = postDocs[i]
-    let name = doc.title
-    name = name.slice(0, 35)
-    if (name !== doc.title) {
-      name += '...' 
-    }
-    let size = doc.size
-    let quantities = ['B', 'KB', 'MB', 'GB']
-    let quantity = 'B'
-    for (let i =0; i < 3; i++) {
-      if (size >= 1000) {
-        size = Math.round(size / 10) / 100
-        quantity = quantities[i + 1]
-      }  
-    }
+  // let renderDocs = []
+  // for (let i = 0; i < postDocs.length; i++) {
+  //   let doc = postDocs[i]
+  //   let name = doc.title
+  //   name = name.slice(0, 35)
+  //   if (name !== doc.title) {
+  //     name += '...' 
+  //   }
+  //   let size = doc.size
+  //   let quantities = ['B', 'KB', 'MB', 'GB']
+  //   let quantity = 'B'
+  //   for (let i =0; i < 3; i++) {
+  //     if (size >= 1000) {
+  //       size = Math.round(size / 10) / 100
+  //       quantity = quantities[i + 1]
+  //     }  
+  //   }
     // console.log(postDocs[i].url)
-    const downloadFromUrl = async () => {
-      // console.log('asdas')
-      const fileName = name
-      const result = await FileSystem.downloadAsync(
-        postDocs[i].url,
-        FileSystem.documentDirectory + fileName
-      )
-      console.log(result.headers["content-type"])
 
-      save(result.uri, fileName, result.headers["content-type"])
-    }
-    const save = async (uri, filename, mimetype) => {
-      if (Platform.OS === "android") {
-        const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync()
-        if (permissions.granted) {
-          // await FileSystem.DownloadResumable.
-          // const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64})
-          // await FileSystem.StorageAccessFramework.createFileAsync(permissions.directoryUri, filename, mimetype)
-          // .then(async uri => {
-          //   await FileSystem.writeAsStringAsync(uri, base64, {encoding: FileSystem.EncodingType.Base64})
-          // })
-          // .then(() => {
-          //   console.log('Downloaded')
-          // })
-          // .catch(e => console.log(e))
-        } 
-      } else {
-        shareAsync(uri);
-      }
-    }
-    let file = (
-      <TouchableOpacity key={uuid.v4()} style={styles.fileContainer} activeOpacity={0.8} onPress={downloadFromUrl}>
-       <View style={styles.fileIconContainer}>
-         <FontAwesome name='file' size={22} color={COLORS.secondary} />
-       </View>
-       <View style={styles.fileInfoContainer}>
-         <Text style={isLightTheme ? styles.nameLight : styles.nameDark}>{name}</Text>
-          <Text style={isLightTheme ? styles.additionalInfoLight : styles.additionalInfoDark}>{doc.ext} {size} {quantity}</Text>
-       </View>
-     </TouchableOpacity>
-    )
-    renderDocs.push(file)
-  }
+    // let file = (
+    //   <TouchableOpacity key={uuid.v4()} style={styles.fileContainer} activeOpacity={0.8}>
+    //    <View style={styles.fileIconContainer}>
+    //      <FontAwesome name='file' size={22} color={COLORS.secondary} />
+    //    </View>
+    //    <View style={styles.fileInfoContainer}>
+    //      <Text style={isLightTheme ? styles.nameLight : styles.nameDark}>{name}</Text>
+    //       <Text style={isLightTheme ? styles.additionalInfoLight : styles.additionalInfoDark}>{doc.ext} {size} {quantity}</Text>
+    //    </View>
+    //  </TouchableOpacity>
+    // )
+    // renderDocs.push(file)
+  // }
   return (
     <View>
-      {renderDocs && renderDocs}
+      {
+        postDocs.map(doc => {
+          let name = doc.title
+          name = name.slice(0, 35)
+          if (name !== doc.title) {
+            name += '...' 
+          }
+          let size = doc.size
+          let quantities = ['B', 'KB', 'MB', 'GB']
+          let quantity = 'B'
+          for (let i =0; i < 3; i++) {
+            if (size >= 1000) {
+              size = Math.round(size / 10) / 100
+              quantity = quantities[i + 1]
+            }  
+          }
+          return (
+            <PostFile isLightTheme={isLightTheme} postDoc={doc} size={size} name={name} quantity={quantity}/>
+          )  
+        })
+      }
     </View>
   )
 }

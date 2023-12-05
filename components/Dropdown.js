@@ -214,23 +214,23 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
         <TouchableOpacity 
           style={[
             styles.headerDropdownOptionContainer,  
-            isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
+            isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.secondary}
           ]} 
         >
           <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
         </TouchableOpacity>
-        <TouchableOpacity 
+        {/* <TouchableOpacity 
           style={[
             styles.headerDropdownOptionContainer,  
-            isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
+            isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.secondary}
           ]} 
         >
           <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Leave/Join Community</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity 
           style={[
             styles.headerDropdownOptionContainer,  
-            isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
+            isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.secondary}
           ]} 
         >
           <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Copy link</Text>
@@ -238,7 +238,7 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
         <TouchableOpacity 
           style={[
             styles.headerDropdownOptionContainer,  
-            isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
+            isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.secondary}
           ]} 
         >
           <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Report</Text>
@@ -373,14 +373,14 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
         >
           <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
         </TouchableOpacity>
-        <TouchableOpacity 
+        {/* <TouchableOpacity 
           style={[
             styles.headerDropdownOptionContainer,  
             isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
           ]} 
         >
           <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Leave/Join Community</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <TouchableOpacity 
           style={[
             styles.headerDropdownOptionContainer,  

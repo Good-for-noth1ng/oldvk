@@ -166,10 +166,10 @@ const VideosList = ({ navigation, route }) => {
         navigation={navigation}
         playerUrl={item.player}
         ownerId={item.owner_id}
-        likes={item.likes.count}
-        reposts={item.reposts.count}
-        isLiked={item.likes.user_likes}
-        isReposted={item.reposts.user_reposted}
+        likes={item?.likes?.count}
+        reposts={item?.reposts?.count}
+        isLiked={item?.likes?.user_likes}
+        isReposted={item?.reposts?.user_reposted}
         id={item.key}
         canLike={item.can_like}
         canAdd={item.can_add}

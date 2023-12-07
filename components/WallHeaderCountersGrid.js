@@ -236,7 +236,7 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
     countersGrid.push(<View key={uuid.v4()} style={styles.counterRow}>{row}</View>)
   }
   return (
-    <View style={{}}>
+    <View>
       {countersGrid}
     </View>
   )

@@ -1,10 +1,14 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Animated, FlatList, RefreshControl } from 'react-native'
-import React, { useState, useEffect, useRef } from 'react'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Animated, FlatList, RefreshControl, Modal, Dimensions, TouchableOpacity, Image } from 'react-native'
+import React from 'react'
 // import { FlatList } from "react-native-gesture-handler";
 import { useSelector } from 'react-redux'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Entypo from 'react-native-vector-icons/Entypo'
 import CustomHeader from '../components/CustomHeader'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Feather from 'react-native-vector-icons/Feather'
+// import uuid from 'react-native-uuid';
+import ImageViewer from 'react-native-image-zoom-viewer'
 import WallHeaderGeneralInfo from '../components/WallHeaderGeneralInfo';
 import WallHeaderCountersGrid from '../components/WallHeaderCountersGrid';
 import WallHeaderButtons from '../components/WallHeaderButtons';
@@ -23,27 +27,32 @@ import GlobalShadow from '../components/GlobalShadow'
 import Dropdown from '../components/Dropdown'
 import UserHeaderCollapsibleMenu from '../components/UserHeaderCollapsibleMenu'
 import ProfileOverlay from '../components/ProfileOverlay'
+
 // fix redux calls
-const UserProfile = ({navigation, route}) => {
+const screenWidth = Dimensions.get('window').width
+const UserProfile = ({ navigation, route }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
-  const [isUserInfoExpanded, setIsUserInfoExpanded] = useState(false)
+  const [isUserInfoExpanded, setIsUserInfoExpanded] = React.useState(false)
   const isGlobalShadowExpanded = useSelector(state => state.globalShadow.isOpen)
   const authorInfoIsOpen = React.useRef(false)
   const currentUserId = useSelector(state => state.user.userId)
   const userId = route?.params !== undefined ? route.params.userId : currentUserId
   console.log(currentUserId, userId)
+  const imagesForSlides = React.useRef([])
+  const [isAvatarVisible, setIsAvatarVisible] = React.useState(false)
   const count = 15
-  const offset = useRef(0) 
-  const remainToFetch = useRef(null)
-  const [userData, setUserData] = useState([])
+  const offset = React.useRef(0) 
+  const remainToFetch = React.useRef(null)
+  const [userData, setUserData] = React.useState([])
 
-  const [isLoading, setIsLoading] = useState(true) 
+  const [isLoading, setIsLoading] = React.useState(true) 
   const userInfoUrlFields = 'friend_status,followers_count,photo_200,online,last_seen,counters,status,can_send_friend_request,can_write_private_message,can_post,relation,bdate,city,interests,home_town,personal,education,universities,screen_name'
   const userInfoUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${userId}&fields=${userInfoUrlFields}`
   const userWallUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&v=5.131&owner_id=${userId}&extended=1&count=${count}`
-  const [wallHeaderData , setWallHeaderData] = useState({screenName: 'Profile'})
-  const shouldRemoveStackScreens = useRef()
+  const fetchGroupAvatarsUrl = `https://api.vk.com/method/photos.get?access_token=${accessToken}&v=5.199&owner_id=${userId}&album_id=profile&rev=1&count=100&extended=1`
+  const [wallHeaderData , setWallHeaderData] = React.useState({screenName: 'Profile'})
+  const shouldRemoveStackScreens = React.useRef()
   //TODO:
   //const allData = Promise.all([fetchReq1, fetchReq2, fetchReq3]);
   //allData.then((res) => console.log(res));
@@ -61,10 +70,31 @@ const UserProfile = ({navigation, route}) => {
   }
 
   const fetchData = async () => {
+    const avatarsResponse = await fetch(fetchGroupAvatarsUrl)
     const userInfoResponse = await fetch(userInfoUrl)
     const userWallContentResponse = await fetch(userWallUrl)
+    const avatarsData = await avatarsResponse.json()
     const userInfoData = await userInfoResponse.json()
     const userWallContentData = await userWallContentResponse.json()
+    imagesForSlides.current = avatarsData.response.items.map(item => {
+      const url = item.sizes.sort(function(a, b){return b.width - a.width})[0].url
+      return {
+        url,
+        photoId: item.photo_id,
+        ownerId: item.owner_id,
+        userId: item.user_id,
+        text: item.text,
+        date: item.date,
+        author: {
+          photo_100: userInfoData.response[0].photo_200,
+          name: `${userInfoData.response[0].first_name} ${userInfoData.response[0].last_name}`
+        },
+        likes: item?.likes?.count,
+        isLiked: item?.likes?.user_likes,
+        comments: item?.comments?.count,
+        reposts: item?.reposts?.count
+      }
+    })
     let isOnlineUsingMobile
     let isOnlineUsingPC
     if (userInfoData.response[0].online === 1 && userInfoData.response[0].last_seen.platform < 6) {
@@ -196,6 +226,7 @@ const UserProfile = ({navigation, route}) => {
           chevronPressHandler={setIsUserInfoExpanded}
           expanded={isUserInfoExpanded}
           shouldPerformExpanding={isThereAdditionalInfo}
+          setIsAvatarVisible={setIsAvatarVisible}
         /> 
         <WallHeaderPersonalContainer 
           personal={wallHeaderData.personal}
@@ -302,7 +333,85 @@ const UserProfile = ({navigation, route}) => {
         <View style={styles.spinnerContainer}>
           <ActivityIndicator size={50} color={isLightTheme ? COLORS.primary : COLORS.white}/>
         </View> :
-        <> 
+        <>
+          <Modal
+            animationType='fade'
+            transparent={true}
+            visible={isAvatarVisible}
+            onRequestClose={() => setIsAvatarVisible(prev => !prev)}
+          >
+            <ImageViewer
+              imageUrls={imagesForSlides.current}
+              enableImageZoom={true}
+              useNativeDriver={true}
+              enablePreload={true}
+              enableSwipeDown={true}
+              renderIndicator={(currentIndex) => <></>}
+              renderHeader={
+              (currentIndex) => (
+                <View style={{position: 'absolute', zIndex: 3, flexDirection: 'row', width: screenWidth, justifyContent: 'space-between', alignItems: 'center', paddingLeft: 10, paddingRight: 10, marginTop: 10}}>
+                  <View style={{flexDirection: 'row', gap: 30}}>
+                    <TouchableOpacity activeOpacity={0.5} onPress={() => setIsAvatarVisible(false)}>
+                      <AntDesign name={'arrowleft'} size={25} color={COLORS.white}/>
+                    </TouchableOpacity>
+                    <Text style={{color: COLORS.white, fontSize: 17}}>{currentIndex + 1} of {imagesForSlides.current.length}</Text>
+                  </View>
+                  <Feather name={'more-vertical'} color={COLORS.white} size={25}/>
+                </View>
+              )
+            }
+            renderImage={
+              (props) => {
+                // console.log(props.source.uri)
+                return(
+                  <Image source={{uri: props.source.uri}} style={{flex: 1, width: null, height: null}} resizeMode={'contain'}/>
+                )
+              }
+            }
+            renderFooter={
+              (index) => {
+                // console.log(props)
+                return (
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: screenWidth, paddingLeft: 15, paddingRight: 15, paddingBottom: 10}}>
+                  <TouchableOpacity style={{flexDirection: 'row', gap: 5}}>
+                    {
+                      imagesForSlides.current[index].isLiked ?
+                      <AntDesign name={'heart'} color={COLORS.primary} size={20}/> :
+                      <AntDesign name={'hearto'} color={COLORS.white} size={20}/>
+                    }
+                    <Text style={{color: COLORS.white, fontSize: 14}}>{imagesForSlides.current[index].likes}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    onPress={
+                      () => navigation.push(
+                        'OpenedPhoto', 
+                        {
+                          photoUrl: imagesForSlides.current[index].url,
+                          photoId: imagesForSlides.current[index].photoId,
+                          text: imagesForSlides.current[index].text,
+                          userId: imagesForSlides.current[index].userId,
+                          ownerId: -groupId, 
+                          date: imagesForSlides.current[index].date, 
+                          author: imagesForSlides.current[index].author, 
+                          width: imagesForSlides.current[index].props.style.width, 
+                          height: imagesForSlides.current[index].props.style.height,
+                        }
+                      )
+                    }
+                    style={{flexDirection: 'row', gap: 5}}
+                  >
+                    <MaterialCommunityIcons name={'comment-outline'} color={COLORS.white} size={20} />
+                    <Text style={{color: COLORS.white, fontSize: 14}}>{imagesForSlides.current[index].comments}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={{flexDirection: 'row', gap: 5}}>
+                    <MaterialCommunityIcons name={'share-outline'} size={22} color={COLORS.white}/>
+                    <Text style={{color: COLORS.white, fontSize: 14}}>{imagesForSlides.current[index].reposts}</Text>
+                  </TouchableOpacity>
+                </View>)
+                }
+              } 
+            />
+          </Modal>
           <FlatList
             data={userData}
             style={styles.list}

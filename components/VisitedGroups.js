@@ -14,7 +14,8 @@ if (Platform.OS === 'android') {
 
 const VisitedGroups = ({ visitedGroups, isLightTheme, navigation }) => {
   const [areThereVisited, setAreThereVisited] = React.useState(visitedGroups.length > 0)
-  const visited = visitedGroups
+  // const visited = visitedGroups
+
   const clearStack = async () => {
     await AsyncStorage.setItem("visitedGroups", JSON.stringify([]))
   }
@@ -64,7 +65,7 @@ const VisitedGroups = ({ visitedGroups, isLightTheme, navigation }) => {
         </TouchableOpacity>
       </View>  
       <FlatList
-        data={visited.reverse()}
+        data={visitedGroups}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         horizontal={true}

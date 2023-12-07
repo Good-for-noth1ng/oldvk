@@ -12,7 +12,7 @@ if (Platform.OS === 'android') {
   }
 }
 
-const WallHeaderGeneralInfo = ({ name, avatarUrl, lastSeen, status, isOnlineUsingMobile, isOnlineUsingPC, chevronPressHandler, expanded, shouldPerformExpanding }) => {
+const WallHeaderGeneralInfo = ({ name, avatarUrl, lastSeen, status, isOnlineUsingMobile, isOnlineUsingPC, chevronPressHandler, expanded, shouldPerformExpanding, setIsAvatarVisible }) => {
   // const isPersonalInfoOpen = React.useRef(false)
   
   let onlineStatus
@@ -60,7 +60,9 @@ const WallHeaderGeneralInfo = ({ name, avatarUrl, lastSeen, status, isOnlineUsin
   }
   return (
     <View style={styles.imageNameContainer}>
-      <Image source={{uri: avatarUrl}} style={styles.image}/>
+      <TouchableOpacity activeOpacity={0.8} onPress={() => setIsAvatarVisible(prev => !prev)}>
+        <Image source={{uri: avatarUrl}} style={styles.image}/>
+      </TouchableOpacity>
       <View style={styles.additionalInfoContainer}>
         <View style={styles.nameContainer}>
           <Text style={styles.wallName}>{name}</Text>

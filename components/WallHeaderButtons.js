@@ -39,7 +39,7 @@ const WallHeaderButtons = ({ isUserWall, isMember, canWritePrivateMessage, canSe
         <WallHeaderButton 
           key={uuid.v4()} 
           activeStateText={'Add Friend'} 
-          inactiveStateText={'Remove from Friends'} 
+          inactiveStateText={'Unfriend'} 
           isActiveState={!isFriend}
         />
       )

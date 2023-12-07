@@ -1,14 +1,17 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, RefreshControl } from 'react-native'
-import React, { useEffect, useState, useLayoutEffect, useRef } from 'react'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, RefreshControl, Modal, Dimensions, TouchableOpacity, Image } from 'react-native'
+import React from 'react'
 import { FlatList } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from 'react-redux'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { COLORS } from '../constants/theme'
 import CustomHeader from '../components/CustomHeader'
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import uuid from 'react-native-uuid';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import Feather from 'react-native-vector-icons/Feather'
+// import uuid from 'react-native-uuid';
+import ImageViewer from 'react-native-image-zoom-viewer'
 import Post from '../components/Post'
-import { setData, pushData } from '../redux/groupSlice'
+// import { setData, pushData } from '../redux/groupSlice'
 import Repost from '../components/Repost'
 import WallHeader from '../components/WallHeader'
 import DividerWithLine from '../components/DividerWithLine'
@@ -21,23 +24,28 @@ import WallIsPrivateText from '../components/WallIsPrivateText';
 import { cleanAdditionalInfoLinksAndUsers } from '../utils/dataPreparationForComponents'
 import ProfileHeaderName from '../components/ProfileHeaderName';
 import { findPostAuthor } from '../utils/dataPreparationForComponents';
-import PostDropdownMenu from '../components/PostDropdownMenu';
+import { postWidth } from '../constants/theme';
+// import PostDropdownMenu from '../components/PostDropdownMenu';
 import GlobalShadow from '../components/GlobalShadow';
 import GroupHeaderCollapsibleMenu from '../components/GroupHeaderCollapsibleMenu';
 import Dropdown from '../components/Dropdown';
 
 //TODO: replace selectors on usestate
+const screenWidth = Dimensions.get('window').width
 const Group = ({navigation, route}) => {
   // const dispatch = useDispatch();
   const accessToken = useSelector(state => state.user.accessToken)
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
-  const [wallHeaderData, setWallHeaderData] = useState({screenName: 'Community'})
-  const [groupData, setGroupData] = useState([])
-  const offset = useRef(0)
-  const remainToFetchNum = useRef(null)
+  const [wallHeaderData, setWallHeaderData] = React.useState({screenName: 'Community'})
+  const [groupData, setGroupData] = React.useState([])
+  // const [groupAvatars, setGroupAvatars] = React.useState([])
+  const imagesForSlides = React.useRef([])
+  const [isAvatarVisible, setIsAvatarVisible] = React.useState(false) 
+  const offset = React.useRef(0)
+  const remainToFetchNum = React.useRef(null)
   const count = 20
   const { groupId } = route.params
-  const [isAdditionalInfoExpanded, setIsAdditionalInfoExpanded] = useState(false)
+  const [isAdditionalInfoExpanded, setIsAdditionalInfoExpanded] = React.useState(false)
   // const groupData = useSelector(state => state.group)
   // const groupID = groupData.id  
   // const offset = groupData.offset  
@@ -46,7 +54,8 @@ const Group = ({navigation, route}) => {
   const fields = 'members_count,counters,description,status,can_message,description,contacts,addresses,screen_name,links,main_section,can_post,can_suggest,member_status' 
   const fetchGroupWallContentUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&count=${count}&v=5.131&extended=1&owner_id=${-1 * groupId}`
   const fetchGroupInfoUrl = `https://api.vk.com/method/groups.getById?access_token=${accessToken}&v=5.131&group_id=${groupId}&fields=${fields}`
-  const [isLoading, setIsLoading] = useState(true)  
+  const fetchGroupAvatarsUrl = `https://api.vk.com/method/photos.get?access_token=${accessToken}&v=5.199&owner_id=${-groupId}&album_id=profile&rev=1&count=100&extended=1`
+  const [isLoading, setIsLoading] = React.useState(true)  
   
   console.log(groupId)
 
@@ -67,7 +76,8 @@ const Group = ({navigation, route}) => {
             break
           }
         }
-        await AsyncStorage.setItem("visitedGroups", JSON.stringify([...visitedGroups, {id: groupId, img: img, name: name}]))
+        const visited = [{id: groupId, img: img, name: name}, ...visitedGroups]
+        await AsyncStorage.setItem("visitedGroups", JSON.stringify(visited))
       }
     } catch (error) {
       console.log(error)
@@ -77,8 +87,29 @@ const Group = ({navigation, route}) => {
   const fetchData = async () => {
     const response = await fetch(fetchGroupWallContentUrl)
     const groupHeaderResponse = await fetch(fetchGroupInfoUrl)
+    const avatarsResponse = await fetch(fetchGroupAvatarsUrl)
+    const avatarsData = await avatarsResponse.json()
     const data = await response.json()
     const groupHeaderData = await groupHeaderResponse.json()
+    imagesForSlides.current = avatarsData.response.items.map(item => {
+      const url = item.sizes.sort(function(a, b){return b.width - a.width})[0].url
+      return {
+        url,
+        photoId: item.photo_id,
+        ownerId: item.owner_id,
+        userId: item.user_id,
+        text: item.text,
+        date: item.date,
+        author: {
+          photo_100: groupHeaderData.response[0].photo_200,
+          name: groupHeaderData.response[0].name
+        },
+        likes: item?.likes?.count,
+        isLiked: item?.likes?.user_likes,
+        comments: item?.comments?.count,
+        reposts: item?.reposts?.count
+      }
+    })
     const contactsIds = groupHeaderData.response[0].contacts?.map(item => item.user_id)
     const contacts = await fetch(`https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${contactsIds}&fields=photo_100`)
     const contactsDetailedRes = await contacts.json()
@@ -126,7 +157,7 @@ const Group = ({navigation, route}) => {
     setIsLoading(false)
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchData()
   }, [])
 
@@ -162,6 +193,7 @@ const Group = ({navigation, route}) => {
           chevronPressHandler={setIsAdditionalInfoExpanded}
           expanded={isAdditionalInfoExpanded}
           shouldPerformExpanding={isThereAdditionalInfo}
+          setIsAvatarVisible={setIsAvatarVisible}
         />
         <WallHeaderAdditionalInfo 
           description={wallHeaderData.description}
@@ -253,7 +285,7 @@ const Group = ({navigation, route}) => {
   }
   
   return (
-    <SafeAreaView style={isLightTheme ? styles.feedContainerLight : styles.feedContainerDark}>
+    <SafeAreaView style={[styles.feedContainer, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
       <CustomHeader 
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
@@ -265,34 +297,115 @@ const Group = ({navigation, route}) => {
         isLoading ?
         <View style={styles.spinnerContainer}>
           <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
-        </View> : 
-        <FlatList 
-          data={groupData}
-          renderItem={renderItem}
-          initialNumToRender={4}
-          keyExtractor={keyExtractor}
-          removeClippedSubviews={true}
-          onEndReached={fetchMoreData}
-          showsVerticalScrollIndicator={false}
-          onEndReachedThreshold={0.5}
-          style={styles.feed}
-          ListHeaderComponent={listHeader}
-          ListFooterComponent={listFooter}
-          refreshControl={
-            <RefreshControl 
-              refreshing={isLoading} 
-              onRefresh={fetchData} 
-              colors={[COLORS.primary, COLORS.white]} 
-              tintColor={isLightTheme ? COLORS.primary : COLORS.white}
-            />
-          }
-          ListEmptyComponent={
-            wallHeaderData.canAccess ?
-            <View style={styles.noPostsContainer}>
-              <Text style={[styles.noPostsText, {color: COLORS.secondary}]}>No posts yet</Text>
-            </View> : null
-          }
-        />
+        </View> :
+        <>
+          <Modal
+            animationType='fade'
+            transparent={true}
+            visible={isAvatarVisible}
+            onRequestClose={() => setIsAvatarVisible(prev => !prev)}
+          >
+            <ImageViewer
+              imageUrls={imagesForSlides.current}
+              enableImageZoom={true}
+              useNativeDriver={true}
+              enablePreload={true}
+              enableSwipeDown={true}
+              renderIndicator={(currentIndex) => <></>}
+              renderHeader={
+              (currentIndex) => (
+                <View style={{position: 'absolute', zIndex: 3, flexDirection: 'row', width: screenWidth, justifyContent: 'space-between', alignItems: 'center', paddingLeft: 10, paddingRight: 10, marginTop: 10}}>
+                  <View style={{flexDirection: 'row', gap: 30}}>
+                    <TouchableOpacity activeOpacity={0.5} onPress={() => setIsAvatarVisible(false)}>
+                      <AntDesign name={'arrowleft'} size={25} color={COLORS.white}/>
+                    </TouchableOpacity>
+                    <Text style={{color: COLORS.white, fontSize: 17}}>{currentIndex + 1} of {imagesForSlides.current.length}</Text>
+                  </View>
+                  <Feather name={'more-vertical'} color={COLORS.white} size={25}/>
+                </View>
+              )
+            }
+            renderImage={
+              (props) => {
+                // console.log(props.source.uri)
+                return(
+                  <Image source={{uri: props.source.uri}} style={{flex: 1, width: null, height: null}} resizeMode={'contain'}/>
+                )
+              }
+            }
+            renderFooter={
+              (index) => {
+                // console.log(props)
+                return (
+                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: screenWidth, paddingLeft: 15, paddingRight: 15, paddingBottom: 10}}>
+                  <TouchableOpacity style={{flexDirection: 'row', gap: 5}}>
+                    {
+                      imagesForSlides.current[index].isLiked ?
+                      <AntDesign name={'heart'} color={COLORS.primary} size={20}/> :
+                      <AntDesign name={'hearto'} color={COLORS.white} size={20}/>
+                    }
+                    <Text style={{color: COLORS.white, fontSize: 14}}>{imagesForSlides.current[index].likes}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity 
+                    onPress={
+                      () => navigation.push(
+                        'OpenedPhoto', 
+                        {
+                          photoUrl: imagesForSlides.current[index].url,
+                          photoId: imagesForSlides.current[index].photoId,
+                          text: imagesForSlides.current[index].text,
+                          userId: imagesForSlides.current[index].userId,
+                          ownerId: -groupId, 
+                          date: imagesForSlides.current[index].date, 
+                          author: imagesForSlides.current[index].author, 
+                          width: imagesForSlides.current[index].props.style.width, 
+                          height: imagesForSlides.current[index].props.style.height,
+                        }
+                      )
+                    }
+                    style={{flexDirection: 'row', gap: 5}}
+                  >
+                    <MaterialCommunityIcons name={'comment-outline'} color={COLORS.white} size={20} />
+                    <Text style={{color: COLORS.white, fontSize: 14}}>{imagesForSlides.current[index].comments}</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={{flexDirection: 'row', gap: 5}}>
+                    <MaterialCommunityIcons name={'share-outline'} size={22} color={COLORS.white}/>
+                    <Text style={{color: COLORS.white, fontSize: 14}}>{imagesForSlides.current[index].reposts}</Text>
+                  </TouchableOpacity>
+                </View>)
+              }
+            } 
+          />
+          </Modal>
+         <FlatList 
+            data={groupData}
+            renderItem={renderItem}
+            initialNumToRender={4}
+            keyExtractor={keyExtractor}
+            removeClippedSubviews={true}
+            onEndReached={fetchMoreData}
+            showsVerticalScrollIndicator={false}
+            onEndReachedThreshold={0.5}
+            style={styles.feed}
+            ListHeaderComponent={listHeader}
+            ListFooterComponent={listFooter}
+            refreshControl={
+              <RefreshControl 
+                refreshing={isLoading} 
+                onRefresh={fetchData} 
+                colors={[COLORS.primary, COLORS.white]} 
+                tintColor={isLightTheme ? COLORS.primary : COLORS.white}
+              />
+            }
+            ListEmptyComponent={
+              wallHeaderData.canAccess ?
+              <View style={styles.noPostsContainer}>
+                <Text style={[styles.noPostsText, {color: COLORS.secondary}]}>No posts yet</Text>
+              </View> : null
+            }
+          />
+      </> 
+        
       }
       <Dropdown isLightTheme={isLightTheme} accessToken={accessToken}/>
       <GlobalShadow />
@@ -312,14 +425,14 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
   },
-  feedContainerLight: {
+  feedContainer: {
     flex: 1,
-    backgroundColor: COLORS.light_smoke,
+    // backgroundColor: COLORS.light_smoke,
   },
-  feedContainerDark: {
-    flex: 1,
-    backgroundColor: COLORS.background_dark,
-  },
+  // feedContainerDark: {
+  //   flex: 1,
+  //   backgroundColor: COLORS.background_dark,
+  // },
   bottomSpinnerContainer: {
     justifyContent: 'center'
   },

@@ -194,6 +194,7 @@ const Group = ({navigation, route}) => {
           expanded={isAdditionalInfoExpanded}
           shouldPerformExpanding={isThereAdditionalInfo}
           setIsAvatarVisible={setIsAvatarVisible}
+          canAccess={wallHeaderData.canAccess}
         />
         <WallHeaderAdditionalInfo 
           description={wallHeaderData.description}

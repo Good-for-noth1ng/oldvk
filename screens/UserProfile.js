@@ -227,6 +227,7 @@ const UserProfile = ({ navigation, route }) => {
           expanded={isUserInfoExpanded}
           shouldPerformExpanding={isThereAdditionalInfo}
           setIsAvatarVisible={setIsAvatarVisible}
+          canAccess={!(wallHeaderData.canAccessClosed === false && wallHeaderData.isClosed === true)}
         /> 
         <WallHeaderPersonalContainer 
           personal={wallHeaderData.personal}

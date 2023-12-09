@@ -15,7 +15,7 @@ const OpenedPhoto = ({ navigation, route }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const { ownerId, photoUrl, date, author, width, height, text, photoId, userId } = route.params
-  console.log(author)
+  console.log(photoId)
   const [isLoading, setIsLoading] = React.useState(false)
   const [comments, setComments] = React.useState([])
   const count = 20
@@ -26,7 +26,7 @@ const OpenedPhoto = ({ navigation, route }) => {
     const url = `https://api.vk.com/method/photos.getComments?access_token=${accessToken}&v=5.131&photo_id=${photoId}&need_likes=1&owner_id=${ownerId}&count=${count}&sort=asc&offset=${offset.current}&fields=photo_100&extended=1`
     const res = await fetch(url)
     const commentsData = await res.json()
-    // console.log(commentsData)
+    console.log(commentsData)
     const items = commentsData.response.items.map(item => {
       const key = uuid.v4()
       let threadItems = []
@@ -60,10 +60,13 @@ const OpenedPhoto = ({ navigation, route }) => {
       }
     })
     // setPost(findPostAuthor(parsedPostResponse.response.items[0], parsedPostResponse.response.profiles, parsedPostResponse.response.groups))
-    setComments(items)
+    if (commentsData.response.items.length > 0) {
+      setComments(items)
+    } else {
+      setComments(null)
+    }
     currentLevelCommentsCount.current = commentsData.response.count
     offset.current += 10
-    setIsLoading(false)
   }
 
   React.useEffect(() => {
@@ -109,7 +112,7 @@ const OpenedPhoto = ({ navigation, route }) => {
           null
         }
         {
-          currentLevelCommentsCount.current > 0 ?
+          currentLevelCommentsCount.current >= 0 ?
           <>
             <View style={[{flexDirection: 'row', padding: 5, gap: 5}, isLightTheme? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
               <Text style={styles.commentCount}>{currentLevelCommentsCount.current}</Text>
@@ -121,9 +124,10 @@ const OpenedPhoto = ({ navigation, route }) => {
     )
   }
   const renderItem = ({item}) => {
+    console.log(item)
     return (
       <Comment 
-       commentId={item.id}
+        commentId={item.id}
         commentDate={item.date} 
         likes={item?.likes?.count} 
         from_id={item.from_id} 
@@ -161,26 +165,20 @@ const OpenedPhoto = ({ navigation, route }) => {
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />
-      {
-        isLoading ?
-        <View style={{width: '100%', height: '100%', justifyContent: 'center'}}>
-          <ActivityIndicator size={50} color={isLightTheme ? COLORS.primary : COLORS.white}/>
-        </View> :
-        <FlatList
-          data={comments}
-          style={[styles.list]}
-          renderItem={renderItem}
-          ListHeaderComponent={listHeader}
-          showsVerticalScrollIndicator={false}
-          ListFooterComponent={footer}
-          ListEmptyComponent={
-            isLoading ?
-            <View style={isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}}>
-              <ActivityIndicator size={30} color={isLightTheme ? COLORS.primary : COLORS.white}/>
-            </View> : null
-          }
-        />
-      }
+      <FlatList
+        data={comments}
+        style={[styles.list]}
+        renderItem={renderItem}
+        ListHeaderComponent={listHeader}
+        showsVerticalScrollIndicator={false}
+        ListFooterComponent={footer}
+        ListEmptyComponent={
+          comments !== null &&
+          <View style={[{paddingTop: 10}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+            <ActivityIndicator size={40} color={isLightTheme ? COLORS.primary : COLORS.white}/>
+          </View>
+        }
+      />
     </SafeAreaView>
   )
 }

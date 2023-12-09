@@ -95,7 +95,7 @@ const Group = ({navigation, route}) => {
       const url = item.sizes.sort(function(a, b){return b.width - a.width})[0].url
       return {
         url,
-        photoId: item.photo_id,
+        photoId: item.id,
         ownerId: item.owner_id,
         userId: item.user_id,
         text: item.text,

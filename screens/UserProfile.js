@@ -76,7 +76,9 @@ const UserProfile = ({ navigation, route }) => {
     const avatarsData = await avatarsResponse.json()
     const userInfoData = await userInfoResponse.json()
     const userWallContentData = await userWallContentResponse.json()
-    imagesForSlides.current = avatarsData.response.items.map(item => {
+    // console.log(avatarsData)
+    if (avatarsData?.error?.error_code !== 30) {
+      imagesForSlides.current = avatarsData.response.items.map(item => {
       const url = item.sizes.sort(function(a, b){return b.width - a.width})[0].url
       return {
         url,
@@ -94,7 +96,10 @@ const UserProfile = ({ navigation, route }) => {
         comments: item?.comments?.count,
         reposts: item?.reposts?.count
       }
-    })
+      })
+    } else {
+      imagesForSlides.current = []
+    }
     let isOnlineUsingMobile
     let isOnlineUsingPC
     if (userInfoData.response[0].online === 1 && userInfoData.response[0].last_seen.platform < 6) {

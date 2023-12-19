@@ -12,7 +12,7 @@ if (Platform.OS === 'android') {
   }
 }
 
-const VisitedGroups = ({ visitedGroups, isLightTheme, navigation }) => {
+const VisitedGroups = ({ visitedGroups, isLightTheme, navigation, setVisitedGroups }) => {
   const [areThereVisited, setAreThereVisited] = React.useState(visitedGroups.length > 0)
   // const visited = visitedGroups
 
@@ -26,13 +26,32 @@ const VisitedGroups = ({ visitedGroups, isLightTheme, navigation }) => {
     clearStack()
   }
   
+  const popGroup = async (idToDelete) => {
+    const indexToDelete = visitedGroups.findIndex(item => item.id === idToDelete)
+    if (indexToDelete === visitedGroups.length - 1) {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+      await AsyncStorage.setItem("visitedGroups", JSON.stringify([...visitedGroups.slice(0, visitedGroups.length-1)]))
+      setVisitedGroups(prev => [...prev.slice(0, visitedGroups.length-1)])
+    } else {
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut)
+      await AsyncStorage.setItem("visitedGroups", JSON.stringify([...visitedGroups.slice(0,indexToDelete), ...visitedGroups.slice(indexToDelete + 1, visitedGroups.length)]))
+      setVisitedGroups(prev => [...prev.slice(0,indexToDelete), ...prev.slice(indexToDelete + 1, visitedGroups.length)])
+    }
+    // console.log(visitedGroups.slice(0,0))
+  }
+
   const renderItem = ({item}) => {
     let name = item.name.slice(0,10)
     if (name !== item.name) {
       name += '...'
     }
     return (
-      <TouchableOpacity style={styles.group} onPress={() => navigation.push('Group', {groupId: item.id})} activeOpacity={0.5}>
+      <TouchableOpacity 
+        style={styles.group} 
+        onPress={() => navigation.push('Group', {groupId: item.id})} 
+        activeOpacity={0.8}
+        onLongPress={() => popGroup(item.id)}
+      >
         <Image source={{ uri: item.img }} style={styles.groupImage}/>
         <Text style={[styles.groupName, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
           {name}

@@ -28,7 +28,7 @@ const GroupList = ({navigation}) => {
   const offset = React.useRef(0)
   const searchQuery = React.useRef('')
   const count = 5
-  const visitedGroups = React.useRef([])
+  const [visitedGroups, setVisitedGroups] = React.useState([])
   const [groupsCounterName, setGroupsCounterName] = React.useState('All communities')
   const slideAnimation = React.useRef(new Animated.Value(2000)).current
   const filterIsOpen = React.useRef(false)
@@ -81,7 +81,7 @@ const GroupList = ({navigation}) => {
       const visitedGroupsStorageData = await AsyncStorage.getItem("visitedGroups");
       const visitedGroupsData = JSON.parse(visitedGroupsStorageData)
       if (visitedGroupsData !== null) {
-        visitedGroups.current = visitedGroupsData
+        setVisitedGroups(visitedGroupsData)
       }
     } catch (error) {
       console.log(error)
@@ -113,7 +113,7 @@ const GroupList = ({navigation}) => {
     const fetchedUsersGroups = await fetchUsersGroups()
     const visitedGroupsStorageData = await AsyncStorage.getItem("visitedGroups");
     const visitedGroupsData = JSON.parse(visitedGroupsStorageData)
-    visitedGroups.current = visitedGroupsData !== null ? visitedGroupsData : []
+    setVisitedGroups(visitedGroupsData !== null ? visitedGroupsData : [])
     remainToFetchNum.current = fetchedUsersGroups.count - count
     setGroupsData(fetchedUsersGroups.items)
     setGroupsCount(fetchedUsersGroups.count)
@@ -136,8 +136,8 @@ const GroupList = ({navigation}) => {
           dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
         />
         {
-          visitedGroups.current.length > 0 ?
-          <VisitedGroups visitedGroups={visitedGroups.current} isLightTheme={isLightTheme} navigation={navigation}/>
+          visitedGroups.length > 0 ?
+          <VisitedGroups visitedGroups={visitedGroups} isLightTheme={isLightTheme} navigation={navigation} setVisitedGroups={setVisitedGroups}/>
           : null
         }
         <SearchResultHeaderCounter 
@@ -253,8 +253,8 @@ const GroupList = ({navigation}) => {
     if (!(query.replace(/\s/g, '') === '')) {      
       setIsLoading(true)
       const fetchedByQueryGroups = await getGroupsByQuery()
-      visitedGroups.current = []
       remainToFetchNum.current = fetchedByQueryGroups.groupsNum - count  
+      setVisitedGroups([])
       setGroupsCount(fetchedByQueryGroups.groupsNum)
       setGroupsCounterName(fetchedByQueryGroups.counterName)
       setGroupsData(fetchedByQueryGroups.items)

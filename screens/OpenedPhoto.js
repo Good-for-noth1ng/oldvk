@@ -6,7 +6,6 @@ import uuid from 'react-native-uuid'
 import CustomHeader from '../components/CustomHeader'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import DividerWithLine from '../components/DividerWithLine'
-import VideoHeader from '../components/VideoHeader'
 import PhotoHeader from '../components/PhotoHeader'
 import Comment from '../components/Comment'
 import { COLORS } from '../constants/theme'
@@ -27,46 +26,55 @@ const OpenedPhoto = ({ navigation, route }) => {
     const res = await fetch(url)
     const commentsData = await res.json()
     console.log(commentsData)
-    const items = commentsData.response.items.map(item => {
-      const key = uuid.v4()
-      let threadItems = []
-      if (item?.thread?.count > 0) {
-        threadItems = item.thread.items.map(item => {
-          const key = uuid.v4()
-          let author = commentsData.response.profiles.find(profile => profile.id === item.from_id)
-          if (author === undefined) {
-            author = commentsData.response.groups.find(group => group.id === (-1 * item.from_id))
-          }
-          return {
-            ...item,
-            key,
-            author,
-          }
-        })
+    if (commentsData.error) {
+      //permission denied
+      if (commentsData.error.error_code === 7) {
+        currentLevelCommentsCount.current = 0
+        offset.current = 0
+        setComments(null)
       }
-      const thread = {
-        ...item.thread,
-        items: threadItems
-      }
-      let author = commentsData.response.profiles.find(profile => profile.id === item.from_id)
-      if (author === undefined) {
-        author = commentsData.response.groups.find(group => group.id === (-1 * item.from_id))
-      }
-      return {
-        ...item, 
-        key,
-        author,
-        thread,
-      }
-    })
-    // setPost(findPostAuthor(parsedPostResponse.response.items[0], parsedPostResponse.response.profiles, parsedPostResponse.response.groups))
-    if (commentsData.response.items.length > 0) {
-      setComments(items)
     } else {
-      setComments(null)
+      const items = commentsData.response.items.map(item => {
+        const key = uuid.v4()
+        let threadItems = []
+        if (item?.thread?.count > 0) {
+          threadItems = item.thread.items.map(item => {
+            const key = uuid.v4()
+            let author = commentsData.response.profiles.find(profile => profile.id === item.from_id)
+            if (author === undefined) {
+              author = commentsData.response.groups.find(group => group.id === (-1 * item.from_id))
+            }
+            return {
+              ...item,
+              key,
+              author,
+            }
+          })
+        }
+        const thread = {
+          ...item.thread,
+          items: threadItems
+        }
+        let author = commentsData.response.profiles.find(profile => profile.id === item.from_id)
+        if (author === undefined) {
+          author = commentsData.response.groups.find(group => group.id === (-1 * item.from_id))
+        }
+        return {
+          ...item, 
+          key,
+          author,
+          thread,
+        }
+      })
+      if (commentsData.response.items.length > 0) {
+        setComments(items)
+      } else {
+        setComments(null)
+      }
+      currentLevelCommentsCount.current = commentsData.response.count
+      offset.current += 10
     }
-    currentLevelCommentsCount.current = commentsData.response.count
-    offset.current += 10
+    // setPost(findPostAuthor(parsedPostResponse.response.items[0], parsedPostResponse.response.profiles, parsedPostResponse.response.groups))  
   }
 
   React.useEffect(() => {

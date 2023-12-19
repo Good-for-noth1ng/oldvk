@@ -70,12 +70,17 @@ const Group = ({navigation, route}) => {
       if (visitedGroups === null) {
         await AsyncStorage.setItem("visitedGroups", JSON.stringify([{id: groupId, img: img, name: name}]))
       } else {
-        for (let i = 0; i < visitedGroups.length; i++) {
-          if (visitedGroups[i].id === groupId) {
-            visitedGroups.splice(i, 1)
-            break
-          }
+        const indexToDelete = visitedGroups.findIndex(item => item.id === groupId)
+        console.log(indexToDelete)
+        if (indexToDelete !== -1) {
+          visitedGroups.splice(indexToDelete, 1)
         }
+        // for (let i = 0; i < visitedGroups.length; i++) {
+        //   if (visitedGroups[i].id === groupId) {
+        //     visitedGroups.splice(i, 1)
+        //     break
+        //   }
+        // }
         const visited = [{id: groupId, img: img, name: name}, ...visitedGroups]
         await AsyncStorage.setItem("visitedGroups", JSON.stringify(visited))
       }

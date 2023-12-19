@@ -27,6 +27,7 @@ import GlobalShadow from '../components/GlobalShadow'
 import Dropdown from '../components/Dropdown'
 import UserHeaderCollapsibleMenu from '../components/UserHeaderCollapsibleMenu'
 import ProfileOverlay from '../components/ProfileOverlay'
+import OpenedPhotoBottom from '../components/OpenedPhotoBottom'
 
 // fix redux calls
 const screenWidth = Dimensions.get('window').width
@@ -82,7 +83,7 @@ const UserProfile = ({ navigation, route }) => {
       const url = item.sizes.sort(function(a, b){return b.width - a.width})[0].url
       return {
         url,
-        photoId: item.photo_id,
+        photoId: item.id,
         ownerId: item.owner_id,
         userId: item.user_id,
         text: item.text,
@@ -311,7 +312,7 @@ const UserProfile = ({ navigation, route }) => {
     )
   }
 
-  // console.log(navigation.getParent())
+  console.log(isAvatarVisible)
   return (
     <SafeAreaView style={[styles.mainContainer, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
@@ -344,7 +345,9 @@ const UserProfile = ({ navigation, route }) => {
             animationType='fade'
             transparent={true}
             visible={isAvatarVisible}
-            onRequestClose={() => setIsAvatarVisible(prev => !prev)}
+            onRequestClose={() => {
+              setIsAvatarVisible(prev => !prev)
+            }}
           >
             <ImageViewer
               imageUrls={imagesForSlides.current}
@@ -378,42 +381,53 @@ const UserProfile = ({ navigation, route }) => {
               (index) => {
                 // console.log(props)
                 return (
-                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: screenWidth, paddingLeft: 15, paddingRight: 15, paddingBottom: 10}}>
-                  <TouchableOpacity style={{flexDirection: 'row', gap: 5}}>
-                    {
-                      imagesForSlides.current[index].isLiked ?
-                      <AntDesign name={'heart'} color={COLORS.primary} size={20}/> :
-                      <AntDesign name={'hearto'} color={COLORS.white} size={20}/>
-                    }
-                    <Text style={{color: COLORS.white, fontSize: 14}}>{imagesForSlides.current[index].likes}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity 
-                    onPress={
-                      () => navigation.push(
-                        'OpenedPhoto', 
-                        {
-                          photoUrl: imagesForSlides.current[index].url,
-                          photoId: imagesForSlides.current[index].photoId,
-                          text: imagesForSlides.current[index].text,
-                          userId: imagesForSlides.current[index].userId,
-                          ownerId: -groupId, 
-                          date: imagesForSlides.current[index].date, 
-                          author: imagesForSlides.current[index].author, 
-                          width: imagesForSlides.current[index].props.style.width, 
-                          height: imagesForSlides.current[index].props.style.height,
-                        }
-                      )
-                    }
-                    style={{flexDirection: 'row', gap: 5}}
-                  >
-                    <MaterialCommunityIcons name={'comment-outline'} color={COLORS.white} size={20} />
-                    <Text style={{color: COLORS.white, fontSize: 14}}>{imagesForSlides.current[index].comments}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={{flexDirection: 'row', gap: 5}}>
-                    <MaterialCommunityIcons name={'share-outline'} size={22} color={COLORS.white}/>
-                    <Text style={{color: COLORS.white, fontSize: 14}}>{imagesForSlides.current[index].reposts}</Text>
-                  </TouchableOpacity>
-                </View>)
+                  <OpenedPhotoBottom 
+                    photo={imagesForSlides.current[index]}
+                    likes={imagesForSlides.current[index].likes}
+                    isLiked={imagesForSlides.current[index].isLiked}
+                    comments={imagesForSlides.current[index].comments}
+                    reposts={imagesForSlides.current[index].reposts}
+                    navigation={navigation}
+                    accessToken={accessToken}
+                    ownerId={userId}
+                  />
+                // <View style={{flexDirection: 'row', justifyContent: 'space-between', width: screenWidth, paddingLeft: 15, paddingRight: 15, paddingBottom: 10}}>
+                //   <TouchableOpacity style={{flexDirection: 'row', gap: 5}}>
+                //     {
+                //       imagesForSlides.current[index].isLiked ?
+                //       <AntDesign name={'heart'} color={COLORS.primary} size={20}/> :
+                //       <AntDesign name={'hearto'} color={COLORS.white} size={20}/>
+                //     }
+                //     <Text style={{color: COLORS.white, fontSize: 14}}>{imagesForSlides.current[index].likes}</Text>
+                //   </TouchableOpacity>
+                //   <TouchableOpacity 
+                //     onPress={
+                //       () => navigation.push(
+                //         'OpenedPhoto', 
+                //         {
+                //           photoUrl: imagesForSlides.current[index].url,
+                //           photoId: imagesForSlides.current[index].photoId,
+                //           text: imagesForSlides.current[index].text,
+                //           userId: imagesForSlides.current[index].userId,
+                //           ownerId: userId, 
+                //           date: imagesForSlides.current[index].date, 
+                //           author: imagesForSlides.current[index].author, 
+                //           width: imagesForSlides.current[index].props.style.width, 
+                //           height: imagesForSlides.current[index].props.style.height,
+                //         }
+                //       )
+                //     }
+                //     style={{flexDirection: 'row', gap: 5}}
+                //   >
+                //     <MaterialCommunityIcons name={'comment-outline'} color={COLORS.white} size={20} />
+                //     <Text style={{color: COLORS.white, fontSize: 14}}>{imagesForSlides.current[index].comments}</Text>
+                //   </TouchableOpacity>
+                //   <TouchableOpacity style={{flexDirection: 'row', gap: 5}}>
+                //     <MaterialCommunityIcons name={'share-outline'} size={22} color={COLORS.white}/>
+                //     <Text style={{color: COLORS.white, fontSize: 14}}>{imagesForSlides.current[index].reposts}</Text>
+                //   </TouchableOpacity>
+                // </View>
+                  )
                 }
               } 
             />

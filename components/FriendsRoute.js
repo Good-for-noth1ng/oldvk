@@ -26,6 +26,7 @@ import Topic from '../screens/Topic';
 import ReactedOnPostUsers from '../screens/ReactedOnPostUsers';
 import ReactedOnVideoUsers from '../screens/ReactedOnVideoUsers';
 import OpenedPhoto from '../screens/OpenedPhoto';
+import ReactedOnPhoto from '../screens/ReactedOnPhoto';
 
 const FriendsStack = createNativeStackNavigator();
 
@@ -57,6 +58,7 @@ const FriendsRoute = () => {
       <FriendsStack.Screen name='ReactedOnPostUsers' component={ReactedOnPostUsers} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <FriendsStack.Screen name='ReactedOnVideoUsers' component={ReactedOnVideoUsers} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <FriendsStack.Screen name='OpenedPhoto' component={OpenedPhoto} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <FriendsStack.Screen name='ReactedOnPhoto' component={ReactedOnPhoto} options={{headerShown: false, animation: 'slide_from_right'}}/>
     </FriendsStack.Navigator>
   )
 }

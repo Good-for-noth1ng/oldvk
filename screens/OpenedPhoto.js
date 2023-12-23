@@ -132,7 +132,7 @@ const OpenedPhoto = ({ navigation, route }) => {
     )
   }
   const renderItem = ({item}) => {
-    console.log(item)
+    // console.log(item)
     return (
       <Comment 
         commentId={item.id}
@@ -153,6 +153,11 @@ const OpenedPhoto = ({ navigation, route }) => {
       />
     )
   }
+
+  const commentSeparator = () => (
+    <DividerWithLine dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={12}/>
+  )
+
   const footer = () => {
     return (
       <>
@@ -186,6 +191,7 @@ const OpenedPhoto = ({ navigation, route }) => {
             <ActivityIndicator size={40} color={isLightTheme ? COLORS.primary : COLORS.white}/>
           </View>
         }
+        ItemSeparatorComponent={commentSeparator}
       />
     </SafeAreaView>
   )

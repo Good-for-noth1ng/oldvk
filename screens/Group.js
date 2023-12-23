@@ -29,6 +29,7 @@ import { postWidth } from '../constants/theme';
 import GlobalShadow from '../components/GlobalShadow';
 import GroupHeaderCollapsibleMenu from '../components/GroupHeaderCollapsibleMenu';
 import Dropdown from '../components/Dropdown';
+import OpenedPhotoBottom from '../components/OpenedPhotoBottom';
 
 //TODO: replace selectors on usestate
 const screenWidth = Dimensions.get('window').width
@@ -96,25 +97,30 @@ const Group = ({navigation, route}) => {
     const avatarsData = await avatarsResponse.json()
     const data = await response.json()
     const groupHeaderData = await groupHeaderResponse.json()
-    imagesForSlides.current = avatarsData.response.items.map(item => {
-      const url = item.sizes.sort(function(a, b){return b.width - a.width})[0].url
-      return {
-        url,
-        photoId: item.id,
-        ownerId: item.owner_id,
-        userId: item.user_id,
-        text: item.text,
-        date: item.date,
-        author: {
-          photo_100: groupHeaderData.response[0].photo_200,
-          name: groupHeaderData.response[0].name
-        },
-        likes: item?.likes?.count,
-        isLiked: item?.likes?.user_likes,
-        comments: item?.comments?.count,
-        reposts: item?.reposts?.count
-      }
-    })
+    if (avatarsData?.error?.error_code !== 30) {
+      imagesForSlides.current = avatarsData.response.items.map(item => {
+        const url = item.sizes.sort(function(a, b){return b.width - a.width})[0].url
+        return {
+          url,
+          photoId: item.id,
+          ownerId: item.owner_id,
+          userId: item.user_id,
+          text: item.text,
+          date: item.date,
+          author: {
+            photo_100: groupHeaderData.response[0].photo_200,
+            name: groupHeaderData.response[0].name
+          },
+          likes: item?.likes?.count,
+          isLiked: item?.likes?.user_likes,
+          comments: item?.comments?.count,
+          reposts: item?.reposts?.count
+        }
+      })
+    } else {
+      imagesForSlides.current = []
+    }
+    
     const contactsIds = groupHeaderData.response[0].contacts?.map(item => item.user_id)
     const contacts = await fetch(`https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${contactsIds}&fields=photo_100`)
     const contactsDetailedRes = await contacts.json()
@@ -341,49 +347,23 @@ const Group = ({navigation, route}) => {
             }
             renderFooter={
               (index) => {
-                // console.log(props)
                 return (
-                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: screenWidth, paddingLeft: 15, paddingRight: 15, paddingBottom: 10}}>
-                  <TouchableOpacity style={{flexDirection: 'row', gap: 5}}>
-                    {
-                      imagesForSlides.current[index].isLiked ?
-                      <AntDesign name={'heart'} color={COLORS.primary} size={20}/> :
-                      <AntDesign name={'hearto'} color={COLORS.white} size={20}/>
-                    }
-                    <Text style={{color: COLORS.white, fontSize: 14}}>{imagesForSlides.current[index].likes}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity 
-                    onPress={
-                      () => navigation.push(
-                        'OpenedPhoto', 
-                        {
-                          photoUrl: imagesForSlides.current[index].url,
-                          photoId: imagesForSlides.current[index].photoId,
-                          text: imagesForSlides.current[index].text,
-                          userId: imagesForSlides.current[index].userId,
-                          ownerId: -groupId, 
-                          date: imagesForSlides.current[index].date, 
-                          author: imagesForSlides.current[index].author, 
-                          width: imagesForSlides.current[index].props.style.width, 
-                          height: imagesForSlides.current[index].props.style.height,
-                        }
-                      )
-                    }
-                    style={{flexDirection: 'row', gap: 5}}
-                  >
-                    <MaterialCommunityIcons name={'comment-outline'} color={COLORS.white} size={20} />
-                    <Text style={{color: COLORS.white, fontSize: 14}}>{imagesForSlides.current[index].comments}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={{flexDirection: 'row', gap: 5}}>
-                    <MaterialCommunityIcons name={'share-outline'} size={22} color={COLORS.white}/>
-                    <Text style={{color: COLORS.white, fontSize: 14}}>{imagesForSlides.current[index].reposts}</Text>
-                  </TouchableOpacity>
-                </View>)
+                  <OpenedPhotoBottom 
+                    photo={imagesForSlides.current[index]}
+                    likes={imagesForSlides.current[index].likes}
+                    isLiked={imagesForSlides.current[index].isLiked}
+                    comments={imagesForSlides.current[index].comments}
+                    reposts={imagesForSlides.current[index].reposts}
+                    navigation={navigation}
+                    accessToken={accessToken}
+                    ownerId={-groupId}
+                  />
+                )
               }
             } 
           />
-          </Modal>
-         <FlatList 
+        </Modal>
+          <FlatList 
             data={groupData}
             renderItem={renderItem}
             initialNumToRender={4}
@@ -410,8 +390,7 @@ const Group = ({navigation, route}) => {
               </View> : null
             }
           />
-      </> 
-        
+        </>   
       }
       <Dropdown isLightTheme={isLightTheme} accessToken={accessToken}/>
       <GlobalShadow />

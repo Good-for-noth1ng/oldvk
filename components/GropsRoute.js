@@ -27,6 +27,7 @@ import Topic from '../screens/Topic';
 import ReactedOnPostUsers from '../screens/ReactedOnPostUsers';
 import ReactedOnVideoUsers from '../screens/ReactedOnVideoUsers';
 import OpenedPhoto from '../screens/OpenedPhoto';
+import ReactedOnPhoto from '../screens/ReactedOnPhoto';
 
 const GroupStack = createNativeStackNavigator();
 
@@ -60,6 +61,7 @@ const GropsRoute = () => {
       <GroupStack.Screen name='ReactedOnPostUsers' component={ReactedOnPostUsers} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <GroupStack.Screen name='ReactedOnVideoUsers' component={ReactedOnVideoUsers} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <GroupStack.Screen name='OpenedPhoto' component={OpenedPhoto} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <GroupStack.Screen name='ReactedOnPhoto' component={ReactedOnPhoto} options={{headerShown: false, animation: 'slide_from_right'}}/>
     </GroupStack.Navigator>
   )
 }

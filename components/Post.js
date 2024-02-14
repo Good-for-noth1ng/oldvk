@@ -138,7 +138,7 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken, from
       {
         postLinks ? ( 
           <>
-            <PostLinks postLinks={postLinks} isLightTheme={isLigthTheme}/>
+            <PostLinks postLinks={postLinks} isLightTheme={isLigthTheme} accessToken={accessToken}/>
             <PostDivider dividerHeight={6} />
           </>
         ) : null

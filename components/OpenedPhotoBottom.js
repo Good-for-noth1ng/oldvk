@@ -9,6 +9,11 @@ const OpenedPhotoBottom = ({ likes, comments, reposts, isLiked, navigation, phot
   const [liked, setLike] = React.useState(isLiked ? true : false)
   const [likesCount, setLikesCount] = React.useState(likes)
   // console.log('render')
+  
+  React.useEffect(() => {
+    setLikesCount(likes)
+  }, [likes])
+
   const onLike = () => {
     if (liked) {
       setLikesCount(prev => prev - 1)

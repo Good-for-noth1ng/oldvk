@@ -1,4 +1,4 @@
-import { StyleSheet, View, ActivityIndicator, Text, StatusBar, SafeAreaView, Animated, BackHandler, KeyboardAvoidingView } from 'react-native'
+import { StyleSheet, View, ActivityIndicator, Text, SafeAreaView, Animated, BackHandler } from 'react-native'
 import React from 'react'
 import { FlatList } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from 'react-redux'

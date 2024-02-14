@@ -59,7 +59,14 @@ const PostFiles = ({postDocs, isLightTheme}) => {
             }  
           }
           return (
-            <PostFile isLightTheme={isLightTheme} postDoc={doc} size={size} name={name} quantity={quantity}/>
+            <PostFile
+              key={doc.access_key} 
+              isLightTheme={isLightTheme} 
+              postDoc={doc} 
+              size={size} 
+              name={name} 
+              quantity={quantity}
+            />
           )  
         })
       }

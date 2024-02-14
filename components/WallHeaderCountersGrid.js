@@ -233,7 +233,13 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
     }
   }
   if (row.length > 0) {
-    countersGrid.push(<View key={uuid.v4()} style={styles.counterRow}>{row}</View>)
+    if (row.length === 1) {
+      countersGrid.push(<View style={[styles.counterRow, {justifyContent: 'flex-start'}]}>{row}</View>)
+    } else if (row.length === 2) {
+      countersGrid.push(<View style={[styles.counterRow, {justifyContent: 'space-around'}]}>{row}</View>)
+    } else {
+      countersGrid.push(<View style={styles.counterRow}>{row}</View>)
+    }
   }
   return (
     <View>
@@ -250,7 +256,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // justifyContent: 'flex-start',
     gap: 4,
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     marginTop: 5,
     marginBottom: 5,
   },

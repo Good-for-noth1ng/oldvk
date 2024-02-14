@@ -1,4 +1,4 @@
-import { Text, Linking } from "react-native"
+import { Text, Linking, TouchableHighlight } from "react-native"
 import React from "react"
 import { COLORS } from "../constants/theme"
 import uuid from 'react-native-uuid';

@@ -6,12 +6,17 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import { COLORS } from '../constants/theme'
 import { postWidth } from '../constants/theme'
 
-const PostLinks = ({postLinks, isLightTheme, isInFav}) => {
+const PostLinks = ({postLinks, isLightTheme, isInFav, accessToken}) => {
   // console.log(postLinks[0])
   const [isFavPressed, setIsFavPressed] = React.useState(isInFav)
-  const openLink = () => {
-
+  const url = `https://api.vk.com/method/fave.addLink?access_token=${accessToken}&v=5.131`
+  const toggleFavStatus = async () => {
+    if (isFavPressed) {
+      
+    }
+    setIsFavPressed(prev => !prev)
   }
+
   return (
     <View style={{justifyContent: 'center', alignItems: 'center'}}>
       {

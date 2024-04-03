@@ -18,6 +18,65 @@ export const cleanAdditionalInfoLinksAndUsers = (links, contacts, contactsDetail
   return {cleanedLinks, cleanedUsers}
 }
 
+export const convertLinkToPost = (link, profiles, groups) => {
+  const key = uuid.v4()
+  return {
+    date: link.added_date,
+    author: {
+      shouldRemoveHeader: true
+    },
+    comments: {
+      count: 0,
+      can_post: 0,
+      groups_can_post: 0
+    },
+    likes: {
+      count: 0,
+      can_like: 0,
+      can_publish: 0,
+      user_likes: 0
+    },
+    attachments: [{...link, type: 'link'}],
+    type: 'link',
+    is_favorite: link.link.is_favorite,
+    key: key,
+    shouldRemoveBottom: true
+  }
+}
+
+export const convertArticleToPost = (item, profiles, groups) => {
+  const key = uuid.v4()
+  return {
+    date: item.article.published_date,
+    author: {
+      name: item.article.owner_name,
+      photo_100: item.article.owner_photo,
+      id: item.article.owner_id > 0 ? item.article.owner_id : -item.article.owner_id 
+    },
+    comments: {
+      count: 0,
+      can_post: 0,
+      groups_can_post: 0
+    },
+    likes: {
+      count: 0,
+      can_like: 0,
+      can_publish: 0,
+      user_likes: 0
+    },
+    reposts: {
+      count: item.article.shares,
+    },
+    views: {
+      count: item.article.views
+    },
+    attachments: [{...item.article, type: 'article'}],
+    type: 'article',
+    is_favorite: item.article.is_favorite,
+    key: key
+  }
+}
+
 export const findPostAuthor = (item, profiles, groups) => {
   let repost
   if (item.copy_history !== undefined) {

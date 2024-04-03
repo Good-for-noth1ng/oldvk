@@ -133,14 +133,16 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
   }
 
   const removePostFromFavorite = async () => {
-    const url = `https://api.vk.com/method/fave.removePost?access_token=${accessToken}&v=5.131&owner_id=${data.owner_id ? data.owner_id : data.source_id}&id=${data.id ? data.id : data.post_id}${data.access_key ? `&access_key=${data.access_key}` : ''}`
-    const response = await fetch(url)
-    const parsedRes = await response.json()
-    if (parsedRes.response === 1) {
-      ToastAndroid.show('Removed from Fave!', ToastAndroid.SHORT)
-    } else {
-      ToastAndroid.show('Network Error', ToastAndroid.SHORT)
-    }
+    const func = data.func
+    func(data.favId)
+    // const url = `https://api.vk.com/method/fave.removePost?access_token=${accessToken}&v=5.131&owner_id=${data.owner_id ? data.owner_id : data.source_id}&id=${data.id ? data.id : data.post_id}${data.access_key ? `&access_key=${data.access_key}` : ''}`
+    // const response = await fetch(url)
+    // const parsedRes = await response.json()
+    // if (parsedRes.response === 1) {
+    //   ToastAndroid.show('Removed from Fave!', ToastAndroid.SHORT)
+    // } else {
+    //   ToastAndroid.show('Network Error', ToastAndroid.SHORT)
+    // }
     dispatch(collapseShadow())
   }
   const copyPostLink = async () => {

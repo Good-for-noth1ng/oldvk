@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, Linking, ImageBackground } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Linking, ImageBackground, ToastAndroid } from 'react-native'
 import React from 'react'
 import Feather from 'react-native-vector-icons/Feather'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
@@ -6,15 +6,31 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import { COLORS } from '../constants/theme'
 import { postWidth } from '../constants/theme'
 
-const PostLinks = ({postLinks, isLightTheme, isInFav, accessToken}) => {
-  // console.log(postLinks[0])
-  const [isFavPressed, setIsFavPressed] = React.useState(isInFav)
-  const url = `https://api.vk.com/method/fave.addLink?access_token=${accessToken}&v=5.131`
-  const toggleFavStatus = async () => {
-    if (isFavPressed) {
-      
+const PostLinks = ({postLinks, isLightTheme, accessToken}) => {
+  const [isFavPressed, setIsFavPressed] = React.useState(0)
+  const toggleFavStatus = async (postLink) => {
+    if (postLink.is_favorite) {
+      const url = `https://api.vk.com/method/fave.removeLink?access_token=${accessToken}&v=5.131&link_id=${postLink.id}`
+      const res = await fetch(url)
+      const data = await res.json()
+      if (data.response === 1) {
+        setIsFavPressed(false)
+        ToastAndroid.show('Removed from Favorite', ToastAndroid.SHORT)
+      } else {
+        console.log(data)
+        ToastAndroid.show('Network Error', ToastAndroid.SHORT)
+      }
+    } else {
+      const url = `https://api.vk.com/method/fave.addLink?access_token=${accessToken}&v=5.131&link=${postLink.url}`
+      const res = await fetch(url)
+      const data = await res.json()
+      if (data.response === 1) {
+        setIsFavPressed(true)
+        ToastAndroid.show('Added to Favorite!', ToastAndroid.SHORT)
+      } else {
+        ToastAndroid.show('Network Error', ToastAndroid.SHORT)
+      }
     }
-    setIsFavPressed(prev => !prev)
   }
 
   return (
@@ -24,29 +40,25 @@ const PostLinks = ({postLinks, isLightTheme, isInFav, accessToken}) => {
           if (postLink.photo !== undefined) {
             let url, postHeight, objectUrl
             objectUrl = postLink.url
-            // console.log(postLink.photo.sizes)
             postLink.photo.sizes.sort(function(a, b){return b.width - a.width})
-            // for (let i = 0; i < postLink.photo.sizes.length; i++) {
-            //   if (postLink.photo.sizes[i].width >= 300) {
-            //     url = postLink.photo.sizes[i].url
-            //     postHeight = (postLink.photo.sizes[i].height / postLink.photo.sizes[i].width) * postWidth
-            //     break
-            //   }
-            // }
             url = postLink.photo.sizes[0].url
-            // if (url === undefined) {
-            //   url = postLink.photo.sizes[postLink.photo.sizes.length - 1].url
-            // }
             return (
-              <TouchableOpacity activeOpacity={0.8} onPress={() => Linking.openURL(objectUrl)} style={[{borderWidth: 1}, isLightTheme ? {borderColor: COLORS.light_smoke} : {borderColor: COLORS.secondary}]}>
+              <TouchableOpacity activeOpacity={0.8} onPress={() => Linking.openURL(objectUrl)} style={[{borderWidth: 1, width: '100%', height: 250}, isLightTheme ? {borderColor: COLORS.light_smoke} : {borderColor: COLORS.secondary}]}>
                 <ImageBackground 
                   source={{uri: url}} 
-                  style={{width: postWidth, justifyContent: 'center', alignItems: 'center', aspectRatio: 2.2, }} 
-                  resizeMode='contain'
+                  style={{width: '100%', height: 150}} 
+                  resizeMode='cover'
                 >
-                  {/* <View style={{width: '100%', height: '100%', backgroundColor: COLORS.black, position: 'absolute', opacity: 0.3}}/> */}
-                  <TouchableOpacity style={{position: 'absolute', top: 5, right: 10}} activeOpacity={0.8} onPress={() => setIsFavPressed(prev => !prev)}>
-                    <AntDesign name={isFavPressed ? 'star' : 'staro'} size={25} color={isFavPressed ? COLORS.primary : COLORS.white}/>
+                  <TouchableOpacity 
+                    style={{position: 'absolute', top: 5, right: 10}} 
+                    activeOpacity={0.8} 
+                    onPress={() => toggleFavStatus(postLink)}
+                  >
+                    <AntDesign 
+                      name={(postLink.is_favorite && isFavPressed === 0) || isFavPressed ? 'star' : 'staro'} 
+                      size={25} 
+                      color={(postLink.is_favorite && isFavPressed === 0) || isFavPressed ? COLORS.primary : COLORS.light_smoke}
+                    />
                   </TouchableOpacity>
                 </ImageBackground>
                 <View style={[{padding: 10}, isLightTheme ? {backgroundColor: COLORS.white,} : {backgroundColor: COLORS.light_black}]}>

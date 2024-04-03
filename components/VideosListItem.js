@@ -69,7 +69,7 @@ const VideosListItem = ({title, duration, imageUrl, views, date, isLightTheme, n
         </View>
       </View>
       <TouchableOpacity activeOpacity={0.8} onPress={onMorePress}>
-        <View ref={dropdownCoords}>
+        <View ref={dropdownCoords} collapsable={false}>
           <Feather name='more-vertical' color={COLORS.secondary} size={20}/>
         </View>
       </TouchableOpacity>

@@ -23,7 +23,7 @@ const UserHeaderCollapsibleMenu = ({ isLightTheme, accessToken, data }) => {
     return (
       <View style={styles.container}>
         <TouchableOpacity activeOpacity={1} onPress={openDropdownMenu}>
-          <View ref={dropdownCoords}>
+          <View ref={dropdownCoords} collapsable={false}>
             <Feather name='more-vertical' size={20} color={COLORS.white}/>
           </View>
         </TouchableOpacity>

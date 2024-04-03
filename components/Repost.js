@@ -13,7 +13,7 @@ import { useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
 import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
 
-const Repost = ({ data, navigation, openedPost, isLightMode, id, accessToken }) => {
+const Repost = ({ data, navigation, openedPost, isLightMode, id, accessToken, func }) => {
   let postPhotos = []
   let postDocs = []
   let postLinks = []
@@ -70,6 +70,7 @@ const Repost = ({ data, navigation, openedPost, isLightMode, id, accessToken }) 
         author={data.author} 
         shouldShowMoreButton={openedPost}
         data={data}
+        func={func}
       />
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12} />

@@ -1,4 +1,4 @@
-import { StyleSheet, View, ActivityIndicator, Text, SafeAreaView, Animated, BackHandler } from 'react-native'
+import { StyleSheet, View, ActivityIndicator, Text, SafeAreaView, Animated, BackHandler, Dimensions } from 'react-native'
 import React from 'react'
 import { FlatList } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from 'react-redux'
@@ -313,10 +313,10 @@ const OpenPost = ({navigation, route}) => {
         )
     }
   }
-
+  
   const scrollingToComments = () => {
     if(shouldScrollToComments.current) {
-      commentsList.current.scrollToIndex({index: 0, animated: true, viewPosition: 0.1})
+      commentsList.current.scrollToIndex({index: 0, animated: true})
       shouldScrollToComments.current = false
     }
   }
@@ -347,6 +347,7 @@ const OpenPost = ({navigation, route}) => {
         <>
           <FlatList
             onLayout={scrollingToComments}
+            // getItemLayout={(data, index) => { return {length: Dimensions.get('window').height, index: index, offset: Dimensions.get('window').height * index} }}
             ref={commentsList}
             ListHeaderComponent={listHeader}
             data={comments} 
@@ -363,6 +364,7 @@ const OpenPost = ({navigation, route}) => {
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps={'handled'}
             keyboardDismissMode={'interactive'}
+            onScrollToIndexFailed={() => {}}
           />
           
           { comments ? <TextInputField isLightTheme={isLightTheme}/> : null}

@@ -24,7 +24,7 @@ const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost, navigatio
     }
 
     const openComments = () => {
-      if(openedPost) {
+      if(openedPost && data.type !== 'article') {
         const comments = dataComments?.count !== undefined ? dataComments.count : 0
         // dispatch(setOpenedPost(data))
         if (comments > 0) {
@@ -36,7 +36,9 @@ const BottomPost = ({dataComments, dataLikes, dataReposts, openedPost, navigatio
       }
     }
     const navigateToReactedUsersList = () => {
-      navigation.push('ReactedOnPostUsers', { ownerId: data.owner_id ? data.owner_id : data.source_id, postId: data.id ? data.id : data.post_id})
+      if (data.type != 'article') {
+        navigation.push('ReactedOnPostUsers', { ownerId: data.owner_id ? data.owner_id : data.source_id, postId: data.id ? data.id : data.post_id})
+      }
     }
     const unactiveButtonColor = isLightTheme ? COLORS.secondary : COLORS.smoke;
     const result = (

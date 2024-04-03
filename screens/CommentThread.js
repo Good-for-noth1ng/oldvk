@@ -272,6 +272,7 @@ const CommentThread = ({navigation, route}) => {
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps={'handled'}
             keyboardDismissMode={'interactive'}
+            onScrollToIndexFailed={err => console.log(err)}
           />
           <TextInputField isLightTheme={isLightTheme}/>
         </>

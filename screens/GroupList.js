@@ -337,6 +337,7 @@ const GroupList = ({navigation}) => {
               onRefresh={refreshGroupList}
               colors={[COLORS.primary, COLORS.white, COLORS.secondary]}
               tintColor={COLORS.primary} 
+              
             />
           }    
           style={styles.list}

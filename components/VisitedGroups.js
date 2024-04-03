@@ -41,7 +41,7 @@ const VisitedGroups = ({ visitedGroups, isLightTheme, navigation, setVisitedGrou
   }
 
   const renderItem = ({item}) => {
-    let name = item.name.slice(0,10)
+    let name = item.name.slice(0,5)
     if (name !== item.name) {
       name += '...'
     }

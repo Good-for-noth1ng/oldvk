@@ -14,26 +14,29 @@ import PostDivider from './PostDivider'
 import PostPoll from './PostPoll'
 import PostSigner from './PostSigner' 
 import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
+// import PostArticle from './PostArticle'
 
 const globalShadowHeight = Dimensions.get('window').height
 const globalShadowWidth = Dimensions.get('window').width
 
-const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken, fromNewsfeed}) => {
+const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken, fromNewsfeed, func}) => {
   let postPhotos = []
   let postDocs = []
   let postLinks = []
   let postVideos = []
+  let postArticle = []
   let postPoll
   const [showNotInterested, setShowNotInterested] = React.useState(false)
   
   const openPost = () => {
-    if (openedPost) {
+    if (openedPost && data.type !== 'article') {
       navigation.push('OpenPost', {ownerId: data.owner_id ? data.owner_id : data.source_id, postId: data.id ? data.id : data.post_id, shouldScroll: false}) // source_id, post_id
     }
   }
   
   const initPostData = () => {
-    if (data.attachments !== undefined && data.post_type === 'post') {  
+    // data.type === post
+    if (data.attachments !== undefined) {  
       let attachments
       if (data.copy_history !== undefined) {
         attachments = data.copy_history[0].attachments
@@ -52,6 +55,8 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken, from
           // postPhotos.push(attachments[i].video)
         } else if (attachments[i].type === 'poll') {
           postPoll = attachments[i].poll
+        } else if (attachments[i].type === 'article') {
+          postArticle.push(attachments[i])
         }
       }
     }
@@ -96,6 +101,7 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken, from
         data={data}
         fromNewsfeed={fromNewsfeed}
         setShowNotInterested={setShowNotInterested}
+        func={func}
       />
       <TouchableOpacity activeOpacity={1} onPress={openPost}>
         <PostDivider dividerHeight={12}/>
@@ -144,20 +150,32 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken, from
         ) : null
       }
       {
+        postArticle ? (
+          <>
+            <PostLinks postLinks={postArticle} isLightTheme={isLigthTheme} accessToken={accessToken}/>
+            <PostDivider dividerHeight={6} />
+          </>
+        ) : null
+      }
+      {
         data.signer ? 
         <PostSigner author={data.signer} navigation={navigation}/> :
         null
       }
-      <BottomPost 
-        dataComments={data.comments} 
-        dataLikes={data.likes} 
-        dataReposts={data.reposts} 
-        openedPost={openedPost}
-        data={data}
-        navigation={navigation}
-        isLightTheme={isLigthTheme}
-        accessToken={accessToken}
-      />
+      {
+        !data.shouldRemoveBottom ?  
+          <BottomPost 
+            dataComments={data.comments} 
+            dataLikes={data.likes} 
+            dataReposts={data.reposts} 
+            openedPost={openedPost}
+            data={data}
+            navigation={navigation}
+            isLightTheme={isLigthTheme}
+            accessToken={accessToken}
+          /> : null
+      }
+      
     </View>
   )
 }

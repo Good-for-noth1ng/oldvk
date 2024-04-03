@@ -7,17 +7,19 @@ import { getTimeDate } from '../utils/date'
 import { useDispatch } from 'react-redux'
 import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
 
-const PostHeader = ({dataDate, isRepost, navigation, isLightTheme, onMorePress, isPinned, author, ownerId, shouldShowMoreButton, data, fromNewsfeed, setShowNotInterested}) => {  
+const PostHeader = ({dataDate, isRepost, navigation, isLightTheme, onMorePress, isPinned, author, ownerId, shouldShowMoreButton, data, fromNewsfeed, setShowNotInterested, func}) => {  
   const dispatch = useDispatch()
   const name = author?.name ? author?.name : `${author?.first_name} ${author?.last_name}`
   const imgUrl = author?.photo_100
   const dropdownCoords = React.useRef() 
 
   const openDropdown = () => {
+    // dropdownCoords.current.measure((x, y, w, h,px, py) => {
+    //   console.log(x, y,w, h, px, py)
+    // })
     dropdownCoords.current.measure(
       (x, y, width, height, pageX, pageY) => {
-        // console.log(pageX, pageY, width)
-        dispatch(expandShadow({dropdownX: pageX, dropdownY: pageY, data: {...data, fromNewsfeed, setShowNotInterested}, dropdownType: 'post'}))
+        dispatch(expandShadow({dropdownX: pageX, dropdownY: pageY, data: {...data, fromNewsfeed, setShowNotInterested, func}, dropdownType: 'post'}))
       }
     )
   }
@@ -40,7 +42,9 @@ const PostHeader = ({dataDate, isRepost, navigation, isLightTheme, onMorePress, 
     postTimeTextStyle = isLightTheme ? styles.postTimeTextLight : styles.postNameTextDark;
   }
   
-
+  if (author.shouldRemoveHeader) {
+    return null
+  }
   return (
     <View style={styles.postHeaderContainer}>
       <TouchableOpacity onPress={openGroup} style={isRepost ? styles.postHeaderLeftsideContainerRepost : styles.postHeaderLeftsideContainer}>
@@ -76,6 +80,7 @@ const PostHeader = ({dataDate, isRepost, navigation, isLightTheme, onMorePress, 
         >
           <View
             ref={dropdownCoords}
+            collapsable={false}
           >
             <Feather 
               name='more-vertical' 

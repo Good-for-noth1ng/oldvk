@@ -1,16 +1,18 @@
-import { StyleSheet, Text, View, SafeAreaView, ActivityIndicator, StatusBar, FlatList, RefreshControl } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, ActivityIndicator, StatusBar, FlatList, RefreshControl, LayoutAnimation } from 'react-native'
 import React, { useRef } from 'react'
 import { useSelector } from 'react-redux'
+import uuid from 'react-native-uuid'
 import Entypo from 'react-native-vector-icons/Entypo'
 import CustomHeader from '../components/CustomHeader'
 import DividerWithLine from '../components/DividerWithLine'
-import { findPostAuthor } from '../utils/dataPreparationForComponents';
+import { findPostAuthor, convertArticleToPost, convertLinkToPost } from '../utils/dataPreparationForComponents';
 import Post from '../components/Post'
 import Repost from '../components/Repost';
 import Dropdown from '../components/Dropdown'
 import GlobalShadow from '../components/GlobalShadow'
 import { COLORS } from '../constants/theme'
 
+//TODO: move to redux posts data
 const Favorites = ({navigation}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
@@ -30,6 +32,14 @@ const Favorites = ({navigation}) => {
     fetchFave()
   }
 
+  const popFav = (idToDelete) => {
+    setFavorites(state => {
+      const indexToDelete = state.findIndex(item => item.favId === idToDelete)
+
+      return [...state.slice(0, indexToDelete), ...state.slice(indexToDelete+1, state.length)]
+    })
+  }
+
   const fetchFave = async () => {
     const fetchFaveUrl = `https://api.vk.com/method/fave.get?access_token=${accessToken}&v=5.131&extended=1&fields=photo_100&count=${count}&offset=${offset.current}`
     const response = await fetch(fetchFaveUrl)
@@ -40,13 +50,21 @@ const Favorites = ({navigation}) => {
       remainToFetchNum.current -= count
     }
     offset.current += count
+    console.log(parsedResponse.response.items[0])
     const items = parsedResponse.response.items.map(item => {
       let preparedItem
+      const key = uuid.v4()
       if (item.type === 'post') {
         preparedItem = findPostAuthor(item.post, parsedResponse.response.profiles, parsedResponse.response.groups)
+      } else if (item.type === 'article') {
+        preparedItem = convertArticleToPost(item)
+      } else if (item.type === 'link') {
+        preparedItem = convertLinkToPost(item, parsedResponse.response.profiles, parsedResponse.response.groups)
       }
+      preparedItem = {...preparedItem, favId: key}
       return preparedItem
     })
+    // console.log(items[2])
     setFavorites(prevState => prevState.concat(items))
     setIsLoading(false)
   }
@@ -86,6 +104,7 @@ const Favorites = ({navigation}) => {
             id={item.key}
             openedPost={true}
             accessToken={accessToken}
+            func={popFav}
           />
         )
       }
@@ -98,6 +117,7 @@ const Favorites = ({navigation}) => {
           id={item.key}
           openedPost={true}
           accessToken={accessToken}
+          func={popFav}
         />
       )
     }

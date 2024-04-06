@@ -3,10 +3,6 @@ import React from 'react'
 import { COLORS } from '../constants/theme'
 
 const CarouselItem = ({ cover, title, type, num, handlePress, isLightTheme, id }) => {
-  let titleText = title.slice(0, 15)
-  if (titleText !== title) {
-    titleText += '...'
-  }
   const onPress = () => {
     handlePress()
   }
@@ -20,7 +16,7 @@ const CarouselItem = ({ cover, title, type, num, handlePress, isLightTheme, id }
         source={{uri: cover}}
       />
       <Text style={[styles.title, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
-        {titleText}
+        {title}
       </Text>
       <Text style={styles.quantity}>
         {num} {type === 'photos' ? 'photos' : 'videos'}

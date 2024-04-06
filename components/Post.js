@@ -12,6 +12,7 @@ import PostLinks from './PostLinks'
 import PostVideos from './PostVideos'
 import PostDivider from './PostDivider'
 import PostPoll from './PostPoll'
+import PostAudio from './PostAudio'
 import PostSigner from './PostSigner' 
 import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
 // import PostArticle from './PostArticle'
@@ -25,6 +26,7 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken, from
   let postLinks = []
   let postVideos = []
   let postArticle = []
+  let postAudios = []
   let postPoll
   const [showNotInterested, setShowNotInterested] = React.useState(false)
   
@@ -57,6 +59,8 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken, from
           postPoll = attachments[i].poll
         } else if (attachments[i].type === 'article') {
           postArticle.push(attachments[i])
+        } else if (attachments[i].type === 'audio') {
+          postAudios.push(attachments[i])
         }
       }
     }
@@ -136,6 +140,14 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken, from
             <PostVideos postVideos={postVideos} navigation={navigation}/>
             <PostDivider dividerHeight={5}/>  
           </>
+        ) : null
+      }
+      {
+        postAudios ? (
+          <> 
+            <PostAudio postAudios={postAudios} isLightTheme={isLigthTheme}/>
+            <PostDivider dividerHeight={5}/>
+          </> 
         ) : null
       }
       {

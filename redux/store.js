@@ -14,6 +14,7 @@ import sortGroupsCollapsibleReducer from "./sortGroupsCollapsibleOption"
 import communityTypeCollapsibleOption from "./communityTypeCollapsibleOption";
 import globalShadowReducer from "./globalShadowSlice";
 import regDateReducer from "./regDateSlice";
+import audioReducer from "./audioSlice";
 
 export const store = configureStore({
   reducer: {
@@ -32,6 +33,7 @@ export const store = configureStore({
     communityType: communityTypeCollapsibleOption,
     globalShadow: globalShadowReducer,
     userRegDate: regDateReducer, 
+    audio: audioReducer,
   },
   
   // middleware: (getDefaultMiddleware) => {

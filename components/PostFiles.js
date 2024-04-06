@@ -88,6 +88,7 @@ const PostFiles = ({postDocs, isLightTheme}) => {
       <View>
       {
         postDocs.map(doc => {
+          const key = uuid.v4()
           let name = doc.title
           name = name.slice(0, 35)
           if (name !== doc.title) {
@@ -108,7 +109,7 @@ const PostFiles = ({postDocs, isLightTheme}) => {
             return (
               <TouchableOpacity style={{width: '100%', aspectRatio: 1.5}} onPress={() => setModalVisible(!modalVisible)}>
                 <Image style={{width: '100%', height: '100%'}} source={{uri: doc.preview.photo.sizes[0].src}}/>
-                <Text style={{fontSize: 12, textTransform: 'uppercase', position: 'absolute', left: '75%', top: '90%', backgroundColor: COLORS.black, borderRadius: 5, padding: 3, color: COLORS.white, opacity: 0.7}}>
+                <Text style={{fontSize: 12, textTransform: 'uppercase', position: 'absolute', left: '75%', top: '85%', backgroundColor: COLORS.black, borderRadius: 5, padding: 3, color: COLORS.white, opacity: 0.7}}>
                   {doc.ext} {size}{quantity}
                 </Text>
               </TouchableOpacity>
@@ -122,6 +123,7 @@ const PostFiles = ({postDocs, isLightTheme}) => {
               size={size} 
               name={name} 
               quantity={quantity}
+              id={key}
             />
           )  
         })

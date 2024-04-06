@@ -228,20 +228,19 @@ const CommentAttachments = ({attachments, navigation, isLightTheme, author, owne
               return null
             }
           } else if (attachment.type === 'audio') {
-            // let txt = attachment.audio.artist + ' - ' + attachment.audio.title
-            // txt = txt.slice(0,30)
-            
+            let title = attachment.audio.title
+            let artist = attachment.audio.artist
             return (
               <TouchableOpacity activeOpacity={0.8} style={{flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 5, marginBottom: 5}}>
                 <View style={{width: 40, height: 40, borderRadius: 50, backgroundColor: COLORS.primary, justifyContent: 'center', alignItems: 'center'}}>
                   <Entypo name='triangle-right' color={COLORS.white} size={30}/>
                 </View>
-                <View>
-                  <Text style={{fontSize: 15, color: COLORS.primary, fontWeight: 'bold'}}>{attachment.audio.artist}</Text>
-                  <Text style={[{fontSize: 15}, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>{attachment.audio.title}</Text>
+                <View style={{width: screenWidth - 250}}>
+                  <Text numberOfLines={1} style={{fontSize: 15, color: COLORS.primary_light, fontWeight: 'bold'}}>{artist}</Text>
+                  <Text numberOfLines={1} style={[{fontSize: 15}, isLightTheme ? {color: COLORS.secondary} : {color: COLORS.primary_text}]}>{title}</Text>
                 </View>            
                 <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
-                  <Text style={[{fontSize: 13}, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>{getDuration(attachment.audio.duration)}</Text>
+                  <Text style={[{fontSize: 13}, isLightTheme ? {color: COLORS.secondary} : {color: COLORS.primary_text}]}>{getDuration(attachment.audio.duration)}</Text>
                 </View>
               </TouchableOpacity>
             )

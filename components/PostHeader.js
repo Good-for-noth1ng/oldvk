@@ -42,7 +42,7 @@ const PostHeader = ({dataDate, isRepost, navigation, isLightTheme, onMorePress, 
     postTimeTextStyle = isLightTheme ? styles.postTimeTextLight : styles.postNameTextDark;
   }
   
-  if (author.shouldRemoveHeader) {
+  if (author && author.shouldRemoveHeader) {
     return null
   }
   return (

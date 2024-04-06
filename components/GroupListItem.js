@@ -1,19 +1,15 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Dimensions } from 'react-native'
 import React from 'react'
 import { COLORS } from '../constants/theme'
 // import { useDispatch } from 'react-redux'
 // import { setGroupID } from '../redux/groupSlice'
 import { getShortagedNumber } from '../utils/numShortage'
 
+const width = Dimensions.get('window').width
 const GroupListItem = ({data, navigation, isLightTheme}) => {
-  let name = data.name.slice(0,24)
-  if (name !== data.name) {
-    name += '...'
-  }
-  let communityInfo = `${data.activity}, ${getShortagedNumber(data.members_count)} followers` 
-  if (communityInfo !== communityInfo.slice(0,33)) {
-    communityInfo = communityInfo.slice(0,33) + '...'
-  }
+  const name = data.name
+  const communityInfo = `${data.activity}, ${getShortagedNumber(data.members_count)} followers` 
+  
   const handleOnPress = () => {
     // dispatch(setGroupID(data.id))
     navigation.push('Group', {groupId: data.id})
@@ -26,8 +22,8 @@ const GroupListItem = ({data, navigation, isLightTheme}) => {
     >
       <Image source={{uri:data.photo_100}} style={styles.image}/>
       <View style={styles.nameAndFollowersContainer}>
-        <Text style={isLightTheme ? styles.groupNameLight : styles.groupNameDark}>{name}</Text>
-        <Text style={isLightTheme ? styles.additionalInfoLight : styles.additionalInfoDark}>
+        <Text numberOfLines={1} style={isLightTheme ? styles.groupNameLight : styles.groupNameDark}>{name}</Text>
+        <Text numberOfLines={1} style={isLightTheme ? styles.additionalInfoLight : styles.additionalInfoDark}>
           {communityInfo}
         </Text>
       </View>  
@@ -74,6 +70,7 @@ const styles = StyleSheet.create({
     color: COLORS.primary_text
   },
   nameAndFollowersContainer: {
-    marginLeft: 12
+    marginLeft: 12,
+    width: '80%'
   },
 })

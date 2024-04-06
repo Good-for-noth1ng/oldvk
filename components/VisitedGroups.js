@@ -41,10 +41,7 @@ const VisitedGroups = ({ visitedGroups, isLightTheme, navigation, setVisitedGrou
   }
 
   const renderItem = ({item}) => {
-    let name = item.name.slice(0,5)
-    if (name !== item.name) {
-      name += '...'
-    }
+    const name = item.name
     return (
       <TouchableOpacity 
         style={styles.group} 
@@ -53,7 +50,7 @@ const VisitedGroups = ({ visitedGroups, isLightTheme, navigation, setVisitedGrou
         onLongPress={() => popGroup(item.id)}
       >
         <Image source={{ uri: item.img }} style={styles.groupImage}/>
-        <Text style={[styles.groupName, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
+        <Text numberOfLines={1} style={[styles.groupName, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
           {name}
         </Text>
       </TouchableOpacity>
@@ -108,7 +105,8 @@ const styles = StyleSheet.create({
   group: {
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 5
+    gap: 5,
+    width: 60
   },
   groupImage: {
     width: 50,

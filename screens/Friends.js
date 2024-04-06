@@ -205,7 +205,10 @@ const Friends = ({navigation, route}) => {
     const searchResults = await fetch(usersSearchUrl)
     const searchData = await searchResults.json()
     offset.current += count
-    const items = searchData.response.items.map(item => {return {...item, key: uuid.v4()}})
+    const items = searchData.response.items.map(item => {
+      const key = uuid.v4()
+      return {...item, key}
+    })
     return {
       counterName: 'Search result',
       count: searchData.response.count,

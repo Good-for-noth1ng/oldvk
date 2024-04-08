@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity , Dimensions, LayoutAnimation, ToastAndroid } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Linking, Modal, Dimensions, ToastAndroid } from 'react-native'
 import React from 'react'
 import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from 'expo-av'
 import { useSelector, useDispatch } from 'react-redux'
@@ -6,28 +6,27 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { updateTrack } from '../redux/audioSlice'
 import { COLORS } from '../constants/theme'
-import { getDuration, getSongCurStatus } from '../utils/numShortage'
+import { getDuration, getSongCurStatus } from '../utils/numShortage';
 
-const width = Dimensions.get('window').width
-const PostAudioItem = ({isLightTheme, item, audios, index}) => {
+const screenWidth = Dimensions.get('window').width
+const CommentAudioItem = ({ item, isLightTheme, audios }) => {
   const dispatch = useDispatch()
   const track = useSelector(state => state.audio)
   const [isPlaying, setIsPlaying] = React.useState(false)
   const [isAvailable, setIsAvailable] = React.useState(true)
   const [played, setPlayed] = React.useState(0)
-  const artist = item.audio.artist
   const title = item.audio.title
-
-  //[Error: yb.a0$f: Response code: 404]
+  const artist = item.audio.artist
+  
   React.useEffect(() => {
     const handler = async () => {
       if (track.info && track.info.id === item.audio.id && track.info.owner_id === item.audio.owner_id) {
         if (isAvailable === false) {
-          if (index + 1 < audios.length) {
+          if (item.audioIndex+1 + 1 < audios.length) {
             const sound = new Audio.Sound()
-            dispatch(updateTrack({sound: sound, info: audios[index+1].audio}))
+            dispatch(updateTrack({sound: sound, info: audios[item.audioIndex+1].audio}))
           } else {
-            dispatch(updateTrack({sound: null, info: null, index: index}))
+            dispatch(updateTrack({sound: null, info: null}))
           }
           setIsPlaying(false)
           setIsAvailable(false)
@@ -47,11 +46,11 @@ const PostAudioItem = ({isLightTheme, item, audios, index}) => {
           if (error.message === 'yb.a0$f: Response code: 404') {
             ToastAndroid.show(`${artist} - ${title} is not available`, ToastAndroid.SHORT)
             await track.sound.unloadAsync()
-            if (index + 1 < audios.length) {
+            if (item.audioIndex+1 < audios.length) {
               const sound = new Audio.Sound()
-              dispatch(updateTrack({sound: sound, info: audios[index+1].audio}))
+              dispatch(updateTrack({sound: sound, info: audios[item.audioIndex+1].audio}))
             } else {
-              dispatch(updateTrack({sound: null, info: null, index: index}))
+              dispatch(updateTrack({sound: null, info: null}))
             }
             setIsPlaying(false)
             setIsAvailable(false)
@@ -66,23 +65,20 @@ const PostAudioItem = ({isLightTheme, item, audios, index}) => {
     }
     handler()
   }, [track])
-  
+
   const onPlaybackUpdate = async (status) => {
-    // console.log(status)
-    // if (status.isPlaying === false) {}
     setPlayed(status.positionMillis)
     if (status.didJustFinish) {
-      if (index + 1 < audios.length) {
+      if (item.audioIndex + 1 < audios.length) {
         const sound = new Audio.Sound()
-        dispatch(updateTrack({sound: sound, info: audios[index+1].audio, audios: audios, index: index+1}))
+        dispatch(updateTrack({sound: sound, info: audios[item.audioIndex+1].audio}))
       } else {
         await track.sound.pauseAsync()
-        dispatch(updateTrack({sound: null, info: null, index: index}))
+        dispatch(updateTrack({sound: null, info: null}))
         setIsPlaying(false)
       }
     }
   }
-  
 
   const onPressTrack = async () => {
     if (isPlaying) {
@@ -91,7 +87,7 @@ const PostAudioItem = ({isLightTheme, item, audios, index}) => {
         setIsPlaying(false)
       } else {
         const sound = new Audio.Sound()
-        dispatch(updateTrack({sound: sound, info: item.audio, index: index}))
+        dispatch(updateTrack({sound: sound, info: item.audio}))
       }
     } else {
       if (track.info && track.info.id === item.audio.id && track.info.owner_id === item.audio.owner_id) {
@@ -99,15 +95,15 @@ const PostAudioItem = ({isLightTheme, item, audios, index}) => {
         setIsPlaying(true)
       } else {
         const sound = new Audio.Sound()
-        dispatch(updateTrack({sound: sound, info: item.audio, index: index}))
+        dispatch(updateTrack({sound: sound, info: item.audio}))
       }
     }
   }
 
   return (
     <TouchableOpacity 
-      activeOpacity={isAvailable ? 0.8 : 0.5} 
-      style={[{flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 5, marginBottom: 5}, isAvailable ? {opacity: 1} : {opacity: 0.5}]}
+      activeOpacity={0.8} 
+      style={{flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 5, marginBottom: 5}}
       onPress={isAvailable ? onPressTrack : () => {}}
     >
       <View style={{width: 40, height: 40, borderRadius: 50, backgroundColor: COLORS.primary, justifyContent: 'center', alignItems: 'center'}}>
@@ -117,7 +113,7 @@ const PostAudioItem = ({isLightTheme, item, audios, index}) => {
           <Entypo name='triangle-right' color={COLORS.white} size={30}/>
         }
       </View>
-      <View style={{width: width - 150}}>
+      <View style={{width: screenWidth - 250}}>
         <Text numberOfLines={1} style={{fontSize: 15, color: COLORS.primary_light, fontWeight: 'bold'}}>{artist}</Text>
         <Text numberOfLines={1} style={[{fontSize: 15}, isLightTheme ? {color: COLORS.secondary} : {color: COLORS.primary_text}]}>{title}</Text>
       </View>            
@@ -134,6 +130,6 @@ const PostAudioItem = ({isLightTheme, item, audios, index}) => {
   )
 }
 
-export default PostAudioItem
+export default CommentAudioItem
 
 const styles = StyleSheet.create({})

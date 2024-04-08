@@ -27,6 +27,24 @@ export const getShortagedNumber = (num) => {
     // }
 }
 
+export const getSongCurStatus = (durMil, positionMil) => {
+  const seconds = Math.round(positionMil / 1000)
+  // console.log(seconds)
+  let min = Math.floor(seconds / 60)
+  let sec = seconds - min * 60
+  if (min < 10) {
+    min = `0${min}`
+  } else {
+    min = `${min}`
+  }
+  if (sec < 10) {
+    sec = `0${sec}`
+  } else {
+    sec = `${sec}`
+  }
+  return min + ':' + sec
+}
+
 export const getDuration = (num) => {
   const seconds = num % 60
   num = (num - (num % 60)) / 60

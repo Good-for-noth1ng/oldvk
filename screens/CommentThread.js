@@ -164,8 +164,9 @@ const CommentThread = ({navigation, route}) => {
     />
   )
   
-  const listHeader = () => (
-    <>
+  const listHeader = () => {
+    // console.log(mainComment.response.items)
+    return <>
       <DividerWithLine 
         marginT={10} 
         dividerHeight={5} 
@@ -179,7 +180,11 @@ const CommentThread = ({navigation, route}) => {
         likes={mainComment.response.items[0].likes?.count}
         from_id={mainComment.response.items[0].from_id}
         commentText={mainComment.response.items[0].text}
-        author={mainComment.response.profiles.length > 0 ? mainComment.response.profiles[0] : mainComment.response.groups[0]}
+        author={
+          mainComment.response.profiles.length > 0 ? 
+          mainComment.response.profiles.length > 1 ? mainComment.response.profiles[1] : mainComment.response.profiles[0]: 
+          mainComment.response.groups[0]
+        }
         threadComments={[]}
         attachments={mainComment.response.items[0]?.attachments}
         is_deleted={mainComment.response.items[0].deleted}
@@ -196,7 +201,7 @@ const CommentThread = ({navigation, route}) => {
         linePosition={'center'}
       />
     </>
-  )
+  }
 
   const commentSeparator = () => (
     <DividerWithLine dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={10}/>

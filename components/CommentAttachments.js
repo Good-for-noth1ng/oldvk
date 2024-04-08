@@ -8,6 +8,7 @@ import Fontisio from 'react-native-vector-icons/Fontisto'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Feather from 'react-native-vector-icons/Feather'
 import ImageViewer from 'react-native-image-zoom-viewer'
+import CommentAudioItem from './CommentAudioItem'
 import { COLORS } from '../constants/theme'
 import { getDuration } from '../utils/numShortage';
 
@@ -18,9 +19,11 @@ const CommentAttachments = ({attachments, navigation, isLightTheme, author, owne
   const videosNum = React.useRef(0)
   const initRender = React.useRef(true)
   const openImageIndex = React.useRef(0)
-  
+  const audios = React.useRef([])
+
   if (initRender.current) {
     let indx = 0
+    let audioIndex = 0
     for (let i = 0; i < attachments.length; i++) {
       if (attachments[i].type === 'photo') {
         attachments[i].photo = {...attachments[i].photo, indxToOpen: indx}
@@ -66,6 +69,9 @@ const CommentAttachments = ({attachments, navigation, isLightTheme, author, owne
         }
       } else if (attachments[i].type === 'video') {
         videosNum.current += 1
+      } else if (attachments[i].type === 'audio') {
+        audios.current.push({...attachments[i], audioIndex})
+        audioIndex += 1
       }
     }
   }
@@ -228,21 +234,8 @@ const CommentAttachments = ({attachments, navigation, isLightTheme, author, owne
               return null
             }
           } else if (attachment.type === 'audio') {
-            let title = attachment.audio.title
-            let artist = attachment.audio.artist
             return (
-              <TouchableOpacity activeOpacity={0.8} style={{flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 5, marginBottom: 5}}>
-                <View style={{width: 40, height: 40, borderRadius: 50, backgroundColor: COLORS.primary, justifyContent: 'center', alignItems: 'center'}}>
-                  <Entypo name='triangle-right' color={COLORS.white} size={30}/>
-                </View>
-                <View style={{width: screenWidth - 250}}>
-                  <Text numberOfLines={1} style={{fontSize: 15, color: COLORS.primary_light, fontWeight: 'bold'}}>{artist}</Text>
-                  <Text numberOfLines={1} style={[{fontSize: 15}, isLightTheme ? {color: COLORS.secondary} : {color: COLORS.primary_text}]}>{title}</Text>
-                </View>            
-                <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
-                  <Text style={[{fontSize: 13}, isLightTheme ? {color: COLORS.secondary} : {color: COLORS.primary_text}]}>{getDuration(attachment.audio.duration)}</Text>
-                </View>
-              </TouchableOpacity>
+              <CommentAudioItem item={attachment} isLightTheme={isLightTheme} audios={audios.current}/>
             )
           } else if (attachment.type === 'link') {
             return (

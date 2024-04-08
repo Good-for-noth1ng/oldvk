@@ -9,6 +9,9 @@ import PostFiles from './PostFiles'
 import PostLinks from './PostLinks'
 import PostVideos from './PostVideos'
 import PostDivider from './PostDivider'
+import PostPoll from './PostPoll'
+import PostAudio from './PostAudio'
+import PostSigner from './PostSigner'
 import { useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
 import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
@@ -18,7 +21,9 @@ const Repost = ({ data, navigation, openedPost, isLightMode, id, accessToken, fu
   let postDocs = []
   let postLinks = []
   let postVideos = []
-
+  let postArticle = []
+  let postAudios = []
+  let postPoll
   const isLightTheme = isLightMode
 
   if (data.attachments !== undefined && data.type === 'post') {  
@@ -38,6 +43,12 @@ const Repost = ({ data, navigation, openedPost, isLightMode, id, accessToken, fu
         postLinks.push(attachments[i].link)
       } else if (attachments[i].type === 'video') {
         postVideos.push(attachments[i].video)
+      } else if (attachments[i].type === 'audio') {
+        postAudios.push(attachments[i])
+      } else if (attachments[i].type === 'poll') {
+        postPoll = attachments[i].poll
+      } else if (attachments[i].type === 'article') {
+        postArticle.push(attachments[i])
       }
     }}
   }
@@ -105,6 +116,14 @@ const Repost = ({ data, navigation, openedPost, isLightMode, id, accessToken, fu
         }
       </TouchableOpacity>
       {
+        postPoll ?
+          <>
+            <PostPoll poll={postPoll} isLightTheme={isLightTheme} accessToken={accessToken}/>
+            <PostDivider dividerHeight={5}/>
+          </>
+          : null
+      }
+      {
         postPhotos ? (
           <>
             <PostPhotos postPhotos={postPhotos}/>
@@ -121,6 +140,14 @@ const Repost = ({ data, navigation, openedPost, isLightMode, id, accessToken, fu
         ) : null
       }
       {
+        postAudios ? (
+          <> 
+            <PostAudio postAudios={postAudios} isLightTheme={isLightTheme}/>
+            <PostDivider dividerHeight={5}/>
+          </> 
+        ) : null
+      }
+      {
         postDocs ? <PostFiles postDocs={postDocs} isLightTheme={isLightTheme}/>  : <PostDivider dividerHeight={5}/>
       }
       { 
@@ -131,6 +158,19 @@ const Repost = ({ data, navigation, openedPost, isLightMode, id, accessToken, fu
           </>
         ) 
           : null
+      }
+      {
+        postArticle ? (
+          <>
+            <PostLinks postLinks={postArticle} isLightTheme={isLightTheme} accessToken={accessToken}/>
+            <PostDivider dividerHeight={6} />
+          </>
+        ) : null
+      }
+      {
+        data.signer ? 
+        <PostSigner author={data.signer} navigation={navigation}/> :
+        null
       }
       <BottomPost 
         dataComments={data.comments} 

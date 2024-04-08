@@ -10,10 +10,10 @@ const PostAudio = ({postAudios, isLightTheme}) => {
   return (  
     <View>
       {
-        postAudios.map(item => {
+        postAudios.map((item, index) => {
             const key = uuid.v4()
             return (
-              <PostAudioItem key={key} item={item} isLightTheme={isLightTheme}/>
+              <PostAudioItem index={index} audios={postAudios} key={key} item={item} isLightTheme={isLightTheme}/>
             )
         })
       }

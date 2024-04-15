@@ -18,6 +18,7 @@ import UserPageRoute from './UserPageRoute';
 import PhotosRoute from './PhotosRoute';
 import VideosRoute from './VideosRoute';
 import FavoriteRoute from './FavoriteRoute';
+import AudioPlayer from '../screens/AudioPlayer';
 import { COLORS } from '../constants/theme';
 
 const Drawer = createDrawerNavigator()
@@ -43,6 +44,15 @@ const Home = () => {
         drawerType: 'slide'
       }}
     >
+        <Drawer.Screen 
+          name='AudioPlayer'
+          component={AudioPlayer}
+          options={{
+            drawerItemStyle: {height: 0},
+            headerShown: false,
+            lazy: false
+          }}
+        />
         <Drawer.Screen name={'CurrentUser'} component={UserPageRoute} options={{
           drawerIcon: () => (
               <Image source={{uri: urlDrawerPhoto}} style={{width: 80, height: 80, borderRadius: 5}}/>

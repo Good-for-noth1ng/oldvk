@@ -1,4 +1,4 @@
-import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import userReducer from './userSlice'
 import newsReducer from './newsSlice'
 import commentsReducer from "./commentsSlice";
@@ -15,6 +15,7 @@ import communityTypeCollapsibleOption from "./communityTypeCollapsibleOption";
 import globalShadowReducer from "./globalShadowSlice";
 import regDateReducer from "./regDateSlice";
 import audioReducer from "./audioSlice";
+import audioProgressReducer from "./audioProgressSlice"
 
 export const store = configureStore({
   reducer: {
@@ -34,11 +35,11 @@ export const store = configureStore({
     globalShadow: globalShadowReducer,
     userRegDate: regDateReducer, 
     audio: audioReducer,
+    audioProgress: audioProgressReducer
   },
-  
-  // middleware: (getDefaultMiddleware) => {
-  //   getDefaultMiddleware({
-  //     serializableCheck: false
-  //   })
-  // }
+  middleware: (getDefaultMiddleware) => {
+    return getDefaultMiddleware({
+      serializableCheck: false
+    })
+  }
 })

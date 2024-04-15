@@ -8,20 +8,29 @@ export const audioSlice = createSlice({
     prev: null,
     prevInfo: null,
     audios: [],
-    index: 0
+    index: 0,
+    isPlaying: false
   },
   reducers: {
     updateTrack: (state, action) => {
       return {
+        ...state,
         sound: action.payload.sound,
         info: action.payload.info,
-        audios: action.payload.audios,
+        audios: action.payload.audios ? action.payload.audios : state.audios,
         index: action.payload.index,
         prev: state.sound,
         prevInfo: state.info,
       }
     },
+    setPlayStatus: (state, action) => {
+      console.log(action.payload)
+      return {
+        ...state,
+        isPlaying: action.payload
+      }
+    }
   }
 })
-export const { updateTrack } = audioSlice.actions;
+export const { updateTrack, setPlayStatus } = audioSlice.actions;
 export default audioSlice.reducer

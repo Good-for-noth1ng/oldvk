@@ -2,100 +2,64 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, Linking, Modal, Dimens
 import React from 'react'
 import { Audio, InterruptionModeAndroid, InterruptionModeIOS } from 'expo-av'
 import { useSelector, useDispatch } from 'react-redux'
+import { store } from '../redux/store'
 import Entypo from 'react-native-vector-icons/Entypo'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import { updateTrack } from '../redux/audioSlice'
+import { updateTrack, setPlayStatus } from '../redux/audioSlice'
 import { COLORS } from '../constants/theme'
 import { getDuration, getSongCurStatus } from '../utils/numShortage';
 
 const screenWidth = Dimensions.get('window').width
 const CommentAudioItem = ({ item, isLightTheme, audios }) => {
   const dispatch = useDispatch()
-  const track = useSelector(state => state.audio)
+  const trackInfo = useSelector(state => state.audio.info)
   const [isPlaying, setIsPlaying] = React.useState(false)
-  const [isAvailable, setIsAvailable] = React.useState(true)
   const [played, setPlayed] = React.useState(0)
   const title = item.audio.title
   const artist = item.audio.artist
-  
-  React.useEffect(() => {
-    const handler = async () => {
-      if (track.info && track.info.id === item.audio.id && track.info.owner_id === item.audio.owner_id) {
-        if (isAvailable === false) {
-          if (item.audioIndex+1 + 1 < audios.length) {
-            const sound = new Audio.Sound()
-            dispatch(updateTrack({sound: sound, info: audios[item.audioIndex+1].audio}))
-          } else {
-            dispatch(updateTrack({sound: null, info: null}))
-          }
-          setIsPlaying(false)
-          setIsAvailable(false)
-          return
-        }
-        if (track.prev) {
-          try {
-            await track.prev.pauseAsync()
-            await track.prev.unloadAsync()
-          } catch (e) {
-            await track.sound.loadAsync({uri: track.info.url})
-          }
-        }
-        try {
-          await track.sound.loadAsync({uri: track.info.url})
-        } catch (error) {
-          if (error.message === 'yb.a0$f: Response code: 404') {
-            ToastAndroid.show(`${artist} - ${title} is not available`, ToastAndroid.SHORT)
-            await track.sound.unloadAsync()
-            if (item.audioIndex+1 < audios.length) {
-              const sound = new Audio.Sound()
-              dispatch(updateTrack({sound: sound, info: audios[item.audioIndex+1].audio}))
-            } else {
-              dispatch(updateTrack({sound: null, info: null}))
-            }
-            setIsPlaying(false)
-            setIsAvailable(false)
-          }
-        }
-        track.sound.setOnPlaybackStatusUpdate(onPlaybackUpdate)
-        await track.sound.playAsync()
-        setIsPlaying(true)
-      } else if (track.prev && track.prevInfo.id === item.audio.id && track.prevInfo.owner_id === item.audio.owner_id) { 
-        setIsPlaying(false)
-      }
-    }
-    handler()
-  }, [track])
+  const audioProgressUnsub = React.useRef(null)
+  const audioPlayUnsub = React.useRef(null)
 
-  const onPlaybackUpdate = async (status) => {
-    setPlayed(status.positionMillis)
-    if (status.didJustFinish) {
-      if (item.audioIndex + 1 < audios.length) {
-        const sound = new Audio.Sound()
-        dispatch(updateTrack({sound: sound, info: audios[item.audioIndex+1].audio}))
-      } else {
-        await track.sound.pauseAsync()
-        dispatch(updateTrack({sound: null, info: null}))
-        setIsPlaying(false)
-      }
-    }
+  if (audioPlayUnsub.current && trackInfo && (trackInfo.id !== item.audio.id || trackInfo.owner_id !== item.audio.owner_id)) {
+    const unsub1 = audioPlayUnsub.current
+    const unsub2 = audioProgressUnsub.current
+    unsub1()
+    unsub2()
+    audioProgressUnsub.current = null
+    audioPlayUnsub.current = null
+  }
+  
+  const togglePlayStatus = () => {
+    setIsPlaying(store.getState().audio.isPlaying)
+  }
+
+  const updatePlayState = () => {
+    setPlayed(store.getState().audioProgress.played)
+  }
+
+  if (trackInfo && trackInfo.id === item.audio.id && trackInfo.owner_id === item.audio.owner_id && audioProgressUnsub.current == null) {
+    audioProgressUnsub.current = store.subscribe(updatePlayState)
+    audioPlayUnsub.current = store.subscribe(togglePlayStatus)
   }
 
   const onPressTrack = async () => {
     if (isPlaying) {
-      if (track.info && track.info.id === item.audio.id && track.info.owner_id === item.audio.owner_id) {
-        await track.sound.pauseAsync()
-        setIsPlaying(false)
+      if (trackInfo && trackInfo.id === item.audio.id && trackInfo.owner_id === item.audio.owner_id) {
+        dispatch(setPlayStatus(false))
       } else {
+        audioProgressUnsub.current = store.subscribe(updatePlayState)
+        audioPlayUnsub.current = store.subscribe(togglePlayStatus)
         const sound = new Audio.Sound()
-        dispatch(updateTrack({sound: sound, info: item.audio}))
+        dispatch(updateTrack({sound: sound, info: item.audio, index: item.audioIndex, audios: audios}))
       }
     } else {
-      if (track.info && track.info.id === item.audio.id && track.info.owner_id === item.audio.owner_id) {
-        await track.sound.playAsync()
-        setIsPlaying(true)
+      if (trackInfo && trackInfo.id === item.audio.id && trackInfo.owner_id === item.audio.owner_id) {
+        dispatch(setPlayStatus(true))
       } else {
+        audioProgressUnsub.current = store.subscribe(updatePlayState)
+        audioPlayUnsub.current = store.subscribe(togglePlayStatus)
         const sound = new Audio.Sound()
-        dispatch(updateTrack({sound: sound, info: item.audio}))
+        dispatch(updateTrack({sound: sound, info: item.audio, index: item.audioIndex, audios: audios}))
       }
     }
   }
@@ -104,11 +68,11 @@ const CommentAudioItem = ({ item, isLightTheme, audios }) => {
     <TouchableOpacity 
       activeOpacity={0.8} 
       style={{flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 5, marginBottom: 5}}
-      onPress={isAvailable ? onPressTrack : () => {}}
+      onPress={onPressTrack}
     >
       <View style={{width: 40, height: 40, borderRadius: 50, backgroundColor: COLORS.primary, justifyContent: 'center', alignItems: 'center'}}>
         {
-          isPlaying ?
+          trackInfo && trackInfo.id === item.audio.id && trackInfo.owner_id === item.audio.owner_id && isPlaying ?
           <Ionicons name='pause' color={COLORS.white} size={30}/> :
           <Entypo name='triangle-right' color={COLORS.white} size={30}/>
         }
@@ -120,8 +84,8 @@ const CommentAudioItem = ({ item, isLightTheme, audios }) => {
       <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
         <Text style={[{fontSize: 13}, isLightTheme ? {color: COLORS.secondary} : {color: COLORS.primary_text}]}>
           {
-            track.info && track.info.id === item.audio.id && track.info.owner_id === item.audio.owner_id ?
-            getSongCurStatus(0, played) :
+            trackInfo && trackInfo.id === item.audio.id && trackInfo.owner_id === item.audio.owner_id ?
+            getDuration(Math.floor(played/1000)) :
             getDuration(item.audio.duration)
           }
         </Text>

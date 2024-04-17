@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, Linking, ImageBackground, ToastAndroid } from 'react-native'
 import React from 'react'
+import uuid from 'react-native-uuid';
 import Feather from 'react-native-vector-icons/Feather'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -42,8 +43,9 @@ const PostLinks = ({postLinks, isLightTheme, accessToken}) => {
             objectUrl = postLink.url
             postLink.photo.sizes.sort(function(a, b){return b.width - a.width})
             url = postLink.photo.sizes[0].url
+            const key = uuid.v4()
             return (
-              <TouchableOpacity activeOpacity={0.8} onPress={() => Linking.openURL(objectUrl)} style={[{borderWidth: 1, width: '100%', height: 250}, isLightTheme ? {borderColor: COLORS.light_smoke} : {borderColor: COLORS.secondary}]}>
+              <TouchableOpacity key={key} activeOpacity={0.8} onPress={() => Linking.openURL(objectUrl)} style={[{borderWidth: 1, width: '100%', height: 250}, isLightTheme ? {borderColor: COLORS.light_smoke} : {borderColor: COLORS.secondary}]}>
                 <ImageBackground 
                   source={{uri: url}} 
                   style={{width: '100%', height: 150}} 

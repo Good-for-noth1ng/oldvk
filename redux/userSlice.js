@@ -36,11 +36,11 @@ export const userSlice = createSlice({
         lastName: action.payload.lastName, 
       }
     },
-    setLogin: (state) => {
+    setLogin: (state, action) => {
      // state.isLoggedIn = !state.isLoggedIn
       return {
         ...state,
-        isLoggedIn: !state.isLoggedIn
+        isLoggedIn: action.payload ? action.payload : !state.isLoggedIn
       }
     },
     toggleOnlineStatus: (state) => {
@@ -55,46 +55,6 @@ export const userSlice = createSlice({
         isOnline: action.payload
       }
     }
-    // setAccessToken: (state, action) => {
-    //   // state.accessToken = action.payload
-    //   return {
-    //     ...state,
-    //     accessToken: action.payload
-    //   }
-    // },
-    // setExpiresIn: (state, action) => {
-    //   // state.expiresIn = action.payload
-    //   return {
-    //     ...state,
-    //     expiresIn: action.payload
-    //   }
-    // },
-    // setUserId: (state, action) => {
-    //     // state.userId = action.payload
-    //   return {
-    //     ...state,
-    //     userId: action.payload
-    //   }
-    // },
-    // setUserDrawerImageUrl: (state, action) => {
-    //   // state.userProfileDrawerPhotoUrl = action.payload
-    //   return {
-    //     ...state,
-    //     userProfileDrawerPhotoUrl: action.payload
-    //   }
-    // },
-    // setFirstName: (state, action) => {
-    //   return {
-    //     ...state,
-    //     firstName: action.payload
-    //   }
-    // },
-    // setLastName: (state, action) => {
-    //   return {
-    //     ...state,
-    //     lastName: action.payload
-    //   }
-    // }
   }
 })
 export const { 

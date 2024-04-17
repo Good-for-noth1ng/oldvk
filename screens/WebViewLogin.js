@@ -3,6 +3,7 @@ import React from 'react'
 import { WebView } from 'react-native-webview'
 import { APP_ID, PERMISION_CODE, REDIRECT_URI } from '@env'
 import { useDispatch, useSelector } from 'react-redux'
+import * as SecureStore from 'expo-secure-store'
 import { 
   setAccessToken, 
   setExpiresIn, 
@@ -36,31 +37,27 @@ const WebViewLogin = () => {
         expiresIn = url.match(expireInRegex)[0].split('expires_in=')[1];
       }
       const userId = url.match(userIdRegex)[0].split('user_id=')[1];
-      console.log(url, '\n', accessToken, '\n', getTimeDate(expiresIn), '\n', userId)
-      
-      // dispatch(setAccessToken(accessToken));
-      // dispatch(setExpiresIn(expiresIn));
-      // dispatch(setUserId(userId));
-      // dispatch(setLogin());
+      const date = Date.now() + expiresIn * 1000
+      console.log(url, '\n', accessToken, '\n', userId)
 
       const imageRequestUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&user_ids=${userId}&fields=photo_100&v=5.131`
-      const getUserImage = (imageRequestUrl) => {
-        fetch(imageRequestUrl)
-          .then((response) => response.json())
-          .then((data) => {
-
-            // dispatch(setUserDrawerImageUrl(data.response[0].photo_100));
-            // dispatch(setFirstName(data.response[0].first_name));
-            // dispatch(setLastName(data.response[0].last_name));
-            dispatch(initUserData({
-              accessToken,
-              expiresIn,
-              userId,
-              userProfileDrawerPhotoUrl: data.response[0].photo_100,
-              firstName: data.response[0].first_name,
-              lastName: data.response[0].last_name
-            }));
-          })
+      const getUserImage = async (imageRequestUrl) => {
+        const res = await fetch(imageRequestUrl)
+        const data = await res.json()
+        await SecureStore.setItemAsync('accessToken', accessToken)
+        await SecureStore.setItemAsync('expiresIn', `${date}`)
+        await SecureStore.setItemAsync('userId', `${userId}`)
+        await SecureStore.setItemAsync('userProfileDrawerPhotoUrl', data.response[0].photo_100)
+        await SecureStore.setItemAsync('firstName', data.response[0].first_name)
+        await SecureStore.setItemAsync('lastName', data.response[0].last_name)
+        dispatch(initUserData({
+          accessToken,
+          expiresIn: date,
+          userId,
+          userProfileDrawerPhotoUrl: data.response[0].photo_100,
+          firstName: data.response[0].first_name,
+          lastName: data.response[0].last_name
+        }));
       }
       getUserImage(imageRequestUrl);
     }

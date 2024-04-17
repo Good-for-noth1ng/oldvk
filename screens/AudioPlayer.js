@@ -9,6 +9,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Feather from 'react-native-vector-icons/Feather'
 import Octicons from 'react-native-vector-icons/Octicons'
+import Fontisto from 'react-native-vector-icons/Fontisto'
 import { COLORS } from '../constants/theme'
 import { setPlayStatus, updateTrack } from '../redux/audioSlice';
 import { getDuration } from '../utils/numShortage';
@@ -29,10 +30,12 @@ const AudioPlayer = ({ navigation }) => {
 
   React.useEffect(() => {
     const onPlayStatusChange = async () => {
-      if (track.isPlaying) {
-        await track.sound.playAsync()
-      } else {
-        await track.sound.pauseAsync()
+      if (track.sound) {
+        if (track.isPlaying) {
+          await track.sound.playAsync()
+        } else {
+          await track.sound.pauseAsync()
+        }
       }
     }
     onPlayStatusChange()
@@ -118,7 +121,9 @@ const AudioPlayer = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{flex: 1, alignItems: 'center', backgroundColor: COLORS.white, padding: 10}}>
-      <View style={{height: '55%'}}></View>
+      <View style={{height: '55%', justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.light_smoke, width: '90%', borderRadius: 5}}>
+        <Fontisto name='music-note' color={COLORS.secondary} size={50}/>
+      </View>
       <View style={{width: '100%', alignItems: 'center', justifyContent: 'center'}}>
         <Slider 
           style={{width: '100%', height: 40}}

@@ -59,6 +59,7 @@ const PostAudioItem = ({isLightTheme, item, audios, index}) => {
       if (trackInfo && trackInfo.id === item.audio.id && trackInfo.owner_id === item.audio.owner_id) {
         dispatch(setPlayStatus(true))
       } else {
+        console.log(item.audio.main_artists)
         audioProgressUnsub.current = store.subscribe(updatePlayState)
         audioPlayUnsub.current = store.subscribe(togglePlayStatus)
         const sound = new Audio.Sound()

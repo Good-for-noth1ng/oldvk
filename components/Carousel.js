@@ -6,13 +6,13 @@ import DividerWithLine from '../components/DividerWithLine'
 import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
 import { COLORS } from '../constants/theme';
 
-const Carousel = ({navigation, data, dataLength, type, isLightTheme, ownerId, dataLengthFetched}) => {
+const Carousel = ({navigation, data, dataLength, type, isLightTheme, ownerId, dataLengthFetched, author}) => {
   
   const renderItem = ({item}) => {
     let handlePress, cover
     if (type === 'photos') {
       handlePress = () => {
-        navigation.push('AlbumPhotos', {albumId: item.id, headerName: item.title, ownerId: ownerId})
+        navigation.push('AlbumPhotos', {albumId: item.id, headerName: item.title, ownerId: ownerId, author})
       }
       if (item.sizes === undefined) {
         cover = ''

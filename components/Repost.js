@@ -126,7 +126,7 @@ const Repost = ({ data, navigation, openedPost, isLightMode, id, accessToken, fu
       {
         postPhotos ? (
           <>
-            <PostPhotos postPhotos={postPhotos}/>
+            <PostPhotos postPhotos={postPhotos} navigation={navigation} ownerId={data.owner_id} date={data.date} author={data.author}/>
             <PostDivider dividerHeight={5}/>  
           </>
         ) : null

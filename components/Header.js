@@ -11,12 +11,9 @@ const Header = ({screenName, isLight}) => {
         style={styles.header} 
         colors={isLight ? [COLORS.gradientHeaderStart, COLORS.gradientHeaderEnd] : [COLORS.primary_dark, COLORS.black]}
       >
-        <View style={styles.textLogoContainerStyle}>
-          <View style={styles.logoContainerStyle}>  
-            <Image 
-              source={isLight ? require('../assets/icons/vk_logo_eng_blue.png') : require ('../assets/icons/vk_logo_eng_black.png')}
-              style={styles.logoStyle}
-            />
+        <View style={styles.textLogoContainerStyle}>  
+          <View style={{width: 40, height: 40, borderRadius: 10, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.white}}>
+            <Text style={[{fontWeight: 'bold', fontStyle: 'italic'}, isLight ? {color: COLORS.primary} : {color: COLORS.primary_dark}]}>2007</Text>
           </View>
           <Text style={styles.screenNameStyle}>{screenName}</Text>
         </View>
@@ -38,8 +35,8 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
     logoStyle: {
-        width: '80%',
-        height: '80%',
+        width: 40,
+        height: 40,
     },
     header: {
         width: '100%',

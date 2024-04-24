@@ -28,6 +28,7 @@ import ReactedOnVideoUsers from '../screens/ReactedOnVideoUsers';
 import OpenedPhoto from '../screens/OpenedPhoto';
 import ReactedOnPhoto from '../screens/ReactedOnPhoto';
 import PhotoModal from '../screens/PhotoModal';
+import Gifts from '../screens/Gifts';
 
 const UserPageStack = createNativeStackNavigator();
 
@@ -60,6 +61,7 @@ const UserPageRoute = () => {
       <UserPageStack.Screen name='ReactedOnVideoUsers' component={ReactedOnVideoUsers} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <UserPageStack.Screen name='OpenedPhoto' component={OpenedPhoto} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <UserPageStack.Screen name='ReactedOnPhoto' component={ReactedOnPhoto} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <UserPageStack.Screen name='Gifts' component={Gifts} options={{headerShown: false, animation: 'slide_from_right'}}/>
     </UserPageStack.Navigator>
   )
 }

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, RefreshControl, Modal, Dimensions, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, RefreshControl, Modal, Dimensions, TouchableOpacity, Image, Animated } from 'react-native'
 import React from 'react'
 import { FlatList } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from 'react-redux'
@@ -59,6 +59,34 @@ const Group = ({navigation, route}) => {
   const [isLoading, setIsLoading] = React.useState(true)  
   
   console.log(groupId)
+
+  const shouldHideTopAndBottom = React.useRef(false)
+  const hidePhotoInfoAnim = React.useRef(new Animated.Value(0)).current
+  const move = hidePhotoInfoAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -50]
+  })
+  // const moveDown = hidePhotoInfoAnim.interpolate({
+  //   inputRange: [0, 1],
+  //   outputRange: [0, 50]
+  // })
+
+  const performHidePhotoInfoAnim = () => {
+    if (shouldHideTopAndBottom.current) {
+      Animated.timing(hidePhotoInfoAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: false
+      }).start()
+    } else {
+      Animated.timing(hidePhotoInfoAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: false
+      }).start()
+    }
+    shouldHideTopAndBottom.current = !shouldHideTopAndBottom.current
+  }
 
   const goBack = () => {
     navigation.goBack()
@@ -315,18 +343,37 @@ const Group = ({navigation, route}) => {
             animationType='fade'
             transparent={true}
             visible={isAvatarVisible}
-            onRequestClose={() => setIsAvatarVisible(prev => !prev)}
+            onRequestClose={
+              () => {
+                shouldHideTopAndBottom.current = false
+                setIsAvatarVisible(prev => !prev)
+              }
+            }
           >
             <ImageViewer
               imageUrls={imagesForSlides.current}
               enableImageZoom={true}
               useNativeDriver={true}
               enablePreload={true}
-              enableSwipeDown={true}
+              enableSwipeDown={false}
+              onClick={performHidePhotoInfoAnim}
               renderIndicator={(currentIndex) => <></>}
               renderHeader={
               (currentIndex) => (
-                <View style={{position: 'absolute', zIndex: 3, flexDirection: 'row', width: screenWidth, justifyContent: 'space-between', alignItems: 'center', paddingLeft: 10, paddingRight: 10, marginTop: 10}}>
+                <Animated.View 
+                  style={{
+                    position: 'absolute', 
+                    zIndex: 3, 
+                    flexDirection: 'row', 
+                    width: screenWidth, 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center', 
+                    paddingLeft: 10, 
+                    paddingRight: 10, 
+                    marginTop: 10,
+                    transform: [{translateY: move}]
+                  }}
+                >
                   <View style={{flexDirection: 'row', gap: 30}}>
                     <TouchableOpacity activeOpacity={0.5} onPress={() => setIsAvatarVisible(false)}>
                       <AntDesign name={'arrowleft'} size={25} color={COLORS.white}/>
@@ -334,7 +381,7 @@ const Group = ({navigation, route}) => {
                     <Text style={{color: COLORS.white, fontSize: 17}}>{currentIndex + 1} of {imagesForSlides.current.length}</Text>
                   </View>
                   <Feather name={'more-vertical'} color={COLORS.white} size={25}/>
-                </View>
+                </Animated.View>
               )
             }
             renderImage={
@@ -348,16 +395,52 @@ const Group = ({navigation, route}) => {
             renderFooter={
               (index) => {
                 return (
-                  <OpenedPhotoBottom 
-                    photo={imagesForSlides.current[index]}
-                    likes={imagesForSlides.current[index].likes}
-                    isLiked={imagesForSlides.current[index].isLiked}
-                    comments={imagesForSlides.current[index].comments}
-                    reposts={imagesForSlides.current[index].reposts}
-                    navigation={navigation}
-                    accessToken={accessToken}
-                    ownerId={-groupId}
-                  />
+                  <Animated.View 
+                    style={{
+                      flexDirection: 'row', 
+                      justifyContent: 'space-between', 
+                      width: screenWidth, 
+                      paddingLeft: 15, 
+                      paddingRight: 15, 
+                      paddingBottom: 10,
+                      bottom: move
+                    }}
+                  >
+                    <TouchableOpacity style={{flexDirection: 'row', gap: 5}}>
+                      {
+                        imagesForSlides.current[index].isLiked ?
+                        <AntDesign name={'heart'} color={COLORS.primary} size={20}/> :
+                        <AntDesign name={'hearto'} color={COLORS.white} size={20}/>
+                      }
+                      <Text style={{color: COLORS.white, fontSize: 14}}>{imagesForSlides.current[index].likes}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                      onPress={
+                        () => navigation.push(
+                          'OpenedPhoto', 
+                          {
+                            photoUrl: imagesForSlides.current[index].url,
+                            photoId: imagesForSlides.current[index].photoId,
+                            text: imagesForSlides.current[index].text,
+                            userId: imagesForSlides.current[index].userId,
+                            ownerId: -groupId, 
+                            date: imagesForSlides.current[index].date, 
+                            author: imagesForSlides.current[index].author, 
+                            width: imagesForSlides.current[index].props.style.width, 
+                            height: imagesForSlides.current[index].props.style.height,
+                          }
+                        )
+                      }
+                      style={{flexDirection: 'row', gap: 5}}
+                    >
+                      <MaterialCommunityIcons name={'comment-outline'} color={COLORS.white} size={20} />
+                      <Text style={{color: COLORS.white, fontSize: 14}}>{imagesForSlides.current[index].comments}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{flexDirection: 'row', gap: 5}}>
+                      <MaterialCommunityIcons name={'share-outline'} size={22} color={COLORS.white}/>
+                      <Text style={{color: COLORS.white, fontSize: 14}}>{imagesForSlides.current[index].reposts}</Text>
+                    </TouchableOpacity>
+                   </Animated.View>
                 )
               }
             } 

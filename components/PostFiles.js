@@ -36,6 +36,7 @@ const PostFiles = ({postDocs, isLightTheme}) => {
           enableImageZoom={true}
           useNativeDriver={true}
           enablePreload={true}
+          enableSwipeDown={false}
           renderIndicator={(currentIndex) => <></>}
           renderHeader={
             (currentIndex) => {

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Image, Modal, Dimensions, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Image, Modal, Dimensions, TouchableOpacity, Animated } from 'react-native'
 import React from 'react'
 import { FlatList } from "react-native-gesture-handler";
 import { useSelector } from 'react-redux'
@@ -27,11 +27,39 @@ const AlbumPhotos = ({ navigation, route }) => {
   const remainToFetchNum = React.useRef(null)
   const canRequestMore = React.useRef(true)
   const numOfPhotos = React.useRef(0)
-  const { albumId, headerName, ownerId } = route.params
+  const { albumId, headerName, ownerId, author } = route.params
   const [modalVisible, setModalVisible] = React.useState(false)
   const imagesForSlides = React.useRef([])
   const indexForOpening = React.useRef(0)
   const indexOfPhoto = React.useRef(-1)
+
+  const shouldHideTopAndBottom = React.useRef(false)
+  const hidePhotoInfoAnim = React.useRef(new Animated.Value(0)).current
+  const moveUp = hidePhotoInfoAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -50]
+  })
+  const moveDown = hidePhotoInfoAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 50]
+  })
+
+  const performHidePhotoInfoAnim = () => {
+    if (shouldHideTopAndBottom.current) {
+      Animated.timing(hidePhotoInfoAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true
+      }).start()
+    } else {
+      Animated.timing(hidePhotoInfoAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true
+      }).start()
+    }
+    shouldHideTopAndBottom.current = !shouldHideTopAndBottom.current
+  }
 
   let headerTitle = headerName.slice(0, 24)
   if (headerTitle !== headerName) {
@@ -51,18 +79,8 @@ const AlbumPhotos = ({ navigation, route }) => {
     offset.current += count
     let photos = data.response.items.map((item) => {
       const key = uuid.v4()
-      let ph
-      for (let i = 0; i < item.sizes.length; i++) {
-        if (item.sizes[i].type === 'x') {
-          ph = {url: item.sizes[i].url}
-          break
-        }
-      }
-      if (ph) {
-        imagesForSlides.current.push(ph)
-      } else {
-        imagesForSlides.current.push({uri: item.sizes[item.sizes.length - 1].url})
-      }
+      item.sizes.sort(function(a, b){return b.width - a.width})
+      imagesForSlides.current.push({url: item.sizes[0].url})
       indexOfPhoto.current += 1
       return {...item, key: key, indexOfPhoto: indexOfPhoto.current}
     })
@@ -167,18 +185,24 @@ const AlbumPhotos = ({ navigation, route }) => {
             animationType='fade'
             transparent={true}
             visible={modalVisible}
-            onRequestClose={() => {setModalVisible(!modalVisible)}}
+            onRequestClose={
+              () => {
+                shouldHideTopAndBottom.current = false
+                setModalVisible(false)
+              }
+            }
           >
             <ImageViewer 
               imageUrls={imagesForSlides.current}
               enableImageZoom={true}
               useNativeDriver={true}
               enablePreload={true}
-              enableSwipeDown={true}
+              enableSwipeDown={false}
               renderIndicator={(currentIndex) => <></>}
+              onClick={performHidePhotoInfoAnim}
               renderHeader={
                 (currentIndex) => (
-                  <View style={{
+                  <Animated.View style={{
                     position: 'absolute', 
                     zIndex: 3, 
                     flexDirection: 'row', 
@@ -187,7 +211,8 @@ const AlbumPhotos = ({ navigation, route }) => {
                     alignItems: 'center', 
                     paddingLeft: 10, 
                     paddingRight: 10, 
-                    marginTop: 10
+                    marginTop: 10,
+                    transform: [{translateY: moveUp}]
                   }}>
                     <View style={{flexDirection: 'row', gap: 30}}>
                       <TouchableOpacity activeOpacity={0.5} onPress={() => setModalVisible(false)}>
@@ -196,7 +221,7 @@ const AlbumPhotos = ({ navigation, route }) => {
                       <Text style={{color: COLORS.white, fontSize: 17}}>{currentIndex + 1} of {numOfPhotos.current}</Text>
                     </View>
                       <Feather name={'more-vertical'} color={COLORS.white} size={25}/>
-                  </View>
+                  </Animated.View>
                 )
               }
               renderImage={
@@ -208,19 +233,43 @@ const AlbumPhotos = ({ navigation, route }) => {
                 }
               }
               renderFooter={
-                () => {
+                (index) => {
                   return (
-                    <View style={{flexDirection: 'row', justifyContent: 'space-between', width: screenWidth, paddingLeft: 15, paddingRight: 15, paddingBottom: 10}}>
+                    <Animated.View 
+                      style={{
+                        flexDirection: 'row', 
+                        justifyContent: 'space-between', 
+                        width: screenWidth, 
+                        paddingLeft: 15, 
+                        paddingRight: 15, 
+                        paddingBottom: 10,
+                        transform: [{translateY: moveDown}]
+                      }}
+                    >
                       <TouchableOpacity>
-                        {
-                          true ?
-                          <AntDesign name={'heart'} color={COLORS.primary} size={20}/> :
-                          <AntDesign name={'hearto'} color={COLORS.white} size={20}/>
-                        }
+                        <Feather name={'plus'} color={COLORS.white} size={25}/>
                       </TouchableOpacity>
-                      <TouchableOpacity><MaterialCommunityIcons name={'comment-outline'} color={COLORS.white} size={20} /></TouchableOpacity>
-                      <TouchableOpacity><MaterialCommunityIcons name={'share-outline'} size={20} color={COLORS.white}/></TouchableOpacity>
-                    </View>
+                      <TouchableOpacity
+                        onPress={
+                          () => navigation.push('OpenedPhoto', {
+                            photoUrl: photosList[index].sizes[0].url,
+                            photoId: photosList[index].id,
+                            text: photosList[index].text,
+                            ownerId: photosList[index].owner_id,
+                            date: photosList[index].date,
+                            author: author,
+                            albumId: photosList[index].album_id,
+                            width: photosList[index].sizes[0].width,
+                            height: photosList[index].sizes[0].height
+                          })
+                        }
+                      >
+                        <MaterialCommunityIcons name={'comment-outline'} color={COLORS.white} size={20} />
+                      </TouchableOpacity>
+                      <TouchableOpacity>
+                        <MaterialCommunityIcons name={'share-outline'} size={20} color={COLORS.white}/>
+                      </TouchableOpacity>
+                    </Animated.View>
                     )
                   } 
                 }

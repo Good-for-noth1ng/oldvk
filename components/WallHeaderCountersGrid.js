@@ -6,10 +6,16 @@ import { COLORS } from '../constants/theme'
 import { getShortagedNumber } from '../utils/numShortage'
 import { getNameInGroupHeader } from '../utils/getNameByKey';
 //TODO: add topic screen
-const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, canAccess, isUserOnHisOwnPage }) => {
+const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, canAccess, isUserOnHisOwnPage, author }) => {
   let countersGrid = []
   let row = []
   
+  const navToGifts = () => {
+    if (canAccess) {
+      navigation.push('Gifts', { ownerId })
+    }
+  }
+
   const navigateToTopics = () => {
     if (canAccess) {
       navigation.push('Topics', {ownerId})
@@ -40,7 +46,7 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
       drawerNavigation.navigate('PhotosRoute')
     } else {
       if (canAccess) {
-        navigation.push('Photos', { ownerId: ownerId })
+        navigation.push('Photos', { ownerId: ownerId, author: author })
       }
     }
   }
@@ -120,7 +126,8 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
       key !== 'podcasts' &&
       key !== 'posts' &&
       key !== 'user_photos' &&
-      key !== 'addresses'
+      key !== 'addresses' &&
+      key !== 'mutual_friends'
     ) {
       if (counters[key] !== 0 && key === 'followers') {
         row.push(
@@ -218,6 +225,18 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
             <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
           </TouchableOpacity>
         )
+      } else if (counters[key] !== 0 && key === 'gifts') {
+        row.push(
+          <TouchableOpacity 
+            key={uuid.v4()} 
+            style={styles.counterButton} 
+            onPress={navToGifts}
+            activeOpacity={canAccess ? 0.6 : 1}
+          >
+            <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
+          </TouchableOpacity>
+        )
       } else if(counters[key] !== 0) {
         row.push(
           <TouchableOpacity 
@@ -233,12 +252,13 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
     }
   }
   if (row.length > 0) {
+    const key = uuid.v4()
     if (row.length === 1) {
-      countersGrid.push(<View style={[styles.counterRow, {justifyContent: 'flex-start'}]}>{row}</View>)
+      countersGrid.push(<View key={key} style={[styles.counterRow, {justifyContent: 'flex-start'}]}>{row}</View>)
     } else if (row.length === 2) {
-      countersGrid.push(<View style={[styles.counterRow, {justifyContent: 'space-around'}]}>{row}</View>)
+      countersGrid.push(<View key={key} style={[styles.counterRow, {justifyContent: 'space-around'}]}>{row}</View>)
     } else {
-      countersGrid.push(<View style={styles.counterRow}>{row}</View>)
+      countersGrid.push(<View key={key} style={styles.counterRow}>{row}</View>)
     }
   }
   return (

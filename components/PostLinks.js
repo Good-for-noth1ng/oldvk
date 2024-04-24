@@ -83,25 +83,17 @@ const PostLinks = ({postLinks, isLightTheme, accessToken}) => {
               </TouchableOpacity>
             )
           } else {
-              const url = postLink.url
-              let title = postLink.title
-              title = title.slice(0, 35)
-              if (title !== postLink.title) {
-                title += '...' 
-              }
-              let address = url
-              address = address.slice(0, 35)
-              if (address !== url) {
-                address += '...' 
-            }
+            const url = postLink.url
+            const title = postLink.title
+            const key = uuid.v4()
             return (
-              <TouchableOpacity style={styles.linkContainer} activeOpacity={0.7} onPress={() => Linking.openURL(url)}>
+              <TouchableOpacity key={key} style={styles.linkContainer} activeOpacity={0.7} onPress={() => Linking.openURL(url)}>
                 <View style={styles.linkIconContainer}>
                   <Feather name='arrow-up-right' size={30} color={COLORS.secondary} />
                 </View>
                 <View style={styles.linkInfoContainer}>
-                  <Text style={isLightTheme ? styles.nameLight : styles.nameDark}>{title}</Text>
-                   <Text style={isLightTheme ? styles.addressLight : styles.addressDark}>{address}</Text>
+                  <Text numberOfLines={1} style={isLightTheme ? styles.nameLight : styles.nameDark}>{title}</Text>
+                  <Text numberOfLines={1} style={isLightTheme ? styles.addressLight : styles.addressDark}>{url}</Text>
                 </View>
               </TouchableOpacity>     
             )
@@ -166,7 +158,7 @@ const styles = StyleSheet.create({
   },
   linkInfoContainer: {
     display: 'flex',
-    width: '85%',
+    width: '84%',
     flexDirection: 'column',
     marginLeft: 10,
   },

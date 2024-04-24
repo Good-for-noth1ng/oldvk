@@ -44,15 +44,6 @@ const Home = () => {
         drawerType: 'slide'
       }}
     >
-        <Drawer.Screen 
-          name='AudioPlayer'
-          component={AudioPlayer}
-          options={{
-            drawerItemStyle: {height: 0},
-            headerShown: false,
-            lazy: false
-          }}
-        />
         <Drawer.Screen name={'CurrentUser'} component={UserPageRoute} options={{
           drawerIcon: () => (
               <Image source={{uri: urlDrawerPhoto}} style={{width: 80, height: 80, borderRadius: 5}}/>
@@ -111,12 +102,7 @@ const Home = () => {
           drawerIcon: ({color}) => (
             <FontAwesome name='list-alt' size={20} color={color}/>
           ),
-          // headerTitle: (props) => <NewsTitleSwitcher {...props} />,
           headerShown: false
-          // headerBackground: ({navigation, route, options}) => {
-          //   const title = getHeaderTitle(options, route.name)
-          //   return 
-          // }
         }}/>
         {/* <Drawer.Screen name='Answers' component={Answers} options={{
           drawerIcon: ({color}) => (
@@ -137,6 +123,15 @@ const Home = () => {
           headerShown: false,
           
         }}/>
+        <Drawer.Screen 
+          name='AudioPlayer'
+          component={AudioPlayer}
+          options={{
+            drawerItemStyle: {height: 0},
+            headerShown: false,
+            lazy: false
+          }}
+        />
     </Drawer.Navigator>
   )
 }

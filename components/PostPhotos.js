@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Modal, TouchableOpacity, Dimensions, Touchable } from 'react-native'
+import { StyleSheet, Text, View, Image, Modal, TouchableOpacity, Dimensions, Touchable, Animated } from 'react-native'
 import React, {useState,  memo } from 'react'
 import uuid from 'react-native-uuid';
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -13,6 +13,7 @@ import OpenedPhotoBottom from './OpenedPhotoBottom';
 const screenWidth = Dimensions.get('window').width
 const PostPhotos = ({postPhotos, navigation, ownerId, date, author}) => {
   const [modalVisible, setModalVisible] = React.useState(false)
+  const shouldHideTopAndBottom = React.useRef(false)
   const openImageIndex = React.useRef(0)
   const imgNum = postPhotos.length
   const rowNum = Math.ceil(imgNum / 3)
@@ -24,7 +25,34 @@ const PostPhotos = ({postPhotos, navigation, ownerId, date, author}) => {
   let resolution
   let totalHeight = 0
   let calcWidth
+
+  const hidePhotoInfoAnim = React.useRef(new Animated.Value(0)).current
+  const moveUp = hidePhotoInfoAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -50]
+  })
+  const moveDown = hidePhotoInfoAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 50]
+  })
   
+  const performHidePhotoInfoAnim = () => {
+    if (shouldHideTopAndBottom.current) {
+      Animated.timing(hidePhotoInfoAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true
+      }).start()
+    } else {
+      Animated.timing(hidePhotoInfoAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true
+      }).start()
+    }
+    shouldHideTopAndBottom.current = !shouldHideTopAndBottom.current
+  }
+
   const initPhoto = (width, imageUrl, resizeMode, indexForOpen) => {
     return (
     <TouchableOpacity  
@@ -99,7 +127,7 @@ const PostPhotos = ({postPhotos, navigation, ownerId, date, author}) => {
       imageUrls.push(imageUrl)
       calcImageHeights.push(height)
       if (imageUrl !== undefined) {
-        imagesForSlides.push({url: imageUrl, text: text, photoId: photoId, userId: userId})
+        imagesForSlides.push({url: imageUrl, text: text, photoId: photoId, userId: userId, albumId: postPhotos[index].album_id})
       }
       // let image = initPhoto(width=width, imageUrl=imageUrl)
       index += 1
@@ -134,18 +162,37 @@ const PostPhotos = ({postPhotos, navigation, ownerId, date, author}) => {
         animationType='fade'
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => {setModalVisible(!modalVisible);}}
+        onRequestClose={
+          () => {
+            shouldHideTopAndBottom.current = false
+            setModalVisible(false);
+          }
+        }
       >
         <ImageViewer 
           imageUrls={imagesForSlides}
           enableImageZoom={true}
           useNativeDriver={true}
           enablePreload={true}
-          enableSwipeDown={true}
+          enableSwipeDown={false}
           renderIndicator={(currentIndex) => <></>}
+          saveToLocalByLongPress={false}
           renderHeader={
             (currentIndex) => (
-              <View style={{position: 'absolute', zIndex: 3, flexDirection: 'row', width: screenWidth, justifyContent: 'space-between', alignItems: 'center', paddingLeft: 10, paddingRight: 10, marginTop: 10}}>
+              <Animated.View 
+                style={{
+                  position: 'absolute', 
+                  zIndex: 3, 
+                  flexDirection: 'row', 
+                  width: screenWidth, 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center', 
+                  paddingLeft: 10, 
+                  paddingRight: 10, 
+                  marginTop: 10, 
+                  transform: [{translateY: moveUp}]
+                }}
+              >
                 <View style={{flexDirection: 'row', gap: 30}}>
                   <TouchableOpacity activeOpacity={0.5} onPress={() => setModalVisible(false)}>
                     <AntDesign name={'arrowleft'} size={25} color={COLORS.white}/>
@@ -153,7 +200,7 @@ const PostPhotos = ({postPhotos, navigation, ownerId, date, author}) => {
                   <Text style={{color: COLORS.white, fontSize: 17}}>{currentIndex + 1} of {imagesForSlides.length}</Text>
                 </View>
                 <Feather name={'more-vertical'} color={COLORS.white} size={25}/>
-              </View>
+              </Animated.View>
             )
           }
           renderImage={
@@ -168,7 +215,17 @@ const PostPhotos = ({postPhotos, navigation, ownerId, date, author}) => {
             (index) => {
               // console.log(props)
               return (
-              <View style={{flexDirection: 'row', justifyContent: 'space-between', width: screenWidth, paddingLeft: 15, paddingRight: 15, paddingBottom: 10}}>
+              <Animated.View 
+                style={{
+                  flexDirection: 'row', 
+                  justifyContent: 'space-between', 
+                  width: screenWidth, 
+                  paddingLeft: 15, 
+                  paddingRight: 15, 
+                  paddingBottom: 10, 
+                  transform: [{translateY: moveDown}]
+                }}
+              >
                 <TouchableOpacity>
                 {
                   false ?
@@ -187,7 +244,8 @@ const PostPhotos = ({postPhotos, navigation, ownerId, date, author}) => {
                         userId: imagesForSlides[index].userId,
                         ownerId: ownerId, 
                         date: date, 
-                        author: author, 
+                        author: author,
+                        albumId: imagesForSlides[index].albumId,  
                         width: imagesForSlides[index].props.style.width, 
                         height: imagesForSlides[index].props.style.height,
                       }
@@ -199,9 +257,12 @@ const PostPhotos = ({postPhotos, navigation, ownerId, date, author}) => {
                 <TouchableOpacity>
                   <MaterialCommunityIcons name={'share-outline'} size={22} color={COLORS.white}/>
                 </TouchableOpacity>
-              </View>)
+              </Animated.View>
+              )
             }
           }
+          onClick={performHidePhotoInfoAnim}
+          // footerContainerStyle={{tra}}
           index={openImageIndex.current}
         />
       </Modal>

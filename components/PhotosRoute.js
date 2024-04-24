@@ -19,6 +19,7 @@ import AlbumVideos from '../screens/AlbumVideos';
 import PhotoAlbumsList from '../screens/PhotoAlbumsList';
 import VideoAlbumsList from '../screens/VideoAlbumsList';
 import OpenedPhoto from '../screens/OpenedPhoto';
+import Gifts from '../screens/Gifts';
 
 const PhotoStack = createNativeStackNavigator();
 
@@ -43,6 +44,7 @@ const PhotosRoute = () => {
       <PhotoStack.Screen name='PhotoAlbumsList' component={PhotoAlbumsList}options={{headerShown:false, animation: 'slide_from_right'}} />
       <PhotoStack.Screen name='VideoAlbumsList' component={VideoAlbumsList}options={{headerShown:false, animation: 'slide_from_right'}} />
       <PhotoStack.Screen name='OpenedPhoto' component={OpenedPhoto} options={{headerShown:false, animation: 'slide_from_right'}} />
+      <PhotoStack.Screen name='Gifts' component={Gifts} options={{headerShown:false, animation: 'slide_from_right'}}/>
     </PhotoStack.Navigator>
   )
 }

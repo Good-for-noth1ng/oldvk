@@ -31,7 +31,7 @@ const PhotoGridItem = ({item, isLightTheme, id, openImage, indexForOpening}) => 
     >
       <Image 
         style={{width: '100%', height: '100%'}}
-        source={{uri: item.sizes[item.sizes.length - 1].url}}
+        source={{uri: item.sizes[0].url}}
       />
     </TouchableOpacity>
   )

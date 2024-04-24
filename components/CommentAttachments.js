@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, Linking, Modal, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Linking, Modal, Dimensions, Animated } from 'react-native'
 import React from 'react'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -21,6 +21,35 @@ const CommentAttachments = ({attachments, navigation, isLightTheme, author, owne
   const openImageIndex = React.useRef(0)
   const audios = React.useRef([])
 
+  const shouldHideTopAndBottom = React.useRef(false)
+  const hidePhotoInfoAnim = React.useRef(new Animated.Value(0)).current
+  const moveUp = hidePhotoInfoAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -50]
+  })
+  const moveDown = hidePhotoInfoAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 50]
+  })
+
+  const performHidePhotoInfoAnim = () => {
+    if (shouldHideTopAndBottom.current) {
+      Animated.timing(hidePhotoInfoAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true
+      }).start()
+    } else {
+      Animated.timing(hidePhotoInfoAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true
+      }).start()
+    }
+    shouldHideTopAndBottom.current = !shouldHideTopAndBottom.current
+  }
+
+
   if (initRender.current) {
     let indx = 0
     let audioIndex = 0
@@ -28,34 +57,15 @@ const CommentAttachments = ({attachments, navigation, isLightTheme, author, owne
       if (attachments[i].type === 'photo') {
         attachments[i].photo = {...attachments[i].photo, indxToOpen: indx}
         indx += 1
-        let ph
-        for (let j = 0; j < attachments[i].photo.sizes.length; j++) {
-          if (attachments[i].photo.sizes[j].type === 'x') {
-            ph = {
-              url: attachments[i].photo.sizes[j].url, 
-              photoId:  attachments[i].photo.id,
-              ownerId: ownerId,
-              text: attachments[i].photo.text,
-              userId: attachments[i].photo.user_id,
-              date: attachments[i].photo.date,
-            }
-            // console.log(attachments[i].photo.sizes[j].url)
-            break
-          }
-        }
-        if (ph === undefined) {
-          // console.log(attachments[i].photo.sizes[attachments[i].photo.sizes.length - 1].url)
-          photos.current.push({
-            url: attachments[i].photo.sizes[attachments[i].photo.sizes.length - 1].url,
-            photoId:  attachments[i].photo.id,
-            ownerId: ownerId,
-            text: attachments[i].photo.text,
-            userId: attachments[i].photo.user_id,
-            date: attachments[i].photo.date,
-          })
-        } else {
-          photos.current.push(ph)
-        }
+        attachments[i].photo.sizes.sort(function(a, b){return b.width - a.width})
+        photos.current.push({
+          url: attachments[i].photo.sizes[0].url,
+          photoId:  attachments[i].photo.id,
+          ownerId: ownerId,
+          text: attachments[i].photo.text,
+          userId: attachments[i].photo.user_id,
+          date: attachments[i].photo.date,
+        })
       } else if (attachments[i].type === 'doc') {
         if (attachments[i].doc.ext === 'gif') {
           // console.log(attachments[i].doc.url)
@@ -83,18 +93,37 @@ const CommentAttachments = ({attachments, navigation, isLightTheme, author, owne
         animationType='fade'
         transparent={true}
         visible={isModalVisible}
-        onRequestClose={() => {setISModalVisible(prev => !prev)}}
+        onRequestClose={
+          () => {
+            shouldHideTopAndBottom.current = false
+            setISModalVisible(prev => !prev)
+          }
+        }
       >
         <ImageViewer 
           imageUrls={photos.current}
           enableImageZoom={true}
           useNativeDriver={true}
           enablePreload={true}
-          enableSwipeDown={true}
+          enableSwipeDown={false}
+          onClick={performHidePhotoInfoAnim}
           renderIndicator={(currentIndex) => <></>}
           renderHeader={
             (currentIndex) => (
-              <View style={{position: 'absolute', zIndex: 3, flexDirection: 'row', width: screenWidth, justifyContent: 'space-between', alignItems: 'center', paddingLeft: 10, paddingRight: 10, marginTop: 10}}>
+              <Animated.View 
+                style={{
+                  position: 'absolute', 
+                  zIndex: 3, 
+                  flexDirection: 'row', 
+                  width: screenWidth, 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center', 
+                  paddingLeft: 10, 
+                  paddingRight: 10, 
+                  marginTop: 10,
+                  transform: [{translateY: moveUp}]
+                }}
+              >
                 <View style={{flexDirection: 'row', gap: 30}}>
                   <TouchableOpacity activeOpacity={0.5} onPress={() => setISModalVisible(false)}>
                     <AntDesign name={'arrowleft'} size={25} color={COLORS.white}/>
@@ -102,7 +131,7 @@ const CommentAttachments = ({attachments, navigation, isLightTheme, author, owne
                   <Text style={{color: COLORS.white, fontSize: 17}}>{currentIndex + 1} of {photos.current.length}</Text>
                 </View>
                 <Feather name={'more-vertical'} color={COLORS.white} size={25}/>
-              </View>
+              </Animated.View>
             )
           }
           renderImage={
@@ -115,13 +144,19 @@ const CommentAttachments = ({attachments, navigation, isLightTheme, author, owne
           renderFooter={
             (index) => {
               return (
-                <View style={{flexDirection: 'row', justifyContent: 'space-between', width: screenWidth, paddingLeft: 15, paddingRight: 15, paddingBottom: 10}}>
+                <Animated.View 
+                  style={{
+                    flexDirection: 'row', 
+                    justifyContent: 'space-between', 
+                    width: screenWidth, 
+                    paddingLeft: 15, 
+                    paddingRight: 15, 
+                    paddingBottom: 10,
+                    transform: [{translateY: moveDown}]
+                  }}
+                >
                   <TouchableOpacity>
-                    {
-                      true ?
-                      <AntDesign name={'heart'} color={COLORS.primary} size={20}/> :
-                      <AntDesign name={'hearto'} color={COLORS.white} size={20}/>
-                    }
+                    <Feather name={'plus'} color={COLORS.white} size={25}/>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={
@@ -144,7 +179,7 @@ const CommentAttachments = ({attachments, navigation, isLightTheme, author, owne
                     <MaterialCommunityIcons name={'comment-outline'} color={COLORS.white} size={20}/>
                   </TouchableOpacity>
                   <TouchableOpacity><MaterialCommunityIcons name={'share-outline'} size={20} color={COLORS.white}/></TouchableOpacity>
-                </View>
+                </Animated.View>
               )
             } 
           }
@@ -174,7 +209,7 @@ const CommentAttachments = ({attachments, navigation, isLightTheme, author, owne
                 }
               >
                 <Image 
-                  source={{uri: attachment.photo.sizes[attachment.photo.sizes.length - 1].url}} 
+                  source={{uri: attachment.photo.sizes[0].url}} 
                   style={{width: '100%', height: '100%', borderRadius: 5}}
                 />
               </TouchableOpacity>

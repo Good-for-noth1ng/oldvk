@@ -18,7 +18,7 @@ const ProfileHeaderName = ({userShortName}) => {
   }
   return (
     <TouchableOpacity onPress={copyShortName} >
-      <Text style={styles.name}>{userShortName}</Text>
+      <Text numberOfLines={1} style={styles.name}>{userShortName}</Text>
     </TouchableOpacity>
   )
 }

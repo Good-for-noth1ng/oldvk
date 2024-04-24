@@ -13,7 +13,7 @@ const PersonalContactItem = ({ navigation, photo, name, descritption, ownerId })
   return (
     <TouchableOpacity style={styles.container} onPress={navToWall}>
       <Image source={{uri: photo}} style={{width: 50, height: 50, borderRadius: 5}}/>
-      <View>
+      <View style={{width: '80%'}}>
         <Text style={styles.title}>{name}</Text>
         <Text style={styles.info}>{descritption}</Text>
       </View>
@@ -28,7 +28,8 @@ const styles = StyleSheet.create({
     width: '100%',
     padding: 10,
     flexDirection: 'row',
-    gap: 10
+    gap: 10,
+    alignItems: 'center'
   },
   info: {
     fontSize: 16,

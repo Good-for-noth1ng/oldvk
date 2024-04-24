@@ -28,6 +28,7 @@ import ReactedOnPostUsers from '../screens/ReactedOnPostUsers';
 import ReactedOnVideoUsers from '../screens/ReactedOnVideoUsers';
 import OpenedPhoto from '../screens/OpenedPhoto';
 import ReactedOnPhoto from '../screens/ReactedOnPhoto';
+import Gifts from '../screens/Gifts';
 
 const FavoriteStack = createNativeStackNavigator();
 
@@ -61,6 +62,7 @@ const FavoriteRoute = () => {
       <FavoriteStack.Screen name='ReactedOnVideoUsers' component={ReactedOnVideoUsers} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <FavoriteStack.Screen name='OpenedPhoto' component={OpenedPhoto} options={{headerShown: false, animation: 'slide_from_right'}}/>
       <FavoriteStack.Screen name='ReactedOnPhoto' component={ReactedOnPhoto} options={{headerShown: false, animation: 'slide_from_right'}}/>
+      <FavoriteStack.Screen name='Gifts' component={Gifts} options={{headerShown: false, animation: 'slide_from_right'}}/>
     </FavoriteStack.Navigator>
   )
 }

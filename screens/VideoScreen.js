@@ -20,7 +20,7 @@ const VideoScreen = ({navigation, route}) => {
   const { playerUrl, title, views, ownerId, likes, reposts, isLiked, isReposted, date, canLike, canAdd, canAddToFavs, commentsCount, canComment, videoId, accessKey } = route.params
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
-  console.log(videoId, accessKey)
+  // console.log(videoId, accessKey)
   const [video, setVideo] = React.useState(null)
   const [isLoading, setIsLoading] = React.useState(true)
   const [name, setName] = React.useState('')

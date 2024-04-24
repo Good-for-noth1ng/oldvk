@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, ActivityIndicator, Image, Animated, BackHandler } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, ActivityIndicator, Image, Animated, BackHandler, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { FlatList } from 'react-native-gesture-handler'
 import { useDispatch, useSelector } from 'react-redux'
@@ -6,6 +6,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import uuid from 'react-native-uuid'
 import { expandShadow, collapseShadow } from '../redux/globalShadowSlice';
 import CustomHeader from '../components/CustomHeader'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import DividerWithLine from '../components/DividerWithLine'
 import PhotoHeader from '../components/PhotoHeader'
@@ -13,6 +14,7 @@ import OpenedPostBottom from '../components/OpenedPostBottom';
 import Comment from '../components/Comment'
 import CommentsOverlay from '../components/CommentsOverlay';
 import GlobalShadow from '../components/GlobalShadow';
+import TextInputField from '../components/TextInputField';
 import { COLORS } from '../constants/theme'
 
 const OpenedPhoto = ({ navigation, route }) => {
@@ -20,13 +22,18 @@ const OpenedPhoto = ({ navigation, route }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const isGlobalShadowExpanded = useSelector(state => state.globalShadow.isOpen)
-  const { ownerId, photoUrl, date, author, width, height, text, photoId, userId } = route.params
-  console.log(photoId)
+  const { ownerId, photoUrl, date, author, width, height, text, photoId, userId, albumId } = route.params
+  const res = width / height
+  // console.log(photoId)
   // const [isLoading, setIsLoading] = React.useState(false)
   const [comments, setComments] = React.useState([])
-  const count = 20
+  const [likesCount, setLikesCount] = React.useState(0)
+  const [isLiked, setIsLiked] = React.useState(false)
+  const [repostsCount, setRepostsCount] = React.useState(0)
+  const [commentsCount, setCommentsCount] = React.useState(-1)
+  const count = 5
   const offset = React.useRef(0)
-  const currentLevelCommentsCount = React.useRef()
+  const currentLevelCommentsCount = React.useRef(-1)
 
   const slideAnimation = React.useRef(new Animated.Value(2000)).current
   const authorInfoIsOpen = React.useRef(false)
@@ -73,15 +80,17 @@ const OpenedPhoto = ({ navigation, route }) => {
 
   const fetchComments = async () => {
     const url = `https://api.vk.com/method/photos.getComments?access_token=${accessToken}&v=5.131&photo_id=${photoId}&need_likes=1&owner_id=${ownerId}&count=${count}&sort=asc&offset=${offset.current}&fields=photo_100&extended=1`
+    const photoInfoUrl = `https://api.vk.com/method/photos.get?access_token=${accessToken}&v=5.131&photo_ids=${photoId}&extended=1&owner_id=${ownerId}&album_id=${albumId}`
     const res = await fetch(url)
+    const photoInfoRes = await fetch(photoInfoUrl)
+    const photoInfoData = await photoInfoRes.json()
     const commentsData = await res.json()
-    console.log(commentsData)
     if (commentsData.error) {
-      //permission denied
       if (commentsData.error.error_code === 7) {
         currentLevelCommentsCount.current = 0
         offset.current = 0
-        setComments(null)
+        setComments([])
+        setCommentsCount(0)
       }
     } else {
       const items = commentsData.response.items.map(item => {
@@ -119,18 +128,90 @@ const OpenedPhoto = ({ navigation, route }) => {
       if (commentsData.response.items.length > 0) {
         setComments(items)
       } else {
-        setComments(null)
+        setComments([])
       }
+      // console.log(photoInfoData.response.items[0])
+      setIsLiked(photoInfoData.response.items[0].likes.user_likes === 1)
+      setLikesCount(photoInfoData.response.items[0].likes.count)
+      setRepostsCount(photoInfoData.response.items[0].reposts.count)
+      setCommentsCount(commentsData.response.count)
       currentLevelCommentsCount.current = commentsData.response.count
-      offset.current += 10
+      offset.current += count
     }
     // setPost(findPostAuthor(parsedPostResponse.response.items[0], parsedPostResponse.response.profiles, parsedPostResponse.response.groups))  
+  }
+
+  const fetchMoreComments = async () => {
+    if (comments.length < currentLevelCommentsCount.current) {
+    const url = `https://api.vk.com/method/photos.getComments?access_token=${accessToken}&v=5.131&photo_id=${photoId}&need_likes=1&owner_id=${ownerId}&count=${count}&sort=asc&offset=${offset.current}&fields=photo_100&extended=1`
+    const res = await fetch(url)
+    const commentsData = await res.json()
+    if (commentsData.error) {
+      //permission denied
+      if (commentsData.error.error_code === 7) {
+        currentLevelCommentsCount.current = 0
+        offset.current = 0
+        setComments([])
+        return
+      }
+    }
+    const items = commentsData.response.items.map(item => {
+      const key = uuid.v4()
+      let threadItems = []
+      if (item?.thread?.count > 0) {
+        threadItems = item.thread.items.map(item => {
+          const key = uuid.v4()
+          let author = commentsData.response.profiles.find(profile => profile.id === item.from_id)
+          if (author === undefined) {
+            author = commentsData.response.groups.find(group => group.id === (-1 * item.from_id))
+          }
+          return {
+            ...item,
+            key,
+            author,
+          }
+        })
+      }
+      const thread = {
+        ...item.thread,
+        items: threadItems
+      }
+      let author = commentsData.response.profiles.find(profile => profile.id === item.from_id)
+      if (author === undefined) {
+        author = commentsData.response.groups.find(group => group.id === (-1 * item.from_id))
+      }
+      return {
+        ...item, 
+        key,
+        author,
+        thread,
+      }
+    })
+    if (commentsData.response.items.length > 0) {
+      setComments(prev => prev.concat(items))
+    }
+    offset.current += count
+    }
   }
 
   React.useEffect(() => {
     fetchComments()
   }, [])
   
+  const navToReacted = () => {
+    navigation.push('ReactedOnPhoto', {ownerId, photoId})
+  }
+
+  const onLikePress = () => {
+    if (isLiked) {
+      setLikesCount(prev => prev - 1)
+      setIsLiked(false)
+    } else {
+      setLikesCount(prev => prev + 1)
+      setIsLiked(true)
+    }
+  }
+
   const listHeader = () => {
     return (
       <>
@@ -142,13 +223,13 @@ const OpenedPhoto = ({ navigation, route }) => {
           accessToken={accessToken}
           isLightTheme={isLightTheme}
           navigation={navigation}
-          name={author.name ? author.name : `${author.first_name} ${author.last_name}`}
-          imgUrl={author.photo_100}
+          name={author?.name ? author?.name : `${author?.first_name} ${author?.last_name}`}
+          imgUrl={author?.photo_100}
           isFriend={false}
           isMember={false}
         />
         <View style={[{paddingLeft: 5, paddingRight: 5}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
-          <Image source={{uri: photoUrl}} style={{width: width, height: height, maxWidth: '100%',}}/>
+          <Image source={{uri: photoUrl}} style={{width: '100%', aspectRatio: res}}/>
         </View>
         {
           text ?
@@ -160,7 +241,7 @@ const OpenedPhoto = ({ navigation, route }) => {
           null
         }
         {
-          text && currentLevelCommentsCount.current ?
+          text && commentsCount > -1 ?
           <DividerWithLine 
               dividerLineHeight={1} 
               dividerLineWidth={'93%'} 
@@ -169,18 +250,36 @@ const OpenedPhoto = ({ navigation, route }) => {
           /> :
           null
         }
-        {/* {
-          currentLevelCommentsCount.current >= 0 ?
+        {
+          commentsCount > -1 ?
+          <View style={[{width: '100%', justifyContent: 'space-between', flexDirection: 'row', padding: 10, paddingBottom: 5}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+            <TouchableOpacity 
+              style={{flexDirection: 'row', gap: 10, alignItems: 'center'}}
+              onPress={onLikePress}
+              onLongPress={navToReacted}
+            > 
+              <AntDesign name='like1' size={23} color={isLiked ? COLORS.primary : COLORS.secondary}/>
+              <Text style={[{fontSize: 16}, isLiked ? {color: COLORS.primary} : {color : COLORS.secondary}]}>{likesCount}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{flexDirection: 'row', gap: 10, alignItems: 'center'}}>
+              <FontAwesome name='share' color={COLORS.secondary} size={23}/>
+              <Text style={{fontSize: 16, color: COLORS.secondary}}>{repostsCount}</Text>
+            </TouchableOpacity>
+          </View> : null
+        }
+        {
+          commentsCount > -1 ?
           <>
-            <View style={[{flexDirection: 'row', padding: 5, gap: 5}, isLightTheme? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
-              <Text style={styles.commentCount}>{currentLevelCommentsCount.current}</Text>
-              <Text style={styles.commentCount}>{currentLevelCommentsCount.current !== 1 ? 'COMMENTS' : 'COMMENT'}</Text>
+            <View style={[{flexDirection: 'row', padding: 5, gap: 5, paddingBottom: 10}, isLightTheme? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+              <Text style={styles.commentCount}>{commentsCount}</Text>
+              <Text style={styles.commentCount}>{commentsCount === 1 ? 'COMMENT' : 'COMMENTS'}</Text>
             </View>
           </> : null
-        } */}
+        }
       </>
     )
   }
+
   const renderItem = ({item}) => {
     // console.log(item)
     return (
@@ -209,6 +308,13 @@ const OpenedPhoto = ({ navigation, route }) => {
   )
 
   const footer = () => {
+    if (comments != null && comments.length < currentLevelCommentsCount.current) {
+      return (
+        <View style={[{width: '100%', justifyContent: 'center', alignItems: 'center'}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+          <ActivityIndicator size={30} color={isLightTheme ? COLORS.primary : COLORS.white}/>
+        </View>
+      )
+    }
     return (
       <>
         <DividerWithLine dividerHeight={10} borderBL={5} borderBR={5} dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}/>
@@ -236,13 +342,15 @@ const OpenedPhoto = ({ navigation, route }) => {
         showsVerticalScrollIndicator={false}
         ListFooterComponent={footer}
         ListEmptyComponent={
-          comments !== null &&
+          commentsCount === -1 &&
           <View style={[{paddingTop: 10}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
             <ActivityIndicator size={40} color={isLightTheme ? COLORS.primary : COLORS.white}/>
           </View>
         }
         ItemSeparatorComponent={commentSeparator}
+        onEndReached={fetchMoreComments}
       />
+      {commentsCount > -1 ? <TextInputField isLightTheme={isLightTheme} accessToken={accessToken}/> : null}
       <CommentsOverlay 
         slideAnimation={slideAnimation}
         isLightTheme={isLightTheme}

@@ -89,7 +89,7 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
           <Text style={[styles.replyText, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
             {getHyperlinkInText(commentText)}
           </Text>
-          {attachments ? <CommentAttachments attachments={attachments} navigation={navigation} isLightTheme={isLightTheme}/> : null}
+          {attachments ? <CommentAttachments ownerId={ownerId} attachments={attachments} navigation={navigation} isLightTheme={isLightTheme} author={author}/> : null}
           <CommentBottom likesCount={likesCount} handleLikePress={handleLikePress} date={commentDate} isLiked={isLiked}/>
         </View>
       </Animated.View>

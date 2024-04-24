@@ -10,7 +10,9 @@ const NewsTitleSwitcher = ({ isLightTheme }) => {
   const dispatch = useDispatch()
   const currentPage = useSelector(state => state.news.currentPage)
   const anim = React.useRef(new Animated.Value(0)).current
-  const isPressed = React.useRef(false)
+  const [isPressed, setIsPressed] = React.useState(false)
+  const isInitRender = React.useRef(true)
+
   const rotation = anim.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '180deg']
@@ -23,51 +25,48 @@ const NewsTitleSwitcher = ({ isLightTheme }) => {
     inputRange: [0, 1],
     outputRange: [0, 1000]
   })
-  // const newsOptions = [
-  //   {label: 'News', value: 'News'},
-  //   {label: 'Recommended', value: 'Recommended'}
-  // ]      
-  const onShadowPress = () => {
-    isPressed.current = false
-    Animated.timing(anim, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: false,
-    }).start()
-  }
-  const onNewsTypePress = () => {
-    if (isPressed.current) {
-      Animated.timing(anim, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: false,
-      }).start()
-    } else {
-      Animated.timing(anim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: false,
-        easing: Easing.linear
-      }).start()
+
+  React.useEffect(() => {
+    if (!isInitRender.current) {
+      setIsPressed(false)
     }
-    isPressed.current = !isPressed.current
+  }, [currentPage])
+
+  React.useEffect(() => {
+    if (isInitRender.current) {
+      isInitRender.current = false
+    } else {
+      if (isPressed) {
+        Animated.timing(anim, {
+          toValue: 1,
+          duration: 150,
+          useNativeDriver: false,
+          easing: Easing.linear
+        }).start()
+      } else {
+        Animated.timing(anim, {
+          toValue: 0,
+          duration: 150,
+          useNativeDriver: false,
+          easing: Easing.linear
+        }).start()
+      }
+    }
+  }, [isPressed])
+
+  const onShadowPress = () => {
+    setIsPressed(false)
+  }
+
+  const onNewsTypePress = () => {
+    setIsPressed(prev => !prev)
   }
 
   const onNewsOptionPress = () => {
-    Animated.timing(anim, {
-      toValue: 0,
-      duration: 1,
-      useNativeDriver: false,
-    }).start()
     dispatch(setCurrentPage('News'))
   }
 
   const onRecommendedOptionPress = () => {
-    Animated.timing(anim, {
-      toValue: 0,
-      duration: 1,
-      useNativeDriver: false,
-    }).start()
     dispatch(setCurrentPage('Recommended'))
   }
   return (

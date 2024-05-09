@@ -49,30 +49,30 @@ const Options = ({navigation}) => {
           isLightTheme={isLightTheme}
           buttonPressHandler={navigateToAccount}
         />
-        <OptionsButton 
+        {/* <OptionsButton 
           buttonIcon={<FontAwesome5 name='lock' size={22} color={COLORS.secondary} style={styles.icon}/>}
           buttonText={'Безопасность'}
           isLightTheme={isLightTheme}
           buttonPressHandler={navigateToSecurity}
-        />
+        /> */}
         <OptionsButton 
           buttonIcon={<Ionicons name='hand-left' size={22} color={COLORS.secondary} style={styles.icon}/>}
           buttonText={'Приватность'}
           isLightTheme={isLightTheme}
           buttonPressHandler={navigateToPrivacy}
         />
-        <OptionsButton 
+        {/* <OptionsButton 
           buttonIcon={<FontAwesome name='bell' size={22} color={COLORS.secondary} style={styles.icon}/>}
           buttonText={'Оповещения'}
           isLightTheme={isLightTheme}
           buttonPressHandler={navigateToNotifications}
-        />
-        <OptionsButton 
+        /> */}
+        {/* <OptionsButton 
           buttonIcon={<FontAwesome5 name='user-slash' size={22} color={COLORS.secondary} style={styles.icon}/>}
           buttonText={'Черный список'}
           isLightTheme={isLightTheme}
           buttonPressHandler={navigateToBlackList}
-        />
+        /> */}
       </View>
     </SafeAreaView>
   )

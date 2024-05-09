@@ -146,7 +146,7 @@ const AudioPlayer = ({ navigation }) => {
         <Text numberOfLines={1} style={{fontSize: 15, fontWeight: 'bold'}}>{track?.info?.artist}</Text>
         <Text numberOfLines={1} style={{fontSize: 15}}>{track?.info?.title}</Text>
         <View style={{flexDirection: 'row', alignItems: 'center', width: '100%', justifyContent: 'space-around', height: 60,}}>
-          <Octicons name='download' size={35} color={COLORS.black}/>
+          {/* <Octicons name='download' size={35} color={COLORS.black}/> */}
           <TouchableOpacity 
             style={[track.index === 0 && {opacity: 0.5}, {justifyContent: 'center', alignItems: 'center'}]}
             activeOpacity={track.index === 0 ? 0.5 : 0.8}
@@ -168,7 +168,7 @@ const AudioPlayer = ({ navigation }) => {
           >
             <AntDesign name='forward' size={35} color={COLORS.black}/>
           </TouchableOpacity>
-          <Feather name='more-vertical' size={35} color={COLORS.black}/>
+          {/* <Feather name='more-vertical' size={35} color={COLORS.black}/> */}
         </View>
       </View>
       

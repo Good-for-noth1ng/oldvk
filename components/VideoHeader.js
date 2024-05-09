@@ -32,7 +32,7 @@ const VideoHeader = ({ ownerId, date, isLightTheme, navigation, name, imgUrl, is
       <TouchableOpacity style={styles.vidPubContainer} onPress={onProfilePress}>
         <Image source={{uri: imgUrl}} style={styles.image}/>
         <View>
-          <Text style={[styles.name, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>{name}</Text>
+          <Text numberOfLines={2} style={[styles.name, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>{name}</Text>
           <Text style={styles.date}>{getTimeDate(date)}</Text>
         </View>
       </TouchableOpacity>
@@ -66,7 +66,8 @@ const styles = StyleSheet.create({
   },
   vidPubContainer: {
     flexDirection: 'row',
-    gap: 10
+    gap: 10,
+    width: '80%'
   },
   image: {
     width: 45,

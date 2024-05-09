@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Animated, TouchableOpacity, ToastAndroid, BackHandler } from 'react-native'
+import { StyleSheet, Text, View, Animated, TouchableOpacity, ToastAndroid, BackHandler, Dimensions } from 'react-native'
 import React from 'react'
 import * as Clipboard from 'expo-clipboard'
 import { useFocusEffect } from '@react-navigation/native';
@@ -9,6 +9,7 @@ import { setUserForFetchingInfo } from '../redux/regDateSlice';
 import { setCommentsSortType } from '../redux/commentsSlice';
 import { COLORS } from '../constants/theme'
 
+const width = Dimensions.get('window').width
 const Dropdown = ({ isLightTheme, accessToken }) => {
   const dispatch = useDispatch()
   const commentsSortType = useSelector(state => state.comments.commentsSortType)
@@ -25,7 +26,7 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
       listTargetHeight = 160
       break;
     case 'openPost':
-      listTargetHeight = 200
+      listTargetHeight = 150
       break
     case 'videoListItem':
       listTargetHeight = 250
@@ -41,6 +42,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
       break
     case 'commentsSort':
       listTargetHeight = 100
+      break
+    case 'relation':
+      listTargetHeight = 250
       break
     default:
       listTargetHeight = 160
@@ -114,6 +118,31 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
     }
   }
 
+  const addGroupToFave = async () => {
+    const url = `https://api.vk.com/method/fave.addPage?access_token=${accessToken}&v=5.131&group_id=${data.groupId}`
+    const res = await fetch(url)
+    const parsed = await res.json()
+    if (parsed.response === 1) {
+      ToastAndroid.show('Added to Favorite!', ToastAndroid.SHORT)
+    } else {
+      ToastAndroid.show('Network Error', ToastAndroid.SHORT)
+    }
+    dispatch(collapseShadow())
+  }
+
+  const addProfileToFave = async () => {
+    const url = `https://api.vk.com/method/fave.addPage?access_token=${accessToken}&v=5.131&user_id=${data.userId}`
+    const res = await fetch(url)
+    const parsed = await res.json()
+    if (parsed.response === 1) {
+      ToastAndroid.show('Added to Favorite!', ToastAndroid.SHORT)
+    } else {
+      ToastAndroid.show('Network Error', ToastAndroid.SHORT)
+    }
+    dispatch(collapseShadow())
+    // console.log(parsed) 
+  }
+
   const addPostToFave = async () => {
     const url = `https://api.vk.com/method/fave.addPost?access_token=${accessToken}&v=5.131&owner_id=${data.owner_id ? data.owner_id : data.source_id}&id=${data.id ? data.id : data.post_id}${data.access_key ? `&access_key=${data.access_key}` : ''}`
     const response = await fetch(url)
@@ -126,9 +155,18 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
     dispatch(collapseShadow())
   }
 
-  const notInterested = () => {
+  const notInterested = async () => {
     const setNotInterested = data.setShowNotInterested
-    setNotInterested(true)
+    const url = `https://api.vk.com/method/newsfeed.ignoreItem?access_token=${accessToken}&v=5.131&owner_id=${data.owner_id}&type=wall&item_id=${data.id ? data.id : data.post_id}`
+    const res = await fetch(url)
+    const par = await res.json()
+    if (par.response == 1) {
+      setNotInterested(true)
+    } else {
+      ToastAndroid.show('Network Error', ToastAndroid.SHORT)
+    }
+    // console.log(data.owner_id, data.post_id)
+    
     dispatch(collapseShadow())
   }
 
@@ -145,6 +183,7 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
     // }
     dispatch(collapseShadow())
   }
+
   const copyPostLink = async () => {
     await Clipboard.setStringAsync(`https://vk.com/wall${data.owner_id ? data.owner_id : data.source_id}_${data.id ? data.id : data.post_id}`)
     ToastAndroid.show('Copied!', ToastAndroid.SHORT)
@@ -173,7 +212,11 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
     }
   }
 
-  
+  const onRelationshipOption = (rel) => {
+    const setNewStatus = data.setNewStatus
+    setNewStatus(rel)
+    dispatch(collapseShadow())
+  }
 
   if (dropdownType === 'post') {
     return (
@@ -218,6 +261,7 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
             styles.headerDropdownOptionContainer,  
             isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.secondary}
           ]} 
+          onPress={addGroupToFave}
         >
           <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
         </TouchableOpacity>
@@ -262,14 +306,6 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
           ]} 
         >
           <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={[
-            styles.headerDropdownOptionContainer,  
-            isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
-          ]} 
-        >
-          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Leave/Join Community</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={[
@@ -371,7 +407,8 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
           style={[
             styles.headerDropdownOptionContainer,  
             isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
-          ]} 
+          ]}
+          onPress={addProfileToFave}
         >
           <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
         </TouchableOpacity>
@@ -431,6 +468,162 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
           <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>New</Text>
           {commentsSortType === 'desc' && <Feather name='check' size={20} color={COLORS.primary}/>}
         </TouchableOpacity>
+      </Animated.View>
+    )
+  } else if (dropdownType === 'relation') {
+    return (
+      <Animated.View 
+        style={[
+          {
+            borderRadius: 5,
+            elevation: 5, 
+            position: 'absolute', 
+            zIndex: 5, 
+            width: width - 50,
+          },
+          { 
+            height: listHeight,   
+          },
+          isLightTheme ? 
+          {backgroundColor: COLORS.white} :
+          {backgroundColor: COLORS.very_dark_gray},
+          {transform: [{translateX: dropdownData.dropdownX}, {translateY: dropdownData.dropdownY}]}
+        ]}>
+          <TouchableOpacity 
+            style={[
+              styles.headerDropdownOptionContainer,  
+              isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke},
+              {flexDirection: 'row', justifyContent: 'space-between', paddingRight: 10}
+            ]}
+            activeOpacity={0.5}
+            onPress={() => onRelationshipOption('1')}
+          >
+            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Not Married</Text>
+            {
+              data.curStatus === '1' ?
+              <Feather name='check' size={20} color={COLORS.primary}/> : null
+            }
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[
+              styles.headerDropdownOptionContainer,  
+              isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke},
+              {flexDirection: 'row', justifyContent: 'space-between', paddingRight: 10}
+            ]} 
+            activeOpacity={0.8}
+            onPress={() => onRelationshipOption('2')}
+          >
+            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Have a friend</Text>
+            {
+              data.curStatus === '2' ?
+              <Feather name='check' size={20} color={COLORS.primary}/> : null
+            }
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[
+              styles.headerDropdownOptionContainer,  
+              isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke},
+              {flexDirection: 'row', justifyContent: 'space-between', paddingRight: 10}
+            ]} 
+            activeOpacity={0.8}
+            onPress={() => onRelationshipOption('3')}
+          >
+            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Engaged</Text>
+            {
+              data.curStatus === '3' ?
+              <Feather name='check' size={20} color={COLORS.primary}/> : null
+            }
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[
+              styles.headerDropdownOptionContainer,  
+              isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke},
+              {flexDirection: 'row', justifyContent: 'space-between', paddingRight: 10}
+            ]} 
+            activeOpacity={0.8}
+            onPress={() => onRelationshipOption('4')}
+          >
+            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Married</Text>
+            {
+              data.curStatus === '4' ?
+              <Feather name='check' size={20} color={COLORS.primary}/> : null
+            }
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[
+              styles.headerDropdownOptionContainer,  
+              isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke},
+              {flexDirection: 'row', justifyContent: 'space-between', paddingRight: 10}
+            ]} 
+            activeOpacity={0.8}
+            onPress={() => onRelationshipOption('5')}
+          >
+            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>It's complicated</Text>
+            {
+              data.curStatus === '5' ?
+              <Feather name='check' size={20} color={COLORS.primary}/> : null
+            }
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[
+              styles.headerDropdownOptionContainer,  
+              isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke},
+              {flexDirection: 'row', justifyContent: 'space-between', paddingRight: 10}
+            ]} 
+            activeOpacity={0.8}
+            onPress={() => onRelationshipOption('6')}
+          >
+            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Actively search</Text>
+            {
+              data.curStatus === '6' ?
+              <Feather name='check' size={20} color={COLORS.primary}/> : null
+            }
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[
+              styles.headerDropdownOptionContainer,  
+              isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke},
+              {flexDirection: 'row', justifyContent: 'space-between', paddingRight: 10}
+            ]} 
+            activeOpacity={0.8}
+            onPress={() => onRelationshipOption('7')}
+          >
+            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>In Love</Text>
+            {
+              data.curStatus === '7' ?
+              <Feather name='check' size={20} color={COLORS.primary}/> : null
+            }
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[
+              styles.headerDropdownOptionContainer,  
+              isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke},
+              {flexDirection: 'row', justifyContent: 'space-between', paddingRight: 10}
+            ]} 
+            activeOpacity={0.8}
+            onPress={() => onRelationshipOption('8')}
+          >
+            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Live together</Text>
+            {
+              data.curStatus === '8' ?
+              <Feather name='check' size={20} color={COLORS.primary}/> : null
+            }
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[
+              styles.headerDropdownOptionContainer,  
+              isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke},
+              {flexDirection: 'row', justifyContent: 'space-between', paddingRight: 10}
+            ]} 
+            activeOpacity={0.8}
+            onPress={() => onRelationshipOption('0')}
+          >
+            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Unset</Text>
+            {
+              data.curStatus === '0' ?
+              <Feather name='check' size={20} color={COLORS.primary}/> : null
+            }
+          </TouchableOpacity>
       </Animated.View>
     )
   }

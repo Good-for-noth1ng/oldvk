@@ -52,7 +52,7 @@ const PostLinks = ({postLinks, isLightTheme, accessToken}) => {
                   resizeMode='cover'
                 >
                   <TouchableOpacity 
-                    style={{position: 'absolute', top: 5, right: 10}} 
+                    style={{position: 'absolute', top: 5, right: 10, elevation: 10}} 
                     activeOpacity={0.8} 
                     onPress={() => toggleFavStatus(postLink)}
                   >

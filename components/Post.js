@@ -63,14 +63,31 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken, from
           postAudios.push(attachments[i])
         }
       }
+    } else if (data.type === 'audio') {
+      // console.log(data.audio.items[0])
+      for (let j = 0; j < data.audio.items.length; j++) {
+        postAudios.push({ audio: data.audio.items[j]})
+      }
+    } else if (data.type === 'video') {
+      for (let j = 0; j < data.video.items.length; j++) {
+        postVideos.push(data.video.items[j])
+      }
     }
   }
 
   initPostData()
   
   const cancelShowNotInterested = async () => {
-    setShowNotInterested(prev => !prev)
+    const url = `https://api.vk.com/method/newsfeed.unignoreItem?access_token=${accessToken}&v=5.131&owner_id=${data.owner_id}&type=wall&item_id=${data.id ? data.id : data.post_id}`
+    const res = await fetch(url)
+    const par = await res.json()
+    if (par.response == 1) {
+      setShowNotInterested(prev => !prev)
+    } else {
+      ToastAndroid.show('Network Error', ToastAndroid.SHORT)
+    }
   }
+  
   if (showNotInterested) {
     return (
       <View style={[{borderRadius: 5, gap: 10, marginTop: 5, padding: 5, alignItems: 'center'}, isLigthTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>

@@ -19,7 +19,7 @@ import Dropdown from '../components/Dropdown';
 //TODO fix comments, likes etc. being undefined
 const News = ({navigation}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
-  const count = 20
+  const count = 5
          
   const accessToken = useSelector(state => state.user.accessToken)
   const [isRefreshing, setIsRefreshing] = useState(false)

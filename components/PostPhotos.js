@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, Modal, TouchableOpacity, Dimensions, Touchable, Animated } from 'react-native'
+import { StyleSheet, Text, View, Image, Modal, TouchableOpacity, Dimensions, Touchable, Animated, StatusBar } from 'react-native'
 import React, {useState,  memo } from 'react'
 import uuid from 'react-native-uuid';
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -9,6 +9,7 @@ import { COLORS } from '../constants/theme';
 import { postWidth } from '../constants/theme';
 import ImageViewer from 'react-native-image-zoom-viewer'
 import OpenedPhotoBottom from './OpenedPhotoBottom';
+
 
 const screenWidth = Dimensions.get('window').width
 const PostPhotos = ({postPhotos, navigation, ownerId, date, author}) => {
@@ -98,7 +99,6 @@ const PostPhotos = ({postPhotos, navigation, ownerId, date, author}) => {
       } else {
         lastIndexUrl = postPhotos[index]?.sizes.length - 1
       }
-       
       let originHeight = postPhotos[index]?.sizes[lastIndexUrl].height
       let originWidth = postPhotos[index]?.sizes[lastIndexUrl].width
       let text = postPhotos[index]?.text
@@ -228,9 +228,7 @@ const PostPhotos = ({postPhotos, navigation, ownerId, date, author}) => {
               >
                 <TouchableOpacity>
                 {
-                  false ?
-                  <AntDesign name={'heart'} color={COLORS.primary} size={20}/> :
-                  <AntDesign name={'hearto'} color={COLORS.white} size={20}/>
+                  <Feather name={'plus'} color={COLORS.white} size={25} />
                 }
                 </TouchableOpacity>
                 <TouchableOpacity 

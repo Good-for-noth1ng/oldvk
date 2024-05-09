@@ -166,41 +166,47 @@ const CommentThread = ({navigation, route}) => {
   
   const listHeader = () => {
     // console.log(mainComment.response.items)
-    return <>
-      <DividerWithLine 
-        marginT={10} 
-        dividerHeight={5} 
-        dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
-        borderTL={4}
-        borderTR={4}
-      />
-      <Comment
-        commentId={mainComment.response.items[0].id}
-        commentDate={mainComment.response.items[0].date}
-        likes={mainComment.response.items[0].likes?.count}
-        from_id={mainComment.response.items[0].from_id}
-        commentText={mainComment.response.items[0].text}
-        author={
-          mainComment.response.profiles.length > 0 ? 
-          mainComment.response.profiles.length > 1 ? mainComment.response.profiles[1] : mainComment.response.profiles[0]: 
-          mainComment.response.groups[0]
-        }
-        threadComments={[]}
-        attachments={mainComment.response.items[0]?.attachments}
-        is_deleted={mainComment.response.items[0].deleted}
-        isLightTheme={isLightTheme}
-        navigation={navigation}
-        openCommentMenu={openCommentMenu}
-      />
-      <DividerWithLine 
-        dividerHeight={16} 
-        dividerLineHeight={1} 
-        dividerLineColor={isLightTheme ? COLORS.light_smoke : COLORS.secondary} 
-        dividerLineWidth={300}
-        dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
-        linePosition={'center'}
-      />
-    </>
+    let author = [...mainComment.response.profiles].find(item => item.id === mainComment.response.items[0].from_id)
+    let group = [...mainComment.response.groups].find(item => -item.id === mainComment.response.items[0].from_id)
+    return (
+      <>
+        <DividerWithLine 
+          marginT={10} 
+          dividerHeight={5} 
+          dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+          borderTL={4}
+          borderTR={4}
+        />
+        <Comment
+          commentId={mainComment.response.items[0].id}
+          commentDate={mainComment.response.items[0].date}
+          likes={mainComment.response.items[0].likes?.count}
+          from_id={mainComment.response.items[0].from_id}
+          commentText={mainComment.response.items[0].text}
+          author={
+            author ? 
+          // mainComment.response.profiles.length > 1 ? 
+            author :
+            //  : mainComment.response.profiles[0]: 
+            group
+          }
+          threadComments={[]}
+          attachments={mainComment.response.items[0]?.attachments}
+          is_deleted={mainComment.response.items[0].deleted}
+          isLightTheme={isLightTheme}
+          navigation={navigation}
+          openCommentMenu={openCommentMenu}
+        />
+        <DividerWithLine 
+          dividerHeight={16} 
+          dividerLineHeight={1} 
+          dividerLineColor={isLightTheme ? COLORS.light_smoke : COLORS.secondary} 
+          dividerLineWidth={300}
+          dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark}
+          linePosition={'center'}
+        />
+      </>
+    )
   }
 
   const commentSeparator = () => (

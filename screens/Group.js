@@ -331,7 +331,13 @@ const Group = ({navigation, route}) => {
         iconTouchHandler={goBack}
         headerName={<ProfileHeaderName userShortName={wallHeaderData.screenName}/>}
         isLightTheme={isLightTheme}
-        rightsideIconComponent={<GroupHeaderCollapsibleMenu isLightTheme={isLightTheme} accessToken={accessToken}/>}
+        rightsideIconComponent={
+          <GroupHeaderCollapsibleMenu 
+            isLightTheme={isLightTheme} 
+            accessToken={accessToken}
+            data={{groupId}}
+          />
+        }
       />
       {
         isLoading ?
@@ -445,7 +451,7 @@ const Group = ({navigation, route}) => {
               }
             } 
           />
-        </Modal>
+          </Modal>
           <FlatList 
             data={groupData}
             renderItem={renderItem}

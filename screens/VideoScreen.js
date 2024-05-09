@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, ScrollView, Dimensions } from 'react-native'
 import React from 'react'
 import { WebView } from 'react-native-webview'
 import { useSelector } from 'react-redux'
@@ -16,11 +16,13 @@ import GlobalShadow from '../components/GlobalShadow'
 import VideosListDropdownMenu from '../components/VideosListDropdownMenu'
 import Dropdown from '../components/Dropdown'
 
+const width = Dimensions.get('window').width
+
 const VideoScreen = ({navigation, route}) => {
-  const { playerUrl, title, views, ownerId, likes, reposts, isLiked, isReposted, date, canLike, canAdd, canAddToFavs, commentsCount, canComment, videoId, accessKey } = route.params
+  const { playerUrl, title, views, ownerId, likes, reposts, isLiked, isReposted, date, canLike, canAdd, canAddToFavs, commentsCount, canComment, videoId, accessKey, isShortVideo } = route.params
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
-  // console.log(videoId, accessKey)
+  // console.log(videoId, accessKey, ownerId)
   const [video, setVideo] = React.useState(null)
   const [isLoading, setIsLoading] = React.useState(true)
   const [name, setName] = React.useState('')
@@ -29,19 +31,34 @@ const VideoScreen = ({navigation, route}) => {
   const [isMember, setIsMember] = React.useState(0)
   const [likesCount, setLikesCount] = React.useState(likes)
   const [liked, setLiked] = React.useState(isLiked === 1 ? true : false)
+  const webview = React.useRef()
 
   const webViewJsScript = `
   const meta = document.createElement('meta'); 
   meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'); 
   meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);
   `
+  const deleteElemsJs = `const meta = document.createElement('meta'); 
+    meta.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0'); 
+    meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta);
+    setTimeout(function () {
+      const controls = document.getElementsByClassName("VideoPlayerEmbed__container")[0];
+      controls.remove();
+      const button = document.getElementsByClassName("VideoPlayerEmbed__button")[0];
+      button.remove();
+    }, 100)
+  `
+  const onLoad = () => {
+    webview.current.injectJavaScript(deleteElemsJs)
+  }
   //TODO: add clips
   const fetchVideoInfo = async () => {
-    if (accessKey !== undefined) {
-      const getVideoUrl = `https://api.vk.com/method/video.get?access_token=${accessToken}&v=5.131&owner_id=${ownerId}&videos=${ownerId}_${videoId}_${accessKey}`
+    if (isShortVideo) {
+      const getVideoUrl = `https://api.vk.com/method/video.get?access_token=${accessToken}&v=5.131&owner_id=${ownerId}&videos=${ownerId}_${videoId}`
+      // console.log(getVideoUrl)  
       const videoResponse = await fetch(getVideoUrl)
       const videoData = await videoResponse.json()
-      // console.log(videoData)
+      console.log(videoData.response.items[0])
       setLikesCount(videoData.response.items[0].likes.count)
       setLiked(videoData.response.items[0].likes.user_likes === 1 ? true : false)
       setVideo({
@@ -52,6 +69,23 @@ const VideoScreen = ({navigation, route}) => {
         canComment: videoData.response.items[0].can_comment,
         date: videoData.response.items[0].date
       })
+    } else {
+      if (accessKey !== undefined) {
+        const getVideoUrl = `https://api.vk.com/method/video.get?access_token=${accessToken}&v=5.131&owner_id=${ownerId}&videos=${ownerId}_${videoId}_${accessKey}`
+        const videoResponse = await fetch(getVideoUrl)
+        const videoData = await videoResponse.json()
+        // console.log(videoData)
+        setLikesCount(videoData.response.items[0].likes.count)
+        setLiked(videoData.response.items[0].likes.user_likes === 1 ? true : false)
+        setVideo({
+          playerUrl: videoData.response.items[0].player,
+          title: videoData.response.items[0].title,
+          views: videoData.response.items[0].views,
+          commentsCount: videoData.response.items[0].comments,
+          canComment: videoData.response.items[0].can_comment,
+          date: videoData.response.items[0].date
+        })
+      }
     }
     if (ownerId > 0) {
       const getVideoAuthorUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&fields=photo_100,is_friend&user_ids=${ownerId}`
@@ -124,7 +158,12 @@ const VideoScreen = ({navigation, route}) => {
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />
-      <View style={[styles.contentContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
+      <ScrollView 
+        showsVerticalScrollIndicator={false}        
+      >
+        <View
+          style={[styles.contentContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}
+        >
         {
           isLoading ? 
           <View style={{width: '100%', height: '100%', justifyContent: 'center'}}>
@@ -133,7 +172,7 @@ const VideoScreen = ({navigation, route}) => {
           <>
             <VideoHeader 
               ownerId={ownerId}
-              date={accessKey ? video.date : date}
+              date={isShortVideo ? video.date : accessKey ? video.date : date}
               accessToken={accessToken}
               isLightTheme={isLightTheme}
               navigation={navigation}
@@ -142,32 +181,57 @@ const VideoScreen = ({navigation, route}) => {
               isFriend={isFriend}
               isMember={isMember}
             />
-            <WebView
-              source={{uri: accessKey ? video.playerUrl : playerUrl}}
-              allowsFullscreenVideo={true}
-              startInLoadingState={true}
-              renderLoading={() => {
-                  return (
-                    <View 
-                      style={[
-                        {width: '100%', height: '100%', justifyContent: 'center'}, 
-                        isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}
-                      ]}
-                    >
-                      <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
-                    </View>
-                  )
+            {
+              isShortVideo ? 
+              <WebView
+                ref ={webview}
+                source={{ uri : video.playerUrl}}
+                style={{width: width - 20, aspectRatio: 9 / 16}} 
+                injectedJavaScript={deleteElemsJs}
+                javaScriptEnabled={true}
+                // onLoadEnd={onLoad}
+                // renderLoading={() => {
+                //   return (
+                //     <View 
+                //       style={[
+                //         {width: '100%', height: '100%', justifyContent: 'center'}, 
+                //         isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}
+                //       ]}
+                //     >
+                //       <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+                //      </View>
+                //     )
+                //   }
+                // }
+              /> :
+              <WebView
+                source={{uri: accessKey ? video.playerUrl : playerUrl}}
+                allowsFullscreenVideo={true}
+                startInLoadingState={true}
+                style={{width: width - 20, aspectRatio:  16 /9}}
+                renderLoading={() => {
+                    return (
+                      <View 
+                        style={[
+                          {width: '100%', height: '100%', justifyContent: 'center'}, 
+                          isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}
+                        ]}
+                      >
+                        <ActivityIndicator color={isLightTheme ? COLORS.primary : COLORS.white} size={50}/>
+                      </View>
+                    )
+                  }
                 }
-              }
-              scalesPageToFit={true}
-              injectedJavaScript={webViewJsScript}
-            />
+                scalesPageToFit={true}
+                injectedJavaScript={webViewJsScript}
+              />
+            }
             <View style={{marginLeft: 5}}>
               <Text style={[styles.title, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
-                {accessKey ? video.title : title}
+                {isShortVideo ? video.title : accessKey ? video.title : title}
               </Text>
               <Text style={styles.views}>
-                {getShortagedNumber(accessKey ? video.views : views)} views
+                {getShortagedNumber(isShortVideo ? video.views : accessKey ? video.views : views)} views
               </Text>
               <DividerWithLine 
                 linePosition={'center'} 
@@ -177,8 +241,8 @@ const VideoScreen = ({navigation, route}) => {
                 dividerHeight={20}
               />
               <VideoScreenBottom 
-                canComment={accessKey ? video.canComment : canComment} 
-                comments={accessKey ? video.commentsCount : commentsCount} 
+                canComment={isShortVideo ? video.canComment : accessKey ? video.canComment : canComment} 
+                comments={isShortVideo ? video.commentsCount : accessKey ? video.commentsCount : commentsCount} 
                 likes={likesCount} 
                 isLiked={liked} 
                 reposts={reposts} 
@@ -191,7 +255,8 @@ const VideoScreen = ({navigation, route}) => {
             </View>
           </>
         }
-      </View>
+        </View>
+      </ScrollView>
       {/* <VideosListDropdownMenu /> */}
       <Dropdown isLightTheme={isLightTheme} accessToken={accessToken}/>
       <GlobalShadow />
@@ -213,13 +278,13 @@ const styles = StyleSheet.create({
     // height: '100%'
   },
   contentContainer: {
-    flex: 0.75, 
+    // flex: 0.75, 
     marginLeft: 5, 
     marginRight: 5, 
-    marginTop: 10,
-    paddingLeft: 5,
-    paddingRight: 5,
-    borderRadius: 5
+    borderRadius: 5,
+    padding: 5,
+    marginTop: 5,
+    marginBottom: 5
   },
   title: {
     fontSize: 18,

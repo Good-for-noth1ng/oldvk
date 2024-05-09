@@ -336,7 +336,6 @@ const UserProfile = ({ navigation, route }) => {
   // console.log(isAvatarVisible)
   return (
     <SafeAreaView style={[styles.mainContainer, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
-      <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
       <CustomHeader 
         iconComponent={
           currentUserId === userId ?

@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, FlatList } from 'react-native'
 import React, { useEffect, useState, useRef }  from 'react'
 import { useSelector } from 'react-redux'
+import * as Localization from 'expo-localization'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomHeader from '../components/CustomHeader'
 import UserListItem from '../components/UserListItem'
@@ -9,6 +10,7 @@ import { COLORS } from '../constants/theme'
 
 //TODO: make searchfield on followers
 const FollowersList = ({ navigation, route }) => {
+  const lang = Localization.getLocales()[0].languageCode
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const [isLoading, setIsLoading] = useState(true)
@@ -30,12 +32,12 @@ const FollowersList = ({ navigation, route }) => {
     }
     offset.current += count
     setUsersList(prevState => prevState.concat(followersListData.response.items)) 
+    setIsLoading(false)
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     // setIsLoading(true)
     fetchFollowers()
-    setIsLoading(false)
   }, [])
 
   const goBack = () => {
@@ -43,7 +45,6 @@ const FollowersList = ({ navigation, route }) => {
   }
 
   const fetchMoreFollowers = () => {
-    console.log('more followers')
     if (remainToFetchNum.current > 0) {
       fetchFollowers()
     }
@@ -60,6 +61,7 @@ const FollowersList = ({ navigation, route }) => {
         isLightTheme={isLightTheme}
         bdate={item.bdate}
         city={item.city}
+        lang={lang}
       />
     )
   }
@@ -110,10 +112,9 @@ const FollowersList = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
-      <StatusBar barStyle={COLORS.white} backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} />
       <CustomHeader 
         isLightTheme={isLightTheme}
-        headerName={<Text style={styles.headerTextStyle}>Followers</Text>}
+        headerName={<Text style={styles.headerTextStyle}>{lang == 'ru' ? 'Подписчики' : 'Followers'}</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       /> 

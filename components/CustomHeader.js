@@ -13,7 +13,7 @@ import { COLORS } from '../constants/theme'
 
 const globalShadowHeight = Dimensions.get('window').height
 
-const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIcon, handleInputChange, navigation, isLightTheme, gapForSearchIcon, rightsideIconComponent, rightsideIconComponentTouchHandler, onCleaningInput, onOptionsButton, isScreenFromDrawerMenu}) => {
+const CustomHeader = ({lang, headerName, iconTouchHandler, iconComponent, showSearchIcon, handleInputChange, navigation, isLightTheme, gapForSearchIcon, rightsideIconComponent, rightsideIconComponentTouchHandler, onCleaningInput, onOptionsButton, isScreenFromDrawerMenu}) => {
   // const dispatch = useDispatch()
   const [showSearchInputField, setShowSearchInputField] = useState(false)
   const inputField = useRef()
@@ -113,7 +113,7 @@ const CustomHeader = ({headerName, iconTouchHandler, iconComponent, showSearchIc
                 ref={inputField}
                 onLayout={initFocusOnField}
                 selectionColor={COLORS.secondary}
-                placeholder='Search'
+                placeholder={lang == 'ru' ? 'Поиск' : 'Search'}
                 placeholderTextColor={COLORS.smoke}
                 onChangeText={handlingChanges}
                 autoCapitalize='none'

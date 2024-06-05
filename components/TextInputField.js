@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react'
 import Feather from 'react-native-vector-icons/Feather'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { COLORS } from '../constants/theme'
-const TextInputField = ({isLightTheme}) => {
+const TextInputField = ({isLightTheme, lang}) => {
   const inputField = useRef('')
   const [colorOfSendButton, setColorOfSendButton] = useState(false)
   const handleChanges = (text) => {
@@ -19,7 +19,7 @@ const TextInputField = ({isLightTheme}) => {
       <TextInput 
         ref={inputField}
         style={isLightTheme ? styles.inputLight : styles.inputDark}
-        placeholder={'Comment'}
+        placeholder={lang == 'ru' ? 'Комментировать' : 'Comment'}
         placeholderTextColor={COLORS.smoke}
         selectionColor={COLORS.secondary}
         onChangeText={handleChanges}

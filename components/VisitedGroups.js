@@ -12,7 +12,7 @@ if (Platform.OS === 'android') {
   }
 }
 
-const VisitedGroups = ({ visitedGroups, isLightTheme, navigation, setVisitedGroups }) => {
+const VisitedGroups = ({ visitedGroups, isLightTheme, navigation, setVisitedGroups, lang }) => {
   const [areThereVisited, setAreThereVisited] = React.useState(visitedGroups.length > 0)
   // const visited = visitedGroups
 
@@ -73,7 +73,7 @@ const VisitedGroups = ({ visitedGroups, isLightTheme, navigation, setVisitedGrou
     ]}>
       <View style={styles.crossContainer}>
         <View style={{flexDirection: 'row', gap: 10}}>
-          <Text style={[{fontSize: 15, fontWeight: 'bold'}, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>Visited</Text>
+          <Text style={[{fontSize: 15, fontWeight: 'bold'}, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>{lang == 'ru' ? 'Посещенные' : 'Visited'}</Text>
           <Text style={[{fontSize: 15, color: COLORS.secondary}]}>{visitedGroups.length}</Text>
         </View>
         <TouchableOpacity style={styles.cross} onPress={onCrossPress}>

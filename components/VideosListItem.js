@@ -9,7 +9,7 @@ import { getTimeDate } from '../utils/date'
 import { COLORS } from '../constants/theme'
 import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
 
-const VideosListItem = ({title, duration, imageUrl, views, date, isLightTheme, navigation, playerUrl, ownerId, likes, reposts, isLiked, isReposted, id, canLike, canAdd, canAddToFavs, commentsCount, canComment, videoId}) => {
+const VideosListItem = ({title, duration, imageUrl, views, date, isLightTheme, navigation, playerUrl, ownerId, likes, reposts, isLiked, isReposted, id, canLike, canAdd, canAddToFavs, commentsCount, canComment, videoId, lang}) => {
   const dispatch = useDispatch()
 
   const dropdownCoords = React.useRef(null)
@@ -64,8 +64,8 @@ const VideosListItem = ({title, duration, imageUrl, views, date, isLightTheme, n
       <View style={{justifyContent: 'space-between'}}>
         <Text style={[styles.title, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>{shortagedTitle}</Text>
         <View>
-          <Text style={styles.views}>{getShortagedNumber(views)} views</Text>
-          <Text style={styles.date}>{getTimeDate(date)}</Text>
+          <Text style={styles.views}>{getShortagedNumber(views)} {lang == 'ru' ? 'просмотров' : 'views'}</Text>
+          <Text style={styles.date}>{getTimeDate(date, lang)}</Text>
         </View>
       </View>
       <TouchableOpacity activeOpacity={0.8} onPress={onMorePress}>

@@ -2,6 +2,7 @@ import { StyleSheet,  Appearance } from 'react-native'
 import React from 'react'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useSelector, useDispatch } from 'react-redux'
+import * as Localization from 'expo-localization'
 import { toggleCurrentColorScheme } from '../redux/colorSchemeSlice'
 import { toggleOnlineStatus, setOnlineStatus } from '../redux/userSlice'
 import DrawerToggler from './DrawerToggler'
@@ -14,6 +15,7 @@ import { COLORS } from '../constants/theme'
 const DrawerSwitchersContainer = () => {
   const dispatch = useDispatch()
   const isOnline = useSelector(state => state.user.isOnline)
+  const lang = Localization.getLocales()[0].languageCode
   // console.log(isOnline)
   // const [isOnline, setIsOnline] = React.useState(false)
   const isInitRender = React.useRef(true)
@@ -92,8 +94,8 @@ const DrawerSwitchersContainer = () => {
         }
         currentState={isOnline}
         setNewState={onOnlineStatusPress}
-        falseText={'Offline'}
-        trueText={'Online'}
+        falseText={lang == 'ru' ? 'Не в сети' : 'Offline'}
+        trueText={lang == 'ru' ? 'В сети' : 'Online'}
       />
       <DrawerToggler
         trueIcon={
@@ -102,8 +104,8 @@ const DrawerSwitchersContainer = () => {
         falseIcon={
           <SimpleLineIcons name='envelope' size={20} color={COLORS.white}/>
         }
-        trueText={'Mark as read'}
-        falseText={'Mark as unread'}
+        trueText={lang == 'ru' ? 'Помечать как прочитанные' : 'Mark as read'}
+        falseText={lang == 'ru' ? 'Оставлять непрочитанными' : 'Mark as unread'}
         currentState={allowMarkAsRead}
         setNewState={changeReadStatus}
       />
@@ -114,8 +116,8 @@ const DrawerSwitchersContainer = () => {
         falseIcon={
           <MaterialCommunityIcons name='pencil-off-outline' size={20} color={COLORS.white}/>
         }
-        trueText={'Show typing'}
-        falseText={'Hide typing'}
+        trueText={lang == 'ru' ? 'Показывать набор' : 'Show typing'}
+        falseText={lang =='ru' ? 'Скрыть набор' : 'Hide typing'}
         currentState={allowSeeTyping}
         setNewState={changeTypingStatus}
       />
@@ -126,14 +128,14 @@ const DrawerSwitchersContainer = () => {
         falseIcon={
           <Octicons name='sun' size={20} color={COLORS.white}/>
         }
-        trueText={'Dark mode'}
-        falseText={'Light mode'}
+        trueText={lang == 'ru' ? 'Темный режим' : 'Dark mode'}
+        falseText={lang == 'ru' ? 'Светлый режим' : 'Light mode'}
         currentState={!isLightTheme}
         setNewState={changeTheme}
       />
       <CustomDrawerButton 
         buttonIcon={<MaterialCommunityIcons name='door-open' color={COLORS.white} size={20}/>}
-        buttonText={'Logout'}
+        buttonText={lang == 'ru' ? 'Выйти' : 'Logout'}
       />
     </>
   )

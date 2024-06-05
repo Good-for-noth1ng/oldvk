@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, FlatList } from 'react-native'
 import React, { useRef, useState, useEffect } from 'react'
+import * as Localization from 'expo-localization'
 import uuid from 'react-native-uuid'
 import { useSelector } from 'react-redux'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -11,6 +12,7 @@ import { COLORS } from '../constants/theme'
 //TODO:
 //add react-native-snap-carousel: on one page all users on another related only
 const ReactedUsersList = ({ navigation }) => {
+  const lang = Localization.getLocales()[0].languageCode
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const [isLoading, setIsLoading] = useState(true)
@@ -118,7 +120,7 @@ const ReactedUsersList = ({ navigation }) => {
     <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
       <CustomHeader 
         isLightTheme={isLightTheme}
-        headerName={<Text style={styles.headerTextStyle}>Reactions</Text>}
+        headerName={<Text style={styles.headerTextStyle}>{lang == 'ru' ? 'Понравилось' : 'Reactions'}</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={navigateBack}
       />

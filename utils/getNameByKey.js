@@ -1,4 +1,4 @@
-export const getNameInGroupHeader = (key) => {
+export const getNameInGroupHeader = (key, lang) => {
   switch (key) {
     case 'audio_playlists':
       return 'audio playlists';
@@ -6,6 +6,24 @@ export const getNameInGroupHeader = (key) => {
       return 'clips followers';
     case 'market_services':
       return 'market services';
+    case 'albums':
+      return lang == 'ru' ? 'альбомы' : 'albums'
+    case 'friends':
+      return lang == 'ru' ? 'друзья' : 'friends'
+    case 'gifts':
+      return lang == 'ru' ? 'подарки' : 'gifts'
+    case 'photos':
+      return lang == 'ru' ? 'фото' : 'photos'
+    case 'followers':
+      return lang == 'ru' ? 'подписчики' : 'followers'
+    case 'subscriptions':
+      return lang == 'ru' ? 'подписки' : 'subscriptions'
+    case 'videos':
+      return lang == 'ru' ? 'видео' : 'videos'
+    case 'articles':
+      return lang == 'ru' ? 'статьи' : 'articles'
+    case 'topics':
+      return lang == 'ru' ? 'обсуждения' : 'topics'
     default:
       return key;
   }

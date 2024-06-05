@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Ani
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { useFocusEffect } from '@react-navigation/native';
+import * as Localization from 'expo-localization'
 // import { FlatList } from "react-native-gesture-handler";
 import uuid from 'react-native-uuid';
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -18,23 +19,24 @@ import { RadioOption, CollapsibleOption } from '../components/Buttons';
 import { COLORS } from '../constants/theme'
 
 const Friends = ({navigation, route}) => {
+  const lang = Localization.getLocales()[0].languageCode
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const currentUserId = useSelector(state => state.user.userId)
   const userId = route.params === undefined ? currentUserId : route.params.userId 
-  const [isLoading, setIsLoading] = useState(true)
-  const [friendsData, setFriendsData] = useState(null)
-  const [friendsCount, setFriendsCount] = useState(null)
-  const [friendsCounterName, setFriendsCounterName] = useState('All friends')
+  const [isLoading, setIsLoading] = React.useState(true)
+  const [friendsData, setFriendsData] = React.useState(null)
+  const [friendsCount, setFriendsCount] = React.useState(null)
+  const [friendsCounterName, setFriendsCounterName] = React.useState(lang == 'ru' ? 'Все друзья' : 'All friends')
   const count = 10
-  const offset = useRef(0)
-  const remainToFetchNum = useRef()
-  const searchQuery = useRef('')
-  const connectionController = useRef(undefined)
-  const filterIsOpen = useRef(false)
+  const offset = React.useRef(0)
+  const remainToFetchNum = React.useRef()
+  const searchQuery = React.useRef('')
+  const connectionController = React.useRef(undefined)
+  const filterIsOpen = React.useRef(false)
 
-  const slideAnimation = useRef(new Animated.Value(2000)).current
-  const shouldRemoveStackScreens = useRef()
+  const slideAnimation = React.useRef(new Animated.Value(2000)).current
+  const shouldRemoveStackScreens = React.useRef()
 
   const genderRadioButtons = useSelector(state => state.radioGender.buttons)
   const chosenGenderId = useSelector(state => state.radioGender.chosenId)
@@ -75,20 +77,22 @@ const Friends = ({navigation, route}) => {
     const fetchedFriendsList = await fetchFriends()
     if (fetchedFriendsList.count === 0) {
       setFriendsData(null)
+      setFriendsCounterName(lang == 'ru' ? 'Все друзья' : 'All friends')
       setIsLoading(false)
     } else {
       remainToFetchNum.current = fetchedFriendsList.count - count
+      setFriendsCounterName(lang == 'ru' ? 'Все друзья' : 'All friends')
       setFriendsCount(fetchedFriendsList.count)
       setFriendsData(fetchedFriendsList.items)
       setIsLoading(false)
     }
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     initFriendsList()
   }, [])
 
-  useEffect(() => {
+  React.useEffect(() => {
     const drawerNavigator = navigation.getParent()
     const blur = drawerNavigator.addListener('blur', () => {
       shouldRemoveStackScreens.current = false
@@ -174,6 +178,7 @@ const Friends = ({navigation, route}) => {
       isLightTheme={isLightTheme} 
       bdate={item.bdate}
       city={item.city}
+      lang={lang}
     />
   )
 
@@ -210,7 +215,7 @@ const Friends = ({navigation, route}) => {
       return {...item, key}
     })
     return {
-      counterName: 'Search result',
+      counterName: lang == 'ru' ? 'Результаты поиска' : 'Search result',
       count: searchData.response.count,
       items: items
     }
@@ -245,7 +250,7 @@ const Friends = ({navigation, route}) => {
   }
 
   useFocusEffect(
-    useCallback(() => {
+    React.useCallback(() => {
       const onBackPress = () => {
         if (filterIsOpen.current) {
           closeFilterMenu()
@@ -276,9 +281,8 @@ const Friends = ({navigation, route}) => {
   
   return (
     <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
-      <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
       <CustomHeader
-        headerName={<Text style={styles.headerTextStyle}>Friends</Text>}
+        headerName={<Text style={styles.headerTextStyle}>{lang == 'ru' ? 'Друзья' : 'Friends'}</Text>}
         isLightTheme={isLightTheme}
         iconComponent={
           currentUserId === userId ? 
@@ -293,6 +297,7 @@ const Friends = ({navigation, route}) => {
         onCleaningInput={initFriendsList}
         onOptionsButton={openFilterMenu}
         isScreenFromDrawerMenu={userId === currentUserId}
+        lang={lang}
       />
       {
         isLoading ?
@@ -301,7 +306,7 @@ const Friends = ({navigation, route}) => {
         </View> :
         friendsData === null ?
         <View style={styles.noFriendsContainer}>
-          <Text style={styles.noFriendsText}>No Friends</Text>
+          <Text style={styles.noFriendsText}>{lang == 'ru' ? 'Нет друзей' : 'No Friends'}</Text>
         </View>
          :
         <FlatList 

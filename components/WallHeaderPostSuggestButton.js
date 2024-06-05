@@ -23,13 +23,13 @@ const AttachPhotosButton = () => {
     </TouchableOpacity>
   )
 }
-const WallHeaderPostSuggestButton = ({canPost, canSuggest, isCommunityWall}) => {
+const WallHeaderPostSuggestButton = ({canPost, canSuggest, isCommunityWall, lang}) => {
   if (isCommunityWall) {
     if (canPost) {
       return(
       <View style={styles.buttonsContainer}>
         <MakePostButton 
-          text={'Write a post'}
+          text={lang == 'ru' ? 'Создать запись' : 'Write a post'}
         />
         <AttachPhotosButton />
       </View>
@@ -38,7 +38,7 @@ const WallHeaderPostSuggestButton = ({canPost, canSuggest, isCommunityWall}) => 
       return(
         <View style={styles.buttonsContainer}>
           <MakePostButton 
-            text={'Suggest a post'}
+            text={lang == 'ru' ? 'Предложить запись' : 'Suggest a post'}
           />
           <AttachPhotosButton />
         </View>
@@ -51,7 +51,7 @@ const WallHeaderPostSuggestButton = ({canPost, canSuggest, isCommunityWall}) => 
       return (
       <View style={styles.buttonsContainer}>
         <MakePostButton 
-          text={'Write a post'}
+          text={lang == 'ru' ? 'Создать запись' : 'Write a post'}
         />
         <AttachPhotosButton />
       </View>

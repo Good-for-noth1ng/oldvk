@@ -4,7 +4,7 @@ import uuid from 'react-native-uuid';
 import { WallHeaderButton } from './Buttons'
 import DividerWithLine from './DividerWithLine';
 
-const WallHeaderButtons = ({ isUserWall, isMember, canWritePrivateMessage, canSendFriendRequest, friendStatus, memberStatus, groupId, accessToken, navigation, shouldHideButtons }) => {
+const WallHeaderButtons = ({ lang, isUserWall, isMember, canWritePrivateMessage, canSendFriendRequest, friendStatus, memberStatus, groupId, accessToken, navigation, shouldHideButtons }) => {
   let buttons = []
   const isFriend = friendStatus === 3 ? true : false 
   
@@ -38,8 +38,8 @@ const WallHeaderButtons = ({ isUserWall, isMember, canWritePrivateMessage, canSe
       buttons.push(
         <WallHeaderButton 
           key={uuid.v4()} 
-          activeStateText={'Add Friend'} 
-          inactiveStateText={'Unfriend'} 
+          activeStateText={lang == 'ru' ? 'Добавить в друзья' : 'Add Friend'} 
+          inactiveStateText={lang =='ru' ? 'Удалить из друзей' : 'Unfriend'} 
           isActiveState={!isFriend}
         />
       )
@@ -50,7 +50,7 @@ const WallHeaderButtons = ({ isUserWall, isMember, canWritePrivateMessage, canSe
         buttons.push(
           <WallHeaderButton 
             key={uuid.v4()} 
-            activeStateText={'Message'} 
+            activeStateText={lang == 'ru' ? 'Написать' : 'Message'} 
             isActiveState={true}
           />
         )
@@ -60,7 +60,7 @@ const WallHeaderButtons = ({ isUserWall, isMember, canWritePrivateMessage, canSe
         buttons.push(
           <WallHeaderButton 
             key={uuid.v4()} 
-            activeStateText={'Message'} 
+            activeStateText={lang == 'ru' ? 'Написать' : 'Message'} 
             isActiveState={true}
           />
         )
@@ -69,8 +69,8 @@ const WallHeaderButtons = ({ isUserWall, isMember, canWritePrivateMessage, canSe
       buttons.push(
         <WallHeaderButton 
           key={uuid.v4()} 
-          activeStateText={'Add Friend'} 
-          inactiveStateText={'Request Sent'} 
+          activeStateText={lang == 'ru' ? 'Добавить в друзья' : 'Add Friend'} 
+          inactiveStateText={lang == 'ru' ? 'Запрос отправлен' : 'Request Sent'} 
           isActiveState={isFriend}
         />
       )
@@ -81,7 +81,7 @@ const WallHeaderButtons = ({ isUserWall, isMember, canWritePrivateMessage, canSe
         buttons.push(
           <WallHeaderButton 
             key={uuid.v4()} 
-            activeStateText={'Message'} 
+            activeStateText={lang == 'ru' ? 'Написать' : 'Message'} 
             isActiveState={true}
             shouldAlwaysBeActive={true}
             switchToInactiveStateHandler={navigateToDialog}
@@ -99,8 +99,8 @@ const WallHeaderButtons = ({ isUserWall, isMember, canWritePrivateMessage, canSe
     buttons.push(
       <WallHeaderButton 
         key={uuid.v4()} 
-        activeStateText={'Follow'} 
-        inactiveStateText={'Unfollow'} 
+        activeStateText={lang == 'ru' ? 'Подписаться' : 'Follow'} 
+        inactiveStateText={lang == 'ru' ? 'Отписаться' : 'Unfollow'} 
         isActiveState={!isMember}
         switchToInactiveStateHandler={joinCommunity}
         switchToActiveStateHandler={leaveCommunity}
@@ -113,7 +113,7 @@ const WallHeaderButtons = ({ isUserWall, isMember, canWritePrivateMessage, canSe
       buttons.push(
         <WallHeaderButton 
           key={uuid.v4()} 
-          activeStateText={'Message'} 
+          activeStateText={lang == 'ru' ? 'Написать' : 'Message'} 
           isActiveState={true}
           shouldAlwaysBeActive={true}
           switchToInactiveStateHandler={navigateToDialog}

@@ -12,6 +12,7 @@ import { COLORS } from '../constants/theme'
 const width = Dimensions.get('window').width
 const Dropdown = ({ isLightTheme, accessToken }) => {
   const dispatch = useDispatch()
+  const lang = 'ru'
   const commentsSortType = useSelector(state => state.comments.commentsSortType)
   const dropdownData = useSelector(state => state.globalShadow)
   const isShadowExpanded = dropdownData.isOpen
@@ -29,13 +30,13 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
       listTargetHeight = 150
       break
     case 'videoListItem':
-      listTargetHeight = 250
+      listTargetHeight = 300
       break
     case 'group':
       listTargetHeight = 200
       break
     case 'videoScreen':
-      listTargetHeight = 250
+      listTargetHeight = 300
       break
     case 'profile':
       listTargetHeight = 250
@@ -68,13 +69,13 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
       if (isShadowExpanded) {
         Animated.timing(listHeight, {
           toValue: listTargetHeight,
-          duration: 200,
+          duration: 100,
           useNativeDriver: false,
         }).start()
       } else {
         Animated.timing(listHeight, {
           toValue: 0,
-          duration: 200,
+          duration: 100,
           useNativeDriver: false,
         }).start()
       }
@@ -123,9 +124,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
     const res = await fetch(url)
     const parsed = await res.json()
     if (parsed.response === 1) {
-      ToastAndroid.show('Added to Favorite!', ToastAndroid.SHORT)
+      ToastAndroid.show(lang == 'ru' ? 'Добавлено в избранное!' : 'Added to Favorite!', ToastAndroid.SHORT)
     } else {
-      ToastAndroid.show('Network Error', ToastAndroid.SHORT)
+      ToastAndroid.show(lang == 'ru' ? 'Ошибка соединения' : 'Network Error', ToastAndroid.SHORT)
     }
     dispatch(collapseShadow())
   }
@@ -135,9 +136,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
     const res = await fetch(url)
     const parsed = await res.json()
     if (parsed.response === 1) {
-      ToastAndroid.show('Added to Favorite!', ToastAndroid.SHORT)
+      ToastAndroid.show(lang == 'ru' ? 'Добавлено в избранное!' : 'Added to Favorite!', ToastAndroid.SHORT)
     } else {
-      ToastAndroid.show('Network Error', ToastAndroid.SHORT)
+      ToastAndroid.show(lang == 'ru' ? 'Ошибка соединения' : 'Network Error', ToastAndroid.SHORT)
     }
     dispatch(collapseShadow())
     // console.log(parsed) 
@@ -148,9 +149,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
     const response = await fetch(url)
     const parsedRes = await response.json()
     if (parsedRes.response === 1) {
-      ToastAndroid.show('Added to Favorite!', ToastAndroid.SHORT)
+      ToastAndroid.show(lang == 'ru' ? 'Добвалено в избранное!' : 'Added to Favorite!', ToastAndroid.SHORT)
     } else {
-      ToastAndroid.show('Network Error', ToastAndroid.SHORT)
+      ToastAndroid.show(lang == 'ru' ? 'Ошибка соединения' : 'Network Error', ToastAndroid.SHORT)
     }
     dispatch(collapseShadow())
   }
@@ -163,7 +164,7 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
     if (par.response == 1) {
       setNotInterested(true)
     } else {
-      ToastAndroid.show('Network Error', ToastAndroid.SHORT)
+      ToastAndroid.show(lang == 'ru' ? 'Ошибка соединения' : 'Network Error', ToastAndroid.SHORT)
     }
     // console.log(data.owner_id, data.post_id)
     
@@ -173,20 +174,20 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
   const removePostFromFavorite = async () => {
     const func = data.func
     func(data.favId)
-    // const url = `https://api.vk.com/method/fave.removePost?access_token=${accessToken}&v=5.131&owner_id=${data.owner_id ? data.owner_id : data.source_id}&id=${data.id ? data.id : data.post_id}${data.access_key ? `&access_key=${data.access_key}` : ''}`
-    // const response = await fetch(url)
-    // const parsedRes = await response.json()
-    // if (parsedRes.response === 1) {
-    //   ToastAndroid.show('Removed from Fave!', ToastAndroid.SHORT)
-    // } else {
-    //   ToastAndroid.show('Network Error', ToastAndroid.SHORT)
-    // }
+    const url = `https://api.vk.com/method/fave.removePost?access_token=${accessToken}&v=5.131&owner_id=${data.owner_id ? data.owner_id : data.source_id}&id=${data.id ? data.id : data.post_id}${data.access_key ? `&access_key=${data.access_key}` : ''}`
+    const response = await fetch(url)
+    const parsedRes = await response.json()
+    if (parsedRes.response === 1) {
+      ToastAndroid.show(lang == 'ru' ? 'Удалено из избранного!' : 'Removed from Fave!', ToastAndroid.SHORT)
+    } else {
+      ToastAndroid.show(lang == 'ru' ? 'Ошибка соединения' : 'Network Error', ToastAndroid.SHORT)
+    }
     dispatch(collapseShadow())
   }
 
   const copyPostLink = async () => {
     await Clipboard.setStringAsync(`https://vk.com/wall${data.owner_id ? data.owner_id : data.source_id}_${data.id ? data.id : data.post_id}`)
-    ToastAndroid.show('Copied!', ToastAndroid.SHORT)
+    ToastAndroid.show(lang == 'ru' ? 'Скопировано!' : 'Copied!', ToastAndroid.SHORT)
     dispatch(collapseShadow())
   }
 
@@ -232,19 +233,31 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
         {transform: [{translateX: dropdownData.dropdownX - 150}, {translateY: dropdownData.dropdownY}]}
       ]}>
         <TouchableOpacity style={styles.postDropdownMenuButton} onPress={data.is_favorite ? removePostFromFavorite : addPostToFave} activeOpacity={0.8}>
-          <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>{data.is_favorite ? 'Remove from fave' : 'Add to Bookmarks'}</Text>
+          <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+            {
+              data.is_favorite ? 
+              lang == 'ru' ? 'Удалить из избранного' : 'Remove from fave' : 
+              lang == 'ru' ? 'Добавить в избранное' : 'Add to Bookmarks'
+            }
+          </Text>
         </TouchableOpacity>
         {
           data.fromNewsfeed ? 
           <TouchableOpacity style={styles.postDropdownMenuButton} onPress={notInterested}>
-            <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Not interested</Text>
+            <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+              {lang == 'ru' ? 'Скрыть' : 'Not interested'}
+            </Text>
           </TouchableOpacity> : null
         }
         <TouchableOpacity style={styles.postDropdownMenuButton} onPress={copyPostLink} activeOpacity={0.8}>
-          <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Copy Link</Text>
+          <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+            {lang == 'ru' ? 'Скопировать ссылку' : 'Copy Link'}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.postDropdownMenuButton}>
-          <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Report</Text>
+          <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+            {lang == 'ru' ? 'Пожаловаться' : 'Report'}
+          </Text>
         </TouchableOpacity>
       </Animated.View>
     )
@@ -263,7 +276,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
           ]} 
           onPress={addGroupToFave}
         >
-          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
+          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+            {lang == 'ru' ? 'Добавить в избранное' : 'Add to Bookmarks'}
+          </Text>
         </TouchableOpacity>
         {/* <TouchableOpacity 
           style={[
@@ -279,7 +294,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
             isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.secondary}
           ]} 
         >
-          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Copy link</Text>
+          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+            {lang == 'ru' ? 'Скопировать ссылку' : 'Copy link'}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={[
@@ -287,7 +304,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
             isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.secondary}
           ]} 
         >
-          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Report</Text>
+          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+            {lang == 'ru' ? 'Пожаловаться' : 'Report'}
+          </Text>
         </TouchableOpacity>
       </Animated.View>
     )
@@ -305,7 +324,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
             isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
           ]} 
         >
-          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
+          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+            {lang == 'ru' ? 'Добавить в избранное' : 'Add to Bookmarks'}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={[
@@ -313,7 +334,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
             isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
           ]} 
         >
-          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Copy link</Text>
+          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+            {lang == 'ru' ? 'Копировать ссылку' : 'Copy link'}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={[
@@ -321,7 +344,7 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
             isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
           ]} 
         >
-          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Report</Text>
+          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>{lang == 'ru' ? 'Пожаловаться' : 'Report'}</Text>
         </TouchableOpacity>
       </Animated.View>
     )
@@ -339,25 +362,39 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
       {transform: [{translateX: dropdownData.dropdownX - 150}, {translateY: dropdownData.dropdownY}]}
     ]}>
       <TouchableOpacity style={styles.postDropdownMenuButton}>
-        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
+        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+          {lang == 'ru' ? 'Добавить в избранное' : 'Add to Bookmarks'}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.postDropdownMenuButton}>
-        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to my videos</Text>
+        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+          {lang == 'ru' ? 'Добавить в мои видео' : 'Add to my videos'}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.postDropdownMenuButton}>
-        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to playlist</Text>
+        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+          {lang == 'ru' ? 'Добавить в плейлист' : 'Add to playlist'}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.postDropdownMenuButton}>
-        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Copy Link</Text>
+        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+          {lang == 'ru' ? 'Копировать ссылку' : 'Copy Link'}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.postDropdownMenuButton}>
-        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Share</Text>
+        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+          {lang == 'ru' ? 'Поделиться' : 'Share'}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.postDropdownMenuButton}>
-        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Not interesting</Text>
+        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+          {lang == 'ru' ? 'Скрыть' : 'Not interesting'}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.postDropdownMenuButton}>
-        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Report</Text>
+        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+          {lang == 'ru' ? 'Пожаловаться' : 'Report'}
+        </Text>
       </TouchableOpacity>
     </Animated.View>)
   } else if (dropdownType === 'videoScreen') {
@@ -374,25 +411,39 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
       {transform: [{translateX: dropdownData.dropdownX - 150}, {translateY: dropdownData.dropdownY}]}
     ]}>
       <TouchableOpacity style={styles.postDropdownMenuButton}>
-        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
+        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+          {lang == 'ru' ? 'Добавить в избранное' : 'Add to Bookmarks'}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.postDropdownMenuButton}>
-        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to my videos</Text>
+        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+          {lang == 'ru' ? 'Добавить в мои видео' : 'Add to my videos'}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.postDropdownMenuButton}>
-        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to playlist</Text>
+        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+          {lang == 'ru' ? 'Добавить в плейлист' : 'Add to playlist'}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.postDropdownMenuButton}>
-        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Copy Link</Text>
+        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+          {lang == 'ru' ? 'Копировать ссылку' : 'Copy Link'}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.postDropdownMenuButton}>
-        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Share</Text>
+        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+          {lang == 'ru' ? 'Поделиться' : 'Share'}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.postDropdownMenuButton}>
-        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Not interesting</Text>
+        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+          {lang == 'ru' ? 'Скрыть' : 'Not interesting'}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.postDropdownMenuButton}>
-        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Report</Text>
+        <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+          {lang == 'ru' ? 'Пожаловаться' : 'Report'}
+        </Text>
       </TouchableOpacity>
     </Animated.View>)
   } else if (dropdownType === 'profile') {
@@ -410,7 +461,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
           ]}
           onPress={addProfileToFave}
         >
-          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Add to Bookmarks</Text>
+          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+            {lang == 'ru' ? 'Добавить в избранное' :'Add to Bookmarks'}
+          </Text>
         </TouchableOpacity>
         {/* <TouchableOpacity 
           style={[
@@ -426,7 +479,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
             isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
           ]} 
         >
-          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Copy link</Text>
+          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+            {lang == 'ru' ? 'Копировать ссылку' : 'Copy link'}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={[
@@ -434,7 +489,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
             isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.smoke}
           ]} 
         >
-          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Report</Text>
+          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+            {lang == 'ru'  ? 'Пожаловаться' :'Report'}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={[
@@ -443,7 +500,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
           ]}
           onPress={openProfileRegistartionDate}
         >
-          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Registration Date</Text>
+          <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+            {lang == 'ru' ? 'Дата регистрации' : 'Registration Date'}
+          </Text>
         </TouchableOpacity>
       </Animated.View>
     )
@@ -461,11 +520,15 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
           {transform: [{translateX: dropdownData.dropdownX - 73}, {translateY: dropdownData.dropdownY}]}
         ]}>
         <TouchableOpacity style={styles.commentsSortDropdownButton} activeOpacity={0.5} onPress={sortCommentsOldFirst}>
-          <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Old</Text>
+          <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+            {lang == 'ru' ? 'Старые' : 'Old'}
+          </Text>
           {commentsSortType === 'asc' && <Feather name='check' size={20} color={COLORS.primary}/>}
         </TouchableOpacity>
         <TouchableOpacity style={styles.commentsSortDropdownButton} activeOpacity={0.5} onPress={sortCommentsNewFirst}>
-          <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>New</Text>
+          <Text style={[{fontSize: 17}, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+            {lang == 'ru' ? 'Новые' : 'New'}
+          </Text>
           {commentsSortType === 'desc' && <Feather name='check' size={20} color={COLORS.primary}/>}
         </TouchableOpacity>
       </Animated.View>
@@ -498,7 +561,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
             activeOpacity={0.5}
             onPress={() => onRelationshipOption('1')}
           >
-            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Not Married</Text>
+            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+              {lang == 'ru' ? 'Не замужем / Не женат' : 'Not Married'}
+            </Text>
             {
               data.curStatus === '1' ?
               <Feather name='check' size={20} color={COLORS.primary}/> : null
@@ -513,7 +578,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
             activeOpacity={0.8}
             onPress={() => onRelationshipOption('2')}
           >
-            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Have a friend</Text>
+            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+              {lang == 'ru' ? 'Есть друг / подруга' : 'Have a friend'}
+            </Text>
             {
               data.curStatus === '2' ?
               <Feather name='check' size={20} color={COLORS.primary}/> : null
@@ -528,7 +595,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
             activeOpacity={0.8}
             onPress={() => onRelationshipOption('3')}
           >
-            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Engaged</Text>
+            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+              {lang == 'ru' ? 'Помолвлен / помолвлена' : 'Engaged'}
+            </Text>
             {
               data.curStatus === '3' ?
               <Feather name='check' size={20} color={COLORS.primary}/> : null
@@ -543,7 +612,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
             activeOpacity={0.8}
             onPress={() => onRelationshipOption('4')}
           >
-            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Married</Text>
+            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+              {lang == 'ru' ? 'Женат / замужем' : 'Married'}
+            </Text>
             {
               data.curStatus === '4' ?
               <Feather name='check' size={20} color={COLORS.primary}/> : null
@@ -558,7 +629,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
             activeOpacity={0.8}
             onPress={() => onRelationshipOption('5')}
           >
-            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>It's complicated</Text>
+            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+              {lang == 'ru' ? 'Всё` сложно' : "It's complicated"}
+            </Text>
             {
               data.curStatus === '5' ?
               <Feather name='check' size={20} color={COLORS.primary}/> : null
@@ -573,7 +646,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
             activeOpacity={0.8}
             onPress={() => onRelationshipOption('6')}
           >
-            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Actively search</Text>
+            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+              {lang == 'ru' ? 'В активном поиске' : 'Actively search'}
+            </Text>
             {
               data.curStatus === '6' ?
               <Feather name='check' size={20} color={COLORS.primary}/> : null
@@ -588,7 +663,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
             activeOpacity={0.8}
             onPress={() => onRelationshipOption('7')}
           >
-            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>In Love</Text>
+            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+              {lang == 'ru' ? 'Влюблен/влюблена' : 'In Love'}
+            </Text>
             {
               data.curStatus === '7' ?
               <Feather name='check' size={20} color={COLORS.primary}/> : null
@@ -603,7 +680,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
             activeOpacity={0.8}
             onPress={() => onRelationshipOption('8')}
           >
-            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Live together</Text>
+            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+              {lang == 'ru' ? 'В гражданском браке' : 'Live together'}
+            </Text>
             {
               data.curStatus === '8' ?
               <Feather name='check' size={20} color={COLORS.primary}/> : null
@@ -618,7 +697,9 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
             activeOpacity={0.8}
             onPress={() => onRelationshipOption('0')}
           >
-            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Unset</Text>
+            <Text style={[styles.headerDropdownOption, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>
+              {lang == 'ru' ? 'Не указано' : 'Unset'}
+            </Text>
             {
               data.curStatus === '0' ?
               <Feather name='check' size={20} color={COLORS.primary}/> : null

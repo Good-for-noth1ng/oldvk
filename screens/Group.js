@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Ref
 import React from 'react'
 import { FlatList } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from 'react-redux'
+import * as Localization from 'expo-localization'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { COLORS } from '../constants/theme'
 import CustomHeader from '../components/CustomHeader'
@@ -36,9 +37,11 @@ const screenWidth = Dimensions.get('window').width
 const Group = ({navigation, route}) => {
   // const dispatch = useDispatch();
   const accessToken = useSelector(state => state.user.accessToken)
+  const lang = Localization.getLocales()[0].languageCode
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
-  const [wallHeaderData, setWallHeaderData] = React.useState({screenName: 'Community'})
+  const [wallHeaderData, setWallHeaderData] = React.useState({screenName: lang == 'ru' ? 'Сообщество' : 'Community'})
   const [groupData, setGroupData] = React.useState([])
+  
   // const [groupAvatars, setGroupAvatars] = React.useState([])
   const imagesForSlides = React.useRef([])
   const [isAvatarVisible, setIsAvatarVisible] = React.useState(false) 
@@ -240,6 +243,7 @@ const Group = ({navigation, route}) => {
           cleanedLinks={wallHeaderData.cleanedLinks}
           cleanedUsers={wallHeaderData.cleanedUsers}
           navigation={navigation}
+          lang={lang}
           expanded={isAdditionalInfoExpanded}
         /> 
         <WallHeaderButtons
@@ -250,6 +254,7 @@ const Group = ({navigation, route}) => {
           accessToken={accessToken}
           groupId={groupId}
           navigation={navigation}
+          lang={lang}
         />
         <DividerWithLine dividerHeight={10}/>
         <WallHeaderCountersGrid 
@@ -258,16 +263,18 @@ const Group = ({navigation, route}) => {
           ownerId={-1 * groupId} 
           navigation={navigation}
           canAccess={wallHeaderData.canAccess}
+          lang={lang}
         />
         {
           !wallHeaderData.canAccess ? 
-          <WallIsPrivateText isPrivateText={'Community is private'}/> : null 
+          <WallIsPrivateText  isPrivateText={lang == 'ru' ? 'Закрытое сообщество' : 'Community is private'}/> : null 
         }
         <DividerWithLine dividerHeight={10}/>
         <WallHeaderPostSuggestButton 
           canPost={wallHeaderData.canPost} 
           canSuggest={wallHeaderData.canSuggest} 
           isCommunityWall={true}
+          lang={lang}
         />
       </View>
     )

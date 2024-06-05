@@ -8,7 +8,7 @@ import CommentAttachments from './CommentAttachments'
 import { COLORS } from '../constants/theme'
 import { getHyperlinkInText } from '../utils/hyperlinks'
 
-const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme, openCommentMenu, commentId, ownerId, navigation, attachments, author, is_deleted}) => {
+const CommentReply = ({lang, fetchProfileInfo, from_id, commentText, commentDate, likes, isLightTheme, openCommentMenu, commentId, ownerId, navigation, attachments, author, is_deleted}) => {
   const name = author.name ? author.name : `${author.first_name} ${author.last_name}` 
   const photoUrl = author.photo_100
   const [isLiked, setIsLiked] = useState(false)
@@ -90,7 +90,7 @@ const CommentReply = ({fetchProfileInfo, from_id, commentText, commentDate, like
             {getHyperlinkInText(commentText)}
           </Text>
           {attachments ? <CommentAttachments ownerId={ownerId} attachments={attachments} navigation={navigation} isLightTheme={isLightTheme} author={author}/> : null}
-          <CommentBottom likesCount={likesCount} handleLikePress={handleLikePress} date={commentDate} isLiked={isLiked}/>
+          <CommentBottom lang={lang} likesCount={likesCount} handleLikePress={handleLikePress} date={commentDate} isLiked={isLiked}/>
         </View>
       </Animated.View>
     </Pressable>

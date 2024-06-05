@@ -21,7 +21,8 @@ export const userSlice = createSlice({
     userProfileDrawerPhotoUrl: '',
     firstName: '',
     lastName: '',
-    isOnline: false
+    isOnline: false,
+    lang: 'ru'
   },
   reducers: {
     initUserData: (state, action) => {
@@ -33,7 +34,8 @@ export const userSlice = createSlice({
         userId: action.payload.userId,
         userProfileDrawerPhotoUrl: action.payload.userProfileDrawerPhotoUrl,
         firstName: action.payload.firstName,
-        lastName: action.payload.lastName, 
+        lastName: action.payload.lastName,
+        lang: action.payload.lang 
       }
     },
     setLogin: (state, action) => {
@@ -54,11 +56,18 @@ export const userSlice = createSlice({
         ...state,
         isOnline: action.payload
       }
+    },
+    updateLang: (state, action) => {
+      return {
+        ...state,
+        lang: action.payload
+      }
     }
   }
 })
 export const { 
     setLogin, 
+    updateLang,
     // setAccessToken, 
     // setExpiresIn, 
     // setUserId, 

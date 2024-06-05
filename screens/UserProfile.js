@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Ani
 import React from 'react'
 // import { FlatList } from "react-native-gesture-handler";
 import { useSelector } from 'react-redux'
+import * as Localization from 'expo-localization'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Entypo from 'react-native-vector-icons/Entypo'
 import CustomHeader from '../components/CustomHeader'
@@ -35,6 +36,7 @@ const UserProfile = ({ navigation, route }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const [isUserInfoExpanded, setIsUserInfoExpanded] = React.useState(false)
+  const lang = Localization.getLocales()[0].languageCode
   const isGlobalShadowExpanded = useSelector(state => state.globalShadow.isOpen)
   const authorInfoIsOpen = React.useRef(false)
   const currentUserId = useSelector(state => state.user.userId)
@@ -52,7 +54,7 @@ const UserProfile = ({ navigation, route }) => {
   const userInfoUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&user_ids=${userId}&fields=${userInfoUrlFields}`
   const userWallUrl = `https://api.vk.com/method/wall.get?access_token=${accessToken}&v=5.131&owner_id=${userId}&extended=1&count=${count}`
   const fetchGroupAvatarsUrl = `https://api.vk.com/method/photos.get?access_token=${accessToken}&v=5.199&owner_id=${userId}&album_id=profile&rev=1&count=100&extended=1`
-  const [wallHeaderData , setWallHeaderData] = React.useState({screenName: 'Profile'})
+  const [wallHeaderData , setWallHeaderData] = React.useState({screenName: lang == 'ru' ? 'Профиль' : 'Profile'})
   const shouldRemoveStackScreens = React.useRef()
 
   const shouldHideTopAndBottom = React.useRef(false)
@@ -115,7 +117,8 @@ const UserProfile = ({ navigation, route }) => {
         likes: item?.likes?.count,
         isLiked: item?.likes?.user_likes,
         comments: item?.comments?.count,
-        reposts: item?.reposts?.count
+        reposts: item?.reposts?.count,
+        albumId: item?.album_id
       }
       })
     } else {
@@ -256,6 +259,7 @@ const UserProfile = ({ navigation, route }) => {
           canAccess={!(wallHeaderData.canAccessClosed === false && wallHeaderData.isClosed === true)}
         /> 
         <WallHeaderPersonalContainer 
+          lang={lang}
           personal={wallHeaderData.personal}
           relation={wallHeaderData.relation}
           bdate={wallHeaderData.bdate}
@@ -268,6 +272,7 @@ const UserProfile = ({ navigation, route }) => {
           expanded={isUserInfoExpanded}    
         /> 
         <WallHeaderButtons
+          lang={lang}
           isUserWall={true}  
           friendStatus={wallHeaderData.friendStatus}
           canSendFriendRequest={wallHeaderData.canSendFriendRequest}
@@ -282,12 +287,13 @@ const UserProfile = ({ navigation, route }) => {
           canAccess={!(wallHeaderData.canAccessClosed === false && wallHeaderData.isClosed === true)}
           isUserOnHisOwnPage={currentUserId === userId}
           author={{ownerId: userId, name: wallHeaderData.userName, photo_100: wallHeaderData.avatarUrl}}
+          lang={lang}
         />
         {
           wallHeaderData.canAccessClosed === false && wallHeaderData.isClosed === true ?
-          <WallIsPrivateText isPrivateText={'Profile is private'}/> : null
+          <WallIsPrivateText isPrivateText={lang == 'ru' ? 'Закрытый профиль' : 'Profile is private'}/> : null
         }
-        <WallHeaderPostSuggestButton canPost={wallHeaderData.canPost}/>
+        <WallHeaderPostSuggestButton canPost={wallHeaderData.canPost} lang={lang}/>
       </View>
     )
   }
@@ -454,7 +460,8 @@ const UserProfile = ({ navigation, route }) => {
                             photoId: imagesForSlides.current[index].photoId,
                             text: imagesForSlides.current[index].text,
                             userId: imagesForSlides.current[index].userId,
-                            ownerId: userId, 
+                            ownerId: userId,
+                            albumId: imagesForSlides.current[index].albumId,
                             date: imagesForSlides.current[index].date, 
                             author: imagesForSlides.current[index].author, 
                             width: imagesForSlides.current[index].props.style.width, 
@@ -497,14 +504,14 @@ const UserProfile = ({ navigation, route }) => {
             ListEmptyComponent={
               !(wallHeaderData.canAccessClosed === false && wallHeaderData.isClosed === true) ?
               <View style={styles.noPostsContainer}>
-                <Text style={[styles.noPostsText, {color: COLORS.secondary}]}>No posts yet</Text>
+                <Text style={[styles.noPostsText, {color: COLORS.secondary}]}>{lang == 'ru' ? 'Нет записей' : 'No posts yet'}</Text>
               </View> : null
             }
           />
         </>
       }
       <Dropdown isLightTheme={isLightTheme} accessToken={accessToken}/>
-      <ProfileOverlay isLightTheme={isLightTheme}/>
+      <ProfileOverlay isLightTheme={isLightTheme} lang={lang}/>
       {/* <PostDropdownMenu /> */}
       <GlobalShadow />
     </SafeAreaView>

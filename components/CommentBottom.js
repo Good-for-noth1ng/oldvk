@@ -4,12 +4,12 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 import { getShortagedNumber } from '../utils/numShortage'
-const CommentBottom = ({likesCount, handleLikePress, date, isLiked}) => {
+const CommentBottom = ({likesCount, handleLikePress, date, isLiked, lang}) => {
   return (
     <View style={styles.commentBottomContainer}>
       <View style={styles.dateReplyContainer}>
-        <Text style={styles.date}>{getTimeDate(date)}</Text>
-        <Text style={styles.replyButton}>Reply</Text>
+        <Text style={styles.date}>{getTimeDate(date, lang)}</Text>
+        <Text style={styles.replyButton}>{lang == 'ru' ? 'Ответить' : 'Reply'}</Text>
       </View>
       <TouchableOpacity activeOpacity={1} style={styles.likeOpacityArea} onPress={handleLikePress}>
         {

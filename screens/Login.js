@@ -14,6 +14,8 @@ import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/
 const Login = ({navigation}) => {
   const dispatch = useDispatch() 
   const colorScheme = useColorScheme()
+  const lang = useSelector(state => state.user.lang)
+  console.log(lang)
   if (colorScheme === 'dark') {
     dispatch(toggleCurrentColorScheme())
   }
@@ -23,18 +25,26 @@ const Login = ({navigation}) => {
   return (
     // <View>
     <SafeAreaView style={[styles.mainContainer, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.background_dark}]}>
-      <Header screenName={'Авторизация'} isLight={isLightTheme}/>
+      <Header screenName={lang == 'ru' ? 'Авторизация' : 'Authorization'} isLight={isLightTheme}/>
       {/* <ScrollView style={{flex: 1}}> */}
         <View style={styles.heroButtonContainer}>
           <View style={styles.textContainer}>
             <Text style={[styles.textHeader, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
-              Добро пожаловать!
+              {
+                lang == 'ru' ?
+                'Добро пожаловать!' :
+                'Welcome!'
+              }
             </Text>
             <Text style={[styles.subtitle, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>
-              oldvk - мобильное приложение для соцсети вконтакте
+              {
+                lang == 'ru' ? 
+                'oldvk - мобильное приложение для соцсети вконтакте' :
+                'oldvk is mobile app for vk'
+              }
             </Text>
           </View>
-          <LoginButton buttonText={'Войти через vk.com'} isLightTheme={isLightTheme}  navigation={navigation}/>
+          <LoginButton buttonText={lang == 'ru' ? 'Войти через vk.com' : 'Sign in'} isLightTheme={isLightTheme}  navigation={navigation}/>
         </View>
       {/* </ScrollView> */}
     </SafeAreaView>

@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, ActivityIndicator, StatusBar, FlatList } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
 import { useSelector } from 'react-redux'
+import * as Localization from 'expo-localization'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomHeader from '../components/CustomHeader'
 import UserListItem from '../components/UserListItem'
@@ -11,6 +12,7 @@ import { COLORS } from '../constants/theme'
 const MembersList = ({navigation, route}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
+  const lang = Localization.getLocales()[0].languageCode
   const [isLoading, setIsLoading] = useState(true)
   const [usersList, setUsersList] = useState([])
   const count = 10
@@ -30,11 +32,11 @@ const MembersList = ({navigation, route}) => {
     }
     offset.current += count
     setUsersList(prevState => prevState.concat(membersListData.response.items))
+    setIsLoading(false)
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchMembers()
-    setIsLoading(false)
   }, [])
 
   const goBack = () => {
@@ -56,6 +58,7 @@ const MembersList = ({navigation, route}) => {
         isLightTheme={isLightTheme}
         bdate={item.bdate}
         city={item.city}
+        lang={lang}
       />
     )
   }
@@ -106,10 +109,9 @@ const MembersList = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
-      <StatusBar barStyle={COLORS.white} backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark}/>
       <CustomHeader 
         isLightTheme={isLightTheme}
-        headerName={<Text style={styles.headerTextStyle}>Members</Text>}
+        headerName={<Text style={styles.headerTextStyle}>{lang == 'ru' ? 'Подписчики' : 'Members'}</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />

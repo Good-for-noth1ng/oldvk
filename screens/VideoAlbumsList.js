@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native'
 import React from 'react'
+import * as Localization from 'expo-localization'
 import { FlatList } from "react-native-gesture-handler";
 import uuid from 'react-native-uuid';
 import { useSelector } from 'react-redux'
@@ -11,6 +12,7 @@ import AlbumListItem from '../components/AlbumListItem';
 import { COLORS } from '../constants/theme'
 
 const VideoAlbumsList = ({navigation, route}) => {
+  const lang = Localization.getLocales()[0].languageCode
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const [isLoading, setIsLoading] = React.useState(true)
@@ -81,6 +83,7 @@ const VideoAlbumsList = ({navigation, route}) => {
         ownerId={item.owner_id}
         id={item.id}
         type={'videos'}
+        lang={lang}
       />
     )
   }
@@ -122,10 +125,9 @@ const VideoAlbumsList = ({navigation, route}) => {
   }
   return (
     <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
-      <StatusBar barStyle={COLORS.white} backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} />
       <CustomHeader 
         isLightTheme={isLightTheme}
-        headerName={<Text style={styles.headerTextStyle}>Playlists</Text>}
+        headerName={<Text style={styles.headerTextStyle}>{lang == 'ru' ? 'Альбомы' : 'Playlists'}</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />

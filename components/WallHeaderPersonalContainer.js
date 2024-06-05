@@ -6,7 +6,7 @@ import { COLORS } from '../constants/theme'
 import { getUserBdate } from '../utils/date'
 import { getRelationStatusByNum, getPoliticalViewsByNum, getLifeMainByNum, getAlcoholSmokingRelByNum, getPeopleMainByNum } from '../utils/getNameByKey'
 
-const WallHeaderPersonalContainer = ({personal, relation, bdate, city, interests, homeTown, education, universities, isLightTheme, expanded}) => {
+const WallHeaderPersonalContainer = ({lang, personal, relation, bdate, city, interests, homeTown, education, universities, isLightTheme, expanded}) => {
   // console.log(personal)
   const anim = React.useRef(new Animated.Value(0)).current
   let universitiesList
@@ -58,46 +58,46 @@ const WallHeaderPersonalContainer = ({personal, relation, bdate, city, interests
   return (
     <View style={[styles.container]} >
       {
-        bdate && <PersonalListItem title={'Birth Date'} info={getUserBdate(bdate)} isLightTheme={isLightTheme}/> 
+        bdate && <PersonalListItem title={lang == 'ru' ? 'День рождения' : 'Birth Date'} info={getUserBdate(bdate)} isLightTheme={isLightTheme}/> 
       }
       {
-        homeTown && <PersonalListItem title={'Home Town'} info={homeTown}/>
+        homeTown && <PersonalListItem title={lang == 'ru' ? 'Родной город' : 'Home Town'} info={homeTown}/>
       }
       {
         getRelationStatusByNum(relation) !== null ? 
-        <PersonalListItem title={'Relationships status'} info={getRelationStatusByNum(relation)}/> : null
+        <PersonalListItem title={lang == 'ru' ? 'Отношения' : 'Relationships status'} info={getRelationStatusByNum(relation)}/> : null
       }
       {
-        interests && <PersonalListItem title={'Interests'} info={interests}/>
+        interests && <PersonalListItem title={lang == 'ru' ? 'Интересы' : 'Interests'} info={interests}/>
       }
       {
-        universitiesList && <PersonalListItem title={'University'} info={universitiesList}/>
+        universitiesList && <PersonalListItem title={lang == 'ru' ? 'Университет' : 'University'} info={universitiesList}/>
       }
       {
         city !== undefined && city.title ?
-        <PersonalListItem title={'City'} info={city.title}/> :
+        <PersonalListItem title={lang == 'ru' ? 'Город' : 'City'} info={city.title}/> :
         null
       }
       {
-        political && <PersonalListItem title={'Political views'} info={getPoliticalViewsByNum(political)}/>
+        political && <PersonalListItem title={lang == 'ru' ? 'Политические взгляды' : 'Political views'} info={getPoliticalViewsByNum(political)}/>
       }
       {
-        langs && <PersonalListItem title={'Langs'} info={langs}/>
+        langs && <PersonalListItem title={lang == 'ru' ? 'Языки' : 'Langs'} info={langs}/>
       }
       {
-        lifeMain && <PersonalListItem title={'Life Main'} info={getLifeMainByNum(lifeMain)}/>
+        lifeMain && <PersonalListItem title={lang == 'ru' ? "Главное в жизни" : 'Life Main'} info={getLifeMainByNum(lifeMain)}/>
       }
       {
-        peopleMain ? <PersonalListItem title={'People Main'} info={getPeopleMainByNum(peopleMain)}/> : null
+        peopleMain ? <PersonalListItem title={lang == 'ru' ? 'Главное в людях' : 'People Main'} info={getPeopleMainByNum(peopleMain)}/> : null
       }
       {
-        inspiredBy  ? <PersonalListItem title={'Inspired By'} info={inspiredBy}/> : null
+        inspiredBy  ? <PersonalListItem title={lang == 'ru' ? 'Вдохновляет' : 'Inspired By'} info={inspiredBy}/> : null
       } 
       {
-        smoking ? <PersonalListItem title={'Smoking'} info={getAlcoholSmokingRelByNum(smoking)}/> : null
+        smoking ? <PersonalListItem title={lang == 'ru' ? 'Отношение к курению' : 'Smoking'} info={getAlcoholSmokingRelByNum(smoking)}/> : null
       }
       {
-        alcohol ? <PersonalListItem title={'Alcohol'} info={getAlcoholSmokingRelByNum(alcohol)}/> : null
+        alcohol ? <PersonalListItem title={lang == 'ru' ? 'Отношение к алкоголю' : 'Alcohol'} info={getAlcoholSmokingRelByNum(alcohol)}/> : null
       }
     </View>
   

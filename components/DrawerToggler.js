@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
   },
   textIconContainer: {
     flexDirection: 'row',
-    width: '65%',
+    width: '75%',
+    alignItems: 'center'
   },
   text: {
     color: COLORS.white,

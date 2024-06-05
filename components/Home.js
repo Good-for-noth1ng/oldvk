@@ -2,6 +2,7 @@ import { StyleSheet, Image, View, Text } from 'react-native'
 import React from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useSelector } from 'react-redux';
+import * as Localization from 'expo-localization'
 import Entypo from 'react-native-vector-icons/Entypo'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -24,6 +25,7 @@ import { COLORS } from '../constants/theme';
 const Drawer = createDrawerNavigator()
 const Home = () => {
   const userData = useSelector(state => state.user)
+  const lang = Localization.getLocales()[0].languageCode
   const urlDrawerPhoto = userData.userProfileDrawerPhotoUrl
   const userName = `${userData.firstName} ${userData.lastName}`
   return (
@@ -64,21 +66,21 @@ const Home = () => {
           ),
           headerShown: false,
           // drawer: 'Friends'
-          drawerLabel: 'Friends'
+          drawerLabel: lang == 'ru' ? 'Друзья' : 'Friends'
         }}/>
         <Drawer.Screen name='PhotosRoute' component={PhotosRoute} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='camera' size={20} color={color}/>
           ),
           headerShown: false,
-          drawerLabel: 'Photos',
+          drawerLabel: lang == 'ru' ? 'Фото' : 'Photos',
         }}/>
         <Drawer.Screen name='VideosRoute' component={VideosRoute} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='film' size={20} color={color}/>
           ),
           headerShown: false,
-          drawerLabel: 'Videos'
+          drawerLabel: lang == 'ru' ? 'Видео' : 'Videos'
         }}/>
         {/* <Drawer.Screen name='Audio' component={Audio} options={{
           drawerIcon: ({color}) => (
@@ -90,19 +92,21 @@ const Home = () => {
             <FontAwesome name='envelope' size={20} color={color}/>
           ),
           headerShown: false,
-          drawerLabel: 'Messages'
+          drawerLabel: lang == 'ru' ? 'Сообщения' : 'Messages'
         }}/>
         <Drawer.Screen name='Communities' component={GropsRoute} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='users' size={20} color={color}/>
           ),
-          headerShown: false
+          headerShown: false,
+          drawerLabel: lang == 'ru' ? 'Сообщества' : 'Communities'
         }}/>
         <Drawer.Screen name='Newsfeed' component={NewsRoute} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='list-alt' size={20} color={color}/>
           ),
-          headerShown: false
+          headerShown: false,
+          drawerLabel: lang == 'ru' ? 'Новости' : 'Newsfeed'
         }}/>
         {/* <Drawer.Screen name='Answers' component={Answers} options={{
           drawerIcon: ({color}) => (
@@ -114,13 +118,14 @@ const Home = () => {
             <Entypo name='star' size={20} color={color}/>
           ),
           headerShown: false,
-          drawerLabel: 'Favorite'
+          drawerLabel: lang == 'ru' ? 'Избранное' : 'Favorite'
         }}/>
         <Drawer.Screen name='Options' component={OptionsRoute} options={{
           drawerIcon: ({color}) => (
             <FontAwesome name='gear' size={20} color={color}/>
           ),
           headerShown: false,
+          drawerLabel: lang == 'ru' ? 'Настройки' : 'Settings'
           
         }}/>
         <Drawer.Screen 

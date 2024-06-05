@@ -3,7 +3,7 @@ import React from 'react'
 import Feather from 'react-native-vector-icons/Feather'
 import { COLORS } from '../constants/theme'
 
-const AlbumListItem = ({id, navigation, ownerId, albumTitle, albumItemsCount, type, imageUrl, isLightTheme}) => {
+const AlbumListItem = ({id, navigation, ownerId, albumTitle, albumItemsCount, type, imageUrl, isLightTheme, lang}) => {
   let shortagedTitle = albumTitle.slice(0, 40)
   if (shortagedTitle !== albumTitle) {
     shortagedTitle += '...'
@@ -27,7 +27,7 @@ const AlbumListItem = ({id, navigation, ownerId, albumTitle, albumItemsCount, ty
       />
       <View>
         <Text style={[styles.title, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>{shortagedTitle}</Text>
-        <Text style={styles.quantity}>{albumItemsCount} {type === 'photos' ? 'photos' : 'videos'}</Text>
+        <Text style={styles.quantity}>{albumItemsCount} {type === 'photos' ? lang == 'ru' ? 'фото' : 'photos' : lang == 'ru' ? 'видео' : 'videos'}</Text>
       </View>
       <TouchableOpacity>
         <Feather name='more-vertical' color={COLORS.secondary} size={20}/>

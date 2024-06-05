@@ -7,7 +7,7 @@ import { getTimeDate } from '../utils/date'
 import { useDispatch } from 'react-redux'
 import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
 
-const PostHeader = ({dataDate, isRepost, navigation, isLightTheme, onMorePress, isPinned, author, ownerId, shouldShowMoreButton, data, fromNewsfeed, setShowNotInterested, func}) => {  
+const PostHeader = ({lang, dataDate, isRepost, navigation, isLightTheme, onMorePress, isPinned, author, ownerId, shouldShowMoreButton, data, fromNewsfeed, setShowNotInterested, func}) => {  
   const dispatch = useDispatch()
   const name = author?.name ? author?.name : `${author?.first_name} ${author?.last_name}`
   const imgUrl = author?.photo_100
@@ -68,7 +68,7 @@ const PostHeader = ({dataDate, isRepost, navigation, isLightTheme, onMorePress, 
             }
           </View>
           <Text style={postTimeTextStyle}>
-            {getTimeDate(dataDate)}
+            {getTimeDate(dataDate, lang)}
           </Text>
         </View>
       </TouchableOpacity>

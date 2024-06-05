@@ -6,7 +6,7 @@ import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
 
-const VideoHeader = ({ ownerId, date, isLightTheme, navigation, name, imgUrl, isMember, isFriend }) => {
+const VideoHeader = ({ ownerId, date, isLightTheme, navigation, name, imgUrl, isMember, isFriend, lang }) => {
   const dispatch = useDispatch()
   const dropdownCoords = React.useRef()
 
@@ -26,14 +26,14 @@ const VideoHeader = ({ ownerId, date, isLightTheme, navigation, name, imgUrl, is
       navigation.push('Group', { groupId: -1 * ownerId })
     }
   }
-
+  
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.vidPubContainer} onPress={onProfilePress}>
         <Image source={{uri: imgUrl}} style={styles.image}/>
-        <View>
-          <Text numberOfLines={2} style={[styles.name, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>{name}</Text>
-          <Text style={styles.date}>{getTimeDate(date)}</Text>
+        <View style={{width: '80%'}}>
+          <Text numberOfLines={1} style={[styles.name, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>{name}</Text>
+          <Text style={styles.date}>{getTimeDate(date, lang)}</Text>
         </View>
       </TouchableOpacity>
       <View style={styles.actionsContainer}>
@@ -45,7 +45,7 @@ const VideoHeader = ({ ownerId, date, isLightTheme, navigation, name, imgUrl, is
           }  
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.8} onPress={openDropdown}>
-          <View ref={dropdownCoords}>
+          <View ref={dropdownCoords} collapsable={false}>
             <Feather name='more-vertical' size={23} color={COLORS.secondary}/>
           </View>
         </TouchableOpacity>

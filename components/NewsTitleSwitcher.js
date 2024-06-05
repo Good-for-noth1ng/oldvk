@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, Animated, TouchableOpacity, Easing } from 'react-native'
 import React from 'react'
 import Entypo from 'react-native-vector-icons/Entypo'
+import * as Localization from 'expo-localization'
 import {Dropdown} from 'react-native-element-dropdown'
 import { COLORS } from '../constants/theme';
 import { setCurrentPage } from '../redux/newsSlice';
@@ -8,6 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 
 const NewsTitleSwitcher = ({ isLightTheme }) => {
   const dispatch = useDispatch()
+  const lang = Localization.getLocales()[0].languageCode
   const currentPage = useSelector(state => state.news.currentPage)
   const anim = React.useRef(new Animated.Value(0)).current
   const [isPressed, setIsPressed] = React.useState(false)
@@ -72,7 +74,13 @@ const NewsTitleSwitcher = ({ isLightTheme }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.title} onPress={onNewsTypePress}>
-        <Text style={styles.selectedTextStyle}>{currentPage}</Text>
+        <Text style={styles.selectedTextStyle}>
+          {
+            lang == 'ru' ?
+            currentPage == 'News' ? 'Новости' : 'Рекоммендации' :
+            currentPage 
+          }
+        </Text>
         <Animated.View style={{transform: [{rotate: rotation}],}}>
           <Entypo name='chevron-down' color={COLORS.white} size={20}/>
         </Animated.View>
@@ -93,7 +101,7 @@ const NewsTitleSwitcher = ({ isLightTheme }) => {
           ]} 
           onPress={onNewsOptionPress}
         >
-          <Text style={[styles.option, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>News</Text>
+          <Text style={[styles.option, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>{lang == 'ru' ? 'Новости' : 'News'}</Text>
         </TouchableOpacity>
         <TouchableOpacity 
           style={[
@@ -104,7 +112,7 @@ const NewsTitleSwitcher = ({ isLightTheme }) => {
           ]} 
           onPress={onRecommendedOptionPress}
         >
-          <Text style={[styles.option, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>Recommended</Text>
+          <Text style={[styles.option, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>{lang == 'ru' ? 'Рекоммендации' : 'Recommended'}</Text>
         </TouchableOpacity>
       </Animated.View>
       <Animated.View style={{width: shadow, height: shadow, position: 'absolute', left: '-100%'}}>
@@ -129,7 +137,7 @@ const styles = StyleSheet.create({
     zIndex: 3,
     elevation: 15,
     position: 'relative',
-    width: 150,
+    width: 170,
     borderRadius: 5,
   },
   title: {

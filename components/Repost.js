@@ -16,7 +16,7 @@ import { useDispatch } from 'react-redux'
 import { COLORS } from '../constants/theme'
 import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
 
-const Repost = ({ data, navigation, openedPost, isLightMode, id, accessToken, func }) => {
+const Repost = ({ data, navigation, openedPost, isLightMode, id, accessToken, func, lang }) => {
   let postPhotos = []
   let postDocs = []
   let postLinks = []

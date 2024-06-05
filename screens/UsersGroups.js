@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ActivityIndicator } from 'react-native'
 import React, { useRef, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
+import * as Localization from 'expo-localization'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomHeader from '../components/CustomHeader'
 import DividerWithLine from '../components/DividerWithLine'
@@ -8,6 +9,7 @@ import GroupListItem from '../components/GroupListItem';
 import { COLORS } from '../constants/theme'
 
 const UsersGroups = ({ navigation, route }) => {
+  const lang = Localization.getLocales()[0].languageCode
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const [isLoading, setIsLoading] = useState(true)
@@ -18,7 +20,6 @@ const UsersGroups = ({ navigation, route }) => {
   const { userId } = route.params
   
   const fetchUsersGroups = async () => {
-    console.log('render')
     const fetchUsetrsGroupsUrl = `https://api.vk.com/method/groups.get?access_token=${accessToken}&v=5.131&extended=1&fields=activity,members_count&count=${count}&offset=${offset.current}&user_id=${userId}`
     const response = await fetch(fetchUsetrsGroupsUrl)
     const data = await response.json()
@@ -29,15 +30,14 @@ const UsersGroups = ({ navigation, route }) => {
     }
     offset.current += count
     setGroups(prevState => prevState.concat(data.response.items))
+    setIsLoading(false)
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchUsersGroups()
-    setIsLoading(false)
   }, [])
 
   const fetchMoreUsersGroups = () => {
-    console.log('fetch more')
     if(remainToFetchNum.current > 0) {
       fetchUsersGroups()
     }
@@ -54,6 +54,7 @@ const UsersGroups = ({ navigation, route }) => {
         data={item}
         isLightTheme={isLightTheme}
         navigation={navigation}
+        lang={lang}
       />
     )
   }
@@ -104,10 +105,9 @@ const UsersGroups = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
-      <StatusBar barStyle={COLORS.white} backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark}/>
       <CustomHeader 
         isLightTheme={isLightTheme}
-        headerName={<Text style={styles.headerTextStyle}>Communities</Text>}
+        headerName={<Text style={styles.headerTextStyle}>{lang == 'ru' ? 'Сообщества' : 'Communities'}</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />

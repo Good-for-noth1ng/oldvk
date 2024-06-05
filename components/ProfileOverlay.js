@@ -12,7 +12,7 @@ import { getTimeDate } from '../utils/date'
 
 const width = Dimensions.get('window').width
 
-const ProfileOverlay = ({ isLightTheme, navigation }) => {
+const ProfileOverlay = ({ isLightTheme, navigation, lang }) => {
   const dispatch = useDispatch()
   const commentsGeneralData = useSelector(state => state.userRegDate);
   const shouldPerformAnim = React.useRef(false);
@@ -67,30 +67,30 @@ const ProfileOverlay = ({ isLightTheme, navigation }) => {
                     <ActivityIndicator size={30} color={isLightTheme ? COLORS.primary : COLORS.white}/>
                   </View>:
                     registrationDate !== 0 ? 
-                      <Text style={styles.registredText}>Registred: {getTimeDate(registrationDate)}</Text> :
+                      <Text style={styles.registredText}>{lang == 'ru' ? 'Профиль создан' : 'Registred'}: {getTimeDate(registrationDate)}</Text> :
                       null
                 }
         </View>
-        <View style={{flexDirection: 'row', justifyContent: 'center', }}>
-          <View style={{flexDirection: 'row', gap: 40, padding: 10}}>
+        <View style={[{flexDirection: 'row', justifyContent: 'center',}]}>
+          <View style={[{flexDirection: 'row', gap: 40, padding: 10}, lang == 'ru' &&  {flexDirection: 'column'}]}>
             <TouchableOpacity activeOpacity={0.8} style={styles.commentMenuButton}>
               <MaterialCommunityIcons name='content-copy' color={isLightTheme ? COLORS.primary : COLORS.white} size={25}/>
               <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>
-                Copy
+                {lang == 'ru' ? 'Копировать' : 'Copy'}
               </Text>
             </TouchableOpacity>
               
             <TouchableOpacity style={styles.commentMenuButton}>
               <Ionicons name='arrow-redo-outline' color={isLightTheme ? COLORS.primary : COLORS.white} size={25}/>
               <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>
-                Share
+                {lang == 'ru' ? 'Поделиться' : 'Share'}
               </Text>
             </TouchableOpacity>
               
             <TouchableOpacity style={styles.commentMenuButton}>
               <Octicons name='report' color={isLightTheme ? COLORS.primary : COLORS.white} size={25}/>
               <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>
-                Report
+                {lang == 'ru' ? 'Пожаловаться' : 'Report'}
               </Text>
             </TouchableOpacity>
           </View>

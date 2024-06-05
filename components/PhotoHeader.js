@@ -6,7 +6,7 @@ import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
 
-const PhotoHeader = ({ ownerId, date, isLightTheme, navigation, name, imgUrl, isMember, isFriend }) => {
+const PhotoHeader = ({ ownerId, date, isLightTheme, navigation, name, imgUrl, isMember, isFriend, lang }) => {
   const onProfilePress = () => {
     if (ownerId > 0) {
       navigation.push('UserProfile', { userId: ownerId })
@@ -20,7 +20,7 @@ const PhotoHeader = ({ ownerId, date, isLightTheme, navigation, name, imgUrl, is
         <Image source={{uri: imgUrl}} style={styles.image}/>
         <View>
           <Text style={[styles.name, isLightTheme ? {color: COLORS.black} : {color: COLORS.white}]}>{name}</Text>
-          <Text style={styles.date}>{getTimeDate(date)}</Text>
+          <Text style={styles.date}>{getTimeDate(date, lang)}</Text>
         </View>
       </TouchableOpacity>
       <View style={styles.actionsContainer}>

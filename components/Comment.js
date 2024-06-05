@@ -12,7 +12,7 @@ import DividerWithLine from './DividerWithLine'
 import CommentAttachments from './CommentAttachments'
 import { getHyperlinkInText } from '../utils/hyperlinks'
 
-const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, likes, threadCount, threadComments, commentId, navigation, postId, ownerId, isLightTheme, openCommentMenu, author}) => {
+const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, likes, threadCount, threadComments, commentId, navigation, postId, ownerId, isLightTheme, openCommentMenu, author, lang}) => {
   const dispatch = useDispatch() 
   const name = author?.name ? author?.name : `${author?.first_name} ${author?.last_name}`
   const photoUrl = author?.photo_100
@@ -131,7 +131,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
           </TouchableOpacity>
           <View style={styles.commentConentContainer}>
             {
-              is_deleted ? <View style={styles.deltedContainer}><Text style={styles.deletedText}>Comment deleted</Text></View> : 
+              is_deleted ? <View style={styles.deltedContainer}><Text style={styles.deletedText}>{lang == 'ru' ? 'Комментарий удален' : 'Comment deleted'}</Text></View> : 
               <>
                 <TouchableOpacity activeOpacity={1} onPress={navigateToCommentAuthor}>
                   <Text style={[styles.authorName, isLightTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>{name}</Text>
@@ -155,7 +155,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
                 }
               </>
             }
-            <CommentBottom likesCount={likesCount} handleLikePress={handleLikePress} date={commentDate} isLiked={isLiked}/>
+            <CommentBottom lang={lang} likesCount={likesCount} handleLikePress={handleLikePress} date={commentDate} isLiked={isLiked}/>
           </View>
         </Animated.View>
       </Pressable>
@@ -170,6 +170,7 @@ const Comment = ({from_id, is_deleted, attachments, commentText, commentDate, li
         ownerId={ownerId}
         isLightTheme={isLightTheme}
         openCommentMenu={openCommentMenu}
+        lang={lang}
       />
     </>
   )

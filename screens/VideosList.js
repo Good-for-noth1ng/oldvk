@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator } fr
 import React from 'react'
 import uuid from 'react-native-uuid';
 import { useSelector } from 'react-redux'
+import * as Localization from 'expo-localization'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Entypo from 'react-native-vector-icons/Entypo'
 import CustomHeader from '../components/CustomHeader'
@@ -16,6 +17,7 @@ import VideosListDropdownMenu from '../components/VideosListDropdownMenu';
 import Dropdown from '../components/Dropdown';
 
 const VideosList = ({ navigation, route }) => {
+  const lang = Localization.getLocales()[0].languageCode
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const currentUserId = useSelector(state => state.user.userId)
@@ -25,7 +27,7 @@ const VideosList = ({ navigation, route }) => {
   const [videosList, setVideosList] = React.useState([])
   const [albumsList, setAlbumsList] = React.useState([])
   const [videosCount, setVideosCount] = React.useState(0)
-  const [videosCounterName, setVideosCounterName] = React.useState('All videos')
+  const [videosCounterName, setVideosCounterName] = React.useState(lang == 'ru' ? 'Все видео' : 'All videos')
 
   const count = 10
   const offset = React.useRef(0)
@@ -64,7 +66,7 @@ const VideosList = ({ navigation, route }) => {
       numOfAlbums.current = albums.response.count
       offset.current += count
       setVideosCount(data.response.count)
-      setVideosCounterName('All videos')
+      setVideosCounterName(lang == 'ru' ? 'Все видео' : 'All videos')
       setAlbumsList(albums.response.items)
     } else {
       offset.current += count 
@@ -139,6 +141,7 @@ const VideosList = ({ navigation, route }) => {
             navigation={navigation}
             ownerId={ownerId}
             dataLengthFetched={count}
+            lang={lang}
           /> : null
         }
         <SearchResultHeaderCounter 
@@ -177,6 +180,7 @@ const VideosList = ({ navigation, route }) => {
         commentsCount={item.comments}
         canComment={item.can_comment}
         videoId={item.id}
+        lang={lang}
       />
     )
   }
@@ -229,7 +233,7 @@ const VideosList = ({ navigation, route }) => {
     return {
       items: videoItems,
       videosNum,
-      counterName: 'Search result'
+      counterName: lang == 'ru' ? 'Результаты поиска' : 'Search result'
     }
   }
 
@@ -265,7 +269,7 @@ const VideosList = ({ navigation, route }) => {
       ]}>
       <CustomHeader 
         isLightTheme={isLightTheme}
-        headerName={<Text style={styles.headerTextStyle}>Videos</Text>}
+        headerName={<Text style={styles.headerTextStyle}>{lang == 'ru' ? 'Видео' : 'Videos'}</Text>}
         iconComponent={
           currentUserId === ownerId ?
           <Entypo name='menu' color={COLORS.white} size={30}/> :
@@ -277,6 +281,7 @@ const VideosList = ({ navigation, route }) => {
         onCleaningInput={initVideosList}
         navigation={navigation}
         isScreenFromDrawerMenu={ownerId === currentUserId}
+        lang={lang}
       />
       {
         isLoading ?

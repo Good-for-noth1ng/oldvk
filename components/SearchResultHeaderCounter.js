@@ -3,7 +3,7 @@ import React from 'react'
 import { getShortagedNumber } from '../utils/numShortage'
 import { COLORS } from '../constants/theme'
 
-const SearchResultHeaderCounter = ({ counterNum, isLightTheme, counterName, handleShowMorePress }) => {
+const SearchResultHeaderCounter = ({ counterNum, isLightTheme, counterName, handleShowMorePress, lang }) => {
   const onShowMore = () => {
     handleShowMorePress()
   }
@@ -16,7 +16,7 @@ const SearchResultHeaderCounter = ({ counterNum, isLightTheme, counterName, hand
       {
         handleShowMorePress ?
         <TouchableOpacity onPress={onShowMore}>
-          <Text style={styles.showMore}>Show more</Text>
+          <Text style={styles.showMore}>{lang == 'ru' ? 'Показать ещё' : 'Show more'}</Text>
         </TouchableOpacity> : null
       }
     </View>

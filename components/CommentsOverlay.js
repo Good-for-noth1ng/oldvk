@@ -10,7 +10,7 @@ import { COLORS } from '../constants/theme'
 import { getTimeDate } from '../utils/date'
 
 const width = Dimensions.get('window').width
-const CommentsOverlay = ({ slideAnimation, isLightTheme, navigation }) => {
+const CommentsOverlay = ({ slideAnimation, isLightTheme, navigation, lang }) => {
   const commentsGeneralData = useSelector(state => state.comments); 
   
   const authorName = commentsGeneralData.authorName;
@@ -55,7 +55,7 @@ const CommentsOverlay = ({ slideAnimation, isLightTheme, navigation }) => {
               <View style={styles.registredContainer}>
                 {
                   registrationDate !== 0 ? 
-                  <Text style={styles.registredText}>Registred: {getTimeDate(registrationDate)}</Text> :
+                  <Text style={[styles.registredText, , lang == 'ru' && {fontSize: 15}]}>{lang == 'ru' ? 'Профиль создан' : 'Registred'}: {getTimeDate(registrationDate, lang)}</Text> :
                   null
                 }
               </View>
@@ -63,48 +63,48 @@ const CommentsOverlay = ({ slideAnimation, isLightTheme, navigation }) => {
           }
           
           
-          <View style={{flexDirection: 'row', justifyContent: 'center', }}>
-            <View style={{height: 200, alignItems: 'flex-start', paddingLeft: 30, paddingRight: 30}}>
+          <View style={{flexDirection: 'row', justifyContent: 'center', gap: 15}}>
+            <View style={{height: 200, alignItems: 'flex-start'}}>
               {
                 authorId !== 0 ?
                 <TouchableOpacity activeOpacity={0.8} onPress={navigateToUserProfile} style={styles.commentMenuButton}>
                   <Feather name='user' color={isLightTheme ? COLORS.primary : COLORS.white} size={22}/>
-                  <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>
-                    {authorId > 0 ? 'Profile' : 'Community'}
+                  <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}, lang == 'ru' && {fontSize: 16}]}>
+                    {authorId > 0 ? lang == 'ru' ? 'Профиль' : 'Profile' : lang == 'ru' ? 'Сообщество' : 'Community'}
                   </Text>
                 </TouchableOpacity> :
                 null
               }
               <TouchableOpacity style={styles.commentMenuButton}>
                 <Ionicons name='arrow-undo-outline' color={isLightTheme ? COLORS.primary : COLORS.white} size={22} />
-                <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>Reply</Text>
+                <Text style={[styles.commentMenuButtonText, lang == 'ru' && {fontSize: 16}, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>{lang == 'ru' ? 'Ответить' : 'Reply'}</Text>
               </TouchableOpacity>
                 
               <TouchableOpacity activeOpacity={0.8} onPress={navigateToUserList} style={styles.commentMenuButton}>
                 <Feather name='users' color={isLightTheme ? COLORS.primary : COLORS.white} size={22}/>
-                <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>Liked</Text>
+                <Text style={[styles.commentMenuButtonText, lang == 'ru' && {fontSize: 16} , isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>{lang == 'ru' ? 'Понравилось' : 'Liked'}</Text>
               </TouchableOpacity>
             </View>
 
-            <View style={{height: 200, alignItems: 'flex-start', paddingLeft: 30, paddingRight: 30}}>
+            <View style={{height: 200, alignItems: 'flex-start',}}>
               <TouchableOpacity activeOpacity={0.8} onPress={copyCommentText} style={styles.commentMenuButton}>
                 <MaterialCommunityIcons name='content-copy' color={isLightTheme ? COLORS.primary : COLORS.white} size={22}/>
-                <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>
-                  Copy
+                <Text style={[styles.commentMenuButtonText, lang == 'ru' && {fontSize: 16}, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>
+                  {lang == 'ru' ? 'Копировать' : 'Copy'}
                 </Text>
               </TouchableOpacity>
               
               <TouchableOpacity style={styles.commentMenuButton}>
                 <Ionicons name='arrow-redo-outline' color={isLightTheme ? COLORS.primary : COLORS.white} size={22}/>
-                <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>
-                  Share
+                <Text style={[styles.commentMenuButtonText, lang == 'ru' && {fontSize: 16}, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>
+                  {lang == 'ru' ? 'Поделиться' : 'Share'}
                 </Text>
               </TouchableOpacity>
               
               <TouchableOpacity style={styles.commentMenuButton}>
                 <Octicons name='report' color={isLightTheme ? COLORS.primary : COLORS.white} size={22}/>
-                <Text style={[styles.commentMenuButtonText, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>
-                  Report
+                <Text style={[styles.commentMenuButtonText, lang == 'ru' && {fontSize: 16}, isLightTheme ? {color: COLORS.primary} : {color: COLORS.white}]}>
+                  {lang == 'ru' ? 'Пожаловаться' : 'Report'}
                 </Text>
               </TouchableOpacity>
             </View>

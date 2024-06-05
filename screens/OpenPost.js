@@ -1,6 +1,7 @@
 import { StyleSheet, View, ActivityIndicator, Text, SafeAreaView, Animated, BackHandler, Dimensions } from 'react-native'
 import React from 'react'
 import { FlatList } from "react-native-gesture-handler";
+import * as Localization from 'expo-localization'
 import { useSelector, useDispatch } from 'react-redux'
 import { useFocusEffect } from '@react-navigation/native';
 import uuid from 'react-native-uuid'
@@ -30,6 +31,7 @@ import GlobalShadow from '../components/GlobalShadow';
 import Dropdown from '../components/Dropdown';
 
 const OpenPost = ({navigation, route}) => {
+  const lang = Localization.getLocales()[0].languageCode
   const dispatch = useDispatch()
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const isGlobalShadowExpanded = useSelector(state => state.globalShadow.isOpen)
@@ -219,6 +221,7 @@ const OpenPost = ({navigation, route}) => {
       isLightTheme={isLightTheme}
       openCommentMenu={openCommentMenu}
       author={item.author}
+      lang={lang}
     />
   )
 
@@ -244,6 +247,7 @@ const OpenPost = ({navigation, route}) => {
             isLigthTheme={isLightTheme}
             id={post.key}
             accessToken={accessToken}
+            lang={lang}
           />
           <OpenedPostBottom 
             likes={post?.likes?.count} 
@@ -255,6 +259,7 @@ const OpenPost = ({navigation, route}) => {
             ownerId={post.owner_id ? post.owner_id : post.source_id}
             postId={post.id ? post.id : post.post_id}
             commentsSortType={commentsSortType}
+            lang={lang}
             // setCommentsSortType={setCommentsSortType}
           />
         </>
@@ -269,6 +274,7 @@ const OpenPost = ({navigation, route}) => {
           isLightMode={isLightTheme} 
           id={post.key}
           accessToken={accessToken}
+          lang={lang}
         />
         <OpenedPostBottom 
           likes={post?.likes?.count} 
@@ -333,7 +339,7 @@ const OpenPost = ({navigation, route}) => {
       ]}
     >
       <CustomHeader 
-        headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>Post</Text>}
+        headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>{lang == 'ru' ? 'Пост' : 'Post'}</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={handleNavigationBack}
         isLightTheme={isLightTheme}
@@ -367,13 +373,14 @@ const OpenPost = ({navigation, route}) => {
             onScrollToIndexFailed={() => {}}
           />
           
-          { comments ? <TextInputField isLightTheme={isLightTheme}/> : null}
+          { comments ? <TextInputField isLightTheme={isLightTheme} lang={lang}/> : null}
         </>
       }
       <CommentsOverlay 
         slideAnimation={slideAnimation}
         isLightTheme={isLightTheme}
         navigation={navigation}
+        lang={lang}
       />
       <GlobalShadow />
       <Dropdown isLightTheme={isLightTheme} accessToken={accessToken}/>

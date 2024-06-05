@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, SafeAreaView, ActivityIndicator } from 'react-n
 import React from 'react'
 import { useSelector } from 'react-redux';
 import { FlatList } from "react-native-gesture-handler";
+import * as Localization from 'expo-localization'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomHeader from '../components/CustomHeader'
 import UserListItem from '../components/UserListItem'
@@ -9,6 +10,7 @@ import DividerWithLine from '../components/DividerWithLine'
 import { COLORS } from '../constants/theme'
 
 const ReactedOnPhoto = ({ navigation, route }) => {
+  const lang = Localization.getLocales()[0].languageCode
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const [isLoading, setIsLoading] = React.useState(true)
@@ -111,7 +113,7 @@ const ReactedOnPhoto = ({ navigation, route }) => {
     <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
       <CustomHeader 
         isLightTheme={isLightTheme}
-        headerName={<Text style={styles.headerTextStyle}>Reactions</Text>}
+        headerName={<Text style={styles.headerTextStyle}>{lang == 'ru' ? 'Понравилось' : 'Reactions'}</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />
@@ -133,7 +135,7 @@ const ReactedOnPhoto = ({ navigation, route }) => {
           />
             : 
           <View style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center'}}>
-            <Text style={{color: COLORS.secondary, fontSize: 17, fontWeight: 'bold',}}>No reactions</Text>
+            <Text style={{color: COLORS.secondary, fontSize: 17, fontWeight: 'bold',}}>{lang == 'ru' ? 'Нет лайков' : 'No reactions'}</Text>
           </View>
       }
     </SafeAreaView>

@@ -1,30 +1,86 @@
-import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Animated, BackHandler } from 'react-native'
 import React from 'react'
+import * as Localization from 'expo-localization'
 import { FlatList } from "react-native-gesture-handler";
 import uuid from 'react-native-uuid';
-import { useSelector } from 'react-redux'
+import { useFocusEffect } from '@react-navigation/native';
+import { useSelector, useDispatch } from 'react-redux'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomHeader from '../components/CustomHeader'
 import VideosListItem from '../components/VideosListItem'
+import Dropdown from '../components/Dropdown';
+import { expandShadow, collapseShadow } from '../redux/globalShadowSlice';
+import CommentsOverlay from '../components/CommentsOverlay';
 import DividerWithLine from '../components/DividerWithLine'
+import TextInputField from '../components/TextInputField';
 import { setProfiles, closeAuthorInfo, pushProfiles, setGroups, pushGroups } from '../redux/commentsSlice'
 import Comment from '../components/Comment';
 import { COLORS } from '../constants/theme'
+import GlobalShadow from '../components/GlobalShadow';
 
 const VideoComments = ({ navigation, route }) => {
+  const dispatch = useDispatch()
+  const isGlobalShadowExpanded = useSelector(state => state.globalShadow.isOpen)
+  const lang = Localization.getLocales()[0].languageCode
   const [isLoading, setIsLoading] = React.useState(true)
   const [comments, setComments] = React.useState([])
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const count = 10
   const offset = React.useRef(0)
+  const slideAnimation = React.useRef(new Animated.Value(2000)).current
   const remainToFetchNum = React.useRef(null)
   const {ownerId, videoId} = route.params
+  const authorInfoIsOpen = React.useRef(false)
   
+  const closeCommentMenu = () => {
+    authorInfoIsOpen.current = false
+    dispatch(collapseShadow())
+    Animated.timing(slideAnimation, {
+      toValue: 2000,
+      duration: 500,
+      useNativeDriver: true
+    }).start()
+  }
+
+  const openCommentMenu = () => {
+    authorInfoIsOpen.current = true 
+    dispatch(expandShadow({dropdownType: 'none'}))
+    Animated.timing(slideAnimation, {
+      toValue: 100,
+      duration: 500,
+      useNativeDriver: true
+    }).start()
+  }
+
+  React.useEffect(() => {
+    if (isGlobalShadowExpanded == false) {
+      closeCommentMenu()
+    }
+  }, [isGlobalShadowExpanded])
+  
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        if (authorInfoIsOpen.current === true) {
+          closeCommentMenu()
+          return true
+        }
+        return false
+      }
+      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress)
+      return () => subscription.remove()
+    }, [authorInfoIsOpen.current])
+  )
+
+
+  
+
   const fetchComments = async () => {
     const url = `https://api.vk.com/method/video.getComments?access_token=${accessToken}&v=5.131&video_id=${videoId}&need_likes=1&owner_id=${ownerId}&count=${count}&sort=asc&offset=${offset.current}&fields=photo_100&extended=1`
     const response = await fetch(url)
     const data = await response.json()
+    console.log(data.response)
     if (remainToFetchNum.current === null) {
       // console.log(data)
       remainToFetchNum.current = data.response.count - count
@@ -85,8 +141,9 @@ const VideoComments = ({ navigation, route }) => {
         attachments={item?.attachments}
         is_deleted={item.deleted}
         isLightTheme={isLightTheme}
-       // openCommentMenu={openCommentMenu}
+        openCommentMenu={openCommentMenu}
         author={item.author}
+        lang={lang}
       />
     )
   }
@@ -132,10 +189,9 @@ const VideoComments = ({ navigation, route }) => {
   return (
     <SafeAreaView 
         style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
-      <StatusBar barStyle={COLORS.white} backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark}/>
       <CustomHeader 
         isLightTheme={isLightTheme}
-        headerName={<Text style={styles.headerTextStyle}>Comments</Text>}
+        headerName={<Text style={styles.headerTextStyle}>{lang == 'ru' ? 'Комментарии' : 'Comments'}</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />
@@ -144,20 +200,31 @@ const VideoComments = ({ navigation, route }) => {
         <View style={styles.activityContainer}>
           <ActivityIndicator size={50} color={isLightTheme ? COLORS.primary : COLORS.white}/>
         </View> :
-        <FlatList 
-          data={comments}
-          renderItem={renderItem}
-          ListHeaderComponent={listHeader}
-          style={[
-            {marginLeft: 5, marginRight: 5}, 
+        <>
+          <FlatList 
+            data={comments}
+            renderItem={renderItem}
+            ListHeaderComponent={listHeader}
+            style={[
+              {marginLeft: 5, marginRight: 5}, 
             // isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}
-          ]}
-          showsVerticalScrollIndicator={false}
-          ListFooterComponent={footer}
-          onEndReached={fetchMore}
-          ItemSeparatorComponent={listSeparator}
-        />
+            ]}
+            showsVerticalScrollIndicator={false}
+            ListFooterComponent={footer}
+            onEndReached={fetchMore}
+            ItemSeparatorComponent={listSeparator}
+          />
+          <TextInputField isLightTheme={isLightTheme} lang={lang}/>
+        </>
       }
+      <CommentsOverlay
+        slideAnimation={slideAnimation} 
+        isLightTheme={isLightTheme}
+        navigation={navigation}
+        lang={lang}
+      />
+      <GlobalShadow />
+      <Dropdown isLightTheme={isLightTheme} accessToken={accessToken}/>
     </SafeAreaView>
   )
 }

@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Image, Modal, Dimensions, TouchableOpacity, Animated } from 'react-native'
 import React from 'react'
+import * as Localization from 'expo-localization'
 import { FlatList } from "react-native-gesture-handler";
 import { useSelector } from 'react-redux'
 import uuid from 'react-native-uuid';
@@ -18,6 +19,7 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 
 const screenWidth = Dimensions.get('window').width
 const AlbumPhotos = ({ navigation, route }) => {
+  const lang = Localization.getLocales()[0].languageCode
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const [photosList, setPhotosList] = React.useState([])
@@ -168,7 +170,6 @@ const AlbumPhotos = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
-      <StatusBar barStyle={COLORS.white} backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} />
       <CustomHeader 
         isLightTheme={isLightTheme}
         headerName={<Text style={styles.headerTextStyle}>{headerTitle}</Text>}

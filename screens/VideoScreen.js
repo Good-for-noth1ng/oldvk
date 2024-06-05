@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, ScrollView, Dimensions } from 'react-native'
 import React from 'react'
 import { WebView } from 'react-native-webview'
+import * as Localization from 'expo-localization'
 import { useSelector } from 'react-redux'
 import CustomHeader from '../components/CustomHeader'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -19,6 +20,7 @@ import Dropdown from '../components/Dropdown'
 const width = Dimensions.get('window').width
 
 const VideoScreen = ({navigation, route}) => {
+  const lang = Localization.getLocales()[0].languageCode
   const { playerUrl, title, views, ownerId, likes, reposts, isLiked, isReposted, date, canLike, canAdd, canAddToFavs, commentsCount, canComment, videoId, accessKey, isShortVideo } = route.params
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
@@ -58,7 +60,7 @@ const VideoScreen = ({navigation, route}) => {
       // console.log(getVideoUrl)  
       const videoResponse = await fetch(getVideoUrl)
       const videoData = await videoResponse.json()
-      console.log(videoData.response.items[0])
+      // console.log(videoData)
       setLikesCount(videoData.response.items[0].likes.count)
       setLiked(videoData.response.items[0].likes.user_likes === 1 ? true : false)
       setVideo({
@@ -74,9 +76,9 @@ const VideoScreen = ({navigation, route}) => {
         const getVideoUrl = `https://api.vk.com/method/video.get?access_token=${accessToken}&v=5.131&owner_id=${ownerId}&videos=${ownerId}_${videoId}_${accessKey}`
         const videoResponse = await fetch(getVideoUrl)
         const videoData = await videoResponse.json()
-        // console.log(videoData)
-        setLikesCount(videoData.response.items[0].likes.count)
-        setLiked(videoData.response.items[0].likes.user_likes === 1 ? true : false)
+        // console.log(videoData.response.items[0])
+        setLikesCount(videoData?.response?.items[0]?.likes?.count)
+        setLiked(videoData?.response?.items[0]?.likes?.user_likes === 1 ? true : false)
         setVideo({
           playerUrl: videoData.response.items[0].player,
           title: videoData.response.items[0].title,
@@ -154,8 +156,8 @@ const VideoScreen = ({navigation, route}) => {
     <SafeAreaView style={[{flex: 1, justifyContent: 'flex-start' }, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
       <CustomHeader 
         isLightTheme={isLightTheme}
-        headerName={<Text style={styles.headerTextStyle}>Video</Text>}
-        iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
+        headerName={<Text style={styles.headerTextStyle}>{lang == 'ru' ? 'Видео' : 'Video'}</Text>}
+        iconComponent={ <AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />
       <ScrollView 
@@ -180,6 +182,7 @@ const VideoScreen = ({navigation, route}) => {
               imgUrl={imgUrl}
               isFriend={isFriend}
               isMember={isMember}
+              lang={lang}
             />
             {
               isShortVideo ? 
@@ -231,7 +234,7 @@ const VideoScreen = ({navigation, route}) => {
                 {isShortVideo ? video.title : accessKey ? video.title : title}
               </Text>
               <Text style={styles.views}>
-                {getShortagedNumber(isShortVideo ? video.views : accessKey ? video.views : views)} views
+                {getShortagedNumber(isShortVideo ? video.views : accessKey ? video.views : views)} {lang == 'ru' ? 'просмотров' : 'views'}
               </Text>
               <DividerWithLine 
                 linePosition={'center'} 

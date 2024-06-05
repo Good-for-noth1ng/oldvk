@@ -6,7 +6,7 @@ import DividerWithLine from '../components/DividerWithLine'
 import SearchResultHeaderCounter from '../components/SearchResultHeaderCounter';
 import { COLORS } from '../constants/theme';
 
-const Carousel = ({navigation, data, dataLength, type, isLightTheme, ownerId, dataLengthFetched, author}) => {
+const Carousel = ({navigation, data, dataLength, type, isLightTheme, ownerId, dataLengthFetched, author, lang}) => {
   
   const renderItem = ({item}) => {
     let handlePress, cover
@@ -38,6 +38,7 @@ const Carousel = ({navigation, data, dataLength, type, isLightTheme, ownerId, da
         isLightTheme={isLightTheme}
         handlePress={handlePress}
         id={item.id}
+        lang={lang}
       />
     )
   }
@@ -68,8 +69,9 @@ const Carousel = ({navigation, data, dataLength, type, isLightTheme, ownerId, da
       <SearchResultHeaderCounter 
         isLightTheme={isLightTheme} 
         counterNum={dataLength} 
-        counterName={'Albums'}
+        counterName={lang == 'ru' ? 'Альбомы' :'Albums'}
         handleShowMorePress={dataLength > dataLengthFetched ? handleShowMorePress : false}
+        lang={lang}
       />
       <View style={[{padding: 8}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
         <FlatList 

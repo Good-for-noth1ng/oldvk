@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, SafeAreaView, ActivityIndicator } from 'react-native'
 import React from 'react'
+import * as Localization from 'expo-localization'
 import { useSelector } from 'react-redux';
 import { FlatList } from "react-native-gesture-handler";
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -9,6 +10,7 @@ import DividerWithLine from '../components/DividerWithLine'
 import { COLORS } from '../constants/theme'
 
 const ReactedOnVideoUsers = ({ navigation, route }) => {
+  const lang = Localization.getLocales()[0].languageCode
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const [isLoading, setIsLoading] = React.useState(true)
@@ -110,7 +112,7 @@ const ReactedOnVideoUsers = ({ navigation, route }) => {
     <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
       <CustomHeader 
         isLightTheme={isLightTheme}
-        headerName={<Text style={styles.headerTextStyle}>Reactions</Text>}
+        headerName={<Text style={styles.headerTextStyle}>{lang == 'ru' ? 'Понравилось' : 'Reactions'}</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />

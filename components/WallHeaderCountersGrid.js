@@ -6,7 +6,7 @@ import { COLORS } from '../constants/theme'
 import { getShortagedNumber } from '../utils/numShortage'
 import { getNameInGroupHeader } from '../utils/getNameByKey';
 //TODO: add topic screen
-const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, canAccess, isUserOnHisOwnPage, author }) => {
+const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, canAccess, isUserOnHisOwnPage, author, lang }) => {
   let countersGrid = []
   let row = []
   
@@ -138,7 +138,7 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
             onPress={navigateToFollowersList}
           >
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
-            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key, lang)}</Text>
           </TouchableOpacity>
         )
       } else if (counters[key] !== 0 && key === 'subscriptions') {
@@ -150,7 +150,7 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
             onPress={navigateToSubscriptions}
           >
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
-            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key, lang)}</Text>
           </TouchableOpacity>
         )
       } else if (counters[key] !== 0 && key === 'groups') {
@@ -162,7 +162,7 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
             activeOpacity={canAccess ? 0.6 : 1}
           >
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
-            <Text style={styles.counterName} key={uuid.v4()}>communities</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>{lang == 'ru' ? 'сообщества' : 'groups'}</Text>
           </TouchableOpacity>
         )
       } else if (counters[key] !== 0 && key === 'videos') {
@@ -174,7 +174,7 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
             activeOpacity={canAccess ? 0.6 : 1}
           >
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
-            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key, lang)}</Text>
           </TouchableOpacity>
         )
       } else if (counters[key] !== 0 && key === 'photos') {
@@ -186,7 +186,7 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
             activeOpacity={canAccess ? 0.6 : 1}
           >
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
-            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key, lang)}</Text>
           </TouchableOpacity>
         )
       } else if (counters[key] !== 0 && key === 'albums') {
@@ -198,7 +198,7 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
             activeOpacity={canAccess ? 0.6 : 1}
           >
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
-            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key, lang)}</Text>
           </TouchableOpacity>
         )
       } else if (counters[key] !== 0 && key === 'friends') {
@@ -210,7 +210,7 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
             activeOpacity={canAccess ? 0.6 : 1}
           >
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
-            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key, lang)}</Text>
           </TouchableOpacity>
         )
       } else if (counters[key] !== 0 && key === 'topics') {
@@ -222,7 +222,7 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
             activeOpacity={canAccess ? 0.6 : 1}
           >
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
-            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key, lang)}</Text>
           </TouchableOpacity>
         )
       } else if (counters[key] !== 0 && key === 'gifts') {
@@ -234,7 +234,7 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
             activeOpacity={canAccess ? 0.6 : 1}
           >
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
-            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key, lang)}</Text>
           </TouchableOpacity>
         )
       } else if(counters[key] !== 0) {
@@ -245,7 +245,7 @@ const WallHeaderCountersGrid = ({ membersCount, counters, ownerId, navigation, c
             activeOpacity={canAccess ? 0.6 : 1}
           >
             <Text style={styles.counterNumber} key={uuid.v4()}>{getShortagedNumber(counters[key])}</Text>
-            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key)}</Text>
+            <Text style={styles.counterName} key={uuid.v4()}>{getNameInGroupHeader(key, lang)}</Text>
           </TouchableOpacity>
         )
       }

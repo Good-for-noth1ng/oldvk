@@ -3,6 +3,7 @@ import React from 'react'
 import { FlatList } from "react-native-gesture-handler";
 import { useSelector, useDispatch } from 'react-redux'
 import { useFocusEffect } from '@react-navigation/native';
+import * as Localization from 'expo-localization'
 import uuid from 'react-native-uuid';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 // import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -27,6 +28,7 @@ const CommentThread = ({navigation, route}) => {
   // const commentsGeneralData = useSelector(state => state.comments)
   const isGlobalShadowExpanded = useSelector(state => state.globalShadow.isOpen)
   const shouldPerfomeAuthorInfoAnim = React.useRef(false);
+  const lang = Localization.getLocales()[0].languageCode
   const {threadMainCommentId, ownerId, postId} = route.params
   
   const authorInfoIsOpen = React.useRef(false)
@@ -160,6 +162,7 @@ const CommentThread = ({navigation, route}) => {
       isLightTheme={isLightTheme}
       openCommentMenu={openCommentMenu}
       author={item.author}
+      lang={lang}
       //add openCommentMenu function
     />
   )
@@ -178,6 +181,7 @@ const CommentThread = ({navigation, route}) => {
           borderTR={4}
         />
         <Comment
+          lang={lang}
           commentId={mainComment.response.items[0].id}
           commentDate={mainComment.response.items[0].date}
           likes={mainComment.response.items[0].likes?.count}
@@ -253,11 +257,10 @@ const CommentThread = ({navigation, route}) => {
         styles.mainContainer, 
         isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}
       ]}>
-      <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
       <CustomHeader
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
-        headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>Comment replies</Text>}
+        headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>{lang == 'ru' ? 'Ответы к комментарию' : 'Comment replies'}</Text>}
         isLightTheme={isLightTheme}
       />
       {
@@ -285,7 +288,7 @@ const CommentThread = ({navigation, route}) => {
             keyboardDismissMode={'interactive'}
             onScrollToIndexFailed={err => console.log(err)}
           />
-          <TextInputField isLightTheme={isLightTheme}/>
+          <TextInputField isLightTheme={isLightTheme} lang={lang}/>
         </>
       }
       <CommentsOverlay 
@@ -293,6 +296,7 @@ const CommentThread = ({navigation, route}) => {
         isLightTheme={isLightTheme}
         handleShadowTouch={closeCommentMenu}
         navigation={navigation}
+        lang={lang}
       />
       <GlobalShadow />
     </SafeAreaView>

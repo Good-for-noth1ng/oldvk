@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useFocusEffect } from '@react-navigation/native';
 import { useSelector } from 'react-redux'
 import uuid from 'react-native-uuid';
+import * as Localization from 'expo-localization'
 import GroupListItem from '../components/GroupListItem';
 import { COLORS } from '../constants/theme';
 import DividerWithLine from '../components/DividerWithLine';
@@ -18,6 +19,7 @@ import VisitedGroups from '../components/VisitedGroups';
 
 
 const GroupList = ({navigation}) => {
+  const lang = Localization.getLocales()[0].languageCode
   const accessToken = useSelector(state => state.user.accessToken)
   const [isLoading, setIsLoading] = React.useState(true)
   const [groupsData, setGroupsData] = React.useState(null)
@@ -29,7 +31,7 @@ const GroupList = ({navigation}) => {
   const searchQuery = React.useRef('')
   const count = 5
   const [visitedGroups, setVisitedGroups] = React.useState([])
-  const [groupsCounterName, setGroupsCounterName] = React.useState('All communities')
+  const [groupsCounterName, setGroupsCounterName] = React.useState(lang == 'ru' ? 'Все сообщества' :'All communities')
   const slideAnimation = React.useRef(new Animated.Value(2000)).current
   const filterIsOpen = React.useRef(false)
   const connectionController = React.useRef(undefined)
@@ -117,7 +119,7 @@ const GroupList = ({navigation}) => {
     remainToFetchNum.current = fetchedUsersGroups.count - count
     setGroupsData(fetchedUsersGroups.items)
     setGroupsCount(fetchedUsersGroups.count)
-    setGroupsCounterName('All communities')
+    setGroupsCounterName(lang == 'ru' ? 'Все сообщества' : 'All communities')
     setIsLoading(false)
   }
 
@@ -137,7 +139,7 @@ const GroupList = ({navigation}) => {
         />
         {
           visitedGroups.length > 0 ?
-          <VisitedGroups visitedGroups={visitedGroups} isLightTheme={isLightTheme} navigation={navigation} setVisitedGroups={setVisitedGroups}/>
+          <VisitedGroups lang={lang} visitedGroups={visitedGroups} isLightTheme={isLightTheme} navigation={navigation} setVisitedGroups={setVisitedGroups}/>
           : null
         }
         <SearchResultHeaderCounter 
@@ -154,7 +156,7 @@ const GroupList = ({navigation}) => {
   }
 
   const renderItem = ({item}) => (
-    <GroupListItem data={item} navigation={navigation} isLightTheme={isLightTheme}/>
+    <GroupListItem data={item} navigation={navigation} isLightTheme={isLightTheme} lang={lang}/>
   )
 
   const groupListSeparator = () => (
@@ -234,7 +236,7 @@ const GroupList = ({navigation}) => {
     const items = data.response.map(item => {return {...item, key: uuid.v4()}})
     return {
       items: items,
-      counterName: 'Search result',
+      counterName: lang == 'ru' ? 'Результаты поиска' : 'Search result',
       groupsNum: groupsNum 
     }
   }
@@ -305,7 +307,7 @@ const GroupList = ({navigation}) => {
       <CustomHeader
         isLightTheme={isLightTheme} 
         headerName={
-          <Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>Communities</Text>
+          <Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>{lang == 'ru' ? 'Сообщества' : 'Communities'}</Text>
         }
         iconComponent={
           <Entypo name='menu' color={COLORS.white} size={30}/>
@@ -317,6 +319,7 @@ const GroupList = ({navigation}) => {
         onCleaningInput={initGroupList}
         onOptionsButton={openFilters}
         isScreenFromDrawerMenu={true}
+        lang={lang}
       />
       {
         isLoading ? 

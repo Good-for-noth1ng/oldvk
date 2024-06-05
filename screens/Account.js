@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, Dimensions, ActivityIndicator, Image, ScrollView, TextInput, TouchableOpacity, Modal } from 'react-native'
 import React from 'react'
 import * as Calendar from 'expo-calendar' 
+import * as Localization from 'expo-localization'
 import { useSelector, useDispatch } from 'react-redux'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Octicons from 'react-native-vector-icons/Octicons'
@@ -19,6 +20,7 @@ const Account = ({navigation}) => {
   const dispatch = useDispatch()
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const userInfo = useSelector(state => state.user)
+  const lang = Localization.getLocales()[0].languageCode
   const accessToken = userInfo.accessToken
   const userPhotoUrl = userInfo.userProfileDrawerPhotoUrl
   const userName = `${userInfo.firstName} ${userInfo.lastName}`
@@ -89,23 +91,23 @@ const Account = ({navigation}) => {
   const getRelStatus = (status) => {
     switch (status) {
       case '0':
-        return 'Unset'
+        return lang == 'ru' ? 'Не указано' : 'Unset'
       case '1':
-        return 'Not Married'
+        return lang == 'ru' ? 'Не замужем / не женат' : 'Not Married'
       case '2':
-        return 'Have a friend'
+        return lang == 'ru' ? 'Есть друг / подруга' : 'Have a friend'
       case '3':
-        return 'Engaged'
+        return lang == 'ru' ? 'Помолвлен / помолвлена' : 'Engaged'
       case '4':
-        return 'Married'
+        return lang == 'ru' ? 'Замужем / женат' : 'Married'
       case '5':
-        return "It's complicated"
+        return lang == 'ru' ? 'Всё сложно' : "It's complicated"
       case '6':
-        return 'Actively search'
+        return lang == 'ru' ? 'В активном поиске' : 'Actively search'
       case '7':
-        return 'In Love'
+        return lang == 'ru' ? 'Влюблен / влюблена' : 'In Love'
       case '8':
-        return 'Live Together'
+        return lang == 'ru' ? 'В гражданском браке' : 'Live Together'
     }
   }
 
@@ -118,7 +120,7 @@ const Account = ({navigation}) => {
       <CustomHeader
         isLightTheme={isLightTheme}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
-        headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>Account</Text>}
+        headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>{lang == 'ru' ? 'Аккаунт' : 'Account'}</Text>}
         iconTouchHandler={goBack}
         rightsideIconComponent={<Octicons name='check' color={COLORS.white} size={30}/>}
       />
@@ -136,7 +138,8 @@ const Account = ({navigation}) => {
               mainColor: isLightTheme ? COLORS.primary : COLORS.white,
               selectedTextColor: isLightTheme ? COLORS.white : COLORS.secondary,
               textDefaultColor: isLightTheme ? COLORS.primary : COLORS.primary_text,
-              textHeaderColor: isLightTheme ? COLORS.primary : COLORS.primary_text
+              textHeaderColor: isLightTheme ? COLORS.primary : COLORS.primary_text,
+              lang: lang
             }}
             mode="date"
             onDateChange={(date) => {
@@ -173,7 +176,7 @@ const Account = ({navigation}) => {
             </View>
           </View>
           <View style={[{padding: 10}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
-            <Text style={{fontSize: 17, color: COLORS.secondary}}>Phone Number</Text>
+            <Text style={{fontSize: 17, color: COLORS.secondary}}>{lang == 'ru' ? 'Номер телефона' : 'Phone Number'}</Text>
             <View
               style={[
                 {
@@ -205,7 +208,7 @@ const Account = ({navigation}) => {
             </View>
           </View>
           <View style={[{padding: 10}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
-            <Text style={{fontSize: 17, color: COLORS.secondary}}>First Name</Text>
+            <Text style={{fontSize: 17, color: COLORS.secondary}}>{lang == 'ru' ? 'Имя' : 'First Name'}</Text>
             <TextInput 
               style={[
                 {
@@ -232,7 +235,7 @@ const Account = ({navigation}) => {
             />
           </View>
           <View style={[{padding: 10}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
-            <Text style={{fontSize: 17, color: COLORS.secondary}}>Last Name</Text>
+            <Text style={{fontSize: 17, color: COLORS.secondary}}>{lang == 'ru' ? 'Фамилия' : 'Last Name'}</Text>
             <TextInput 
               style={[
                 {
@@ -259,7 +262,7 @@ const Account = ({navigation}) => {
             />
           </View>
           <View style={[{padding: 10}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
-            <Text style={{fontSize: 17, color: COLORS.secondary}}>Nickname</Text>
+            <Text style={{fontSize: 17, color: COLORS.secondary}}>{lang == 'ru' ? 'Никнейм' : 'Nickname'}</Text>
             <TextInput 
               style={[
                 {
@@ -287,7 +290,7 @@ const Account = ({navigation}) => {
           </View>
           <View style={[{padding: 10}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
             <Text style={{fontSize: 17, color: COLORS.secondary}}>
-              Gender
+              {lang == 'ru' ? 'Пол' : 'Gender'}
             </Text>
             <View style ={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <TouchableOpacity 
@@ -323,7 +326,7 @@ const Account = ({navigation}) => {
                     ]}
                   />
                 </View>
-                <Text style={{fontSize: 16, color: COLORS.secondary}}>Female</Text>
+                <Text style={{fontSize: 16, color: COLORS.secondary}}>{lang == 'ru' ? 'Женский' : 'Female'}</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={{flexDirection: 'row', alignItems: 'center', gap: 10}}
@@ -358,7 +361,7 @@ const Account = ({navigation}) => {
                     ]}
                   />
                 </View>
-                <Text style={{fontSize: 16, color: COLORS.secondary}}>Male</Text>
+                <Text style={{fontSize: 16, color: COLORS.secondary}}>{lang == 'ru' ? 'Мужской' : 'Male'}</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={{flexDirection: 'row', alignItems: 'center', gap: 10}}
@@ -393,12 +396,12 @@ const Account = ({navigation}) => {
                     ]}
                   />
                 </View>
-                <Text style={{fontSize: 16, color: COLORS.secondary}}>Unknown</Text>
+                <Text style={{fontSize: 16, color: COLORS.secondary}}>{lang == 'ru' ? 'Не указан' : 'Unknown'}</Text>
               </TouchableOpacity>
             </View>          
           </View>
           <View style={[{padding: 10}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
-            <Text style={{fontSize: 17, color: COLORS.secondary}}>Relation Status</Text>
+            <Text style={{fontSize: 17, color: COLORS.secondary}}>{lang == 'ru' ? 'Семейное положение' : 'Relation Status'}</Text>
             <TouchableOpacity 
               style={[
                 {
@@ -439,7 +442,7 @@ const Account = ({navigation}) => {
           </View>
           <View style={[{padding: 10}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
             <Text style={{fontSize: 17, color: COLORS.secondary}}>
-              Birthday
+              {lang == 'ru' ? 'День рождения' : 'Birthday'}
             </Text>
             <TouchableOpacity
               onPress={() => setIsModalVisible(true)}
@@ -470,11 +473,11 @@ const Account = ({navigation}) => {
           </View>
           <View style={[{padding: 10}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
             <Text style={{fontSize: 17, color: COLORS.secondary}}>
-              Birthday visibility
+              {lang == 'ru' ? 'Показывать дату рождения' : 'Birthday visibility'}
             </Text>
             <View style ={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <TouchableOpacity 
-                style={{flexDirection: 'row', alignItems: 'center', gap: 10}}
+                style={{flexDirection: 'row', alignItems: 'center', gap: 5}}
                 onPress={() => setBdateVis(1)}
                 activeOpacity={0.8}
               >
@@ -506,10 +509,10 @@ const Account = ({navigation}) => {
                     ]}
                   />
                 </View>
-                <Text style={{fontSize: 16, color: COLORS.secondary}}>All</Text>
+                <Text style={{fontSize: 16, color: COLORS.secondary}}>{lang == 'ru' ? 'Полностью' : 'All'}</Text>
               </TouchableOpacity>
               <TouchableOpacity 
-                style={{flexDirection: 'row', alignItems: 'center', gap: 10}}
+                style={{flexDirection: 'row', alignItems: 'center', gap: 5}}
                 onPress={() => setBdateVis(2)}
                 activeOpacity={0.8}
               >
@@ -541,10 +544,10 @@ const Account = ({navigation}) => {
                     ]}
                   />
                 </View>
-                <Text style={{fontSize: 16, color: COLORS.secondary}}>Month and day</Text>
+                <Text style={{fontSize: 16, color: COLORS.secondary}}>{lang == 'ru' ? 'Месяц и день' : 'Month and day'}</Text>
               </TouchableOpacity>
               <TouchableOpacity 
-                style={{flexDirection: 'row', alignItems: 'center', gap: 10}}
+                style={{flexDirection: 'row', alignItems: 'center', gap: 5}}
                 onPress={() => setBdateVis(0)}
                 activeOpacity={0.8}
               >
@@ -576,12 +579,12 @@ const Account = ({navigation}) => {
                     ]}
                   />
                 </View>
-                <Text style={{fontSize: 16, color: COLORS.secondary}}>Don't show</Text>
+                <Text style={{fontSize: 16, color: COLORS.secondary}}>{lang == 'ru' ? 'Скрыть' : "Don't show"}</Text>
               </TouchableOpacity>
             </View>          
           </View>
           <View style={[{padding: 10}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
-            <Text style={{fontSize: 17, color: COLORS.secondary}}>Hometown</Text>
+            <Text style={{fontSize: 17, color: COLORS.secondary}}>{lang == 'ru' ? 'Родной город' : 'Hometown'}</Text>
             <TextInput 
               style={[
                 {
@@ -608,7 +611,7 @@ const Account = ({navigation}) => {
             />
           </View>
           <View style={[{padding: 10}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
-            <Text style={{fontSize: 17, color: COLORS.secondary}}>Status</Text>
+            <Text style={{fontSize: 17, color: COLORS.secondary}}>{lang == 'ru' ? 'Статус' : 'Status'}</Text>
             <TextInput 
               style={[
                 {

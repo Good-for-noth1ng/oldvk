@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Animated } from 'react-native'
 import React from 'react'
 import uuid from 'react-native-uuid';
+import * as Localization from 'expo-localization'
 import { useSelector } from 'react-redux'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomHeader from '../components/CustomHeader'
@@ -14,6 +15,7 @@ import CommentsOverlay from '../components/CommentsOverlay';
 // import OverlayWithButtons from '../components/OverlayWithButtons';
 
 const Topic = ({navigation, route}) => {
+  const lang = Localization.getLocales()[0].languageCode
   const {groupId, topicId} = route.params
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
@@ -143,10 +145,9 @@ const Topic = ({navigation, route}) => {
         isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}
       ]}
     >
-      <StatusBar />
       <CustomHeader
         isLightTheme={isLightTheme}
-        headerName={<Text style={styles.headerTextStyle}>Topic</Text>}
+        headerName={<Text style={styles.headerTextStyle}>{lang == 'ru' ? 'Обсуждение' : 'Topic'}</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />
@@ -166,12 +167,13 @@ const Topic = ({navigation, route}) => {
             onEndReached={fetchMore}
             ItemSeparatorComponent={listSeparator}
           />
-          <TextInputField isLightTheme={isLightTheme}/>
+          <TextInputField isLightTheme={isLightTheme} lang={lang}/>
           <CommentsOverlay 
             slideAnimation={slideAnimation}
             isLightTheme={isLightTheme}
             handleShadowTouch={closeCommentMenu}
             navigation={navigation}
+            lang={lang}
           />
         </>
         

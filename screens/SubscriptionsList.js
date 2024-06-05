@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, FlatList, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect, useRef } from 'react'
+import * as Localization from 'expo-localization'
 import { useSelector } from 'react-redux'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomHeader from '../components/CustomHeader'
@@ -10,6 +11,7 @@ import { COLORS } from '../constants/theme'
 
 
 const SubscriptionsList = ({ navigation, route }) => {
+  const lang = Localization.getLocales()[0].languageCode
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const [subscriptions, setSubscriptions] = useState([])
@@ -32,7 +34,7 @@ const SubscriptionsList = ({ navigation, route }) => {
     setSubscriptions(prevState => prevState.concat(data.response.items))
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchSubscriptions()
   }, [])
 
@@ -46,7 +48,7 @@ const SubscriptionsList = ({ navigation, route }) => {
   const renderItem = ({item}) => {
     if (item.name !== undefined) {
       return (
-        <GroupListItem isLightTheme={isLightTheme} navigation={navigation} data={item}/>
+        <GroupListItem isLightTheme={isLightTheme} navigation={navigation} data={item} lang={lang}/>
       )
     } else {
       return (
@@ -59,6 +61,7 @@ const SubscriptionsList = ({ navigation, route }) => {
           id={item.id}
           bdate={item.bdate}
           city={item.city} 
+          lang={lang}
         />
       )
     }
@@ -114,10 +117,9 @@ const SubscriptionsList = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
-      <StatusBar barStyle={COLORS.white} backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} />
       <CustomHeader 
         isLightTheme={isLightTheme}
-        headerName={<Text style={styles.headerTextStyle}>Subscriptions</Text>}
+        headerName={<Text style={styles.headerTextStyle}>{lang == 'ru' ? 'Подписки' : 'Subscriptions'}</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />

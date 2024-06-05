@@ -7,7 +7,7 @@ import { setDataForFetchingCommentThread } from '../redux/commentsSlice'
 import { COLORS } from '../constants/theme'
 import DividerWithLine from './DividerWithLine'
 
-const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfThreadId, navigation, ownerId, postId, isLightTheme, openCommentMenu}) => {
+const CommentReplies = ({lang, threadComments, threadCount, fetchProfileInfo, startOfThreadId, navigation, ownerId, postId, isLightTheme, openCommentMenu}) => {
   // const dispatch = useDispatch()
 
   //TODO: pass props directly to screen
@@ -27,6 +27,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
           threadComments.length === 2 ?
             <>
               <CommentReply 
+                lang={lang}
                 commentDate={threadComments[0].date} 
                 from_id={threadComments[0].from_id} 
                 commentText={threadComments[0].text}
@@ -43,6 +44,7 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
               />
               <DividerWithLine dividerColor={isLightTheme ? COLORS.white : COLORS.primary_dark} dividerHeight={5}/>
               <CommentReply
+                lang={lang}
                 commentDate={threadComments[1].date} 
                 from_id={threadComments[1].from_id} 
                 commentText={threadComments[1].text}
@@ -63,12 +65,13 @@ const CommentReplies = ({threadComments, threadCount, fetchProfileInfo, startOfT
                 <TouchableOpacity style={styles.showMoreContainer} onPress={navigateToCommentThread}>
                   <View style={styles.showMoreCommentsButton}> 
                     <AntDesign name={'arrowdown'} color={COLORS.primary} size={15}/>
-                    <Text style={styles.showMoreCommentsButtonText}>Show more</Text>
+                    <Text style={styles.showMoreCommentsButtonText}>{lang == 'ru' ? 'Показать еще' : 'Show more'}</Text>
                   </View>
                 </TouchableOpacity>
               }
             </> : 
             <CommentReply 
+              lang={lang}
               commentDate={threadComments[0].date} 
               from_id={threadComments[0].from_id} 
               commentText={threadComments[0].text}
@@ -108,7 +111,7 @@ const styles = StyleSheet.create({
     paddingLeft: '15%'
   },
   showMoreCommentsButton: {
-    width: '30%',
+    width: '45%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between'

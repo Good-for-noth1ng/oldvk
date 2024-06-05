@@ -1,30 +1,30 @@
-const getShortMonth = (date) => {
+const getShortMonth = (date, lang) => {
     const monthNumber = date.getMonth();
     switch(monthNumber) {
         case 0:
-            return 'Jan'
+            return lang == 'ru' ? 'Янв' : 'Jan'
         case 1:
-            return 'Feb'
+            return lang == 'ru' ? 'Фев' : 'Feb'
         case 2:
-            return 'Mar'
+            return lang == 'ru' ? 'Мар' :'Mar'
         case 3:
-            return 'Apr'
+            return lang == 'ru' ? 'Апр' : 'Apr'
         case 4:
-            return 'May'
+            return lang == 'ru' ? 'Май' : 'May'
         case 5:
-            return 'June'
+            return lang == 'ru' ? 'Июнь' : 'June'
         case 6:
-            return 'Jule'
+            return lang == 'ru' ? 'Июль' : 'July'
         case 7:
-            return 'Aug'
+            return lang == 'ru' ? 'Авг' : 'Aug'
         case 8:
-            return 'Sep'
+            return lang == 'ru' ? 'Сен' : 'Sep'
         case 9:
-            return 'Oct'
+            return lang == 'ru' ? 'Окт' : 'Oct'
         case 10:
-            return 'Nov'
+            return lang == 'ru' ? 'Нояб' : 'Nov'
         case 11:
-            return 'Dec' 
+            return lang == 'ru' ? 'Дек' : 'Dec' 
     }
 }
 
@@ -57,33 +57,33 @@ const getMonthByNumber = (num) => {
     }
 }
 
-const getFullMonth = (date) => {
+const getFullMonth = (date, lang) => {
     const monthNumber = date.getMonth();
     switch(monthNumber) {
         case 0:
-            return 'January'
+            return lang == 'ru' ? 'Января' : 'January'
         case 1:
-            return 'February'
+            return lang == 'ru' ? 'Февраля' : 'February'
         case 2:
-            return 'March'
+            return lang == 'ru' ? 'Марта' : 'March'
         case 3:
-            return 'April'
+            return lang == 'ru' ? 'Апреля' : 'April'
         case 4:
-            return 'May'
+            return lang == 'ru' ? 'Мая' : 'May'
         case 5:
-            return 'June'
+            return lang == 'ru' ? 'Июня' : 'June'
         case 6:
-            return 'Jule'
+            return lang == 'ru' ? 'Июля' : 'July'
         case 7:
-            return 'August'
+            return lang == 'ru' ? 'Августа' : 'August'
         case 8:
-            return 'September'
+            return lang == 'ru' ? 'Сентября' : 'September'
         case 9:
-            return 'October'
+            return lang == 'ru' ? 'Октября' : 'October'
         case 10:
-            return 'November'
+            return lang == 'ru' ? 'Ноября' : 'November'
         case 11:
-            return 'December' 
+            return lang == 'ru' ? 'Декабря' : 'December' 
     }
 }
 
@@ -96,23 +96,34 @@ const getMinutes = (date) => {
     }
 }
 //TODO: make 'posted 3 hours ago' etc.
-export const getTimeDate = (unixTime) => {
+export const getTimeDate = (unixTime, lang) => {
     const date = new Date(unixTime * 1000);
     const todayDate = new Date();
     if (date.getFullYear() === todayDate.getFullYear() && date.getMonth() === todayDate.getMonth() && date.getDate() === todayDate.getDate()) {
-        return `today at ${date.getHours()}:${getMinutes(date)}`
+        return `${lang == 'ru' ? 'сегодня в' :'today at'} ${date.getHours()}:${getMinutes(date)}`
     } else if (date.getFullYear() === todayDate.getFullYear()) {
         if (date.getMonth() === todayDate.getMonth() && date.getDate() === todayDate.getDate() - 1) {
-            return `yesterday at ${date.getHours()}:${getMinutes(date)}`
+            return `${lang == 'ru' ? 'вчера в' : 'yesterday at'} ${date.getHours()}:${getMinutes(date)}`
         } else {
-            return `${date.getDate()} ${getFullMonth(date)} at ${date.getHours()}:${getMinutes(date)}`
+            return `${date.getDate()} ${getFullMonth(date, lang)} ${lang == 'ru' ? 'в' : 'at'} ${date.getHours()}:${getMinutes(date)}`
         }
     } else {
-        return `${date.getDate()} ${getShortMonth(date)} ${date.getFullYear()} at ${date.getHours()}:${getMinutes(date)}`
+        return `${date.getDate()} ${getShortMonth(date, lang)} ${date.getFullYear()} ${lang == 'ru' ? 'в' : 'at'} ${date.getHours()}:${getMinutes(date)}`
     }
 }
 
-const stringifyAge = (age) => {
+const stringifyAge = (age, lang) => {
+  if (lang == 'ru') {
+    const t = age % 10
+    console.log(t, age, age > 14 && t < 5 && t > 0 )
+    if (age > 14 && t < 5 && t > 1 ) {
+      return `${age} года`
+    } else if (age > 14 && t == 1) {
+      return `${age} год`
+    } else {
+      return `${age} лет`
+    }
+  }
   if (age === 1) {
     return `${age} year old`
   } else {
@@ -120,7 +131,7 @@ const stringifyAge = (age) => {
   }
 }
 
-export const getUserAge = (str) => {
+export const getUserAge = (str, lang) => {
   const pattern = /\d*\.\d*\.\d*/
   if (pattern.test(str)) {
   const year = Number(str.split('.')[2])
@@ -132,15 +143,15 @@ export const getUserAge = (str) => {
   const currentDay = date.getDate()
 
   if (currentMonth > month) {
-    return stringifyAge(currentYear - year)
+    return stringifyAge(currentYear - year, lang)
   } else if (month === currentMonth) {
     if (currentDay >= day) {
-      return stringifyAge(currentYear - year)
+      return stringifyAge(currentYear - year, lang)
     } else {
-      return stringifyAge(currentYear - year - 1)
+      return stringifyAge(currentYear - year - 1, lang)
     }
   } else {
-    return stringifyAge(currentYear - year - 1)
+    return stringifyAge(currentYear - year - 1, lang)
   }
   } else {
     return null

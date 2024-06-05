@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native'
 import React from 'react'
 import uuid from 'react-native-uuid';
+import * as Localization from 'expo-localization'
 import { useSelector } from 'react-redux'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import CustomHeader from '../components/CustomHeader'
@@ -10,6 +11,7 @@ import { FlatList } from "react-native-gesture-handler";
 import { COLORS } from '../constants/theme'
 
 const Topics = ({navigation, route}) => {
+  const lang = Localization.getLocales()[0].languageCode
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const [isLoading, setIsLoading] = React.useState(true)
@@ -60,6 +62,7 @@ const Topics = ({navigation, route}) => {
         id={item.id}
         navigation={navigation}
         groupId={(-1 * ownerId)}
+        lang={lang}
       />
     )
   }
@@ -104,10 +107,9 @@ const Topics = ({navigation, route}) => {
         isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}
       ]}
     >
-      <StatusBar barStyle={COLORS.white} backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} />
       <CustomHeader 
         isLightTheme={isLightTheme}
-        headerName={<Text style={styles.headerTextStyle}>Topics</Text>}
+        headerName={<Text style={styles.headerTextStyle}>{lang == 'ru' ? 'Обсуждения' : 'Topics'}</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />

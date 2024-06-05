@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView, StatusBar } from 'react-native'
 import React from 'react'
 import { useSelector } from 'react-redux'
+import * as Localization from 'expo-localization'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -13,6 +14,7 @@ import { COLORS } from '../constants/theme'
 //TODO use flatlist instead of view
 const Options = ({navigation}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
+  const lang = Localization.getLocales()[0].languageCode
   const handleDrawerOpening = () => {
     navigation.openDrawer()
   }
@@ -35,7 +37,7 @@ const Options = ({navigation}) => {
     <SafeAreaView style={isLightTheme ? styles.mainContainerLight : styles.mainContainerDark}>
       <StatusBar backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} barStyle={COLORS.white}/>
       <CustomHeader 
-        headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>Options</Text>}
+        headerName={<Text style={{color: COLORS.white, fontSize: 18, fontWeight: 'bold'}}>{lang == 'ru' ? 'Настройки' : 'Settings'}</Text>}
         iconComponent={<Entypo name='menu' color={COLORS.white} size={30}/>}
         iconTouchHandler={handleDrawerOpening}
         isLightTheme={isLightTheme}
@@ -45,7 +47,7 @@ const Options = ({navigation}) => {
       <View style={isLightTheme ? styles.buttonsContainerLight : styles.buttonsContainerDark}>
         <OptionsButton 
           buttonIcon={<FontAwesome5 name='user-alt' size={22} color={COLORS.secondary} style={styles.icon}/>}
-          buttonText={'Учетная запись'}
+          buttonText={lang == 'ru' ? 'Учетная запись' : 'Account'}
           isLightTheme={isLightTheme}
           buttonPressHandler={navigateToAccount}
         />
@@ -57,7 +59,7 @@ const Options = ({navigation}) => {
         /> */}
         <OptionsButton 
           buttonIcon={<Ionicons name='hand-left' size={22} color={COLORS.secondary} style={styles.icon}/>}
-          buttonText={'Приватность'}
+          buttonText={lang == 'ru' ? 'Приватность' : 'Privacy'}
           isLightTheme={isLightTheme}
           buttonPressHandler={navigateToPrivacy}
         />

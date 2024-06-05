@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, SafeAreaView, ActivityIndicator } from 'react-native'
 import React from 'react'
+import * as Localization from 'expo-localization'
 import { useSelector } from 'react-redux';
 import { FlatList } from "react-native-gesture-handler";
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -11,6 +12,7 @@ import { COLORS } from '../constants/theme'
 const ReactedOnPostUsers = ({ navigation, route }) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
+  const lang = Localization.getLocales()[0].languageCode
   const [isLoading, setIsLoading] = React.useState(true)
   const [usersList, setUsersList] = React.useState([])
   const count = 10
@@ -22,18 +24,25 @@ const ReactedOnPostUsers = ({ navigation, route }) => {
     const likesListUrl = `https://api.vk.com/method/likes.getList?access_token=${accessToken}&v=5.131&type=post&count=${count}&offset=${offset.current}&owner_id=${ownerId}&item_id=${postId}`
     const likesListResponse = await fetch(likesListUrl)
     const likesListData = await likesListResponse.json()
-    if (remainToFetchNum.current === null) {
-      remainToFetchNum.current = likesListData.response.count - count
+    console.log(likesListData)
+    if (likesListData?.error?.error_code == 15) {
+      setUsersList([])
+      setIsLoading(false)
     } else {
-      remainToFetchNum.current -= count 
+      if (remainToFetchNum.current === null) {
+        remainToFetchNum.current = likesListData.response.count - count
+      } else {
+        remainToFetchNum.current -= count 
+      }
+      offset.current += count
+      const fetchUsersUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&fields=photo_100&user_ids=${likesListData.response.items}`
+      const response = await fetch(fetchUsersUrl)
+      const data = await response.json()
+      // console.log(data.response)
+      setUsersList(prevState => prevState.concat(data.response))
+      setIsLoading(false)
     }
-    offset.current += count
-    const fetchUsersUrl = `https://api.vk.com/method/users.get?access_token=${accessToken}&v=5.131&fields=photo_100&user_ids=${likesListData.response.items}`
-    const response = await fetch(fetchUsersUrl)
-    const data = await response.json()
-    // console.log(data.response)
-    setUsersList(prevState => prevState.concat(data.response))
-    setIsLoading(false)
+    
   }
 
   const fetchMoreUsersWhoReacted = () => {
@@ -111,7 +120,7 @@ const ReactedOnPostUsers = ({ navigation, route }) => {
     <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
       <CustomHeader 
         isLightTheme={isLightTheme}
-        headerName={<Text style={styles.headerTextStyle}>Reactions</Text>}
+        headerName={<Text style={styles.headerTextStyle}>{lang == 'ru' ? 'Понравилось' : 'Reactions'}</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />

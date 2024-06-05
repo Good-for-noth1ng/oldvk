@@ -12,7 +12,7 @@ const Header = ({screenName, isLight}) => {
         colors={isLight ? [COLORS.gradientHeaderStart, COLORS.gradientHeaderEnd] : [COLORS.primary_dark, COLORS.black]}
       >
         <View style={styles.textLogoContainerStyle}>  
-          <View style={{width: 40, height: 40, borderRadius: 10, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.white}}>
+          <View style={{width: 40, height: 40, borderRadius: 5, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.white}}>
             <Text style={[{fontWeight: 'bold', fontStyle: 'italic'}, isLight ? {color: COLORS.primary} : {color: COLORS.primary_dark}]}>2007</Text>
           </View>
           <Text style={styles.screenNameStyle}>{screenName}</Text>

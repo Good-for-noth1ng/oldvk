@@ -20,7 +20,7 @@ import { expandShadow, collapseShadow } from '../redux/globalShadowSlice'
 const globalShadowHeight = Dimensions.get('window').height
 const globalShadowWidth = Dimensions.get('window').width
 
-const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken, fromNewsfeed, func}) => {
+const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken, fromNewsfeed, func, lang}) => {
   let postPhotos = []
   let postDocs = []
   let postLinks = []
@@ -91,13 +91,13 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken, from
   if (showNotInterested) {
     return (
       <View style={[{borderRadius: 5, gap: 10, marginTop: 5, padding: 5, alignItems: 'center'}, isLigthTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
-        <Text style={[{fontSize: 15}, isLigthTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>This community's posts will be shown less often</Text>
+        <Text style={[{fontSize: 15}, isLigthTheme ? {color: COLORS.black} : {color: COLORS.primary_text}]}>{lang == 'ru' ? 'Посты этого сообщества будут показываться реже' : "This community's posts will be shown less often"}</Text>
         <View style={{flexDirection: 'row', gap: 10}}>
           <TouchableOpacity style={{padding: 5, backgroundColor: COLORS.primary, borderRadius: 5}} onPress={cancelShowNotInterested}>
-            <Text style={[{fontSize: 15, color: COLORS.white}]}>Cancel</Text>
+            <Text style={[{fontSize: 15, color: COLORS.white}]}>{lang == 'ru' ? 'Отмена' : 'Cancel'}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={{padding: 5, backgroundColor: COLORS.primary, borderRadius: 5}}>
-            <Text style={[{fontSize: 15, color: COLORS.white}]}>Report</Text>
+            <Text style={[{fontSize: 15, color: COLORS.white}]}>{lang == 'ru' ? 'Пожаловаться' : 'Report'}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -122,6 +122,7 @@ const Post = ({data, navigation, openedPost, isLigthTheme, id, accessToken, from
         data={data}
         fromNewsfeed={fromNewsfeed}
         setShowNotInterested={setShowNotInterested}
+        lang={lang}
         func={func}
       />
       <TouchableOpacity activeOpacity={1} onPress={openPost}>

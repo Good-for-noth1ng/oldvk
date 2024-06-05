@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator } from 'react-native'
 import React from 'react'
+import * as Localization from 'expo-localization'
 import { FlatList } from "react-native-gesture-handler";
 import { useSelector } from 'react-redux'
 import uuid from 'react-native-uuid';
@@ -11,6 +12,7 @@ import VideosListItem from '../components/VideosListItem';
 import { COLORS } from '../constants/theme'
 
 const AlbumVideos = ({navigation, route}) => {
+  const lang = Localization.getLocales()[0].languageCode
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const [isLoading, setIsLoading] = React.useState(true)
@@ -65,6 +67,7 @@ const AlbumVideos = ({navigation, route}) => {
         isLiked={item.likes.user_likes}
         isReposted={item.reposts.user_reposted}
         id={item.key}
+        lang={lang}
       />
     )
   }
@@ -95,7 +98,7 @@ const AlbumVideos = ({navigation, route}) => {
         />
         <SearchResultHeaderCounter 
           isLightTheme={isLightTheme}
-          counterName={'All videos'}
+          counterName={lang == 'ru' ? 'Все видео' : 'All videos'}
           counterNum={numOfVideos.current}
         />
         <DividerWithLine 
@@ -135,7 +138,6 @@ const AlbumVideos = ({navigation, route}) => {
   }
   return (
     <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
-      <StatusBar barStyle={COLORS.white} backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} />
       <CustomHeader 
         isLightTheme={isLightTheme}
         headerName={<Text style={styles.headerTextStyle}>{headerTitle}</Text>}
@@ -155,6 +157,7 @@ const AlbumVideos = ({navigation, route}) => {
           ListHeaderComponent={listHeader}
           ListFooterComponent={footer}
           ItemSeparatorComponent={listSeparator}
+          showsVerticalScrollIndicator={false}
         />
       }  
     </SafeAreaView>

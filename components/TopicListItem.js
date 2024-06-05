@@ -2,10 +2,17 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { COLORS } from '../constants/theme'
 
-const TopicListItem = ({isLightTheme, title, postsNum, isClosed, id, groupId, navigation}) => {
+const TopicListItem = ({isLightTheme, title, postsNum, isClosed, id, groupId, navigation, lang}) => {
   const navigateToTopic = () => {
     navigation.push('Topic', {groupId, topicId: id})
   }
+  const getPostsEn = (num) => {
+    if (num == 1) {
+      return 'post'
+    }
+    return 'posts'
+  }
+
   return (
     <TouchableOpacity 
       style={[
@@ -19,7 +26,7 @@ const TopicListItem = ({isLightTheme, title, postsNum, isClosed, id, groupId, na
         {title}
       </Text>
       <Text style={styles.num}>
-        {postsNum} {postsNum > 1 ? 'posts' : 'post'}{isClosed ? ', Topic closed' : ''}
+        {lang == 'ru' && postsNum != 1 ? 'постов:' : ''} {postsNum} {lang == 'ru' ? postsNum == 1 ? 'пост' : '' : getPostsEn(postsNum)}{isClosed ? lang == 'ru' ? ', Обсуждение закрыто' : ', Topic closed' : ''}
       </Text>
     </TouchableOpacity>
   )

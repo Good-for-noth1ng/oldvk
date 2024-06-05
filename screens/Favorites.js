@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, ActivityIndicator, StatusBar, FlatList, RefreshControl, LayoutAnimation } from 'react-native'
 import React, { useRef } from 'react'
 import { useSelector } from 'react-redux'
+import * as Localization from 'expo-localization'
 import uuid from 'react-native-uuid'
 import Entypo from 'react-native-vector-icons/Entypo'
 import CustomHeader from '../components/CustomHeader'
@@ -14,6 +15,7 @@ import { COLORS } from '../constants/theme'
 
 //TODO: move to redux posts data
 const Favorites = ({navigation}) => {
+  const lang = Localization.getLocales()[0].languageCode
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const currentUserId = useSelector(state => state.user.userId)
@@ -135,7 +137,7 @@ const Favorites = ({navigation}) => {
     ]}>
       <CustomHeader 
         isLightTheme={isLightTheme}
-        headerName={<Text style={styles.headerTextStyle}>Favorites</Text>}
+        headerName={<Text style={styles.headerTextStyle}>{lang == 'ru' ? 'Избранное' : 'Favorites'}</Text>}
         iconComponent={<Entypo name='menu' color={COLORS.white} size={30}/>}
         iconTouchHandler={openDrawer}
         isScreenFromDrawerMenu={true}

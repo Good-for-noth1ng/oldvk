@@ -1,5 +1,7 @@
 import { View, Text, RefreshControl, SafeAreaView, StatusBar, ActivityIndicator, StyleSheet, FlatList, useColorScheme, Appearance, PanResponder, } from 'react-native'
 import React, { useEffect, useState, useRef } from 'react'
+import * as Localization from 'expo-localization'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useSelector } from 'react-redux';
 import { COLORS } from '../constants/theme';
 import Post from '../components/Post'
@@ -19,8 +21,8 @@ import Dropdown from '../components/Dropdown';
 //TODO fix comments, likes etc. being undefined
 const News = ({navigation}) => {
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
-  const count = 5
-         
+  const count = 20
+  const lang = Localization.getLocales()[0].languageCode
   const accessToken = useSelector(state => state.user.accessToken)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -35,6 +37,16 @@ const News = ({navigation}) => {
     newsUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&count=${count}&v=5.131`
   } else {
     newsUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=${count}&v=5.131`
+  }
+
+  const getNextFrom = async () => {
+    try {
+      const next = await AsyncStorage.getItem('nextFrom')
+      const nextFrom = JSON.parse(next)
+      console.log(nextFrom)
+    } catch (e) {
+
+    }
   }
 
   const fetchNews = () => {
@@ -53,11 +65,11 @@ const News = ({navigation}) => {
       });
   }
 
-  useEffect(()=> {
+  React.useEffect(()=> {
     fetchNews();
   }, [currentNewsPage])
 
-  useEffect(() => {
+  React.useEffect(() => {
     const drawerNavigator = navigation.getParent()
     const blur = drawerNavigator.addListener('blur', () => {
       shouldRemoveStackScreens.current = false
@@ -101,9 +113,9 @@ const News = ({navigation}) => {
   const fetchMoreData = () => {
     let fetchMoreDataUrl
     if (currentNewsPage === 'News') {
-      fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&count=20&start_from=${nextFrom.current}&v=5.131`
+      fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&count=${count}&start_from=${nextFrom.current}&v=5.131`
     } else {
-      fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=20&start_from=${nextFrom.current}&v=5.131`
+      fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=${count}&start_from=${nextFrom.current}&v=5.131`
     }
     fetch(fetchMoreDataUrl)
       .then((response) => response.json())
@@ -131,6 +143,7 @@ const News = ({navigation}) => {
           isLightMode={isLightTheme}
           id={item.key}
           accessToken={accessToken}
+          lang={lang}
         />
       )
     } else if (item.type === 'wall_photo' || item.type === 'friend') {
@@ -145,6 +158,7 @@ const News = ({navigation}) => {
         id={item.key}
         accessToken={accessToken}
         fromNewsfeed={true}
+        lang={lang}
       />
     )
   }

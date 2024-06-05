@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, SafeAreaView, ActivityIndicator, Image, Animated, BackHandler, TouchableOpacity } from 'react-native'
 import React from 'react'
+import * as Localization from 'expo-localization'
 import { FlatList } from 'react-native-gesture-handler'
 import { useDispatch, useSelector } from 'react-redux'
 import { useFocusEffect } from '@react-navigation/native';
@@ -19,6 +20,7 @@ import { COLORS } from '../constants/theme'
 
 const OpenedPhoto = ({ navigation, route }) => {
   const dispatch = useDispatch()
+  const lang = Localization.getLocales()[0].languageCode
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const isGlobalShadowExpanded = useSelector(state => state.globalShadow.isOpen)
@@ -80,7 +82,7 @@ const OpenedPhoto = ({ navigation, route }) => {
 
   const fetchComments = async () => {
     const url = `https://api.vk.com/method/photos.getComments?access_token=${accessToken}&v=5.131&photo_id=${photoId}&need_likes=1&owner_id=${ownerId}&count=${count}&sort=asc&offset=${offset.current}&fields=photo_100&extended=1`
-    const photoInfoUrl = `https://api.vk.com/method/photos.get?access_token=${accessToken}&v=5.131&photo_ids=${photoId}&extended=1&owner_id=${ownerId}&album_id=${albumId}`
+    const photoInfoUrl = `https://api.vk.com/method/photos.get?access_token=${accessToken}&v=5.131&photo_ids=${photoId}&extended=1&owner_id=${ownerId}${albumId ? `&album_id=${albumId}` : ''}`
     const res = await fetch(url)
     const photoInfoRes = await fetch(photoInfoUrl)
     const photoInfoData = await photoInfoRes.json()
@@ -227,6 +229,7 @@ const OpenedPhoto = ({ navigation, route }) => {
           imgUrl={author?.photo_100}
           isFriend={false}
           isMember={false}
+          lang={lang}
         />
         <View style={[{paddingLeft: 5, paddingRight: 5}, isLightTheme ? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
           <Image source={{uri: photoUrl}} style={{width: '100%', aspectRatio: res}}/>
@@ -272,12 +275,33 @@ const OpenedPhoto = ({ navigation, route }) => {
           <>
             <View style={[{flexDirection: 'row', padding: 5, gap: 5, paddingBottom: 10}, isLightTheme? {backgroundColor: COLORS.white} : {backgroundColor: COLORS.primary_dark}]}>
               <Text style={styles.commentCount}>{commentsCount}</Text>
-              <Text style={styles.commentCount}>{commentsCount === 1 ? 'COMMENT' : 'COMMENTS'}</Text>
+              <Text style={styles.commentCount}>{getCommentsLang(commentsCount)}</Text>
             </View>
           </> : null
         }
       </>
     )
+  }
+
+  const getCommentsLang = (cnt) => {
+    if (lang == 'ru') {
+      const t = cnt % 10
+      const k = cnt % 100
+      if (k == 11 || k == 12 || k == 13 || k == 14) {
+        return 'КОММЕНТАРИЕВ'
+      } else if (t == 1) {
+        return 'КОММЕНТАРИЙ'
+      } else if (t > 1 && t < 5) {
+        return 'КОММЕНТАРИЯ'
+      } else if (t >= 5 || t == 0) {
+        return 'КОММЕНТАРИЕВ'
+      }
+    } else {
+      if (cnt == 1) {
+        return 'COMMENT'
+      }
+      return 'COMMENTS'
+    }
   }
 
   const renderItem = ({item}) => {
@@ -330,7 +354,7 @@ const OpenedPhoto = ({ navigation, route }) => {
     <SafeAreaView style={[{flex: 1, justifyContent: 'flex-start' }, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
       <CustomHeader 
         isLightTheme={isLightTheme}
-        headerName={<Text style={styles.headerTextStyle}>Photo</Text>}
+        headerName={<Text style={styles.headerTextStyle}>{lang == 'ru' ? 'Фото' : 'Photo'}</Text>}
         iconComponent={<AntDesign name='arrowleft' size={30} color={COLORS.white}/>}
         iconTouchHandler={goBack}
       />

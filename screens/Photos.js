@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, StatusBar, ActivityIndicator, Image, Modal, Dimensions, TouchableOpacity, Animated } from 'react-native'
 import React, { useState, useRef, useEffect } from 'react'
 import { FlatList } from "react-native-gesture-handler";
+import * as Localization from 'expo-localization'
 import { useSelector } from 'react-redux'
 import uuid from 'react-native-uuid';
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -19,6 +20,7 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 
 const screenWidth = Dimensions.get('window').width
 const Photos = ({ navigation, route }) => {
+  const lang = Localization.getLocales()[0].languageCode
   const isLightTheme = useSelector(state => state.colorScheme.isCurrentSchemeLight)
   const accessToken = useSelector(state => state.user.accessToken)
   const currentUserId = useSelector(state => state.user.userId)
@@ -147,11 +149,12 @@ const Photos = ({ navigation, route }) => {
             navigation={navigation}
             ownerId={ownerId}
             author={author}
+            lang={lang}
           /> : null
         }
         <SearchResultHeaderCounter 
           isLightTheme={isLightTheme}
-          counterName={'All photos'}
+          counterName={lang == 'ru' ? 'Все фото' : 'All photos'}
           counterNum={numOfPhotos.current}
         />
         <DividerWithLine 
@@ -206,10 +209,9 @@ const Photos = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={[{flex: 1}, isLightTheme ? {backgroundColor: COLORS.light_smoke} : {backgroundColor: COLORS.background_dark}]}>
-      <StatusBar barStyle={COLORS.white} backgroundColor={isLightTheme ? COLORS.primary : COLORS.primary_dark} />
       <CustomHeader 
         isLightTheme={isLightTheme}
-        headerName={<Text style={styles.headerTextStyle}>Photos</Text>}
+        headerName={<Text style={styles.headerTextStyle}>{lang == 'ru' ? 'Фото' : 'Photos'}</Text>}
         iconComponent={
           currentUserId === ownerId ?
           <Entypo name='menu' color={COLORS.white} size={30}/> :
@@ -276,7 +278,7 @@ const Photos = ({ navigation, route }) => {
                     <TouchableOpacity activeOpacity={0.5} onPress={() => setModalVisible(false)}>
                       <AntDesign name={'arrowleft'} size={25} color={COLORS.white}/>
                     </TouchableOpacity>
-                    <Text style={{color: COLORS.white, fontSize: 17}}>{currentIndex + 1} of {numOfPhotos.current}</Text>
+                    <Text style={{color: COLORS.white, fontSize: 17}}>{currentIndex + 1} {lang == 'ru' ? 'из' : 'of'} {numOfPhotos.current}</Text>
                   </View>
                     <Feather name={'more-vertical'} color={COLORS.white} size={25}/>
                 </Animated.View>

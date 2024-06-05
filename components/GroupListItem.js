@@ -6,9 +6,9 @@ import { COLORS } from '../constants/theme'
 import { getShortagedNumber } from '../utils/numShortage'
 
 const width = Dimensions.get('window').width
-const GroupListItem = ({data, navigation, isLightTheme}) => {
+const GroupListItem = ({data, navigation, isLightTheme, lang}) => {
   const name = data.name
-  const communityInfo = `${data.activity}, ${getShortagedNumber(data.members_count)} followers` 
+  const communityInfo = `${data.activity}, ${getShortagedNumber(data.members_count)} ${lang == 'ru' ? 'подписчиков' : 'followers'}` 
   
   const handleOnPress = () => {
     // dispatch(setGroupID(data.id))

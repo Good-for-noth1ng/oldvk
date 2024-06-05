@@ -5,7 +5,7 @@ import PersonalListItem from './PersonalListItem'
 import { COLORS } from '../constants/theme'
 import PersonalContactItem from './PersonalContactItem'
 
-const WallHeaderAdditionalInfo = ({description, navigation, cleanedLinks, cleanedUsers, expanded}) => {
+const WallHeaderAdditionalInfo = ({description, navigation, cleanedLinks, cleanedUsers, expanded, lang}) => {
   if (!expanded) {
     return null
   }
@@ -14,12 +14,12 @@ const WallHeaderAdditionalInfo = ({description, navigation, cleanedLinks, cleane
     <View style={styles.container}>
       {
         description ?
-        <PersonalListItem title={'description'} info={description}/> : null 
+        <PersonalListItem title={lang == 'ru' ? 'описание' : 'description'} info={description}/> : null 
       }
       {
         cleanedLinks ?
         <Text style={{color: COLORS.secondary, fontSize: 16, textTransform: 'uppercase', margin: 10}}>
-          {`Links ${cleanedLinks.length}`}
+          {lang == 'ru' ? `Ссылки ${cleanedLinks.length}` : `Links ${cleanedLinks.length}`}
         </Text> : null
       }
       {
@@ -38,7 +38,7 @@ const WallHeaderAdditionalInfo = ({description, navigation, cleanedLinks, cleane
       {
         cleanedUsers ?
         <Text style={{color: COLORS.secondary, fontSize: 16, textTransform: 'uppercase', margin: 10}}>
-          {`Contacts ${cleanedUsers.length}`}
+          {lang == 'ru' ? `Контакты ${cleanedUsers.length}` : `Contacts ${cleanedUsers.length}`}
         </Text> : null
       }
       

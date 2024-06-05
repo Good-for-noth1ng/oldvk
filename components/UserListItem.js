@@ -5,9 +5,9 @@ import { COLORS } from '../constants/theme'
 import { getUserAge } from '../utils/date'
 import { setUserID } from '../redux/userWallSlice'
 
-const UserListItem = ({ imgUrl, firstName, lastName, id, navigation, isLightTheme, bdate, city }) => {
+const UserListItem = ({ imgUrl, firstName, lastName, id, navigation, isLightTheme, bdate, city, lang }) => {
   const dispatch = useDispatch()
-  const age = bdate && getUserAge(bdate)
+  const age = bdate && getUserAge(bdate, lang)
   const cityName = city !== undefined && city.title
   const gap = (cityName && age) ? ', ' : ''
   const handleOnPress = () => {

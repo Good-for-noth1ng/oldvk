@@ -149,7 +149,7 @@ const Dropdown = ({ isLightTheme, accessToken }) => {
     const response = await fetch(url)
     const parsedRes = await response.json()
     if (parsedRes.response === 1) {
-      ToastAndroid.show(lang == 'ru' ? 'Добвалено в избранное!' : 'Added to Favorite!', ToastAndroid.SHORT)
+      ToastAndroid.show(lang == 'ru' ? 'Добавлено в избранное!' : 'Added to Favorite!', ToastAndroid.SHORT)
     } else {
       ToastAndroid.show(lang == 'ru' ? 'Ошибка соединения' : 'Network Error', ToastAndroid.SHORT)
     }

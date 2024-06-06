@@ -32,37 +32,43 @@ const News = ({navigation}) => {
   const currentNewsPage = useSelector(state => state.news.currentPage)
   const shouldRemoveStackScreens = useRef()
 
-  let newsUrl
-  if (currentNewsPage === 'News') {
-    newsUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&count=${count}&v=5.131`
-  } else {
-    newsUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=${count}&v=5.131`
-  }
 
   const getNextFrom = async () => {
     try {
-      const next = await AsyncStorage.getItem('nextFrom')
-      const nextFrom = JSON.parse(next)
-      console.log(nextFrom)
+      let next = await AsyncStorage.getItem('nextFrom')
+      next = JSON.parse(next)
+      if (next) {
+        return next
+      }
+      return ''
     } catch (e) {
 
     }
   }
 
-  const fetchNews = () => {
+  const fetchNews = async () => {
     setIsLoading(true);    
-    fetch(newsUrl)
-      .then((response) => response.json())
-      .then((data) => {
+    const next = await getNextFrom()
+    let newsUrl
+    if (currentNewsPage === 'News') {
+      newsUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&count=${count}&v=5.131`
+    } else {
+      newsUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=${count}&v=5.131${next != '' ? `&start_from=${next}` : ''}`
+    }
+    const response =  await fetch(newsUrl)
+    const data = await response.json()
+    console.log(data)  
         // todo: handle error 43 tmp unavailable
-        const items = data.response.items.map(item => { 
-          const preparedItem = findPostAuthor(item, data.response.profiles, data.response.groups)
-          return preparedItem
-        })
-        nextFrom.current = data.response.next_from
-        setPostContent(items)
-        setIsLoading(false);
-      });
+    const items = data.response.items.map(item => { 
+    const preparedItem = findPostAuthor(item, data.response.profiles, data.response.groups)
+      return preparedItem
+    })
+    nextFrom.current = data.response.next_from
+    if (currentNewsPage !== 'News') {
+      await AsyncStorage.setItem("nextFrom", data.response.next_from ? JSON.stringify(data.response.next_from) : '')
+    }
+    setPostContent(items)
+    setIsLoading(false);
   }
 
   React.useEffect(()=> {
@@ -85,48 +91,46 @@ const News = ({navigation}) => {
     return blur, focus, drawerItemPress
   }, [navigation])
 
-  const fetchRefreshData = () => {
+  const fetchRefreshData = async () => {
     setIsLoading(true)
     let refreshUrl
     if (currentNewsPage === 'News') {
-      refreshUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&start_from=${nextFrom}&v=5.131`
+      refreshUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&start_from=${nextFrom.current}&v=5.131&count=${count}`
     } else {
-      refreshUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&start_from=${nextFrom}&v=5.131`
+      refreshUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&start_from=${nextFrom.current}&v=5.131&count=${count}`
     }
-    fetch(refreshUrl)
-      .then(response => response.json())
-      .then((data) => {
-        const items = data.response.items.map(item => {  
-          const preparedItem = findPostAuthor(item, data.response.profiles, data.response.groups)
-          return preparedItem
-        })
-        nextFrom.current = data.response.next_from
-        // dispatch(setItems(items));
-        // dispatch(setGroups(data.response.groups));
-        // dispatch(setProfiles(data.response.profiles));
-        // dispatch(setNextFrom(data.response.next_from));
-        setPostContent(items)
-        setIsLoading(false)
-      })
+    const response = await fetch(refreshUrl)
+    const data = await response.json()
+    const items = data.response.items.map(item => {  
+      const preparedItem = findPostAuthor(item, data.response.profiles, data.response.groups)
+        return preparedItem
+    })
+    nextFrom.current = data.response.next_from
+    if (currentNewsPage !== 'News') {
+      await AsyncStorage.setItem("nextFrom", data.response.next_from ? JSON.stringify(data.response.next_from) : '')
+    }
+    setPostContent(items)
+    setIsLoading(false)
   }
 
-  const fetchMoreData = () => {
+  const fetchMoreData = async () => {
     let fetchMoreDataUrl
     if (currentNewsPage === 'News') {
       fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.get?return_banned=0&access_token=${accessToken}&count=${count}&start_from=${nextFrom.current}&v=5.131`
     } else {
       fetchMoreDataUrl = `https://api.vk.com/method/newsfeed.getRecommended?return_banned=0&access_token=${accessToken}&count=${count}&start_from=${nextFrom.current}&v=5.131`
     }
-    fetch(fetchMoreDataUrl)
-      .then((response) => response.json())
-      .then((data) => {
-        const items = data.response.items.map(item => {  
-          const preparedItem = findPostAuthor(item, data.response.profiles, data.response.groups)
-          return preparedItem
-        })
-        nextFrom.current = data.response.next_from
-        setPostContent(prevState => prevState.concat(items));
-      });
+    const response = await fetch(fetchMoreDataUrl)
+    const data = await response.json()  
+    const items = data.response.items.map(item => {  
+      const preparedItem = findPostAuthor(item, data.response.profiles, data.response.groups)
+      return preparedItem
+    })
+    if (currentNewsPage !== 'News') {
+      await AsyncStorage.setItem("nextFrom", data.response.next_from ? JSON.stringify(data.response.next_from) : '')
+    }
+    nextFrom.current = data.response.next_from
+    setPostContent(prevState => prevState.concat(items));
   }
   
   const handleDrawerOpening = () => {

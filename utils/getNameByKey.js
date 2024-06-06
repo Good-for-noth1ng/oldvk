@@ -24,6 +24,8 @@ export const getNameInGroupHeader = (key, lang) => {
       return lang == 'ru' ? 'статьи' : 'articles'
     case 'topics':
       return lang == 'ru' ? 'обсуждения' : 'topics'
+    case 'wishes':
+      return lang == 'ru' ? 'желания' : 'wishes'
     default:
       return key;
   }
